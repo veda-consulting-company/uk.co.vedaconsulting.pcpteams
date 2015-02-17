@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<extension key="uk.co.vedaconsulting.pcpteams" type="module">
+  <file>pcpteams</file>
+  <name>FIXME</name>
+  <description>FIXME</description>
+  <license>AGPL-3.0</license>
+  <maintainer>
+    <author>deepak-srivastava</author>
+    <email>deepak.srivastava.0303@gmail.com</email>
+  </maintainer>
+  <releaseDate>1</releaseDate>
+  <version>1.0</version>
+  <develStage>alpha</develStage>
+  <compatibility>
+    <ver>4.2</ver>
+  </compatibility>
+  <comments>This is a new, undeveloped module</comments>
+  <civix>
+    <namespace>CRM/Pcpteams</namespace>
+  </civix>
+</extension>
