@@ -40,25 +40,31 @@ select @financial_type_id := id from civicrm_financial_type where name = 'Event 
 -- create event
 -- fixme: camp-id
 INSERT INTO `civicrm_event` (`title`, `summary`, `description`, `event_type_id`, `participant_listing_id`, `is_public`, `start_date`, `end_date`, `is_online_registration`, `registration_link_text`, `registration_start_date`, `registration_end_date`, `max_participants`, `event_full_text`, `is_monetary`, `financial_type_id`, `payment_processor`, `is_map`, `is_active`, `fee_label`, `is_show_location`, `loc_block_id`, `default_role_id`, `intro_text`, `footer_text`, `confirm_title`, `confirm_text`, `confirm_footer_text`, `is_email_confirm`, `confirm_email_text`, `confirm_from_name`, `confirm_from_email`, `cc_confirm`, `bcc_confirm`, `default_fee_id`, `default_discount_fee_id`, `thankyou_title`, `thankyou_text`, `thankyou_footer_text`, `is_pay_later`, `pay_later_text`, `pay_later_receipt`, `is_partial_payment`, `initial_amount_label`, `initial_amount_help_text`, `min_initial_amount`, `is_multiple_registrations`, `allow_same_participant_emails`, `has_waitlist`, `requires_approval`, `expiration_time`, `waitlist_text`, `approval_req_text`, `is_template`, `template_title`, `created_id`, `created_date`, `currency`, `campaign_id`, `is_share`, `is_confirm_enabled`, `parent_event_id`, `slot_label_id`, `dedupe_rule_group_id`) VALUES
-(@event_title, 'Sign up your team to participate in this fun tournament which benefits several Rain-forest protection groups in maxico.', '<p>This is a FYSA Sanctioned Tournament, which is open to all USSF/FIFA affiliated organizations for boys and girls in age groups: U9-U10 (6v6), U11-U12 (8v8), and U13-U17 (Full Sided).</p>', @event_type_id, 1, 1, '2015-10-05 07:00:00', '2015-10-07 17:00:00', 1, 'Register Now', NULL, NULL, 500, 'Sorry! All available team slots for this tournament have been filled. Contact Jill Futbol for information about the waiting list and next years event.', 1, @financial_type_id, @payment_processor, 0, 1, 'Tournament Fees', 1, 3, 1, 'Complete the form below to register your team for this year''s tournament.', '<em>A Soccer Youth Event</em>', 'Review and Confirm Your Registration Information', '', '<em>A Soccer Youth Event</em>', 1, 'Contact our Tournament Director for eligibility details.', 'Tournament Director', 'tournament@example.org', '', NULL, NULL, NULL, 'Thanks for Your Support!', '<p>Thank you for your support. Your participation will help save thousands of acres of rainforest.</p>', '<p><a href=http://civicrm.org>Back to CiviCRM Home Page</a></p>', 0, NULL, NULL, 0, NULL, NULL, NULL, 0, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 'USD', NULL, 1, 1, NULL, NULL, NULL);
+(@event_title, 'Sign up your team to participate in this fun tournament which benefits several Rain-forest protection groups in maxico.', '<p>This is a FYSA Sanctioned Tournament, which is open to all USSF/FIFA affiliated organizations for boys and girls in age groups: U9-U10 (6v6), U11-U12 (8v8), and U13-U17 (Full Sided).</p>', @event_type_id, 1, 1, '2015-10-05 07:00:00', '2015-10-07 17:00:00', 1, 'Register Now', NULL, NULL, 500, 'Sorry! All available team slots for this tournament have been filled. Contact Jill Futbol for information about the waiting list and next years event.', 1, @financial_type_id, @payment_processor, 0, 1, 'Tournament Fees', 1, @loc_block_id, 1, 'Complete the form below to register your team for this year''s tournament.', '<em>A Soccer Youth Event</em>', 'Review and Confirm Your Registration Information', '', '<em>A Soccer Youth Event</em>', 1, 'Contact our Tournament Director for eligibility details.', 'Tournament Director', 'tournament@example.org', '', NULL, NULL, NULL, 'Thanks for Your Support!', '<p>Thank you for your support. Your participation will help save thousands of acres of rainforest.</p>', '<p><a href=http://civicrm.org>Back to CiviCRM Home Page</a></p>', 0, NULL, NULL, 0, NULL, NULL, NULL, 0, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 'USD', NULL, 1, 1, NULL, NULL, NULL);
 SELECT @event_id := LAST_INSERT_ID();
 
 -- link profile with event
--- fixme: uf_group_id
+-- uf_group_id
+select @uf_group_id := id from civicrm_uf_group where name = 'event_registration';
+
 INSERT INTO `civicrm_uf_join` (`is_active`, `module`, `entity_table`, `entity_id`, `weight`, `uf_group_id`, `module_data`) VALUES
-(1, 'CiviEvent', 'civicrm_event', @event_id, 1, 12, NULL);
+(1, 'CiviEvent', 'civicrm_event', @event_id, 1, @uf_group_id, NULL);
 
 INSERT INTO `civicrm_price_set_entity` (`entity_table`, `entity_id`, `price_set_id`) VALUES
 ('civicrm_event', @event_id, @price_set_id);
 
--- fixme: supporter profile
+-- supporter profile
+select @supporter_profile_id := id from civicrm_uf_group where name = 'supporter_profile';
+
 INSERT INTO `civicrm_pcp_block` (`entity_table`, `entity_id`, `target_entity_type`, `target_entity_id`, `supporter_profile_id`, `is_approval_needed`, `is_tellfriend_enabled`, `tellfriend_limit`, `link_text`, `is_active`, `notify_email`) VALUES
 ('civicrm_event', @event_id, 'event', @event_id, 2, 1, 1, 5, 'Promote this event with a personal campaign page', 1, 'deepak@vedaconsulting.co.uk');
 SELECT @pcp_block_id := LAST_INSERT_ID();
 
 -- create contact1
+SELECT @org_name := CONCAT('LLR Team', " ", CEIL(RAND()*1000000));
+
 INSERT INTO `civicrm_contact` (`contact_type`, `contact_sub_type`, `do_not_email`, `do_not_phone`, `do_not_mail`, `do_not_sms`, `do_not_trade`, `is_opt_out`, `legal_identifier`, `external_identifier`, `sort_name`, `display_name`, `nick_name`, `legal_name`, `image_URL`, `preferred_communication_method`, `preferred_language`, `preferred_mail_format`, `hash`, `api_key`, `source`, `first_name`, `middle_name`, `last_name`, `prefix_id`, `suffix_id`, `formal_title`, `communication_style_id`, `email_greeting_id`, `email_greeting_custom`, `email_greeting_display`, `postal_greeting_id`, `postal_greeting_custom`, `postal_greeting_display`, `addressee_id`, `addressee_custom`, `addressee_display`, `job_title`, `gender_id`, `birth_date`, `is_deceased`, `deceased_date`, `household_name`, `primary_contact_id`, `organization_name`, `sic_code`, `user_unique_id`, `employer_id`, `is_deleted`) VALUES
-('Organization', NULL, 0, 0, 0, 0, 0, 0, NULL, NULL, 'LLR Team', 'LLR Team', NULL, NULL, NULL, NULL, NULL, 'Both', '3102204687', NULL, 'Sample Data', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, NULL, 'LLR Team', NULL, NULL, NULL, 0, NULL, NULL, 186, 'LLR Team', NULL, NULL, NULL, 0);
+('Organization', NULL, 0, 0, 0, 0, 0, 0, NULL, NULL, @org_name, @org_name, NULL, NULL, NULL, NULL, NULL, 'Both', '3102204687', NULL, 'Sample Data', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, NULL, @org_name, NULL, NULL, NULL, 0, NULL, NULL, NULL, @org_name, NULL, NULL, NULL, 0);
 SELECT @pcp_contact_id := LAST_INSERT_ID();
 
 -- pcp page for contact1
@@ -66,9 +72,12 @@ INSERT INTO `civicrm_pcp` (`contact_id`, `status_id`, `title`, `intro_text`, `pa
 (@pcp_contact_id, 2, 'LLR Team PCP', 'Chris PCP Welcome message', 'This campaign is really important for PCP project to be successful. ', 'Join Us', @event_id, 'event', @pcp_block_id, 1, 1, 50000.00, 'USD', 1);
 
 -- create contact2
--- fixme: @fn = chris  @ln = morley CEIL(RAND()*1000000)
+-- @fn = chris  @ln = morley CEIL(RAND()*1000000)
+SELECT @fn := 'Chris';
+SELECT @ln := CONCAT('Morley', " ", CEIL(RAND()*1000000));
+
 INSERT INTO `civicrm_contact` (`contact_type`, `contact_sub_type`, `do_not_email`, `do_not_phone`, `do_not_mail`, `do_not_sms`, `do_not_trade`, `is_opt_out`, `legal_identifier`, `external_identifier`, `sort_name`, `display_name`, `nick_name`, `legal_name`, `image_URL`, `preferred_communication_method`, `preferred_language`, `preferred_mail_format`, `api_key`, `source`, `first_name`, `middle_name`, `last_name`, `prefix_id`, `suffix_id`, `formal_title`, `communication_style_id`, `email_greeting_id`, `email_greeting_custom`, `email_greeting_display`, `postal_greeting_id`, `postal_greeting_custom`, `postal_greeting_display`, `addressee_id`, `addressee_custom`, `addressee_display`, `job_title`, `gender_id`, `birth_date`, `is_deceased`, `deceased_date`, `household_name`, `primary_contact_id`, `organization_name`, `sic_code`, `user_unique_id`, `employer_id`, `is_deleted`) VALUES
-('Individual', NULL, 0, 0, 0, 0, 0, 0, NULL, NULL, 'morley, chris', 'chris morley', NULL, NULL, NULL, NULL, 'en_US', 'Both', NULL, NULL, 'chris', NULL, 'morley', NULL, NULL, NULL, NULL, 1, NULL, 'Dear chris', 1, NULL, 'Dear chris', 1, NULL, 'chris morley', NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
+('Individual', NULL, 0, 0, 0, 0, 0, 0, NULL, NULL, CONCAT(@ln, ", ", @fn), CONCAT(@fn, " ", @ln), NULL, NULL, NULL, NULL, 'en_US', 'Both', NULL, NULL, @fn, NULL, @ln, NULL, NULL, NULL, NULL, 1, NULL, 'Dear chris', 1, NULL, 'Dear chris', 1, NULL, CONCAT(@fn, " ", @ln), NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
 SELECT @pcp_contact_id := LAST_INSERT_ID();
 
 -- pcp page for contact2
