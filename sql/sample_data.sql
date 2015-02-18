@@ -23,10 +23,27 @@ INSERT INTO `civicrm_price_field_value` (`price_field_id`, `name`, `label`, `des
 -- event loc
 SELECT @loc_block_id := max(loc_block_id) from civicrm_event;
 
+-- Payment Processor Type Id 
+SELECT @payment_processor_type_id := id FROM civicrm_payment_processor_type WHERE name = 'Dummy';
+
+-- payment processor
+INSERT INTO `civicrm_payment_processor` (`domain_id`, `name`, `description`, `payment_processor_type_id`, `is_active`, `is_default`, `is_test`, `user_name`, `password`, `signature`, `url_site`, `url_api`, `url_recur`, `url_button`, `subject`, `class_name`, `billing_mode`, `is_recur`, `payment_type`) VALUES
+(1, 'Test Processor', '', @payment_processor_type_id, 1, 0, 0, 'dummy', NULL, NULL, 'http://dummy.com', NULL, 'http://dummyrecur.com', NULL, NULL, 'Payment_Dummy', 1, 1, 1) ON DUPLICATE KEY UPDATE `name` = VALUES (`name`)  ;
+
+SELECT @payment_processor := id FROM civicrm_payment_processor WHERE name = 'Test Processor' AND is_test = 0;
+
+-- event type
+SELECT @event_type_name := 'Fundraiser';
+SELECT @event_type_op_name	:= 'event_type';
+SELECT @event_type_id := value FROM civicrm_option_value WHERE name = @event_type_name AND option_group_id = ( SELECT id FROM civicrm_option_group WHERE name = @event_type_op_name);
+
+-- financial type
+select @financial_type_id := id from civicrm_financial_type where name = 'Event Fee';
+
 -- create event
 -- fixme: payment processor, camp-id
 INSERT INTO `civicrm_event` (`title`, `summary`, `description`, `event_type_id`, `participant_listing_id`, `is_public`, `start_date`, `end_date`, `is_online_registration`, `registration_link_text`, `registration_start_date`, `registration_end_date`, `max_participants`, `event_full_text`, `is_monetary`, `financial_type_id`, `payment_processor`, `is_map`, `is_active`, `fee_label`, `is_show_location`, `loc_block_id`, `default_role_id`, `intro_text`, `footer_text`, `confirm_title`, `confirm_text`, `confirm_footer_text`, `is_email_confirm`, `confirm_email_text`, `confirm_from_name`, `confirm_from_email`, `cc_confirm`, `bcc_confirm`, `default_fee_id`, `default_discount_fee_id`, `thankyou_title`, `thankyou_text`, `thankyou_footer_text`, `is_pay_later`, `pay_later_text`, `pay_later_receipt`, `is_partial_payment`, `initial_amount_label`, `initial_amount_help_text`, `min_initial_amount`, `is_multiple_registrations`, `allow_same_participant_emails`, `has_waitlist`, `requires_approval`, `expiration_time`, `waitlist_text`, `approval_req_text`, `is_template`, `template_title`, `created_id`, `created_date`, `currency`, `campaign_id`, `is_share`, `is_confirm_enabled`, `parent_event_id`, `slot_label_id`, `dedupe_rule_group_id`) VALUES
-(@event_title, 'Sign up your team to participate in this fun tournament which benefits several Rain-forest protection groups in maxico.', '<p>This is a FYSA Sanctioned Tournament, which is open to all USSF/FIFA affiliated organizations for boys and girls in age groups: U9-U10 (6v6), U11-U12 (8v8), and U13-U17 (Full Sided).</p>', 3, 1, 1, '2015-10-05 07:00:00', '2015-10-07 17:00:00', 1, 'Register Now', NULL, NULL, 500, 'Sorry! All available team slots for this tournament have been filled. Contact Jill Futbol for information about the waiting list and next years event.', 1, 4, '1', 0, 1, 'Tournament Fees', 1, 3, 1, 'Complete the form below to register your team for this year''s tournament.', '<em>A Soccer Youth Event</em>', 'Review and Confirm Your Registration Information', '', '<em>A Soccer Youth Event</em>', 1, 'Contact our Tournament Director for eligibility details.', 'Tournament Director', 'tournament@example.org', '', NULL, NULL, NULL, 'Thanks for Your Support!', '<p>Thank you for your support. Your participation will help save thousands of acres of rainforest.</p>', '<p><a href=http://civicrm.org>Back to CiviCRM Home Page</a></p>', 0, NULL, NULL, 0, NULL, NULL, NULL, 0, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 'USD', NULL, 1, 1, NULL, NULL, NULL);
+(@event_title, 'Sign up your team to participate in this fun tournament which benefits several Rain-forest protection groups in maxico.', '<p>This is a FYSA Sanctioned Tournament, which is open to all USSF/FIFA affiliated organizations for boys and girls in age groups: U9-U10 (6v6), U11-U12 (8v8), and U13-U17 (Full Sided).</p>', @event_type_id, 1, 1, '2015-10-05 07:00:00', '2015-10-07 17:00:00', 1, 'Register Now', NULL, NULL, 500, 'Sorry! All available team slots for this tournament have been filled. Contact Jill Futbol for information about the waiting list and next years event.', 1, @financial_type_id, @payment_processor, 0, 1, 'Tournament Fees', 1, 3, 1, 'Complete the form below to register your team for this year''s tournament.', '<em>A Soccer Youth Event</em>', 'Review and Confirm Your Registration Information', '', '<em>A Soccer Youth Event</em>', 1, 'Contact our Tournament Director for eligibility details.', 'Tournament Director', 'tournament@example.org', '', NULL, NULL, NULL, 'Thanks for Your Support!', '<p>Thank you for your support. Your participation will help save thousands of acres of rainforest.</p>', '<p><a href=http://civicrm.org>Back to CiviCRM Home Page</a></p>', 0, NULL, NULL, 0, NULL, NULL, NULL, 0, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 'USD', NULL, 1, 1, NULL, NULL, NULL);
 SELECT @event_id := LAST_INSERT_ID();
 
 -- link profile with event
