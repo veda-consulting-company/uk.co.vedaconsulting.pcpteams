@@ -90,11 +90,11 @@ SELECT @org_name := CONCAT('LLR Team', " ", CEIL(RAND()*100));
 
 INSERT INTO `civicrm_contact` (`contact_type`, `contact_sub_type`, `do_not_email`, `do_not_phone`, `do_not_mail`, `do_not_sms`, `do_not_trade`, `is_opt_out`, `legal_identifier`, `external_identifier`, `sort_name`, `display_name`, `nick_name`, `legal_name`, `image_URL`, `preferred_communication_method`, `preferred_language`, `preferred_mail_format`, `hash`, `api_key`, `source`, `first_name`, `middle_name`, `last_name`, `prefix_id`, `suffix_id`, `formal_title`, `communication_style_id`, `email_greeting_id`, `email_greeting_custom`, `email_greeting_display`, `postal_greeting_id`, `postal_greeting_custom`, `postal_greeting_display`, `addressee_id`, `addressee_custom`, `addressee_display`, `job_title`, `gender_id`, `birth_date`, `is_deceased`, `deceased_date`, `household_name`, `primary_contact_id`, `organization_name`, `sic_code`, `user_unique_id`, `employer_id`, `is_deleted`) VALUES
 ('Organization', NULL, 0, 0, 0, 0, 0, 0, NULL, NULL, @org_name, @org_name, NULL, NULL, NULL, NULL, NULL, 'Both', '3102204687', NULL, 'Sample Data', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, NULL, @org_name, NULL, NULL, NULL, 0, NULL, NULL, NULL, @org_name, NULL, NULL, NULL, 0);
-SELECT @pcp_contact_id_1 := LAST_INSERT_ID();
+SELECT @contact_id_lteam := LAST_INSERT_ID();
 
 -- pcp page for contact1
 INSERT INTO `civicrm_pcp` (`contact_id`, `status_id`, `title`, `intro_text`, `page_text`, `donate_link_text`, `page_id`, `page_type`, `pcp_block_id`, `is_thermometer`, `is_honor_roll`, `goal_amount`, `currency`, `is_active`) VALUES
-(@pcp_contact_id_1, 2, 'LLR Team PCP', 'Chris PCP Welcome message', 'This campaign is really important for PCP project to be successful. ', 'Join Us', @contrib_page_id, 'contribute', @pcp_block_id, 1, 1, 50000.00, 'USD', 1);
+(@contact_id_lteam, 2, 'LLR Team PCP', 'LLR PCP Welcome message', 'This campaign is really important for PCP project to be successful. ', 'Join Us', @contrib_page_id, 'contribute', @pcp_block_id, 1, 1, 50000.00, 'USD', 1);
 
 -- create contact2
 -- @fn = chris  @ln = morley CEIL(RAND()*100)
@@ -119,7 +119,7 @@ SELECT @relationship_type_id := id FROM civicrm_relationship_type WHERE name_a_b
 
 -- relationship
 INSERT INTO `civicrm_relationship` (`contact_id_a`, `contact_id_b`, `relationship_type_id`, `start_date`, `end_date`, `is_active`, `description`, `is_permission_a_b`, `is_permission_b_a`, `case_id`) VALUES
-(@contact_id_chris, @pcp_contact_id_1, @relationship_type_id, NULL, NULL, 1, NULL, 1, 0, NULL) ON DUPLICATE KEY UPDATE `contact_id_a` = VALUES (`contact_id_a`), `contact_id_b` = VALUES (`contact_id_b`), `relationship_type_id` = VALUES (`relationship_type_id`), `is_active` = VALUES (`is_active`), `is_permission_a_b` = VALUES (`is_permission_a_b`);
+(@contact_id_chris, @contact_id_lteam, @relationship_type_id, NULL, NULL, 1, NULL, 1, 0, NULL) ON DUPLICATE KEY UPDATE `contact_id_a` = VALUES (`contact_id_a`), `contact_id_b` = VALUES (`contact_id_b`), `relationship_type_id` = VALUES (`relationship_type_id`), `is_active` = VALUES (`is_active`), `is_permission_a_b` = VALUES (`is_permission_a_b`);
 
 -- ############################## Donations and Soft Credits for PCP Pages #####################################
 -- create donor contact1
@@ -135,10 +135,14 @@ INSERT INTO `civicrm_contribution` (`contact_id`, `financial_type_id`, `contribu
 (@donor_contact_id, 1, @contrib_page_id, 1, '2015-02-19 13:21:07', NULL, 500.00, NULL, 500.00, 'live_00000001', '1771914bfb7d365b23dc9623f64b8545', 'USD', NULL, '0', '2015-02-19 13:21:07', NULL, 'Online Contribution: Chris PCP', 'Medium', NULL, 0, 0, 1, NULL, NULL, NULL);
 SELECT @contrib_id := LAST_INSERT_ID();
 
--- fixme: generalize soft-credit-type-id
+-- soft credit to chris
 select @soft_credit_type_id := value from civicrm_option_value where name = 'pcp' AND option_group_id = (select id from civicrm_option_group where name = 'soft_credit_type');
 INSERT INTO `civicrm_contribution_soft` (`contribution_id`, `contact_id`, `amount`, `currency`, `pcp_id`, `pcp_display_in_roll`, `pcp_roll_nickname`, `pcp_personal_note`, `soft_credit_type_id`) VALUES
 (@contrib_id, @contact_id_chris, 500.00, 'USD', @pcp_id_chris, 1, 'Che', 'Ches personal note. Don''t read it please.', @soft_credit_type_id);
+
+-- soft credit to team
+INSERT INTO `civicrm_contribution_soft` (`contribution_id`, `contact_id`, `amount`, `currency`, `pcp_id`, `pcp_display_in_roll`, `pcp_roll_nickname`, `pcp_personal_note`, `soft_credit_type_id`) VALUES
+(@contrib_id, @contact_id_lteam, 500.00, 'USD', @pcp_id_chris, 1, 'LLR Team', 'LLR Team personal note. Don''t read it please.', @soft_credit_type_id);
 
 -- create donor contact2
 SELECT @fn := 'James';
@@ -150,9 +154,13 @@ SELECT @donor_contact_id := LAST_INSERT_ID();
 
 -- donation record
 INSERT INTO `civicrm_contribution` (`contact_id`, `financial_type_id`, `contribution_page_id`, `payment_instrument_id`, `receive_date`, `non_deductible_amount`, `total_amount`, `fee_amount`, `net_amount`, `trxn_id`, `invoice_id`, `currency`, `cancel_date`, `cancel_reason`, `receipt_date`, `thankyou_date`, `source`, `amount_level`, `contribution_recur_id`, `is_test`, `is_pay_later`, `contribution_status_id`, `address_id`, `check_number`, `campaign_id`) VALUES
-(@donor_contact_id, 1, @contrib_page_id, 1, '2015-02-19 13:21:07', NULL, 500.00, NULL, 500.00, 'live_00000002', '1771914bfb7d365b23dc9623f64b8546', 'USD', NULL, '0', '2015-02-19 13:21:07', NULL, 'Online Contribution: Chris PCP', 'Medium', NULL, 0, 0, 1, NULL, NULL, NULL);
+(@donor_contact_id, 1, @contrib_page_id, 1, '2015-02-19 13:21:07', NULL, 1000.00, NULL, 1000.00, 'live_00000002', '1771914bfb7d365b23dc9623f64b8546', 'USD', NULL, '0', '2015-02-19 13:21:07', NULL, 'Online Contribution: Chris PCP', 'Medium', NULL, 0, 0, 1, NULL, NULL, NULL);
 SELECT @contrib_id := LAST_INSERT_ID();
 
--- fixme: generalize soft-credit-type-id
+-- soft credit to chris
 INSERT INTO `civicrm_contribution_soft` (`contribution_id`, `contact_id`, `amount`, `currency`, `pcp_id`, `pcp_display_in_roll`, `pcp_roll_nickname`, `pcp_personal_note`, `soft_credit_type_id`) VALUES
-(@contrib_id, @contact_id_chris, 500.00, 'USD', @pcp_id_chris, 1, 'Che', 'Ches personal note. Don''t read it please.', @soft_credit_type_id);
+(@contrib_id, @contact_id_chris, 1000.00, 'USD', @pcp_id_chris, 1, 'Che', 'Ches personal note. Don''t read it please.', @soft_credit_type_id);
+
+-- soft credit to team
+INSERT INTO `civicrm_contribution_soft` (`contribution_id`, `contact_id`, `amount`, `currency`, `pcp_id`, `pcp_display_in_roll`, `pcp_roll_nickname`, `pcp_personal_note`, `soft_credit_type_id`) VALUES
+(@contrib_id, @contact_id_lteam, 1000.00, 'USD', @pcp_id_chris, 1, 'LLR Team', 'LLR Team personal note. Don''t read it please.', @soft_credit_type_id);
