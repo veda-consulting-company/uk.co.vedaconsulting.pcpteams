@@ -1,8 +1,10 @@
 SELECT @event_title := '% 2015';
 DELETE FROM civicrm_event where title like '% 2015';
+DELETE FROM civicrm_contribution where trxn_id like 'live_%';
 
 DELETE FROM civicrm_contact where organization_name like 'LLR Team %';
 DELETE FROM civicrm_contact where last_name like 'Morley %';
+DELETE FROM civicrm_contact where last_name like 'Molava %';
 
 DELETE pfv.* 
 FROM civicrm_price_field_value pfv
