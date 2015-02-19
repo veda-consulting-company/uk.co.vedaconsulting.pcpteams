@@ -2,8 +2,9 @@
 SELECT @event_title := 'bikeathon 2015';
 SELECT @event_name  := 'bikeathon_2015';
 SELECT @contrib_page_title := 'Help Support PCP Project!';
+SELECT @contrib_page_name  := 'help_support_pcp_project!';
 
--- price set
+-- price set for event
 INSERT INTO `civicrm_price_set` (`domain_id`, `name`, `title`, `is_active`, `help_pre`, `help_post`, `javascript`, `extends`, `financial_type_id`, `is_quick_config`, `is_reserved`) VALUES
 (NULL, @event_name, @event_title, 1, NULL, NULL, NULL, '1', NULL, 1, 0);
 SELECT @price_set_id := LAST_INSERT_ID();
@@ -17,6 +18,21 @@ INSERT INTO `civicrm_price_field_value` (`price_field_id`, `name`, `label`, `des
 (@price_field_id, 'stud_14_20', 'Students (ages 14-20)', NULL, '800', NULL, NULL, 1, NULL, NULL, 1, 1, 4, 0.00),
 (@price_field_id, 'young_21_30', 'Young Stars (ages 21-30)', NULL, '1000', NULL, NULL, 2, NULL, NULL, 0, 1, 4, 0.00),
 (@price_field_id, 'super_30_45', 'Super Stars (ages 30-45)', NULL, '900',  NULL, NULL, 3, NULL, NULL, 0, 1, 4, 0.00);
+
+-- price set for contribution page
+INSERT INTO `civicrm_price_set` (`domain_id`, `name`, `title`, `is_active`, `help_pre`, `help_post`, `javascript`, `extends`, `financial_type_id`, `is_quick_config`, `is_reserved`) VALUES
+(NULL, @contrib_page_name, @contrib_page_title, 1, NULL, NULL, NULL, '2', 1, 1, 0);
+SELECT @price_set_id_contribution := LAST_INSERT_ID();
+
+-- price field 
+INSERT INTO `civicrm_price_field` (`price_set_id`, `name`, `label`, `html_type`, `is_enter_qty`, `help_pre`, `help_post`, `weight`, `is_display_amounts`, `options_per_line`, `is_active`, `is_required`, `active_on`, `expire_on`, `javascript`, `visibility_id`) VALUES
+(@price_set_id_contribution, 'contribution_amount', 'Contribution Amount', 'Radio', 0, NULL, NULL, 2, 1, 1, 1, 0, NULL, NULL, NULL, 1);
+SELECT @price_field_id_contribution := LAST_INSERT_ID();
+
+INSERT INTO `civicrm_price_field_value` (`price_field_id`, `name`, `label`, `description`, `amount`, `count`, `max_value`, `weight`, `membership_type_id`, `membership_num_terms`, `is_default`, `is_active`, `financial_type_id`, `deductible_amount`) VALUES
+(@price_field_id_contribution, 'small', 'Small', NULL, '100', NULL, NULL, 1, NULL, NULL, 1, 1, 1, '0.00'),
+(@price_field_id_contribution, 'medium', 'Medium', NULL, '500', NULL, NULL, 1, NULL, NULL, 1, 1, 1, '0.00'),
+(@price_field_id_contribution, 'Large', 'Large', NULL, '1000', NULL, NULL, 2, NULL, NULL, 0, 1, 1, '0.00');
 
 -- Choose a loc
 SELECT @loc_block_id := max(loc_block_id) from civicrm_event;
@@ -59,9 +75,9 @@ INSERT INTO `civicrm_contribution_page` (`title`, `intro_text`, `financial_type_
 (@contrib_page_title, 'Do you love PCP? Do you use PCP? Then please support PCP and Contribute NOW by trying out our new online contribution features!', @financial_type_id, @payment_processor, 0, 1, 0, 1, NULL, 0, 0, 0, NULL, NULL, 0, NULL, NULL, NULL, 1, 137, 10.00, 10000.00, 100000.00, 'Thanks for Your Support!', '<p>Thank you for your support. Your contribution will help us build even better tools.</p><p>Please tell your friends and colleagues about PCP!</p>', '<p><a href=http://civicrm.org>Back to PCP Home Page</a></p>', 0, NULL, 1, 'PCP Fundraising Dept.', 'donationFake@civicrm.org', 'receipt@example.com', 'bcc@example.com', 'Your donation is tax deductible under IRS 501(c)(3) regulation. Our tax identification number is: 93-123-4567', 1, NULL, 1, NULL, NULL, NULL, NULL, 'USD', NULL, 1);
 SELECT @contrib_page_id := LAST_INSERT_ID();
 
--- link price set with contribution-page
--- INSERT INTO `civicrm_price_set_entity` (`entity_table`, `entity_id`, `price_set_id`) VALUES
--- ('civicrm_contribution_page', @contrib_page_id, @price_set_id);
+-- link with price set entity
+INSERT INTO `civicrm_price_set_entity` (`entity_table`, `entity_id`, `price_set_id`) VALUES
+('civicrm_contribution_page', @contrib_page_id, @price_set_id_contribution);
 
 -- create pcp block for contribution page
 select @supporter_profile_id := id from civicrm_uf_group where name = 'supporter_profile';
@@ -116,13 +132,13 @@ SELECT @donor_contact_id := LAST_INSERT_ID();
 
 -- donation record
 INSERT INTO `civicrm_contribution` (`contact_id`, `financial_type_id`, `contribution_page_id`, `payment_instrument_id`, `receive_date`, `non_deductible_amount`, `total_amount`, `fee_amount`, `net_amount`, `trxn_id`, `invoice_id`, `currency`, `cancel_date`, `cancel_reason`, `receipt_date`, `thankyou_date`, `source`, `amount_level`, `contribution_recur_id`, `is_test`, `is_pay_later`, `contribution_status_id`, `address_id`, `check_number`, `campaign_id`) VALUES
-(@donor_contact_id, 1, @contrib_page_id, 1, '2015-02-19 13:21:07', NULL, 800.00, NULL, 800.00, 'live_00000001', '1771914bfb7d365b23dc9623f64b8545', 'USD', NULL, '0', '2015-02-19 13:21:07', NULL, 'Online Contribution: Chris PCP', 'Students (ages 14-20)', NULL, 0, 0, 1, NULL, NULL, NULL);
+(@donor_contact_id, 1, @contrib_page_id, 1, '2015-02-19 13:21:07', NULL, 500.00, NULL, 500.00, 'live_00000001', '1771914bfb7d365b23dc9623f64b8545', 'USD', NULL, '0', '2015-02-19 13:21:07', NULL, 'Online Contribution: Chris PCP', 'Medium', NULL, 0, 0, 1, NULL, NULL, NULL);
 SELECT @contrib_id := LAST_INSERT_ID();
 
 -- fixme: generalize soft-credit-type-id
 select @soft_credit_type_id := value from civicrm_option_value where name = 'pcp' AND option_group_id = (select id from civicrm_option_group where name = 'soft_credit_type');
 INSERT INTO `civicrm_contribution_soft` (`contribution_id`, `contact_id`, `amount`, `currency`, `pcp_id`, `pcp_display_in_roll`, `pcp_roll_nickname`, `pcp_personal_note`, `soft_credit_type_id`) VALUES
-(@contrib_id, @contact_id_chris, 800.00, 'USD', @pcp_id_chris, 1, 'Che', 'Ches personal note. Don''t read it please.', @soft_credit_type_id);
+(@contrib_id, @contact_id_chris, 500.00, 'USD', @pcp_id_chris, 1, 'Che', 'Ches personal note. Don''t read it please.', @soft_credit_type_id);
 
 -- create donor contact2
 SELECT @fn := 'James';
@@ -134,29 +150,9 @@ SELECT @donor_contact_id := LAST_INSERT_ID();
 
 -- donation record
 INSERT INTO `civicrm_contribution` (`contact_id`, `financial_type_id`, `contribution_page_id`, `payment_instrument_id`, `receive_date`, `non_deductible_amount`, `total_amount`, `fee_amount`, `net_amount`, `trxn_id`, `invoice_id`, `currency`, `cancel_date`, `cancel_reason`, `receipt_date`, `thankyou_date`, `source`, `amount_level`, `contribution_recur_id`, `is_test`, `is_pay_later`, `contribution_status_id`, `address_id`, `check_number`, `campaign_id`) VALUES
-(@donor_contact_id, 1, @contrib_page_id, 1, '2015-02-19 13:21:07', NULL, 800.00, NULL, 800.00, 'live_00000002', '1771914bfb7d365b23dc9623f64b8546', 'USD', NULL, '0', '2015-02-19 13:21:07', NULL, 'Online Contribution: Chris PCP', 'Students (ages 14-20)', NULL, 0, 0, 1, NULL, NULL, NULL);
+(@donor_contact_id, 1, @contrib_page_id, 1, '2015-02-19 13:21:07', NULL, 500.00, NULL, 500.00, 'live_00000002', '1771914bfb7d365b23dc9623f64b8546', 'USD', NULL, '0', '2015-02-19 13:21:07', NULL, 'Online Contribution: Chris PCP', 'Medium', NULL, 0, 0, 1, NULL, NULL, NULL);
 SELECT @contrib_id := LAST_INSERT_ID();
 
 -- fixme: generalize soft-credit-type-id
 INSERT INTO `civicrm_contribution_soft` (`contribution_id`, `contact_id`, `amount`, `currency`, `pcp_id`, `pcp_display_in_roll`, `pcp_roll_nickname`, `pcp_personal_note`, `soft_credit_type_id`) VALUES
-(@contrib_id, @contact_id_chris, 800.00, 'USD', @pcp_id_chris, 1, 'Che', 'Ches personal note. Don''t read it please.', @soft_credit_type_id);
-
-
--- price set
-INSERT INTO `civicrm_price_set` (`domain_id`, `name`, `title`, `is_active`, `help_pre`, `help_post`, `javascript`, `extends`, `financial_type_id`, `is_quick_config`, `is_reserved`) VALUES
-(NULL, 'help_support_pcp_project__', @contrib_page_title, 1, NULL, NULL, NULL, '2', 1, 1, 0);
-SELECT @price_set_id_contribution := LAST_INSERT_ID();
-
--- price field 
-INSERT INTO `civicrm_price_field` (`price_set_id`, `name`, `label`, `html_type`, `is_enter_qty`, `help_pre`, `help_post`, `weight`, `is_display_amounts`, `options_per_line`, `is_active`, `is_required`, `active_on`, `expire_on`, `javascript`, `visibility_id`) VALUES
-(@price_set_id_contribution, 'contribution_amount', 'Contribution Amount', 'Radio', 0, NULL, NULL, 2, 1, 1, 1, 0, NULL, NULL, NULL, 1);
-SELECT @price_field_id_contribution := LAST_INSERT_ID();
-
-INSERT INTO `civicrm_price_field_value` (`price_field_id`, `name`, `label`, `description`, `amount`, `count`, `max_value`, `weight`, `membership_type_id`, `membership_num_terms`, `is_default`, `is_active`, `financial_type_id`, `deductible_amount`) VALUES
-(@price_field_id_contribution, 'small', 'Small', NULL, '100', NULL, NULL, 1, NULL, NULL, 1, 1, 1, '0.00'),
-(@price_field_id_contribution, 'medium', 'Medium', NULL, '500', NULL, NULL, 1, NULL, NULL, 1, 1, 1, '0.00'),
-(@price_field_id_contribution, 'Large', 'Large', NULL, '1000', NULL, NULL, 2, NULL, NULL, 0, 1, 1, '0.00');
-
--- Price set Entity
-INSERT INTO `civicrm_price_set_entity` (`entity_table`, `entity_id`, `price_set_id`) VALUES
-('civicrm_contribution_page', @contrib_page_id, @price_set_id_contribution);
+(@contrib_id, @contact_id_chris, 500.00, 'USD', @pcp_id_chris, 1, 'Che', 'Ches personal note. Don''t read it please.', @soft_credit_type_id);
