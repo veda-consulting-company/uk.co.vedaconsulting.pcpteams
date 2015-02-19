@@ -65,11 +65,11 @@ SELECT @org_name := CONCAT('LLR Team', " ", CEIL(RAND()*1000000));
 
 INSERT INTO `civicrm_contact` (`contact_type`, `contact_sub_type`, `do_not_email`, `do_not_phone`, `do_not_mail`, `do_not_sms`, `do_not_trade`, `is_opt_out`, `legal_identifier`, `external_identifier`, `sort_name`, `display_name`, `nick_name`, `legal_name`, `image_URL`, `preferred_communication_method`, `preferred_language`, `preferred_mail_format`, `hash`, `api_key`, `source`, `first_name`, `middle_name`, `last_name`, `prefix_id`, `suffix_id`, `formal_title`, `communication_style_id`, `email_greeting_id`, `email_greeting_custom`, `email_greeting_display`, `postal_greeting_id`, `postal_greeting_custom`, `postal_greeting_display`, `addressee_id`, `addressee_custom`, `addressee_display`, `job_title`, `gender_id`, `birth_date`, `is_deceased`, `deceased_date`, `household_name`, `primary_contact_id`, `organization_name`, `sic_code`, `user_unique_id`, `employer_id`, `is_deleted`) VALUES
 ('Organization', NULL, 0, 0, 0, 0, 0, 0, NULL, NULL, @org_name, @org_name, NULL, NULL, NULL, NULL, NULL, 'Both', '3102204687', NULL, 'Sample Data', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, NULL, @org_name, NULL, NULL, NULL, 0, NULL, NULL, NULL, @org_name, NULL, NULL, NULL, 0);
-SELECT @pcp_contact_id := LAST_INSERT_ID();
+SELECT @pcp_contact_id_1 := LAST_INSERT_ID();
 
 -- pcp page for contact1
 INSERT INTO `civicrm_pcp` (`contact_id`, `status_id`, `title`, `intro_text`, `page_text`, `donate_link_text`, `page_id`, `page_type`, `pcp_block_id`, `is_thermometer`, `is_honor_roll`, `goal_amount`, `currency`, `is_active`) VALUES
-(@pcp_contact_id, 2, 'LLR Team PCP', 'Chris PCP Welcome message', 'This campaign is really important for PCP project to be successful. ', 'Join Us', @event_id, 'event', @pcp_block_id, 1, 1, 50000.00, 'USD', 1);
+(@pcp_contact_id_1, 2, 'LLR Team PCP', 'Chris PCP Welcome message', 'This campaign is really important for PCP project to be successful. ', 'Join Us', @event_id, 'event', @pcp_block_id, 1, 1, 50000.00, 'USD', 1);
 
 -- create contact2
 -- @fn = chris  @ln = morley CEIL(RAND()*1000000)
@@ -78,9 +78,19 @@ SELECT @ln := CONCAT('Morley', " ", CEIL(RAND()*1000000));
 
 INSERT INTO `civicrm_contact` (`contact_type`, `contact_sub_type`, `do_not_email`, `do_not_phone`, `do_not_mail`, `do_not_sms`, `do_not_trade`, `is_opt_out`, `legal_identifier`, `external_identifier`, `sort_name`, `display_name`, `nick_name`, `legal_name`, `image_URL`, `preferred_communication_method`, `preferred_language`, `preferred_mail_format`, `api_key`, `source`, `first_name`, `middle_name`, `last_name`, `prefix_id`, `suffix_id`, `formal_title`, `communication_style_id`, `email_greeting_id`, `email_greeting_custom`, `email_greeting_display`, `postal_greeting_id`, `postal_greeting_custom`, `postal_greeting_display`, `addressee_id`, `addressee_custom`, `addressee_display`, `job_title`, `gender_id`, `birth_date`, `is_deceased`, `deceased_date`, `household_name`, `primary_contact_id`, `organization_name`, `sic_code`, `user_unique_id`, `employer_id`, `is_deleted`) VALUES
 ('Individual', NULL, 0, 0, 0, 0, 0, 0, NULL, NULL, CONCAT(@ln, ", ", @fn), CONCAT(@fn, " ", @ln), NULL, NULL, NULL, NULL, 'en_US', 'Both', NULL, NULL, @fn, NULL, @ln, NULL, NULL, NULL, NULL, 1, NULL, 'Dear chris', 1, NULL, 'Dear chris', 1, NULL, CONCAT(@fn, " ", @ln), NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
-SELECT @pcp_contact_id := LAST_INSERT_ID();
+SELECT @pcp_contact_id_2 := LAST_INSERT_ID();
 
 -- pcp page for contact2
 INSERT INTO `civicrm_pcp` (`contact_id`, `status_id`, `title`, `intro_text`, `page_text`, `donate_link_text`, `page_id`, `page_type`, `pcp_block_id`, `is_thermometer`, `is_honor_roll`, `goal_amount`, `currency`, `is_active`) VALUES
-(@pcp_contact_id, 2, 'Chris PCP', 'Chris PCP Welcome message', 'This campaign is really important for PCP project to be successful. ', 'Join Us', @event_id, 'event', @pcp_block_id, 1, 1, 25000.00, 'USD', 1);
+(@pcp_contact_id_2, 2, 'Chris PCP', 'Chris PCP Welcome message', 'This campaign is really important for PCP project to be successful. ', 'Join Us', @event_id, 'event', @pcp_block_id, 1, 1, 25000.00, 'USD', 1);
 
+-- relationship type
+SELECT @rel_type_a_b := 'Team Leader of';
+SELECT @rel_type_b_a := 'Team Leader is';
+INSERT INTO `civicrm_relationship_type` (`name_a_b`, `label_a_b`, `name_b_a`, `label_b_a`, `description`, `contact_type_a`, `contact_type_b`, `contact_sub_type_a`, `contact_sub_type_b`, `is_reserved`, `is_active`) VALUES
+( @rel_type_a_b, @rel_type_a_b, @rel_type_b_a, @rel_type_b_a, 'Team Leader relationship.', 'Individual', 'Organization', NULL, NULL, 0, 1) ON DUPLICATE KEY UPDATE `name_a_b` = VALUES ( `name_a_b` ), `name_b_a` = VALUES ( `name_b_a` ), `label_a_b` = VALUES ( `label_a_b` ), label_b_a = VALUES ( `label_b_a` );
+SELECT @relationship_type_id := id FROM civicrm_relationship_type WHERE `name_a_b` = @rel_type_a_b;
+
+-- relationship
+INSERT INTO `civicrm_relationship` (`contact_id_a`, `contact_id_b`, `relationship_type_id`, `start_date`, `end_date`, `is_active`, `description`, `is_permission_a_b`, `is_permission_b_a`, `case_id`) VALUES
+(@pcp_contact_id_2, @pcp_contact_id_1, @relationship_type_id, NULL, NULL, 1, NULL, 1, 0, NULL) ON DUPLICATE KEY UPDATE `contact_id_a` = VALUES (`contact_id_a`), `contact_id_b` = VALUES (`contact_id_b`), `relationship_type_id` = VALUES (`relationship_type_id`), `is_active` = VALUES (`is_active`), `is_permission_a_b` = VALUES (`is_permission_a_b`);
