@@ -1,9 +1,7 @@
-
--- insert event
--- ids, all id columns finan type id, 
-
-SELECT @event_title := 'bikeathon mexico 2015';
-SELECT @event_name  := 'bikeathon_mexico_2015';
+-- set vars
+SELECT @event_title := 'bikeathon 2015';
+SELECT @event_name  := 'bikeathon_2015';
+SELECT @contrib_page_title := 'Help Support PCP Project!';
 
 -- price set
 INSERT INTO `civicrm_price_set` (`domain_id`, `name`, `title`, `is_active`, `help_pre`, `help_post`, `javascript`, `extends`, `financial_type_id`, `is_quick_config`, `is_reserved`) VALUES
@@ -12,15 +10,15 @@ SELECT @price_set_id := LAST_INSERT_ID();
 
 -- price field 
 INSERT INTO `civicrm_price_field` (`price_set_id`, `name`, `label`, `html_type`, `is_enter_qty`, `help_pre`, `help_post`, `weight`, `is_display_amounts`, `options_per_line`, `is_active`, `is_required`, `active_on`, `expire_on`, `javascript`, `visibility_id`) VALUES
-(@price_set_id, 'tournament_fees', 'Tournament Fees', 'Radio', 0, NULL, NULL, 1, 1, 1, 1, 1, NULL, NULL, NULL, 1);
+(@price_set_id, 'athon_fees', 'athon Fees', 'Radio', 0, NULL, NULL, 1, 1, 1, 1, 1, NULL, NULL, NULL, 1);
 SELECT @price_field_id := LAST_INSERT_ID();
 
 INSERT INTO `civicrm_price_field_value` (`price_field_id`, `name`, `label`, `description`, `amount`, `count`, `max_value`, `weight`, `membership_type_id`, `membership_num_terms`, `is_default`, `is_active`, `financial_type_id`, `deductible_amount`) VALUES
-(@price_field_id, 'tiny_tots__ages_5_8_', 'Tiny-tots (ages 5-8)', NULL, '800', NULL, NULL, 1, NULL, NULL, 1, 1, 4, 0.00),
-(@price_field_id, 'junior_Stars__ages_9_12_', 'Junior Stars (ages 9-12)', NULL, '1000', NULL, NULL, 2, NULL, NULL, 0, 1, 4, 0.00),
-(@price_field_id, 'super_Stars__ages_13_18_', 'Super Stars (ages 13-18)', NULL, '1500', NULL, NULL, 3, NULL, NULL, 0, 1, 4, 0.00);
+(@price_field_id, 'stud_14_20', 'Students (ages 14-20)', NULL, '800', NULL, NULL, 1, NULL, NULL, 1, 1, 4, 0.00),
+(@price_field_id, 'young_21_30', 'Young Stars (ages 21-30)', NULL, '1000', NULL, NULL, 2, NULL, NULL, 0, 1, 4, 0.00),
+(@price_field_id, 'super_30_45', 'Super Stars (ages 30-45)', NULL, '900',  NULL, NULL, 3, NULL, NULL, 0, 1, 4, 0.00);
 
--- event loc
+-- Choose a loc
 SELECT @loc_block_id := max(loc_block_id) from civicrm_event;
 
 -- Payment Processor
@@ -29,35 +27,44 @@ INSERT INTO `civicrm_payment_processor` (`domain_id`, `name`, `description`, `pa
 (1, 'Test Processor', '', @payment_processor_type_id, 1, 0, 0, 'dummy', NULL, NULL, 'http://dummy.com', NULL, 'http://dummyrecur.com', NULL, NULL, 'Payment_Dummy', 1, 1, 1) ON DUPLICATE KEY UPDATE `name` = VALUES (`name`)  ;
 SELECT @payment_processor := id FROM civicrm_payment_processor WHERE name = 'Test Processor' AND is_test = 0;
 
--- event type
-SELECT @event_type_name := 'Fundraiser';
-SELECT @event_type_op_name	:= 'event_type';
-SELECT @event_type_id := value FROM civicrm_option_value WHERE name = @event_type_name AND option_group_id = ( SELECT id FROM civicrm_option_group WHERE name = @event_type_op_name);
+-- Event type
+-- SELECT @event_type_name := 'Fundraiser';
+-- SELECT @event_type_op_name	:= 'event_type';
+SELECT @event_type_id := value FROM civicrm_option_value WHERE name = 'Fundraiser' AND option_group_id = ( SELECT id FROM civicrm_option_group WHERE name = 'event_type');
 
 -- financial type
 select @financial_type_id := id from civicrm_financial_type where name = 'Event Fee';
 
--- create event
 -- fixme: camp-id
+-- create event
 INSERT INTO `civicrm_event` (`title`, `summary`, `description`, `event_type_id`, `participant_listing_id`, `is_public`, `start_date`, `end_date`, `is_online_registration`, `registration_link_text`, `registration_start_date`, `registration_end_date`, `max_participants`, `event_full_text`, `is_monetary`, `financial_type_id`, `payment_processor`, `is_map`, `is_active`, `fee_label`, `is_show_location`, `loc_block_id`, `default_role_id`, `intro_text`, `footer_text`, `confirm_title`, `confirm_text`, `confirm_footer_text`, `is_email_confirm`, `confirm_email_text`, `confirm_from_name`, `confirm_from_email`, `cc_confirm`, `bcc_confirm`, `default_fee_id`, `default_discount_fee_id`, `thankyou_title`, `thankyou_text`, `thankyou_footer_text`, `is_pay_later`, `pay_later_text`, `pay_later_receipt`, `is_partial_payment`, `initial_amount_label`, `initial_amount_help_text`, `min_initial_amount`, `is_multiple_registrations`, `allow_same_participant_emails`, `has_waitlist`, `requires_approval`, `expiration_time`, `waitlist_text`, `approval_req_text`, `is_template`, `template_title`, `created_id`, `created_date`, `currency`, `campaign_id`, `is_share`, `is_confirm_enabled`, `parent_event_id`, `slot_label_id`, `dedupe_rule_group_id`) VALUES
-(@event_title, 'Sign up your team to participate in this fun tournament which benefits several Rain-forest protection groups in maxico.', '<p>This is a FYSA Sanctioned Tournament, which is open to all USSF/FIFA affiliated organizations for boys and girls in age groups: U9-U10 (6v6), U11-U12 (8v8), and U13-U17 (Full Sided).</p>', @event_type_id, 1, 1, '2015-10-05 07:00:00', '2015-10-07 17:00:00', 1, 'Register Now', NULL, NULL, 500, 'Sorry! All available team slots for this tournament have been filled. Contact Jill Futbol for information about the waiting list and next years event.', 1, @financial_type_id, @payment_processor, 0, 1, 'Tournament Fees', 1, @loc_block_id, 1, 'Complete the form below to register your team for this year''s tournament.', '<em>A Soccer Youth Event</em>', 'Review and Confirm Your Registration Information', '', '<em>A Soccer Youth Event</em>', 1, 'Contact our Tournament Director for eligibility details.', 'Tournament Director', 'tournament@example.org', '', NULL, NULL, NULL, 'Thanks for Your Support!', '<p>Thank you for your support. Your participation will help save thousands of acres of rainforest.</p>', '<p><a href=http://civicrm.org>Back to CiviCRM Home Page</a></p>', 0, NULL, NULL, 0, NULL, NULL, NULL, 0, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 'USD', NULL, 1, 1, NULL, NULL, NULL);
+(@event_title, 'Sign up your team to participate in this fun athon which benefits several Rain-forest protection groups in maxico.', '<p>This is a FYSA Sanctioned athon, which is open to all USSF/FIFA affiliated organizations for boys and girls in age groups: U9-U10 (6v6), U11-U12 (8v8), and U13-U17 (Full Sided).</p>', @event_type_id, 1, 1, '2015-10-05 07:00:00', '2015-10-07 17:00:00', 1, 'Register Now', NULL, NULL, 500, 'Sorry! All available team slots for this athon have been filled. Contact Jill Futbol for information about the waiting list and next years event.', 1, @financial_type_id, @payment_processor, 0, 1, 'athon Fees', 1, @loc_block_id, 1, 'Complete the form below to register your team for this year''s athon.', '<em>A Soccer Youth Event</em>', 'Review and Confirm Your Registration Information', '', '<em>A Soccer Youth Event</em>', 1, 'Contact our athon Director for eligibility details.', 'athon Director', 'athon@example.org', '', NULL, NULL, NULL, 'Thanks for Your Support!', '<p>Thank you for your support. Your participation will help save thousands of acres of rainforest.</p>', '<p><a href=http://civicrm.org>Back to CiviCRM Home Page</a></p>', 0, NULL, NULL, 0, NULL, NULL, NULL, 0, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 'USD', NULL, 1, 1, NULL, NULL, NULL);
 SELECT @event_id := LAST_INSERT_ID();
 
 -- link profile with event
--- uf_group_id
 select @uf_group_id := id from civicrm_uf_group where name = 'event_registration';
-
 INSERT INTO `civicrm_uf_join` (`is_active`, `module`, `entity_table`, `entity_id`, `weight`, `uf_group_id`, `module_data`) VALUES
 (1, 'CiviEvent', 'civicrm_event', @event_id, 1, @uf_group_id, NULL);
 
+-- link price set with event
 INSERT INTO `civicrm_price_set_entity` (`entity_table`, `entity_id`, `price_set_id`) VALUES
 ('civicrm_event', @event_id, @price_set_id);
 
--- supporter profile
-select @supporter_profile_id := id from civicrm_uf_group where name = 'supporter_profile';
+-- create contribution page
+SELECT @financial_type_id := id from civicrm_financial_type where name = 'Donation';
 
+INSERT INTO `civicrm_contribution_page` (`title`, `intro_text`, `financial_type_id`, `payment_processor`, `is_credit_card_only`, `is_monetary`, `is_recur`, `is_confirm_enabled`, `recur_frequency_unit`, `is_recur_interval`, `is_recur_installments`, `is_pay_later`, `pay_later_text`, `pay_later_receipt`, `is_partial_payment`, `initial_amount_label`, `initial_amount_help_text`, `min_initial_amount`, `is_allow_other_amount`, `default_amount_id`, `min_amount`, `max_amount`, `goal_amount`, `thankyou_title`, `thankyou_text`, `thankyou_footer`, `is_for_organization`, `for_organization`, `is_email_receipt`, `receipt_from_name`, `receipt_from_email`, `cc_receipt`, `bcc_receipt`, `receipt_text`, `is_active`, `footer_text`, `amount_block_is_active`, `start_date`, `end_date`, `created_id`, `created_date`, `currency`, `campaign_id`, `is_share`) VALUES
+(@contrib_page_title, 'Do you love PCP? Do you use PCP? Then please support PCP and Contribute NOW by trying out our new online contribution features!', @financial_type_id, @payment_processor, 0, 1, 0, 1, NULL, 0, 0, 0, NULL, NULL, 0, NULL, NULL, NULL, 1, 137, 10.00, 10000.00, 100000.00, 'Thanks for Your Support!', '<p>Thank you for your support. Your contribution will help us build even better tools.</p><p>Please tell your friends and colleagues about PCP!</p>', '<p><a href=http://civicrm.org>Back to PCP Home Page</a></p>', 0, NULL, 1, 'PCP Fundraising Dept.', 'donationFake@civicrm.org', 'receipt@example.com', 'bcc@example.com', 'Your donation is tax deductible under IRS 501(c)(3) regulation. Our tax identification number is: 93-123-4567', 1, NULL, 1, NULL, NULL, NULL, NULL, 'USD', NULL, 1);
+SELECT @contrib_page_id := LAST_INSERT_ID();
+
+-- link price set with contribution-page
+INSERT INTO `civicrm_price_set_entity` (`entity_table`, `entity_id`, `price_set_id`) VALUES
+('civicrm_contribution_page', @contrib_page_id, @price_set_id);
+
+-- create pcp block for contribution page
+select @supporter_profile_id := id from civicrm_uf_group where name = 'supporter_profile';
 INSERT INTO `civicrm_pcp_block` (`entity_table`, `entity_id`, `target_entity_type`, `target_entity_id`, `supporter_profile_id`, `is_approval_needed`, `is_tellfriend_enabled`, `tellfriend_limit`, `link_text`, `is_active`, `notify_email`) VALUES
-('civicrm_event', @event_id, 'event', @event_id, @supporter_profile_id, 1, 1, 5, 'Promote this event with a personal campaign page', 1, 'deepak@vedaconsulting.co.uk');
+('civicrm_contribution_page', @contrib_page_id, 'contribute', @contrib_page_id, @supporter_profile_id, 1, 1, 5, 'Promote this donation with a personal campaign page', 1, 'deepak@vedaconsulting.co.uk');
 SELECT @pcp_block_id := LAST_INSERT_ID();
 
 -- create contact1
@@ -69,7 +76,7 @@ SELECT @pcp_contact_id_1 := LAST_INSERT_ID();
 
 -- pcp page for contact1
 INSERT INTO `civicrm_pcp` (`contact_id`, `status_id`, `title`, `intro_text`, `page_text`, `donate_link_text`, `page_id`, `page_type`, `pcp_block_id`, `is_thermometer`, `is_honor_roll`, `goal_amount`, `currency`, `is_active`) VALUES
-(@pcp_contact_id_1, 2, 'LLR Team PCP', 'Chris PCP Welcome message', 'This campaign is really important for PCP project to be successful. ', 'Join Us', @event_id, 'event', @pcp_block_id, 1, 1, 50000.00, 'USD', 1);
+(@pcp_contact_id_1, 2, 'LLR Team PCP', 'Chris PCP Welcome message', 'This campaign is really important for PCP project to be successful. ', 'Join Us', @contrib_page_id, 'contribute', @pcp_block_id, 1, 1, 50000.00, 'USD', 1);
 
 -- create contact2
 -- @fn = chris  @ln = morley CEIL(RAND()*1000000)
@@ -82,15 +89,16 @@ SELECT @pcp_contact_id_2 := LAST_INSERT_ID();
 
 -- pcp page for contact2
 INSERT INTO `civicrm_pcp` (`contact_id`, `status_id`, `title`, `intro_text`, `page_text`, `donate_link_text`, `page_id`, `page_type`, `pcp_block_id`, `is_thermometer`, `is_honor_roll`, `goal_amount`, `currency`, `is_active`) VALUES
-(@pcp_contact_id_2, 2, 'Chris PCP', 'Chris PCP Welcome message', 'This campaign is really important for PCP project to be successful. ', 'Join Us', @event_id, 'event', @pcp_block_id, 1, 1, 25000.00, 'USD', 1);
+(@pcp_contact_id_2, 2, 'Chris PCP', 'Chris PCP Welcome message', 'This campaign is really important for PCP project to be successful. ', 'Join Us', @contrib_page_id, 'contribute', @pcp_block_id, 1, 1, 25000.00, 'USD', 1);
 
 -- relationship type
 SELECT @rel_type_a_b := 'Team Leader of';
 SELECT @rel_type_b_a := 'Team Leader is';
 INSERT INTO `civicrm_relationship_type` (`name_a_b`, `label_a_b`, `name_b_a`, `label_b_a`, `description`, `contact_type_a`, `contact_type_b`, `contact_sub_type_a`, `contact_sub_type_b`, `is_reserved`, `is_active`) VALUES
 ( @rel_type_a_b, @rel_type_a_b, @rel_type_b_a, @rel_type_b_a, 'Team Leader relationship.', 'Individual', 'Organization', NULL, NULL, 0, 1) ON DUPLICATE KEY UPDATE `name_a_b` = VALUES ( `name_a_b` ), `name_b_a` = VALUES ( `name_b_a` ), `label_a_b` = VALUES ( `label_a_b` ), label_b_a = VALUES ( `label_b_a` );
-SELECT @relationship_type_id := id FROM civicrm_relationship_type WHERE `name_a_b` = @rel_type_a_b;
+SELECT @relationship_type_id := id FROM civicrm_relationship_type WHERE name_a_b = @rel_type_a_b COLLATE utf8_unicode_ci;
 
 -- relationship
 INSERT INTO `civicrm_relationship` (`contact_id_a`, `contact_id_b`, `relationship_type_id`, `start_date`, `end_date`, `is_active`, `description`, `is_permission_a_b`, `is_permission_b_a`, `case_id`) VALUES
 (@pcp_contact_id_2, @pcp_contact_id_1, @relationship_type_id, NULL, NULL, 1, NULL, 1, 0, NULL) ON DUPLICATE KEY UPDATE `contact_id_a` = VALUES (`contact_id_a`), `contact_id_b` = VALUES (`contact_id_b`), `relationship_type_id` = VALUES (`relationship_type_id`), `is_active` = VALUES (`is_active`), `is_permission_a_b` = VALUES (`is_permission_a_b`);
+
