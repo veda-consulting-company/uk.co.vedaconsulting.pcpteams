@@ -39,8 +39,8 @@ ALTER TABLE `civicrm_value_pcp_custom_set`
   ADD CONSTRAINT `FK_civicrm_value_pcp_custom_set_p_0968c5aeb4b6cba5` FOREIGN KEY (`pcp_type_contact`) REFERENCES `civicrm_contact` (`id`) ON DELETE SET NULL;
 
 
---set custom value 
---pcp type contact
+-- set custom value 
+-- pcp type contact
 SELECT @fn := 'veda';
 SELECT @ln := CONCAT('veda', " ", CEIL(RAND()*100));
 

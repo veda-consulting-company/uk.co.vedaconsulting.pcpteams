@@ -106,3 +106,31 @@ function pcpteams_civicrm_caseTypes(&$caseTypes) {
 function pcpteams_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
   _pcpteams_civix_civicrm_alterSettingsFolders($metaDataFolders);
 }
+
+// create soft credit for team contact
+function pcpteams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
+  if ($objectName == 'ContributionSoft' && $op == 'create' && $objectRef->pcp_id) {
+    $query      = "SELECT pcp.contact_id, cs.pcp_type_contact 
+      FROM civicrm_value_pcp_custom_set cs
+      INNER JOIN civicrm_pcp pcp ON cs.team_pcp_id = pcp.id 
+      WHERE cs.entity_id = %1";
+    $dao = CRM_Core_DAO::executeQuery($query, array(1 => array($objectRef->pcp_id, 'Integer')) );
+    $dao->fetch();
+    
+    if ($dao->contact_id) {
+      $newSoft = clone $objectRef;
+      $newSoft->contact_id = $dao->contact_id;
+      $newSoft->pcp_personal_note = "Created From Hook";
+      unset($newSoft->id);
+      $newSoft->save();
+    }
+
+    if ($dao->pcp_type_contact) {
+      $newSoft = clone $objectRef;
+      $newSoft->contact_id = $dao->pcp_type_contact;
+      $newSoft->pcp_personal_note = "Created From Hook";
+      unset($newSoft->id);
+      $newSoft->save();
+    }
+  }
+}
