@@ -5,6 +5,8 @@ DELETE FROM civicrm_contribution where trxn_id like 'live_%';
 DELETE FROM civicrm_contact where organization_name like 'LLR Team %';
 DELETE FROM civicrm_contact where last_name like 'Morley %';
 DELETE FROM civicrm_contact where last_name like 'Molava %';
+DELETE FROM civicrm_contact where last_name like 'Gone %';
+DELETE FROM civicrm_contact where last_name like 'Claus %';
 
 DELETE pfv.* 
 FROM civicrm_price_field_value pfv
@@ -67,4 +69,10 @@ INNER JOIN civicrm_custom_group cg on cf.custom_group_id = cg.id
 where cg.name = 'PCP_Custom_Set';
 
 DELETE FROM civicrm_custom_group where name = 'PCP_Custom_Set';
+
+DELETE pb.* 
+FROM civicrm_pcp_block pb
+LEFT JOIN civicrm_pcp pcp on pb.id = pcp.pcp_block_id
+WHERE pcp.id IS NULL;
+
 
