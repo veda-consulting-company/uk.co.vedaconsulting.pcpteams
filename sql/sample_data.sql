@@ -95,6 +95,7 @@ SELECT @contact_id_lteam := LAST_INSERT_ID();
 -- pcp page for contact1
 INSERT INTO `civicrm_pcp` (`contact_id`, `status_id`, `title`, `intro_text`, `page_text`, `donate_link_text`, `page_id`, `page_type`, `pcp_block_id`, `is_thermometer`, `is_honor_roll`, `goal_amount`, `currency`, `is_active`) VALUES
 (@contact_id_lteam, 2, 'LLR Team PCP', 'LLR PCP Welcome message', 'This campaign is really important for PCP project to be successful. ', 'Join Us', @contrib_page_id, 'contribute', @pcp_block_id, 1, 1, 50000.00, 'USD', 1);
+SELECT @pcp_id_llr := LAST_INSERT_ID();
 
 -- create contact2
 -- @fn = chris  @ln = morley CEIL(RAND()*100)
@@ -164,3 +165,28 @@ INSERT INTO `civicrm_contribution_soft` (`contribution_id`, `contact_id`, `amoun
 -- soft credit to team
 INSERT INTO `civicrm_contribution_soft` (`contribution_id`, `contact_id`, `amount`, `currency`, `pcp_id`, `pcp_display_in_roll`, `pcp_roll_nickname`, `pcp_personal_note`, `soft_credit_type_id`) VALUES
 (@contrib_id, @contact_id_lteam, 1000.00, 'USD', @pcp_id_chris, 1, 'LLR Team', 'LLR Team personal note. Don''t read it please.', @soft_credit_type_id);
+
+-- set custom value 
+-- pcp type contact
+SELECT @fn := 'veda';
+SELECT @ln := CONCAT('veda', " ", CEIL(RAND()*100));
+
+INSERT INTO `civicrm_contact` (`contact_type`, `contact_sub_type`, `do_not_email`, `do_not_phone`, `do_not_mail`, `do_not_sms`, `do_not_trade`, `is_opt_out`, `legal_identifier`, `external_identifier`, `sort_name`, `display_name`, `nick_name`, `legal_name`, `image_URL`, `preferred_communication_method`, `preferred_language`, `preferred_mail_format`, `api_key`, `source`, `first_name`, `middle_name`, `last_name`, `prefix_id`, `suffix_id`, `formal_title`, `communication_style_id`, `email_greeting_id`, `email_greeting_custom`, `email_greeting_display`, `postal_greeting_id`, `postal_greeting_custom`, `postal_greeting_display`, `addressee_id`, `addressee_custom`, `addressee_display`, `job_title`, `gender_id`, `birth_date`, `is_deceased`, `deceased_date`, `household_name`, `primary_contact_id`, `organization_name`, `sic_code`, `user_unique_id`, `employer_id`, `is_deleted`) VALUES
+('Individual', NULL, 0, 0, 0, 0, 0, 0, NULL, NULL, CONCAT(@ln, ", ", @fn), CONCAT(@fn, " ", @ln), NULL, NULL, NULL, NULL, 'en_US', 'Both', NULL, NULL, @fn, NULL, @ln, NULL, NULL, NULL, NULL, 1, NULL, 'Dear veda', 1, NULL, 'Dear veda', 1, NULL, CONCAT(@fn, " ", @ln), NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
+SELECT @pcp_type_contact_id := LAST_INSERT_ID();
+
+-- custom set 
+INSERT INTO `civicrm_value_pcp_custom_set`(`entity_id`, `team_pcp_id`, `pcp_type`, `pcp_type_contact`) VALUES (@pcp_id_chris, @contact_id_lteam, 'in_memory', @pcp_type_contact_id);
+
+
+-- set custom value for llr pcp 
+SELECT @fn := 'llr';
+SELECT @ln := CONCAT('Test', " ", CEIL(RAND()*100));
+
+INSERT INTO `civicrm_contact` (`contact_type`, `contact_sub_type`, `do_not_email`, `do_not_phone`, `do_not_mail`, `do_not_sms`, `do_not_trade`, `is_opt_out`, `legal_identifier`, `external_identifier`, `sort_name`, `display_name`, `nick_name`, `legal_name`, `image_URL`, `preferred_communication_method`, `preferred_language`, `preferred_mail_format`, `api_key`, `source`, `first_name`, `middle_name`, `last_name`, `prefix_id`, `suffix_id`, `formal_title`, `communication_style_id`, `email_greeting_id`, `email_greeting_custom`, `email_greeting_display`, `postal_greeting_id`, `postal_greeting_custom`, `postal_greeting_display`, `addressee_id`, `addressee_custom`, `addressee_display`, `job_title`, `gender_id`, `birth_date`, `is_deceased`, `deceased_date`, `household_name`, `primary_contact_id`, `organization_name`, `sic_code`, `user_unique_id`, `employer_id`, `is_deleted`) VALUES
+('Individual', NULL, 0, 0, 0, 0, 0, 0, NULL, NULL, CONCAT(@ln, ", ", @fn), CONCAT(@fn, " ", @ln), NULL, NULL, NULL, NULL, 'en_US', 'Both', NULL, NULL, @fn, NULL, @ln, NULL, NULL, NULL, NULL, 1, NULL, 'Dear veda', 1, NULL, 'Dear veda', 1, NULL, CONCAT(@fn, " ", @ln), NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
+SELECT @pcp_type_contact_id_2 := LAST_INSERT_ID();
+
+-- custom set 
+INSERT INTO `civicrm_value_pcp_custom_set`(`entity_id`, `team_pcp_id`, `pcp_type`, `pcp_type_contact`) VALUES (@pcp_id_llr, NULL, 'in_memory', @pcp_type_contact_id_2);
+
