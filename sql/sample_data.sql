@@ -82,7 +82,7 @@ INSERT INTO `civicrm_price_set_entity` (`entity_table`, `entity_id`, `price_set_
 -- create pcp block for contribution page
 select @supporter_profile_id := id from civicrm_uf_group where name = 'supporter_profile';
 INSERT INTO `civicrm_pcp_block` (`entity_table`, `entity_id`, `target_entity_type`, `target_entity_id`, `supporter_profile_id`, `is_approval_needed`, `is_tellfriend_enabled`, `tellfriend_limit`, `link_text`, `is_active`, `notify_email`) VALUES
-('civicrm_contribution_page', @contrib_page_id, 'contribute', @contrib_page_id, @supporter_profile_id, 1, 1, 5, 'Promote this donation with a personal campaign page', 1, 'deepak@vedaconsulting.co.uk');
+('civicrm_event', @event_id, 'contribute', @contrib_page_id, @supporter_profile_id, 1, 1, 5, 'Promote this donation with a personal campaign page', 1, 'deepak@vedaconsulting.co.uk');
 SELECT @pcp_block_id := LAST_INSERT_ID();
 
 -- create contact1
@@ -94,7 +94,7 @@ SELECT @contact_id_lteam := LAST_INSERT_ID();
 
 -- pcp page for contact1
 INSERT INTO `civicrm_pcp` (`contact_id`, `status_id`, `title`, `intro_text`, `page_text`, `donate_link_text`, `page_id`, `page_type`, `pcp_block_id`, `is_thermometer`, `is_honor_roll`, `goal_amount`, `currency`, `is_active`) VALUES
-(@contact_id_lteam, 2, 'LLR Team PCP', 'LLR PCP Welcome message', 'This campaign is really important for PCP project to be successful. ', 'Join Us', @contrib_page_id, 'contribute', @pcp_block_id, 1, 1, 50000.00, 'USD', 1);
+(@contact_id_lteam, 2, 'LLR Team PCP', 'LLR PCP Welcome message', 'This campaign is really important for PCP project to be successful. ', 'Donate Plz', @event_id, 'event', @pcp_block_id, 1, 1, 50000.00, 'USD', 1);
 SELECT @pcp_id_llr := LAST_INSERT_ID();
 
 -- create contact2
@@ -108,7 +108,7 @@ SELECT @contact_id_chris := LAST_INSERT_ID();
 
 -- pcp page for contact2
 INSERT INTO `civicrm_pcp` (`contact_id`, `status_id`, `title`, `intro_text`, `page_text`, `donate_link_text`, `page_id`, `page_type`, `pcp_block_id`, `is_thermometer`, `is_honor_roll`, `goal_amount`, `currency`, `is_active`) VALUES
-(@contact_id_chris, 2, 'Chris PCP', 'Chris PCP Welcome message', 'This campaign is really important for PCP project to be successful. ', 'Join Us', @contrib_page_id, 'contribute', @pcp_block_id, 1, 1, 25000.00, 'USD', 1);
+(@contact_id_chris, 2, 'Chris PCP', 'Chris PCP Welcome message', 'This campaign is really important for PCP project to be successful. ', 'Join Us', @event_id, 'event', @pcp_block_id, 1, 1, 25000.00, 'USD', 1);
 SELECT @pcp_id_chris := LAST_INSERT_ID();
 
 -- relationship type
