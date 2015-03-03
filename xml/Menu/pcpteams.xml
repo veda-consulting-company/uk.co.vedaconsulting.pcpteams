@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<menu>
+  <item>
+    <path>civicrm/pcp/dashboard</path>
+    <page_callback>CRM_Pcpteams_Page_Dashboard</page_callback>
+    <title>Dashboard</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+</menu>

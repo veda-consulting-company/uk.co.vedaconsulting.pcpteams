@@ -1,0 +1,82 @@
+/***************** PCP Dashboard style css ************************/
+/*.pcp_dashboard_header{
+	display:block;
+  	content:"";
+  	clear:both;
+	
+}*/
+.pcp_profile_image{
+	width: 100px;
+	height: 100px;
+    background-color: #526060;
+    display: inline-block;
+    margin-left: 40px;
+}
+
+.totaliser{
+	width: 70%;
+	clear: both;
+	display: inline-block;
+}
+.donate_to_name{
+	width: 30%;
+	clear: both;
+	display: inline-block;
+	float: right;
+}
+
+.lightbground{
+    background-color: #AEBBBC;
+}
+
+.darkbground{
+    background-color: #526060;
+}
+
+.pcp_title{
+	text-align: center;
+	font-weight: bold;
+	/*margin: 40px;*/
+    background-color: #526060;
+    display: inline-block;
+}
+
+.pcp_totaliser{
+	text-align: center;
+	font-weight: bold;
+	margin: 40px;
+    /*background-color: #526060;*/
+}
+.pcp_fundrasier{
+	margin: 40px;
+    background-color: white;
+}
+
+.title_text	 {
+    padding: 10px 10px 10px 20px;
+    /*margin: 40px;*/
+    color: white;
+}
+.pcp_block {
+    /*background-color: #AEBBBC;*/
+    padding: 2px 2px 2px 20px;
+    margin: 40px;
+}
+.block_body {
+	color: white;
+}
+.block_body_alignment {
+	padding: 2px 2px 2px 14px;
+}
+
+
+.title_thick{
+	font-weight: bold;
+}
+
+.leftsidecontent{
+	width: 60%;
+	clear: both;
+	display: inline-block;
+}
+
