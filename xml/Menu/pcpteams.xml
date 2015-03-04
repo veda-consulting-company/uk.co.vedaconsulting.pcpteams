@@ -6,4 +6,22 @@
     <title>Dashboard</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/pcp/team/create</path>
+    <page_callback>CRM_Pcpteams_Form_CreatePcpTeam</page_callback>
+    <title>CreatePcpTeam</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/pcp/team</path>
+    <page_callback>CRM_Pcpteams_Form_SearchPcpTeam</page_callback>
+    <title>SearchPcpTeam</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/pcp/reason</path>
+    <page_callback>CRM_Pcpteams_Form_Reason</page_callback>
+    <title>Reason</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
 </menu>
