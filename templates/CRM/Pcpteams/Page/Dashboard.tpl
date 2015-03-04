@@ -85,8 +85,8 @@
 				Suspendisse volutpat erat purus, quis tincidunt justo molestie eget. Fusce purus nisi, aliquam nec
 
 			</p>
-			<BUTTON>Create a Team</BUTTON>
-			<BUTTON>Join a Team</BUTTON>
+			<input type="button" name="createteam" value="Create a Team" id="createteam" onclick="parent.location='{$createTeamUrl}'" />
+			<input type="button" name="jointeam" value="Join a Team" id="jointeam" onclick="parent.location='{$joinTeamUrl}'" />
 		</div>
 	</div>
 </div>
