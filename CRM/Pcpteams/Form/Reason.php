@@ -8,7 +8,7 @@ require_once 'CRM/Core/Form.php';
  */
 class CRM_Pcpteams_Form_Reason extends CRM_Core_Form {
   function preProcess() {
-    $this->_PcpId = CRM_Utils_Request::retrieve('id', 'Integer', NULL, FALSE, NULL, 'GET');
+    $this->_PcpId = CRM_Utils_Request::retrieve('id', 'Positive');
 
     //Fixme: validate the contact id, and check permission can view / edit this pcp.
 
