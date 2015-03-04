@@ -85,6 +85,8 @@
 				Suspendisse volutpat erat purus, quis tincidunt justo molestie eget. Fusce purus nisi, aliquam nec
 
 			</p>
+			<BUTTON>Create a Team</BUTTON>
+			<BUTTON>Join a Team</BUTTON>
 		</div>
 	</div>
 </div>
