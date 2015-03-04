@@ -15,13 +15,7 @@
   {foreach from=$elementNames item=elementName}
     <div class="crm-section">
       <div class="label">{$form.$elementName.label}</div>
-      <div class="content">
-      {if $elementName eq 'deceased_date'}
-        {include file="CRM/common/jcalendar.tpl" elementName=deceased_date}
-      {else}
-        {$form.$elementName.html}
-      {/if}
-      </div>
+      <div class="content">{$form.$elementName.html}</div>
       <div class="clear"></div>
     </div>
   {/foreach}
