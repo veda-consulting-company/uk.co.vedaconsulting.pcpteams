@@ -3,11 +3,16 @@
 require_once 'CRM/Core/Form.php';
 
 /**
- * Form controller class
- *
- * @see http://wiki.civicrm.org/confluence/display/CRMDOC43/QuickForm+Reference
+ * Search Pcp Team Class
+ * Civi 4.5
+ * Extends Core Form Controller.
  */
 class CRM_Pcpteams_Form_SearchPcpTeam extends CRM_Core_Form {
+
+  function preProcess(){
+    parent::preProcess();
+  }
+  
   function buildQuickForm() {
 
     // add form elements
@@ -27,25 +32,8 @@ class CRM_Pcpteams_Form_SearchPcpTeam extends CRM_Core_Form {
 
   function postProcess() {
     $values = $this->exportValues();
-    $options = $this->getColorOptions();
-    CRM_Core_Session::setStatus(ts('You picked color "%1"', array(
-      1 => $options[$values['favorite_color']]
-    )));
+    //Fixme
     parent::postProcess();
-  }
-
-  function getColorOptions() {
-    $options = array(
-      '' => ts('- select -'),
-      '#f00' => ts('Red'),
-      '#0f0' => ts('Green'),
-      '#00f' => ts('Blue'),
-      '#f0f' => ts('Purple'),
-    );
-    foreach (array('1','2','3','4','5','6','7','8','9','a','b','c','d','e') as $f) {
-      $options["#{$f}{$f}{$f}"] = ts('Grey (%1)', array(1 => $f));
-    }
-    return $options;
   }
 
   /**
@@ -54,10 +42,6 @@ class CRM_Pcpteams_Form_SearchPcpTeam extends CRM_Core_Form {
    * @return array (string)
    */
   function getRenderableElementNames() {
-    // The _elements list includes some items which should not be
-    // auto-rendered in the loop -- such as "qfKey" and "buttons".  These
-    // items don't have labels.  We'll identify renderable by filtering on
-    // the 'label'.
     $elementNames = array();
     foreach ($this->_elements as $element) {
       /** @var HTML_QuickForm_Element $element */
