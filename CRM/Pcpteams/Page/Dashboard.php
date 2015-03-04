@@ -13,12 +13,12 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
     //get Pcp Id from URL
     $pcpId = CRM_Utils_Request::retrieve('id', 'Positive');
 
-    //FIXME: Validate the contact has permission to view / edit the PCP details 
+    //FIXME: Validate the contact has permission to view / edit the PCP details (check with api)
 
     //set Create Team and Join Team button URL
     if(!empty($pcpId)){
-		$joinTeamURl 	= CRM_Utils_System::url('civicrm/pcp/team', 'reset=1&id='.$pcpId);
-		$createTeamURl 	= CRM_Utils_System::url('civicrm/pcp/team/create', 'reset=1&id='.$pcpId);
+	   $joinTeamURl    = CRM_Utils_System::url('civicrm/pcp/team', 'reset=1&id='.$pcpId);
+	   $createTeamURl  = CRM_Utils_System::url('civicrm/pcp/team/create', 'reset=1&id='.$pcpId);
     }
 
 
