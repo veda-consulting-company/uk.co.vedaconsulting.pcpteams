@@ -5,10 +5,15 @@ require_once 'CRM/Core/Form.php';
 /**
  * Form controller class
  *
- * @see http://wiki.civicrm.org/confluence/display/CRMDOC43/QuickForm+Reference
  */
 class CRM_Pcpteams_Form_Reason extends CRM_Core_Form {
   function preProcess() {
+    $this->_PcpId = CRM_Utils_Request::retrieve('id', 'Integer', NULL, FALSE, NULL, 'GET');
+
+    //Fixme: validate the contact id, and check permission can view / edit this pcp.
+
+    //Fixme: check the Pcp Custom Set values, In memory / In celebration
+
     parent::preProcess();
   }
 
