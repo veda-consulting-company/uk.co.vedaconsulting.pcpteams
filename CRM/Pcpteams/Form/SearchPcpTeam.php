@@ -12,11 +12,11 @@ class CRM_Pcpteams_Form_SearchPcpTeam extends CRM_Core_Form {
   function preProcess(){
     parent::preProcess();
   }
-  
+
   function buildQuickForm() {
 
     // add form elements
-    $this->addEntityRef('pcp_team_contact', ts('Search Pcp Team'), array('create' => TRUE), TRUE);
+    $this->addEntityRef('pcp_team_contact', ts('Search Pcp Team'), array('api' => array('params' => array('contact_type' => 'Organization')), 'create' => TRUE), TRUE);
     $this->addButtons(array(
       array(
         'type' => 'submit',
