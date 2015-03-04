@@ -16,10 +16,10 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
     //FIXME: Validate the contact has permission to view / edit the PCP details (check with api)
 
     //set Create Team and Join Team button URL
-    if(!empty($pcpId)){
+    // if(!empty($pcpId)){
 	   $joinTeamURl    = CRM_Utils_System::url('civicrm/pcp/team', 'reset=1&id='.$pcpId);
 	   $createTeamURl  = CRM_Utils_System::url('civicrm/pcp/team/create', 'reset=1&id='.$pcpId);
-    }
+    // }
 
 
     //assign values to template
