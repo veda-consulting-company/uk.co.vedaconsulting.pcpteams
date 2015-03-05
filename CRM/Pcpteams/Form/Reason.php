@@ -19,7 +19,7 @@ class CRM_Pcpteams_Form_Reason extends CRM_Core_Form {
 
   function buildQuickForm() {
     // InCelebration - Event type 
-    $pcp_type = CRM_Core_OptionGroup::values('pcp_type_20150219182347', FALSE);
+    $pcp_type = CRM_Core_OptionGroup::values(CRM_Pcpteams_Utils::C_PCP_TYPE, FALSE);
 
     $this->add("select", "pcp_type", ts('PCP Type'), $pcp_type);
 
@@ -43,7 +43,7 @@ class CRM_Pcpteams_Form_Reason extends CRM_Core_Form {
 
   function postProcess() {
     $values = $this->exportValues();
-    $pcp_inmem_contact  = $values['pcp_contact_id'];
+    $pcp_type_contact  = $values['pcp_contact_id'];
     $pcp_type     = $values['pcp_type'];
     
     $custom_group_name = CRM_Pcpteams_Utils::C_PCP_CUSTOM_GROUP_NAME;
@@ -61,7 +61,7 @@ class CRM_Pcpteams_Form_Reason extends CRM_Core_Form {
     $dao            = CRM_Core_DAO::executeQuery($query);
     $pcpFound = FALSE;
     while($dao->fetch()) {
-      if($dao->contactID == $pcp_inmem_contact) {
+      if($dao->contactID == $pcp_type_contact) {
         CRM_Core_Session::setStatus('PCP Found. Redirecting to dashboard');
         CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/dashboard', 'reset=1'));
         $pcpFound = TRUE;
@@ -70,8 +70,12 @@ class CRM_Pcpteams_Form_Reason extends CRM_Core_Form {
     }
     
     if(!$pcpFound) {
-      CRM_Core_Session::setStatus('PCP Not Found. Please try again or create new PCP Contact');
-      CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/reason', 'reset=1'));
+      CRM_Core_Session::setStatus('PCP Not Found. Creating New PCP Record');
+      $PcpID  = CRM_Pcpteams_Utils::C_PCP_ID;
+      $insertQuery  = "
+        INSERT INTO `civicrm_value_pcp_custom_set` (`id`, `entity_id`, `team_pcp_id`, `pcp_type`, `pcp_type_contact`) VALUES (NULL, $PcpID, NULL, '$pcp_type', $pcp_type_contact)";
+      $dao  = CRM_Core_DAO::executeQuery($insertQuery);
+      CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/dashboard', 'reset=1'));
     }
     //Fixme:
     parent::postProcess();
