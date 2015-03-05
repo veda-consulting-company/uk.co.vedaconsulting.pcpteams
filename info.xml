@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <extension key="uk.co.vedaconsulting.pcpteams" type="module">
   <file>pcpteams</file>
-  <name>FIXME</name>
-  <description>FIXME</description>
+  <name>PCP Team Management</name>
+  <description>PCP Team Management with dashboard and mulitple softcredits</description>
   <license>AGPL-3.0</license>
   <maintainer>
     <author>deepak-srivastava</author>

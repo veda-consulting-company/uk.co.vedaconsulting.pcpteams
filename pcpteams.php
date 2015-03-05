@@ -28,12 +28,40 @@ function pcpteams_civicrm_xmlMenu(&$files) {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_install
  */
 function pcpteams_civicrm_install() {
-  #create custom group from xml file
+  //create custom group from xml file 
+  // Create OptionGroup, OptionValues, RelationshipType, CustomGroup and CustomFields
   $extensionDir = dirname( __FILE__ ) . DIRECTORY_SEPARATOR;
   $customDataXMLFile = $extensionDir  . 'CustomGroupData.xml';
   require_once 'CRM/Utils/Migrate/Import.php';
   $import = new CRM_Utils_Migrate_Import( );
   $import->run( $customDataXMLFile );
+  
+  //Alter custom table to assign foreign key for PCP type contact custom field
+  if(CRM_Core_DAO::checkTableExists('civicrm_value_pcp_custom_set') 
+    && CRM_Core_DAO::checkFieldExists('civicrm_value_pcp_custom_set', 'pcp_type_contact')
+    && CRM_Core_DAO::checkFKConstraintInFormat('civicrm_value_pcp_custom_set', 'pcp_type_contact')
+    ){
+    $sql = "ALTER TABLE `civicrm_value_pcp_custom_set`
+            ADD CONSTRAINT `FK_civicrm_value_pcp_custom_set_p_0968c5aeb4b6cba5` FOREIGN KEY (`pcp_type_contact`) REFERENCES `civicrm_contact` (`id`) ON DELETE SET NULL
+            ";
+    CRM_Core_DAO::executeQuery($sql);            
+  }
+  
+  //Create Contact Subtype
+  $sqlValues = array();
+  foreach (array('Team', 'In_Memory', 'In_Celebration') as $subTypes) {
+    if(!CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_ContactType', $subTypes, 'id', 'name')){
+      $label = str_replace('_', ' ', $subTypes);
+      $sqlValues[] = "('".$subTypes."', '".$label."', NULL, NULL, 3, 1, 0)";
+    }
+  }
+  if(!empty($sqlValues)){
+    $contactTypeSQl = "INSERT INTO `civicrm_contact_type` (`name`, `label`, `description`, `image_URL`, `parent_id`, `is_active`, `is_reserved`) VALUES 
+    ".implode(', ', $sqlValues);
+    CRM_Core_DAO::executeQuery($contactTypeSQl);
+  }
+  
+  
 
   return _pcpteams_civix_civicrm_install();
 }
