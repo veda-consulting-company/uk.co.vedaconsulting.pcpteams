@@ -32,7 +32,10 @@ class CRM_Pcpteams_Form_Team extends CRM_Core_Form {
 
   function postProcess() {
     $values = $this->exportValues();
-    //Fixme
+    $teamId = $values['pcp_team_contact'];
+    $userId = CRM_Pcpteams_Utils::getloggedInUserId();
+    CRM_Pcpteams_Utils::checkORCreateTeamRelationship($userId, $teamId, TRUE);
+    CRM_Pcpteams_Utils::pcpRedirectUrl('dashboard');
     parent::postProcess();
   }
 
