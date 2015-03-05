@@ -5,7 +5,7 @@
 
 <!-- header -->
 <div class="pcp-dashboard-header">
-	
+
 	<!-- profile Image -->
 	<div class="pcp-dashboard-header-profile-pic inline-display">
 		<strong> profile image </strong>
@@ -26,16 +26,16 @@
 	<div class="crm-accordion-header"> 'Event Name' </div>
 	<div class="crm-accordion-body pcp-dashboard-block-info-text">
 		<strong>
-			
+
 			Congratulations, you Have now created a team taking part of 'event_name'
 		</strong>
 		<br />
 		<p>
 			We have created this page to help you with your fundraising.
 
-			Please take a few minutes to complete a couple of details below, you will need to add a fundraising 
+			Please take a few minutes to complete a couple of details below, you will need to add a fundraising
 
-			target to give you something to aim for (aim high!) and write a little bit about yourself to encourage 
+			target to give you something to aim for (aim high!) and write a little bit about yourself to encourage
 
 			people to help you reach that target.
 
@@ -60,9 +60,9 @@
 		<div class="pcp_block lightbground">
 			<p class="title_thick">
 				Bio
-			</p>	
+			</p>
 			<p class="block_body">
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse interdum sapien sit amet sem 
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse interdum sapien sit amet sem
 
 				varius. Vestibulum viverra mi dictum odio scelerisque semper. Morbi fermentum ut neque a mollis.
 
@@ -74,13 +74,13 @@
 		<div class="pcp_fundrasier">
 			<p class="title_thick">
 				fundraise more, fundraise as a team
-			</p>	
+			</p>
 			<p>
 
 
 				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse interdum sapien sit amet sem
 
-				varius. Vestibulum viverra mi dictum odio scelerisque semper. Morbi fermentum ut neque a mollis. 
+				varius. Vestibulum viverra mi dictum odio scelerisque semper. Morbi fermentum ut neque a mollis.
 
 				Suspendisse volutpat erat purus, quis tincidunt justo molestie eget. Fusce purus nisi, aliquam nec
 
@@ -102,7 +102,7 @@
 		</div>
 		<div class="block_body block_body_alignment darkbground">
 			<p>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse interdum sapien sit amet sem 
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse interdum sapien sit amet sem
 
 				varius. Vestibulum viverra mi dictum odio scelerisque semper. Morbi fermentum ut neque a mollis.
 
@@ -116,20 +116,20 @@
 <!-- blog block -->
 <div class="crm-accordion-wrapper pcp-dashboard-block-blog">
 	<div class="crm-accordion-header"> Blog </div>
-	<div class="crm-accordion-body"> 
+	<div class="crm-accordion-body">
 		<p class="title_thick">
 			Blog
-		</p>	
+		</p>
 		<p class="block_body">
-			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse interdum 
+			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse interdum
 
-			sapien sit amet sem gravida, ut vestibulum ipsum varius. Vestibulum viverra 
+			sapien sit amet sem gravida, ut vestibulum ipsum varius. Vestibulum viverra
 
-			mi dictum odio scelerisque semper. Morbi fermentum ut neque a mollis. 
+			mi dictum odio scelerisque semper. Morbi fermentum ut neque a mollis.
 
-			Maecenas non quam magna. Suspendisse volutpat erat purus, quis tincidunt 
+			Maecenas non quam magna. Suspendisse volutpat erat purus, quis tincidunt
 
-			justo molestie eget. Fusce purus nisi, aliquam nec condimentum id, congue eu 
+			justo molestie eget. Fusce purus nisi, aliquam nec condimentum id, congue eu
 
 			erat. Nam sit amet risus laoreet, maximus diam nec, cursus urna. Donec est
 		</p>
@@ -141,7 +141,7 @@
 <!-- Upload Image-->
 <div class="crm-accordion-wrapper pcp-dashboard-block-upload_image">
 	<div class="crm-accordion-header"> Upload Image </div>
-	<div class="crm-accordion-body"> 
+	<div class="crm-accordion-body">
 		<BUTTON>
 			Upload Image
 		</BUTTON>

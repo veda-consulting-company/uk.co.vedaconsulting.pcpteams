@@ -7,7 +7,7 @@ require_once 'CRM/Core/Form.php';
  *
  * @see http://wiki.civicrm.org/confluence/display/CRMDOC43/QuickForm+Reference
  */
-class CRM_Pcpteams_Form_CreatePcpTeam extends CRM_Core_Form {
+class CRM_Pcpteams_Form_NewTeam extends CRM_Core_Form {
   CONST C_CONTACT_SUB_TYPE = 'Team';
   function preProcess() {
     //FIXME : get pcp Id and use Id to relate the team and pcp.
@@ -30,7 +30,7 @@ class CRM_Pcpteams_Form_CreatePcpTeam extends CRM_Core_Form {
 
     // export form elements
     $this->assign('elementNames', $this->getRenderableElementNames());
-    $this->addFormRule(array('CRM_Pcpteams_Form_CreatePcpTeam', 'formRule'));
+    $this->addFormRule(array('CRM_Pcpteams_Form_NewTeam', 'formRule'));
     parent::buildQuickForm();
   }
 
@@ -61,6 +61,9 @@ class CRM_Pcpteams_Form_CreatePcpTeam extends CRM_Core_Form {
     if(!civicrm_error($createTeam)){
       CRM_Core_Session::setStatus(ts("Team \"{$orgName}\" has Created"), '', 'success');
     }
+
+    $url = CRM_Utils_System::url('civicrm/pcp/dashboard', 'reset=1');
+    CRM_Utils_System::redirect($url);
     parent::postProcess();
   }
 
