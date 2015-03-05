@@ -18,16 +18,15 @@ class CRM_Pcpteams_Form_Reason extends CRM_Core_Form {
   }
 
   function buildQuickForm() {
+    // InCelebration - Event type 
+    $pcp_type = CRM_Core_OptionGroup::values('pcp_type_20150219182347', FALSE);
+
+    $this->add("select", "pcp_type", ts('PCP Type'), $pcp_type);
 
     $this->addEntityRef('pcp_contact_id', ts('Search Contact'), array('create' => TRUE), TRUE);
 
     // InMemory - Deceased date 
     $this->addDate('deceased_date', ts('Deceased date'), FALSE, array('formatType' => 'birth'));
-
-    // InCelebration - Event type 
-    $event_type = CRM_Core_OptionGroup::values('event_type', FALSE);
-
-    $this->add("select", "event_type", ts('Event Type'), $event_type);
 
     $this->addButtons(array(
       array(
@@ -44,6 +43,36 @@ class CRM_Pcpteams_Form_Reason extends CRM_Core_Form {
 
   function postProcess() {
     $values = $this->exportValues();
+    $pcp_inmem_contact  = $values['pcp_contact_id'];
+    $pcp_type     = $values['pcp_type'];
+    
+    $custom_group_name = CRM_Pcpteams_Utils::C_PCP_CUSTOM_GROUP_NAME;
+    $customGroupParams = array(
+        'version'     => 3,
+        'sequential'  => 1,
+        'name'        => $custom_group_name,
+    );
+    $custom_group_ret = civicrm_api('CustomGroup', 'GET', $customGroupParams);
+    
+    $customGroupID = $custom_group_ret['id'];
+    $customGroupTableName = $custom_group_ret['values'][0]['table_name'];
+   
+    $query          = "SELECT ct.pcp_type_contact as contactID FROM $customGroupTableName ct WHERE ct.pcp_type = '$pcp_type'";
+    $dao            = CRM_Core_DAO::executeQuery($query);
+    $pcpFound = FALSE;
+    while($dao->fetch()) {
+      if($dao->contactID == $pcp_inmem_contact) {
+        CRM_Core_Session::setStatus('PCP Found. Redirecting to dashboard');
+        CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/dashboard', 'reset=1'));
+        $pcpFound = TRUE;
+        break;
+      }
+    }
+    
+    if(!$pcpFound) {
+      CRM_Core_Session::setStatus('PCP Not Found. Please try again or create new PCP Contact');
+      CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/reason', 'reset=1'));
+    }
     //Fixme:
     parent::postProcess();
   }
