@@ -8,26 +8,26 @@
   </item>
   <item>
     <path>civicrm/pcp/team/create</path>
-    <page_callback>CRM_Pcpteams_Form_CreatePcpTeam</page_callback>
-    <title>CreatePcpTeam</title>
+    <page_callback>CRM_Pcpteams_Form_NewTeam</page_callback>
+    <title>New Team</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
   <item>
     <path>civicrm/pcp/team</path>
-    <page_callback>CRM_Pcpteams_Form_SearchPcpTeam</page_callback>
-    <title>SearchPcpTeam</title>
+    <page_callback>CRM_Pcpteams_Form_Team</page_callback>
+    <title>Join a Team</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
   <item>
     <path>civicrm/pcp/reason</path>
     <page_callback>CRM_Pcpteams_Form_Reason</page_callback>
-    <title>Reason</title>
+    <title>In Memory / Celebration Of</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
   <item>
     <path>civicrm/pcp/branchorpartner</path>
     <page_callback>CRM_Pcpteams_Form_BranchorPatner</page_callback>
-    <title>BranchorPatner</title>
+    <title>Branch Or Partner</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
 </menu>
