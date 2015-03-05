@@ -60,25 +60,26 @@ class  CRM_Pcpteams_Utils {
 
     //check the Relationship Type Exists
     if(empty($relTypeId)){
-      throw new Exception(t('Error, Relationship Type (%1) does not exist.', array('%1' => $teamRelTypeName)));
-    }
+      CRM_Core_Session::setStatus( t('Failed To create Relationship. Relationship Type (%1) does not exist.', array('%1' => $teamRelTypeName)) );
+    }else{
 
-    //check the duplicates
-    $aParams = array(
-      'version'               => '3',
-      'is_active'             => '1',
-      'relationship_type_id'  => $relTypeId,
-    );
-    $bDuplicateFound = CRM_Contact_BAO_Relationship::checkDuplicateRelationship($aParams, $iContactIdA, $iContactIdB);
+      //check the duplicates
+      $aParams = array(
+        'version'               => '3',
+        'is_active'             => '1',
+        'relationship_type_id'  => $relTypeId,
+      );
+      $bDuplicateFound = CRM_Contact_BAO_Relationship::checkDuplicateRelationship($aParams, $iContactIdA, $iContactIdB);
 
-    if(!$bDuplicateFound && $checkandCreate){
-      $aParams['contact_id_a'] = $iContactIdA;
-      $aParams['contact_id_b'] = $iContactIdB;
+      if(!$bDuplicateFound && $checkandCreate){
+        $aParams['contact_id_a'] = $iContactIdA;
+        $aParams['contact_id_b'] = $iContactIdB;
 
-      $createRelationship = civicrm_api3('Relationship', 'create', $aParams);
-      if(!civicrm_error($createRelationship)){
-        $teamName = self::getContactWithHyperlink($iContactIdB);
-        CRM_Core_Session::setStatus(ts("Team Contact has Validated and Successfully created Relationship {$teamRelTypeName} {$teamName}"));
+        $createRelationship = civicrm_api3('Relationship', 'create', $aParams);
+        if(!civicrm_error($createRelationship)){
+          $teamName = self::getContactWithHyperlink($iContactIdB);
+          CRM_Core_Session::setStatus(ts("Team Contact has Validated and Successfully created Relationship {$teamRelTypeName} {$teamName}"));
+        }
       }
     }
 
