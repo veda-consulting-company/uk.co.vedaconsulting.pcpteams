@@ -28,6 +28,13 @@ function pcpteams_civicrm_xmlMenu(&$files) {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_install
  */
 function pcpteams_civicrm_install() {
+  #create custom group from xml file
+  $extensionDir = dirname( __FILE__ ) . DIRECTORY_SEPARATOR;
+  $customDataXMLFile = $extensionDir  . 'CustomGroupData.xml';
+  require_once 'CRM/Utils/Migrate/Import.php';
+  $import = new CRM_Utils_Migrate_Import( );
+  $import->run( $customDataXMLFile );
+
   return _pcpteams_civix_civicrm_install();
 }
 
