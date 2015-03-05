@@ -24,4 +24,10 @@
     <title>Reason</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/pcp/branchorpartner</path>
+    <page_callback>CRM_Pcpteams_Form_BranchorPatner</page_callback>
+    <title>BranchorPatner</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
 </menu>
