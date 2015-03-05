@@ -79,7 +79,7 @@ class  CRM_Pcpteams_Utils {
         $createRelationship = civicrm_api3('Relationship', 'create', $aParams);
         if(!civicrm_error($createRelationship)){
           $teamName = self::getContactWithHyperlink($iContactIdB);
-          CRM_Core_Session::setStatus(ts("Team Contact has Validated and Successfully created Relationship {$teamRelTypeName} {$teamName}"));
+          CRM_Core_Session::setStatus(ts("Team contact has validated and successfully joined as {$teamRelTypeName} {$teamName}"), '', 'success');
         }
       }
     }

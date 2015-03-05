@@ -60,10 +60,13 @@ class CRM_Pcpteams_Form_NewTeam extends CRM_Core_Form {
 
     if(!civicrm_error($createTeam)){
       CRM_Core_Session::setStatus(ts("Team \"{$orgName}\" has Created"), '', 'success');
+      $userId = CRM_Pcpteams_Utils::getloggedInUserId();
+      CRM_Pcpteams_Utils::checkORCreateTeamRelationship($userId, $createTeam['id'], TRUE);
+      CRM_Pcpteams_Utils::pcpRedirectUrl('dashboard');
+    }else{
+      CRM_Core_Session::setStatus(ts("Failed to Create Team \"{$orgName}\" ..."));
     }
 
-    $url = CRM_Utils_System::url('civicrm/pcp/dashboard', 'reset=1');
-    CRM_Utils_System::redirect($url);
     parent::postProcess();
   }
 
