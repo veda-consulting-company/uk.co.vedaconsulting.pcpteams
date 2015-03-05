@@ -7,7 +7,7 @@ require_once 'CRM/Core/Form.php';
  * Civi 4.5
  * Extends Core Form Controller.
  */
-class CRM_Pcpteams_Form_SearchPcpTeam extends CRM_Core_Form {
+class CRM_Pcpteams_Form_Team extends CRM_Core_Form {
 
   function preProcess(){
     parent::preProcess();
