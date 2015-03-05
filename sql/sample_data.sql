@@ -112,10 +112,10 @@ INSERT INTO `civicrm_pcp` (`contact_id`, `status_id`, `title`, `intro_text`, `pa
 SELECT @pcp_id_chris := LAST_INSERT_ID();
 
 -- relationship type
-SELECT @rel_type_a_b := 'Team Leader of';
-SELECT @rel_type_b_a := 'Team Leader is';
+SELECT @rel_type_a_b := 'Team Member of';
+SELECT @rel_type_b_a := 'Team Member is';
 INSERT INTO `civicrm_relationship_type` (`name_a_b`, `label_a_b`, `name_b_a`, `label_b_a`, `description`, `contact_type_a`, `contact_type_b`, `contact_sub_type_a`, `contact_sub_type_b`, `is_reserved`, `is_active`) VALUES
-( @rel_type_a_b, @rel_type_a_b, @rel_type_b_a, @rel_type_b_a, 'Team Leader relationship.', 'Individual', 'Organization', NULL, NULL, 0, 1) ON DUPLICATE KEY UPDATE `name_a_b` = VALUES ( `name_a_b` ), `name_b_a` = VALUES ( `name_b_a` ), `label_a_b` = VALUES ( `label_a_b` ), label_b_a = VALUES ( `label_b_a` );
+( @rel_type_a_b, @rel_type_a_b, @rel_type_b_a, @rel_type_b_a, 'Team Member relationship.', 'Individual', 'Organization', NULL, NULL, 0, 1) ON DUPLICATE KEY UPDATE `name_a_b` = VALUES ( `name_a_b` ), `name_b_a` = VALUES ( `name_b_a` ), `label_a_b` = VALUES ( `label_a_b` ), label_b_a = VALUES ( `label_b_a` );
 SELECT @relationship_type_id := id FROM civicrm_relationship_type WHERE name_a_b = @rel_type_a_b COLLATE utf8_unicode_ci;
 
 -- relationship
