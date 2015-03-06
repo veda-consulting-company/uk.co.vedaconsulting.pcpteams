@@ -36,4 +36,10 @@
     <title>Profile Pic</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/pcp/dashboard/group</path>
+    <page_callback>CRM_Pcpteams_Page_Dashboard_Group</page_callback>
+    <title>Group</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
 </menu>
