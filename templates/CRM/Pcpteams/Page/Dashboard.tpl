@@ -8,7 +8,25 @@
 
 	<!-- profile Image -->
 	<div class="pcp-dashboard-header-profile-pic inline-display">
-		<strong> profile image </strong>
+            <table style="width: 20%">
+                {if $profilepic}
+                    <tr>
+                        <td>
+                            <div id="crm-contact-thumbnail">
+                                <div class="crm-contact_image crm-contact_image-block">
+                                    <a class="crm-image-popup" href="{$profilePicUrl}">
+                                        <img width="100" height="21" src="{$profilePicUrl}">
+                                    </a>
+                                </div>
+                            </div>
+
+                        </td>
+                        <td>
+                            <input type="button" name="profilepic" value="Upload Profile Pic" id="profilepic" onclick="parent.location='{$profilePicURl}'" />
+                        </td>
+                {/if}
+                </tr>
+            </table>
 	</div>
 
 	<!-- Team Name -->
