@@ -117,4 +117,17 @@
       <option_group_name>pcp_type_20150219182347</option_group_name>
     </OptionValue>
   </OptionValues>
+  <OptionValue>
+      <label>Personal Campaign Page</label>
+      <value>PCP</value>
+      <name>civicrm_pcp</name>
+      <filter>0</filter>
+      <is_default>0</is_default>
+      <weight>1</weight>
+      <is_optgroup>0</is_optgroup>
+      <is_reserved>0</is_reserved>
+      <is_active>1</is_active>
+      <option_group_name>cg_extend_objects</option_group_name>
+    </OptionValue>
+  </OptionValues>
 </CustomData>
