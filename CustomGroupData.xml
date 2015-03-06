@@ -82,6 +82,18 @@
       <contact_sub_type_a>NULL</contact_sub_type_a>
       <contact_sub_type_b>Team</contact_sub_type_b>
       <is_active>1</is_active>
+    </RelationshipType>    
+    <RelationshipType>
+      <name_a_b>Team Admin of</name_a_b>
+      <label_a_b>Team Admin of</label_a_b>
+      <name_b_a>Team Admin is</name_b_a>
+      <label_b_a>Team Admin is</label_b_a>
+      <description>Team Admin Relationship</description>
+      <contact_type_a>Individual</contact_type_a>
+      <contact_type_b>Organization</contact_type_b>
+      <contact_sub_type_a>NULL</contact_sub_type_a>
+      <contact_sub_type_b>Team</contact_sub_type_b>
+      <is_active>1</is_active>
     </RelationshipType>
   </RelationshipTypes>
   <OptionGroups>
@@ -116,7 +128,6 @@
       <is_active>1</is_active>
       <option_group_name>pcp_type_20150219182347</option_group_name>
     </OptionValue>
-  </OptionValues>
   <OptionValue>
       <label>Personal Campaign Page</label>
       <value>PCP</value>
