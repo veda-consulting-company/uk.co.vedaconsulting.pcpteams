@@ -45,7 +45,9 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
     $this->assign('createTeamUrl', $createTeamURl);
     $this->assign('joinTeamUrl', $joinTeamURl);
     $this->assign('profilePicURl', $profilePicURl);
-
+    //FIXME : get the state name from api
+    $state = 'Team';
+    $this->assign('path', $state);
     parent::run();
   }
 }
