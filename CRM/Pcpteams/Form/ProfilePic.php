@@ -59,7 +59,10 @@ class CRM_Pcpteams_Form_ProfilePic extends CRM_Core_Form {
         'image_URL' => $params['image_URL'],);
       $result = civicrm_api3('Contact', 'create', $contactParams);
     }
-    CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/dashboard', 'reset=1'));
+    $urlParams = array(
+      'id'  => 1, // could be pcpId
+    );
+    CRM_Pcpteams_Utils::pcpRedirectUrl('dashboard', $urlParams);
 
     //Fixme
     parent::postProcess();
