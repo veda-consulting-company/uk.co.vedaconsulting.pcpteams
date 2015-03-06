@@ -31,7 +31,8 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
       $this->assign('profilePicUrl', $profilePicUrl);
     }
     if (!$pcpId) {
-      CRM_Core_Error::fatal(ts('Couldn\'t determine any PCP'));
+      // CRM_Core_Error::fatal(ts('Couldn\'t determine any PCP'));
+      CRM_Core_Session::setStatus(ts('Couldn\'t determine any PCP'));
     }
 
     //FIXME: Validate the contact has permission to view / edit the PCP details (check with api)
@@ -45,7 +46,7 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
     $this->assign('joinTeamUrl', $joinTeamURl);
     $this->assign('profilePicURl', $profilePicURl);
     //FIXME : get the state name from api
-    $state = 'Team';
+    $state = $pcpId ? 'Team' : NULL;
     $this->assign('path', $state);
     parent::run();
   }

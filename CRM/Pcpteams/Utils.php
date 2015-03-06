@@ -26,7 +26,7 @@ class  CRM_Pcpteams_Utils {
     if(empty($id)){
       return;
     }
-
+    //FIXME: check permission to view contact
     $contactName = CRM_Contact_BAO_Contact::getContactDetails($id);
     $url = CRM_Utils_System::url('civicrm/contact/view', 'reset=1&cid=%d');
     return sprintf("<a href =\"{$url}\">%s</a>", $id, $contactName['0']);
