@@ -36,32 +36,16 @@ function pcpteams_civicrm_install() {
   $import = new CRM_Utils_Migrate_Import( );
   $import->run( $customDataXMLFile );
   
-  //Alter custom table to assign foreign key for PCP type contact custom field
-  if(CRM_Core_DAO::checkTableExists('civicrm_value_pcp_custom_set') 
-    && CRM_Core_DAO::checkFieldExists('civicrm_value_pcp_custom_set', 'pcp_type_contact')
-    && CRM_Core_DAO::checkFKConstraintInFormat('civicrm_value_pcp_custom_set', 'pcp_type_contact')
-    ){
-    $sql = "ALTER TABLE `civicrm_value_pcp_custom_set`
-            ADD CONSTRAINT `FK_civicrm_value_pcp_custom_set_p_0968c5aeb4b6cba5` FOREIGN KEY (`pcp_type_contact`) REFERENCES `civicrm_contact` (`id`) ON DELETE SET NULL
-            ";
-    CRM_Core_DAO::executeQuery($sql);            
-  }
-  
   //Create Contact Subtype
-  $sqlValues = array();
+  $params = array('parent_id' => 3, 'is_active' => 1, 'is_reserved' => 0);
+  require_once 'CRM/Contact/BAO/ContactType.php';
   foreach (array('Team', 'In_Memory', 'In_Celebration') as $subTypes) {
     if(!CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_ContactType', $subTypes, 'id', 'name')){
-      $label = str_replace('_', ' ', $subTypes);
-      $sqlValues[] = "('".$subTypes."', '".$label."', NULL, NULL, 3, 1, 0)";
+      $params['name']  = $subTypes;
+      $params['label'] = str_replace('_', ' ', $subTypes);
+      CRM_Contact_BAO_ContactType::add($params);
     }
   }
-  if(!empty($sqlValues)){
-    $contactTypeSQl = "INSERT INTO `civicrm_contact_type` (`name`, `label`, `description`, `image_URL`, `parent_id`, `is_active`, `is_reserved`) VALUES 
-    ".implode(', ', $sqlValues);
-    CRM_Core_DAO::executeQuery($contactTypeSQl);
-  }
-  
-  
 
   return _pcpteams_civix_civicrm_install();
 }
