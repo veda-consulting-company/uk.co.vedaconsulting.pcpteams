@@ -12,13 +12,13 @@
                 </td>
             </tr>
             
-            {if $profilepic}
+            {if $profilePicUrl}
                 <tr>
                     <td>
-                        <div id="crm-contact-thumbnail">
+                        <div id="crm-contact-thumbnail" style="float:left">
                             <div class="crm-contact_image crm-contact_image-block">
                                 <a class="crm-image-popup" href="{$profilePicUrl}">
-                                    <img width="100" height="21" src="{$profilePicUrl}">
+                                    <img width="100" height="97" src="{$profilePicUrl}">
                                 </a>
                             </div>
                         </div>
