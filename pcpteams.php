@@ -39,7 +39,12 @@ function pcpteams_civicrm_install() {
   //Create Contact Subtype
   $params = array('parent_id' => 3, 'is_active' => 1, 'is_reserved' => 0);
   require_once 'CRM/Contact/BAO/ContactType.php';
-  foreach (array('Team', 'In_Memory', 'In_Celebration') as $subTypes) {
+  foreach (array('Team'
+                , 'In_Memory'
+                , 'In_Celebration'
+                , 'Branch'
+                , 'Corporate_Partner'
+                ) as $subTypes) {
     if(!CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_ContactType', $subTypes, 'id', 'name')){
       $params['name']  = $subTypes;
       $params['label'] = str_replace('_', ' ', $subTypes);
