@@ -42,4 +42,10 @@
     <title>Group</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/pcp/dashboard/tribute</path>
+    <page_callback>CRM_Pcpteams_Page_Dashboard_Tribute</page_callback>
+    <title>Tribute</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
 </menu>
