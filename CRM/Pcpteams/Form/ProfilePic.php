@@ -24,7 +24,6 @@ class CRM_Pcpteams_Form_ProfilePic extends CRM_Core_Form {
       $profilePicUrl = $result['values'][0]['image_URL'];
     }
     if(!empty($profilePicUrl)) {
-      $this->assign('profilepic', 1);
       $this->assign('profilePicUrl', $profilePicUrl);
     }
     

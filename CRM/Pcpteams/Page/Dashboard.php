@@ -28,7 +28,6 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
       $profilePicUrl = $result['values'][0]['image_URL'];
     }
     if(!empty($profilePicUrl)) {
-      $this->assign('profilepic', 1);
       $this->assign('profilePicUrl', $profilePicUrl);
     }
     if (!$pcpId) {
