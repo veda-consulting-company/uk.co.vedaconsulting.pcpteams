@@ -27,7 +27,14 @@ class CRM_Pcpteams_Form_BranchorPartner extends CRM_Core_Form {
 
   function postProcess() {
     $values = $this->exportValues();
-    //FIXME
+    $branchOrPartnerID = $values['pcp_team_contact'];
+    $pcpId = CRM_Pcpteams_Utils::C_PCP_ID;
+    // Get custom org ID
+    $customResult = CRM_Pcpteams_Utils::checkOrUpdateUserPcpGroup($pcpId, 'get');
+    if($customResult['is_error'] == 0  && !empty($branchOrPartnerID)) {
+      // Create/Update Org ID with the user selected organization
+      CRM_Pcpteams_Utils::checkOrUpdateUserPcpGroup($pcpId, 'create', array('value' =>  $branchOrPartnerID, 'id' => 1));
+    }
     parent::postProcess();
   }
 

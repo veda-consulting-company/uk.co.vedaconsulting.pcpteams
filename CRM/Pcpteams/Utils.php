@@ -44,7 +44,7 @@ class  CRM_Pcpteams_Utils {
     return null;
     
   }  
-  static function checkOrUpdateUserPcpGroup( $pcpId, $action = 'get' ){
+  static function checkOrUpdateUserPcpGroup( $pcpId, $action = 'get', $params = array() ){
     if(empty($pcpId )){
       return NULL;
     }
@@ -56,13 +56,22 @@ class  CRM_Pcpteams_Utils {
       return NULL;
     }
       
-    $params = array(
+    $customParams = array(
       'version'   => 1,
       'entity_id' => $pcpId,
-      'return.custom_'.$cfId => 1
     );
     
-    return civicrm_api3('CustomValue', $action, $params);
+    if($action == 'get') {
+      $customParams['return.custom_'.$cfId] = 1;
+    }
+    
+    if($action == 'create' ) {
+      $customParams['custom_'.$cfId]  = $params['value'];
+      $customParams['id']             = $params['id'];
+    }
+      
+    
+    return civicrm_api3('CustomValue', $action, $customParams);
     
   }
   
