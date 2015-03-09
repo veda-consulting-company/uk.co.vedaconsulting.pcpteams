@@ -95,8 +95,41 @@ function civicrm_api3_pcpteams_getcontactpcp($params) {
 
   return civicrm_api3_create_success($result, $params);
 }
+
 function _civicrm_api3_pcpteams_getcontactpcp_spec(&$params) {
   $params['contact_id']['api.required'] = 1;
+}
+
+function civicrm_api3_pcpteams_getstate($params) {
+  $dao = new CRM_PCP_DAO_PCP();
+  // FIXME: need to enforce type check
+  $dao->contact_id = $params['contact_id']; // type check done by getfields
+  $result = _civicrm_api3_dao_to_array($dao);
+  _civicrm_api3_pcpteams_custom_get($result);
+  _civicrm_api3_pcpteams_getstate_output($result);
+  return civicrm_api3_create_success($result, $params);
+}
+
+function _civicrm_api3_pcpteams_getstate_spec(&$params) {
+  $params['contact_id']['api.required'] = 1;
+}
+
+function _civicrm_api3_pcpteams_getstate_output(&$result){
+  $result = array_shift($result);
+
+  if(isset($result['id'])){
+    $result['state'][] = 'individual';
+  }
+  
+  $cfTeamPcpId = CRM_Core_Dao::getFieldValue('CRM_Core_Dao_CustomField', 'Team_PCP_ID', 'id', 'name');
+  $cforgId     = CRM_Core_Dao::getFieldValue('CRM_Core_Dao_CustomField', 'Branch_or_Partner', 'id', 'name');
+  if(isset($result['custom_'.$cfTeamPcpId])){
+    $result['state'][] = 'team';
+  }
+  
+  if(isset($result['custom_'.$cforgId])){
+    $result['state'][] = 'group';
+  }
 }
 
 function _civicrm_api3_pcpteams_custom_get(&$params) {
