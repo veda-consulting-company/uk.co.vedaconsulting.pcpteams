@@ -13,6 +13,7 @@ class  CRM_Pcpteams_Utils {
         C_TEAM_RELATIONSHIP_TYPE= 'Team Member of',
         C_TEAM_ADMIN_REL_TYPE   = 'Team Admin of',
         C_PCP_TYPE              = 'pcp_type_20150219182347',
+        C_CF_BRANCH_PARTNER     = 'Branch_or_Partner',
         C_PCP_ID                = 7;
   /**
    * to get the logged in User Id
@@ -23,7 +24,7 @@ class  CRM_Pcpteams_Utils {
     return $contactID;
   }
   
-  static function checkUserHasGroupOrTeamAdmin( $userId ){
+  static function checkUserIsaTeamAdmin( $userId ){
     if(empty($userId)){
       return NULL;
     }
@@ -34,9 +35,6 @@ class  CRM_Pcpteams_Utils {
     $adminRelTypeId = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', $relTypeAdmin, 'id', 'name_a_b');
     
     foreach ($getUserRelationships as $value) {
-      //check the User has pcp group., return if found one
-      #code......
-      
       //check the user is admin of team. return team id if found one
       if( $value['relationship_type_id'] == $adminRelTypeId ){
         return array('id' => $value['contact_id_b'], 'state' => 'Team');
@@ -44,6 +42,27 @@ class  CRM_Pcpteams_Utils {
     }
     
     return null;
+    
+  }  
+  static function checkOrUpdateUserPcpGroup( $pcpId, $action = 'get' ){
+    if(empty($pcpId )){
+      return NULL;
+    }
+    
+    //get group Id from CustomGroup PCP_custom_set
+    //CustomField name = 'Branch_or_partner'
+    $cfId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', self::C_CF_BRANCH_PARTNER, 'id', 'name');
+    if(!$cfId){
+      return NULL;
+    }
+      
+    $params = array(
+      'version'   => 1,
+      'entity_id' => $pcpId,
+      'return.custom_'.$cfId => 1
+    );
+    
+    return civicrm_api3('CustomValue', $action, $params);
     
   }
   
