@@ -162,14 +162,15 @@ function pcpteams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
 function pcpteams_civicrm_navigationMenu(&$params){
   $maxId                = max(array_keys($params));
   $dashboardID          = $maxId+1;
-  $teamID               = $maxId+2;
-  $groupID              = $maxId+3;
-  $tributeID            = $maxId+4;
+  $individualID         = $maxId+2;
+  $teamID               = $maxId+3;
+  $groupID              = $maxId+4;
+  $tributeID            = $maxId+5;
   $params[$dashboardID] = array(
           'attributes' => array(
-          'label'     => ts('Dashboard'),
-          'name'      => 'Dashboard',
-          'url'       => 'civicrm/pcp/dashboard?reset=1',
+          'label'     => ts('Go to Pages'),
+          'name'      => 'Go to Pages',
+          'url'       => NULL,
           'active'    => 1,
           'parentID'  => Null,
           'operator'  => NULL,
@@ -177,12 +178,26 @@ function pcpteams_civicrm_navigationMenu(&$params){
           'permission'=> 'access CiviCRM',
         ),
   );
-  
+  //My Dashboard
+  $params[$dashboardID]['child'][$individualID]= array(
+                            'attributes' => array (
+                                              'label'      => 'My Dashboard',
+                                              'name'       => 'My Dashboard',
+                                              'url'        => 'civicrm/pcp/dashboard?reset=1',
+                                              'permission' => 'access CiviCRM',
+                                              'operator'   => null,
+                                              'separator'  => null,
+                                              'parentID'   => $dashboardID,
+                                              'navID'      => $individualID,
+                                              'active'     => 1
+                                              )
+                          );  
+  //TEAM Dashboard
   $params[$dashboardID]['child'][$teamID]= array(
                             'attributes' => array (
                                               'label'      => 'Team',
                                               'name'       => 'Team',
-                                              'url'        => 'civicrm/pcp/dashboard/team?reset=1',
+                                              'url'        => 'civicrm/pcp/dashboard?reset=1&state=team',
                                               'permission' => 'access CiviCRM',
                                               'operator'   => null,
                                               'separator'  => null,
@@ -191,12 +206,12 @@ function pcpteams_civicrm_navigationMenu(&$params){
                                               'active'     => 1
                                               )
                           );
-  
+  //Group Dashboard
   $params[$dashboardID]['child'][$groupID]= array(
                             'attributes' => array (
                                               'label'      => 'Group',
                                               'name'       => 'Group',
-                                              'url'        => 'civicrm/pcp/dashboard/group?reset=1',
+                                              'url'        => 'civicrm/pcp/dashboard?reset=1&state=group',
                                               'permission' => 'access CiviCRM',
                                               'operator'   => null,
                                               'separator'  => null,
@@ -205,12 +220,12 @@ function pcpteams_civicrm_navigationMenu(&$params){
                                               'active'     => 1
                                               )
                           );
-  
+  //Tribute Dashboard
   $params[$dashboardID]['child'][$tributeID]= array(
                             'attributes' => array (
                                               'label'      => 'Tribute',
                                               'name'       => 'Tribute',
-                                              'url'        => 'civicrm/pcp/dashboard/tribute?reset=1',
+                                              'url'        => 'civicrm/pcp/dashboard?reset=1&state=tribute',
                                               'permission' => 'access CiviCRM',
                                               'operator'   => null,
                                               'separator'  => null,
