@@ -16,7 +16,7 @@ class CRM_Pcpteams_Form_Team extends CRM_Core_Form {
   function buildQuickForm() {
 
     // add form elements
-    $this->addEntityRef('pcp_team_contact', ts('Search Pcp Team'), array('api' => array('params' => array('contact_type' => 'Organization', 'contact_sub_type' => 'Team')), 'create' => TRUE), TRUE);
+    $this->addEntityRef('pcp_team_contact', ts('Select Team'), array('api' => array('params' => array('contact_type' => 'Organization', 'contact_sub_type' => 'Team')), 'create' => TRUE), TRUE);
     $this->addButtons(array(
       array(
         'type' => 'submit',

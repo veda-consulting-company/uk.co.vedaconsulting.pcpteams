@@ -47,7 +47,7 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
     }
     
     // check the user has group
-    $checkUserHasGroup = CRM_Pcpteams_Utils::checkUserHasGroup($pcpId, 'get');
+    //$checkUserHasGroup = CRM_Pcpteams_Utils::checkUserHasGroup($pcpId, 'get');
     if(!empty($checkUserHasGroup)){
       $pcpGroupId = $checkUserIsTeamAdmin['id'];
       $state        = $checkUserIsTeamAdmin['state'];

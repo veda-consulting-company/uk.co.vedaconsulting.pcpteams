@@ -50,7 +50,7 @@
   </item>
   <item>
     <path>civicrm/pcp/dashboard/team</path>
-    <page_callback>CRM_Pcpteams_Page_Dashboard_Team</page_callback>
+    <page_callback>CRM_Pcpteams_Page_Dashboard</page_callback>
     <title>Team</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
