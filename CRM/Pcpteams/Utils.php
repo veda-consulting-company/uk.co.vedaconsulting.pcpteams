@@ -11,6 +11,7 @@ class  CRM_Pcpteams_Utils {
   CONST C_PCP_CUSTOM_GROUP_NAME = 'PCP_Custom_Set',
         C_CUSTOM_GROUP_EXTENDS	= 'PCP',
         C_TEAM_RELATIONSHIP_TYPE= 'Team Member of',
+        C_TEAM_ADMIN_REL_TYPE   = 'Team Admin of',
         C_PCP_TYPE              = 'pcp_type_20150219182347',
         C_PCP_ID                = 7;
   /**
@@ -21,7 +22,31 @@ class  CRM_Pcpteams_Utils {
     $contactID  = $session->get('userID'        );
     return $contactID;
   }
-
+  
+  static function checkUserHasGroupOrTeamAdmin( $userId ){
+    if(empty($userId)){
+      return NULL;
+    }
+    require_once 'CRM/Contact/BAO/Relationship.php';
+    $getUserRelationships = CRM_Contact_BAO_Relationship::getRelationship( $userId, CRM_Contact_BAO_Relationship::CURRENT);
+    // Team Admin Relationship
+    $relTypeAdmin   = self::C_TEAM_ADMIN_REL_TYPE;
+    $adminRelTypeId = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', $relTypeAdmin, 'id', 'name_a_b');
+    
+    foreach ($getUserRelationships as $value) {
+      //check the User has pcp group., return if found one
+      #code......
+      
+      //check the user is admin of team. return team id if found one
+      if( $value['relationship_type_id'] == $adminRelTypeId ){
+        return array('id' => $value['contact_id_b'], 'state' => 'Team');
+      }
+    }
+    
+    return null;
+    
+  }
+  
   static function getContactWithHyperlink($id){
     if(empty($id)){
       return;
