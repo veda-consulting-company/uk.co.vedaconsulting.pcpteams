@@ -30,11 +30,6 @@
             </table>
   </div>
 
-  <!-- Team Name -->
-  <div class="pcp-dashboard-header-profile-title inline-display">
-    <p>Team Name does event name</p>
-  </div>
-
 </div>
 <!-- End header-->
 
@@ -42,11 +37,11 @@
 
 <!-- Congratulations block -->
 <div class="crm-accordion-wrapper pcp-dashboard-block-info">
-  <div class="crm-accordion-header"> 'Event Name' </div>
+  <div class="crm-accordion-header">Event Name: {$eventTitle}</div>
   <div class="crm-accordion-body pcp-dashboard-block-info-text">
     <strong>
 
-      Congratulations, you Have now created a team taking part of 'event_name'
+      Congratulations, you Have now created a team taking part of {$eventTitle}
     </strong>
     <br />
     <p>
@@ -104,8 +99,7 @@
         Suspendisse volutpat erat purus, quis tincidunt justo molestie eget. Fusce purus nisi, aliquam nec
 
       </p>
-      <input type="button" name="createteam" value="Create a Team" id="createteam" onclick="parent.location='{$createTeamUrl}'" />
-      <input type="button" name="jointeam" value="Join a Team" id="jointeam" onclick="parent.location='{$joinTeamUrl}'" />
+      <input type="button" name="joinbranch" value="Join a Branch/Partner" id="jointeam" onclick="parent.location='{$branchURl}'" />
     </div>
   </div>
 </div>
