@@ -8,10 +8,10 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
     //get Pcp Id from URL
     $pcpId = CRM_Utils_Request::retrieve('id', 'Positive');
     $userId= $pcpContactId = CRM_Pcpteams_Utils::getloggedInUserId();
-    $state = "";
+    $state = NULL;
     
-    // check the user is a team admin or group
-    $checkUserIsTeamAdmin = CRM_Pcpteams_Utils::checkUserHasGroupOrTeamAdmin($userId);
+    // check the user is a team admin
+    $checkUserIsTeamAdmin = CRM_Pcpteams_Utils::checkUserIsaTeamAdmin($userId);
     if(!empty($checkUserIsTeamAdmin)){
       $pcpContactId = $checkUserIsTeamAdmin['id'];
       $state        = $checkUserIsTeamAdmin['state'];
@@ -29,7 +29,8 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
         $pcpId = $result['id'];
       }
     }
-
+    
+    
     $result = civicrm_api3('Contact', 'get', array(
         'sequential' => 1,
         'id' => $userId,
@@ -45,6 +46,12 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
       CRM_Core_Error::fatal(ts('Couldn\'t determine any PCP'));
     }
     
+    // check the user has group
+    $checkUserHasGroup = CRM_Pcpteams_Utils::checkUserHasGroup($pcpId, 'get');
+    if(!empty($checkUserHasGroup)){
+      $pcpGroupId = $checkUserIsTeamAdmin['id'];
+      $state        = $checkUserIsTeamAdmin['state'];
+    }
     
     //FIXME: Validate the contact has permission to view / edit the PCP details (check with api)
 
