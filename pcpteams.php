@@ -158,3 +158,66 @@ function pcpteams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
     }
   }
 }
+
+function pcpteams_civicrm_navigationMenu(&$params){
+  $maxId                = max(array_keys($params));
+  $dashboardID          = $maxId+1;
+  $teamID               = $maxId+2;
+  $groupID              = $maxId+3;
+  $tributeID            = $maxId+4;
+  $params[$dashboardID] = array(
+          'attributes' => array(
+          'label'     => ts('Dashboard'),
+          'name'      => 'Dashboard',
+          'url'       => 'civicrm/pcp/dashboard?reset=1',
+          'active'    => 1,
+          'parentID'  => Null,
+          'operator'  => NULL,
+          'navID'     => $dashboardID,
+          'permission'=> 'access CiviCRM',
+        ),
+  );
+  
+  $params[$dashboardID]['child'][$teamID]= array(
+                            'attributes' => array (
+                                              'label'      => 'Team',
+                                              'name'       => 'Team',
+                                              'url'        => 'civicrm/pcp/dashboard/team?reset=1',
+                                              'permission' => 'access CiviCRM',
+                                              'operator'   => null,
+                                              'separator'  => null,
+                                              'parentID'   => $dashboardID,
+                                              'navID'      => $teamID,
+                                              'active'     => 1
+                                              )
+                          );
+  
+  $params[$dashboardID]['child'][$groupID]= array(
+                            'attributes' => array (
+                                              'label'      => 'Group',
+                                              'name'       => 'Group',
+                                              'url'        => 'civicrm/pcp/dashboard/group?reset=1',
+                                              'permission' => 'access CiviCRM',
+                                              'operator'   => null,
+                                              'separator'  => null,
+                                              'parentID'   => $dashboardID,
+                                              'navID'      => $groupID,
+                                              'active'     => 1
+                                              )
+                          );
+  
+  $params[$dashboardID]['child'][$tributeID]= array(
+                            'attributes' => array (
+                                              'label'      => 'Tribute',
+                                              'name'       => 'Tribute',
+                                              'url'        => 'civicrm/pcp/dashboard/tribute?reset=1',
+                                              'permission' => 'access CiviCRM',
+                                              'operator'   => null,
+                                              'separator'  => null,
+                                              'parentID'   => $dashboardID,
+                                              'navID'      => $tributeID,
+                                              'active'     => 1
+                                              )
+                          );
+  }
+
