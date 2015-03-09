@@ -3,7 +3,7 @@
   <item>
     <path>civicrm/pcp/dashboard</path>
     <page_callback>CRM_Pcpteams_Page_Dashboard</page_callback>
-    <title>Dashboard</title>
+    <title>My Dashboard</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
   <item>
@@ -34,24 +34,6 @@
     <path>civicrm/pcp/profile</path>
     <page_callback>CRM_Pcpteams_Form_ProfilePic</page_callback>
     <title>Profile Pic</title>
-    <access_arguments>access CiviCRM</access_arguments>
-  </item>
-  <item>
-    <path>civicrm/pcp/dashboard/group</path>
-    <page_callback>CRM_Pcpteams_Page_Dashboard_Group</page_callback>
-    <title>Group</title>
-    <access_arguments>access CiviCRM</access_arguments>
-  </item>
-  <item>
-    <path>civicrm/pcp/dashboard/tribute</path>
-    <page_callback>CRM_Pcpteams_Page_Dashboard_Tribute</page_callback>
-    <title>Tribute</title>
-    <access_arguments>access CiviCRM</access_arguments>
-  </item>
-  <item>
-    <path>civicrm/pcp/dashboard/team</path>
-    <page_callback>CRM_Pcpteams_Page_Dashboard_Team</page_callback>
-    <title>Team</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
 </menu>

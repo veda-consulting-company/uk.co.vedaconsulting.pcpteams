@@ -6,9 +6,13 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
 
   function run() {
     //get Pcp Id from URL
-    $pcpId = CRM_Utils_Request::retrieve('id', 'Positive');
-    $userId= $pcpContactId = CRM_Pcpteams_Utils::getloggedInUserId();
     $state = NULL;
+    $pcpId = CRM_Utils_Request::retrieve('id', 'Positive');
+    $state = CRM_Utils_Request::retrieve('state', 'String');
+    $userId= $pcpContactId = CRM_Pcpteams_Utils::getloggedInUserId();
+    
+    $pageTitle = empty($state) ? 'My Dashboard' : ucwords($state)." Dashboard ";
+    CRM_Utils_System::setTitle( $pageTitle );
     
     // check the user is a team admin
     $checkUserIsTeamAdmin = CRM_Pcpteams_Utils::checkUserIsaTeamAdmin($userId);
@@ -47,7 +51,7 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
     }
     
     // check the user has group
-    $checkUserHasGroup = CRM_Pcpteams_Utils::checkUserHasGroup($pcpId, 'get');
+    $checkUserHasGroup = CRM_Pcpteams_Utils::checkOrUpdateUserPcpGroup($pcpId, 'get');
     if(!empty($checkUserHasGroup)){
       $pcpGroupId = $checkUserIsTeamAdmin['id'];
       $state        = $checkUserIsTeamAdmin['state'];
