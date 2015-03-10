@@ -125,7 +125,8 @@ class CRM_Pcpteams_Page_PCP extends CRM_Core_Page {
     $this->assign('joinTeamUrl', $joinTeamURl);
     $this->assign('profilePicURl', $profilePicURl);
     $this->assign('branchURl', $branchURl);
-    
+    $honor = CRM_PCP_BAO_PCP::honorRoll($pcpId);
+    $this->assign('honor', $honor);
     if(empty($state)){
       //FIXME : get the state name from api
       $state = 'Individual';
