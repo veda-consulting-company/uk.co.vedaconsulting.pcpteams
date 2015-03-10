@@ -58,7 +58,7 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
     }
     
     
-    $custom_group_name = CRM_Pcpteams_Utils::C_PCP_CUSTOM_GROUP_NAME;
+    $custom_group_name = CRM_Pcpteams_Constant::C_PCP_CUSTOM_GROUP_NAME;
     $customGroupParams = array(
         'version'     => 3,
         'sequential'  => 1,

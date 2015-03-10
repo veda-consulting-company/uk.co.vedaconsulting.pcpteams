@@ -138,3 +138,15 @@ function _civicrm_api3_pcpteams_custom_get(&$params) {
     // FIXME: we should at some point replace "custom_xy_" with column-names
   }
 }
+
+function civicrm_api3_pcpteams_getpcpblock($params) {
+  $dao = new CRM_PCP_DAO_PCPBlock();
+  // FIXME: need to enforce type check
+  $dao->entity_id = $params['entity_id']; // type check done by getfields
+  $result         = _civicrm_api3_dao_to_array($dao);
+
+  return civicrm_api3_create_success($result, $params);
+}
+function _civicrm_api3_pcpteams_getpcpblock_spec(&$params) {
+  $params['entity_id']['api.required'] = 1;
+}
