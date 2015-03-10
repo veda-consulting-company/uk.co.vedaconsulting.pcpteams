@@ -69,21 +69,37 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
     $customGroupID = $custom_group_ret['id'];
     $customGroupTableName = $custom_group_ret['values'][0]['table_name'];
    
-    $query          = "SELECT ct.team_pcp_id FROM $customGroupTableName ct WHERE ct.entity_id = '$pcpId'";
-    $teamPcpID      = CRM_Core_DAO::singleValueQuery($query);
+    $query          = "SELECT ct.team_pcp_id, ct.org_id FROM $customGroupTableName ct WHERE ct.entity_id = '$pcpId'";
+    $customDao      = CRM_Core_DAO::executeQuery($query);
+    $customDao->fetch();
     
-    // $this->assign('notteamExists', $teamPcpID ? FALSE : TRUE);
-    if($teamPcpID) {
+    $teamPcpID        = $customDao->team_pcp_id;
+    $groupPcpID       = $customDao->org_id;
+    
+    $this->assign('notteamExists', $teamPcpID ? FALSE : TRUE);
       $eventQuery = "
                SELECT ce.title as event_title, cp.title as team_title FROM civicrm_event ce
                INNER JOIN civicrm_pcp cp ON (cp.page_id = ce.id AND cp.page_type = 'event')
                WHERE cp.id = $teamPcpID";
       $dao = CRM_Core_DAO::executeQuery($eventQuery);
+      $dao->fetch();
+    if($teamPcpID && $state == 'team') {
+      CRM_Utils_System::setTitle( $pageTitle.': '.$dao->team_title );
+      $this->assign('teamTitle', $dao->team_title);
+    }
+    $this->assign('eventTitle', $dao->event_title);
+    
+    if($groupPcpID && $state == 'group') {
+      $groupQuery = "
+               SELECT cc.display_name FROM civicrm_contact cc
+               INNER JOIN $customGroupTableName cp ON cp.org_id = cc.id
+               WHERE cp.org_id = $groupPcpID";
+      $dao = CRM_Core_DAO::executeQuery($groupQuery);
       if($dao->fetch()) {
-        // CRM_Utils_System::setTitle( $pageTitle.': '.$dao->team_title );
-        $this->assign('eventTitle', $dao->event_title);
-        $this->assign('teamTitle', $dao->team_title);
+        CRM_Utils_System::setTitle( $pageTitle.': '.$dao->display_name );
+        $this->assign('groupTitle', $dao->display_name);
       }
+      
     }
     //FIXME: Validate the contact has permission to view / edit the PCP details (check with api)
 
