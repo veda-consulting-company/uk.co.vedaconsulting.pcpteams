@@ -99,7 +99,6 @@
         Suspendisse volutpat erat purus, quis tincidunt justo molestie eget. Fusce purus nisi, aliquam nec
 
       </p>
-      <input type="button" name="joinbranch" value="Join a Branch/Partner" id="jointeam" onclick="parent.location='{$branchURl}'" />
     </div>
   </div>
 </div>

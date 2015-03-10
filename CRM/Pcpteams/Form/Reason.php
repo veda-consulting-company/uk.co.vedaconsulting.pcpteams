@@ -8,7 +8,20 @@ require_once 'CRM/Core/Form.php';
  */
 class CRM_Pcpteams_Form_Reason extends CRM_Core_Form {
   function preProcess() {
-    $this->_PcpId = CRM_Utils_Request::retrieve('id', 'Positive');
+    $this->_pcpId = CRM_Utils_Request::retrieve('id', 'Positive');
+    $userId = CRM_Pcpteams_Utils::getloggedInUserId();
+    if (!$this->_pcpId) {
+      $result = civicrm_api('Pcpteams', 
+        'getcontactpcp', 
+        array(
+          'contact_id' => $userId,
+          'version'    => 3
+        )
+      );
+      if (!empty($result['id'])) {
+        $this->_pcpId = $result['id'];
+      }
+    }
 
     //Fixme: validate the contact id, and check permission can view / edit this pcp.
 
@@ -23,8 +36,8 @@ class CRM_Pcpteams_Form_Reason extends CRM_Core_Form {
 
     $this->add("select", "pcp_type", ts('PCP Type'), $pcp_type);
 
-    $this->addEntityRef('pcp_contact_id', ts('Search Contact'), array('create' => TRUE), TRUE);
-
+    $this->addEntityRef('pcp_contact_id', ts('Search Contact'), array('api' => array('params' => array('contact_type' => 'Organization')), 'create' => TRUE), TRUE);
+    $this->add('hidden', 'pcpId', $this->_pcpId);
     // InMemory - Deceased date 
     $this->addDate('deceased_date', ts('Deceased date'), FALSE, array('formatType' => 'birth'));
 

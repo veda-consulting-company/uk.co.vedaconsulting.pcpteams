@@ -18,7 +18,7 @@
                                         <img width="100" height="97" src="{$profilePicUrl}">
                                     </a>
                                 </div>
-                            </div><br /><br /><br />&nbsp;&nbsp;&nbsp;&nbsp;{ts}<h1>Sample Group Name</h1>{/ts}
+                            </div><br /><br /><br />&nbsp;&nbsp;&nbsp;&nbsp;{ts}<h1>{$groupTitle}</h1>{/ts}
                         </td>
                     </tr>
                 {/if}
@@ -135,6 +135,7 @@
 <!-- contentfilter block -->
 <div class="crm-accordion-wrapper pcp-dashboard-block-contentfilter">
 	<!-- Right side block -->
+        <div class="crm-accordion-header">Content Filters </div>
 	<div class="crm-accordion-body pcp-dashboard-block-contentfilter-text">
             <table>
                 <tr>
