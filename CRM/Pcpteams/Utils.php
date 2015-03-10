@@ -77,9 +77,11 @@ class  CRM_Pcpteams_Utils {
     
     if($action == 'create' ) {
       $customParams['custom_'.$cfId]  = $params['value'];
-      $customParams['id']             = $params['id'];
-    }
       
+    }
+    if(isset($params['id'])) {
+      $customParams['id'] = $params['id'];
+    }
     
     return civicrm_api3('CustomValue', $action, $customParams);
     
