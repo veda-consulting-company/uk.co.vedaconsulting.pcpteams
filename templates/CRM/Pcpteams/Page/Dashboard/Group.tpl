@@ -67,6 +67,29 @@
 </div>
 <!-- End Group Bio name block -->
 
+<!-- in memory block -->
+<div class="crm-accordion-wrapper pcp-dashboard-block-donatetoname">
+  <!-- Right side block -->
+  <div class="crm-accordion-header">{ts}In Memory Name{/ts}</div>
+  <div class="crm-accordion-body pcp-dashboard-block-donatetoname-text">
+    <div class="lightbground">
+      <p class="title_text">{ts}In Memory Name{/ts}</p>
+    </div>
+    <div class="block_body block_body_alignment darkbground">
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse interdum sapien sit amet sem
+
+        varius. Vestibulum viverra mi dictum odio scelerisque semper. Morbi fermentum ut neque a mollis.
+
+        Suspendisse volutpat erat purus, quis tincidunt justo molestie eget. Fusce purus nisi, aliquam nec
+      </p>
+      <a href="{crmURL p="civicrm/pcp/reason" q="reset=1" a=1}" title="{ts}In Memory Name{/ts}" class="button">{ts}In Memory Name{/ts}</a>
+      <div style="clear: both;"></div>
+    </div>
+  </div>
+</div>
+<!-- End in memory block -->
+
 <!-- Your contact block -->
 <div class="crm-accordion-wrapper pcp-dashboard-block-yourcontact">
 	<!-- Right side block -->

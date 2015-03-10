@@ -23,7 +23,12 @@ class  CRM_Pcpteams_Utils {
     $contactID  = $session->get('userID'        );
     return $contactID;
   }
-  
+
+  // FIXME: 
+  // 1. change function name to isUserTeamAdmin
+  // 2. Ideally we need isUserTeamMember
+  // 3. pure sql query
+  // 4. Make this an API
   static function checkUserIsaTeamAdmin( $userId ){
     if(empty($userId)){
       return NULL;
@@ -42,8 +47,13 @@ class  CRM_Pcpteams_Utils {
     }
     
     return null;
-    
   }  
+
+  // FIXME:
+  // 1. split function into two - 
+  // A. civicrm_api('pcpteams', get, $params) - this already exist
+  // B. civicrm_api('pcpteams', create, $params) 
+  // 2. change all places to use the api instead of this function
   static function checkOrUpdateUserPcpGroup( $pcpId, $action = 'get', $params = array() ){
     if(empty($pcpId )){
       return NULL;
@@ -85,6 +95,8 @@ class  CRM_Pcpteams_Utils {
     return sprintf("<a href =\"{$url}\">%s</a>", $id, $contactName['0']);
   }
 
+  // FIXME:
+  // 1. Ideally we should do a pushUserContext() for dashboard and get rid of this one.
   static function pcpRedirectUrl($pageName, $qParams = array()){
     $url = CRM_Utils_System::url('civicrm/pcp/dashboard', 'reset=1');
     if($pageName){
@@ -100,6 +112,9 @@ class  CRM_Pcpteams_Utils {
     CRM_Utils_System::redirect($url);
   }
 
+  // FIXME:
+  // 1. split it into get and create relationship apis
+  // 2. We could have a wrapper on top of them as our own api if needed.
   /**
    * To check the valid relationship is exists., Create If not Found one.
    */
