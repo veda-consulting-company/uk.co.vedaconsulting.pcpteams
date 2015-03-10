@@ -6,6 +6,6 @@
 
 {if $path}
 <!-- include tpl based on the user state -->
-{include file="CRM/Pcpteams/Page/Dashboard/$path.tpl"}
+{include file="CRM/Pcpteams/Page/PCP/$path.tpl"}
 {/if}
 
