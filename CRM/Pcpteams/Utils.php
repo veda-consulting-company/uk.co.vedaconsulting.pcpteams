@@ -185,4 +185,22 @@ class  CRM_Pcpteams_Utils {
   static function getPcpTypeCustomFieldId(){
     return CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', CRM_Pcpteams_Constant::C_CF_PCP_TYPE, 'id', 'name');
   }
+  
+  static function getEventDetailsbyEventId( $id ){
+    if(empty($id)){
+      return NULL;
+    }
+    
+    $params = array(
+      'version' => 3,
+      'id'      => $id,
+    );
+    
+    $apiResult = civicrm_api3('Event', 'getsingle', $params);
+    if(civicrm_error($apiResult)){
+      return null;
+    }
+    
+    return $apiResult;
+  }
 }

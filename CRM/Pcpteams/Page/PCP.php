@@ -72,11 +72,13 @@ class CRM_Pcpteams_Page_PCP extends CRM_Core_Page {
     
     //Step 2:check this Page has some Donations
     $pcpBlockDetails = civicrm_api('Pcpteams', 'getpcpblock', array('entity_id' => $pcpDetails['page_id'], 'version' => 3, 'sequential' => 1));
+    $donationExist   = FALSE;
     if(!civicrm_error($pcpBlockDetails)){
       $targetEntityId = $pcpBlockDetails['values'][0]['target_entity_id'];
       $contriAPI      = CRM_Pcpteams_Utils::getContributionDetailsByContributionPageId($targetEntityId);
       if($contriAPI['count'] > 0){
         $return['page_state'] = 'donations';
+        $donationExist        = TRUE;
       }
     }
     
@@ -162,19 +164,28 @@ class CRM_Pcpteams_Page_PCP extends CRM_Core_Page {
     }    
     //End Team
     
+    $userId         = CRM_Pcpteams_Utils::getloggedInUserId();
+    
+    //EventTitle 
+    $tplParams['event_title'] = NULL;
+    if($pcpDetails['page_type'] == 'event') {
+      $eventDetails   = CRM_Pcpteams_Utils::getEventDetailsbyEventId( $pcpDetails['page_id']);
+      $tplParams['event_title'] = $eventDetails['title'];
+    } 
     
     //Pcp layout button and URLs
     $joinTeamURl    = CRM_Utils_System::url('civicrm/pcp/team', 'reset=1&id='.$pcpId);
     $createTeamURl  = CRM_Utils_System::url('civicrm/pcp/team/create', 'reset=1&id='.$pcpId);
-    $profilePicURl  = CRM_Utils_System::url('civicrm/pcp/profile', 'reset=1&id='.$pcpId);
+    $updateProfPic  = CRM_Utils_System::url('civicrm/pcp/profile', 'reset=1&id='.$pcpId);
     $branchURl      = CRM_Utils_System::url('civicrm/pcp/branchorpartner', 'reset=1&id='.$pcpId);
     
     //assign values to tpl
     $this->assign('pcpId', $pcpId);
     $this->assign('createTeamUrl', $createTeamURl);
     $this->assign('joinTeamUrl', $joinTeamURl);
-    $this->assign('profilePicURl', $profilePicURl);
+    $this->assign('updateProfPic', $userId ? $updateProfPic : NULL);
     $this->assign('branchURl', $branchURl);
+    $this->assign('tplParams', $tplParams);
     $honor = CRM_PCP_BAO_PCP::honorRoll($pcpId);
     $this->assign('honor', $honor);
     if(empty($state)){
