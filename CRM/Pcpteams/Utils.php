@@ -159,4 +159,10 @@ class  CRM_Pcpteams_Utils {
     }
 
   }
+  
+  static function getcontactIdbyPcpId($id) {
+    $id = CRM_Utils_Type::escape($id, 'Integer');
+    $query = "SELECT contact_id FROM civicrm_pcp WHERE id = {$id}";
+    return CRM_Core_DAO::singleValueQuery($query, CRM_Core_DAO::$_nullArray);
+ }
 }
