@@ -41,7 +41,7 @@
   <div class="crm-accordion-body pcp-dashboard-block-info-text">
     <strong>
 
-      Congratulations, you Have now created a team taking part of {$eventTitle}
+      Congratulations, you are now signed up for {$eventTitle}
     </strong>
     <br />
     <p>
@@ -99,20 +99,53 @@
         Suspendisse volutpat erat purus, quis tincidunt justo molestie eget. Fusce purus nisi, aliquam nec
 
       </p>
-      {if $notteamExists}
       <input type="button" name="createteam" value="Create a Team" id="createteam" onclick="parent.location='{$createTeamUrl}'" />
       <input type="button" name="jointeam" value="Join a Team" id="jointeam" onclick="parent.location='{$joinTeamUrl}'" />
-      {/if}
+      
     </div>
+      <div class="description">
+          
+          
+      </div>
   </div>
 </div>
 <!-- End totaliser -->
 
-<!-- in memory block -->
-<div class="crm-accordion-wrapper pcp-dashboard-block-donatetoname">
+<!-- Give to name block -->
+<div class="crm-accordion-wrapper pcp-dashboard-block-givetoname">
+          <div class="crm-accordion-header">{ts}Give to name{/ts}</div>
+          <div class="crm-accordion-body pcp-dashboard-block-givetoname-text">
+              <input type="button" name="givetoname" value="Give to name" id="givetoname" onclick="parent.location='{$joinTeamUrl}'" />
+</div>
+              
+          </div>
+<!-- End Give to name block -->
+      <!--Donations block -->
+      <div class="crm-accordion-wrapper pcp-dashboard-block-donations">
+          <div class="crm-accordion-header">{ts}Donations{/ts}</div>
+          <div class="crm-accordion-body pcp-dashboard-block-donations-text">
+              
+                <div class="honor_roll">
+                    <marquee behavior="scroll" direction="up" id="pcp_roll"  scrolldelay="200" bgcolor="#fafafa">
+                      {foreach from = $honor item = v}
+                      <div class="pcp_honor_roll_entry">
+                          <div class="pcp-honor_roll-nickname">{$v.nickname}</div>
+                          <div class="pcp-honor_roll-total_amount">{$v.total_amount}</div>
+                          <div class="pcp-honor_roll-personal_note">{$v.personal_note}</div>
+                </div>
+                      {/foreach}
+                    </marquee>
+                </div>
+
+          </div>
+      </div>
+ <!--End Donations block -->
+ 
+ <!-- in memory block -->
+<div class="crm-accordion-wrapper pcp-dashboard-block-inmemory">
   <!-- Right side block -->
   <div class="crm-accordion-header">{ts}In Memory Name{/ts}</div>
-  <div class="crm-accordion-body pcp-dashboard-block-donatetoname-text">
+  <div class="crm-accordion-body pcp-dashboard-block-inmemory-text">
     <div class="lightbground">
       <p class="title_text">{ts}In Memory Name{/ts}</p>
     </div>
@@ -124,21 +157,17 @@
 
         Suspendisse volutpat erat purus, quis tincidunt justo molestie eget. Fusce purus nisi, aliquam nec
       </p>
-      <a href="{crmURL p="civicrm/pcp/reason" q="reset=1" a=1}" title="{ts}In Memory Name{/ts}" class="button">{ts}In Memory Name{/ts}</a>
       <div style="clear: both;"></div>
     </div>
   </div>
 </div>
-<!-- End in memory block -->
-
-<!-- Donate to name block -->
-<div class="crm-accordion-wrapper pcp-dashboard-block-donatetoname">
+    
+    <!-- team block -->
+<div class="crm-accordion-wrapper pcp-dashboard-block-team">
   <!-- Right side block -->
-  <div class="crm-accordion-header"> Donate to Name </div>
-  <div class="crm-accordion-body pcp-dashboard-block-donatetoname-text">
-    <div class="lightbground">
-      <p class="title_text">Donate to Name</p>
-    </div>
+  <div class="crm-accordion-header">{ts}Team name{/ts}</div>
+  <div class="crm-accordion-body pcp-dashboard-block-team-text">
+    
     <div class="block_body block_body_alignment darkbground">
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse interdum sapien sit amet sem
@@ -147,10 +176,72 @@
 
         Suspendisse volutpat erat purus, quis tincidunt justo molestie eget. Fusce purus nisi, aliquam nec
       </p>
+      <div style="clear: both;"></div>
     </div>
   </div>
 </div>
-<!-- End Donate to name block -->
+    
+    
+<!-- End team block -->
+<!-- team and in memory block -->
+<div class="crm-accordion-wrapper pcp-dashboard-block-inmemoryandteam">
+  <!-- Right side block -->
+  <div class="crm-accordion-header">{ts}Team and In Memory{/ts}</div>
+  <div class="crm-accordion-body pcp-dashboard-block-inmemoryandteam-text">
+    <table class ="form-layout" >
+                    <tr>
+                        <td>
+                            <div id="crm-contact-thumbnail" style="float:left">
+                                        <img width="100" height="97" src="{$profilePicUrl}">
+                            </div>
+                        </td>
+                       <td>
+                            <div id="crm-contact-thumbnail" style="float:left">
+                                        <img width="100" height="97" src="{$profilePicUrl}">
+                            </div>
+                                       
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="float:left; ">
+                            {ts}InMemoryofname{/ts}
+                        </td>
+                        <td style="float:right;">
+                            {ts}Team Name{/ts}
+                        </td>
+                    </tr>
+            </table>
+  </div>
+</div>
+    
+    
+<!-- End team and in memory block -->
+<!-- contentfilter block -->
+<div class="crm-accordion-wrapper pcp-dashboard-block-contentfilter">
+	<!-- Right side block -->
+	<div class="crm-accordion-body pcp-dashboard-block-contentfilter-text">
+            <table>
+                <tr>
+                    <td>
+                        <input id="all" type="checkbox" value="1" name="all">&nbsp;&nbsp;{ts}All{/ts}
+                    </td>
+                    <td>
+                        <input id="blogs" type="checkbox" value="1" name="blogs">&nbsp;&nbsp;{ts}Blogs{/ts}
+                    </td>
+                    <td>
+                        <input id="donations" type="checkbox" value="1" name="donations">&nbsp;&nbsp;{ts}Donations{/ts}
+                    </td>
+                    <td>
+                        <input id="photos" type="checkbox" value="1" name="photos">&nbsp;&nbsp;{ts}Photos{/ts}
+                    </td>
+                    <td>
+                        <input type="button" name="update" value="update" id="update" onclick="parent.location='{$profilePicURl}'" /><br />
+                    </td>
+                </tr>
+            </table>
+	</div>
+</div>
+<!-- End contentsfilter block -->
 
 <!-- blog block -->
 <div class="crm-accordion-wrapper pcp-dashboard-block-blog">
