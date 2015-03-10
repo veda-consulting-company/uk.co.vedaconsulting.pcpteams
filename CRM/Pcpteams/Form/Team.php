@@ -51,16 +51,29 @@ class CRM_Pcpteams_Form_Team extends CRM_Core_Form {
     $userId = CRM_Pcpteams_Utils::getloggedInUserId();
     $pcpId  = $values['pcpId'];
     CRM_Pcpteams_Utils::checkORCreateTeamRelationship($userId, $teamId, TRUE);
-    
+    //getTeamPcpId 
+    $result = civicrm_api('Pcpteams', 
+        'getcontactpcp', 
+        array(
+          'contact_id' => $teamId,
+          'version'    => 3
+        )
+      );
+    if (!empty($result['id'])) {
+      $teamPcpId = $result['id'];
+    }
     //Update the Custom set
-    $isTeamExits = CRM_Pcpteams_Utils::checkOrUpdateUserPcpGroup( $pcpId, 'get');
-    if(isset($isTeamExits['values']) && empty($isTeamExits['values']['latest'])){
+    $teamPcpCfId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', 'Team_PCP_ID', 'id', 'name');
+    $isTeamExits = CRM_Pcpteams_Utils::checkOrUpdateUserPcpGroup( $pcpId, 'get', array( 'cfId' => $teamPcpCfId) );
+
+    if(isset($isTeamExits['values']) && empty($isTeamExits['values']['latest']) && !empty($teamPcpId)){
       $params = array(
-        'value' => $teamId,
+        'value' => $teamPcpId,
+        'cfId'  => $teamPcpCfId,
       );
       CRM_Pcpteams_Utils::checkOrUpdateUserPcpGroup( $pcpId, 'create', $params);
     }
-    
+
     //redirect
     $redirectParams = array(
       'state' => 'team',
