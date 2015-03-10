@@ -72,7 +72,7 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
     $query          = "SELECT ct.team_pcp_id FROM $customGroupTableName ct WHERE ct.entity_id = '$pcpId'";
     $teamPcpID      = CRM_Core_DAO::singleValueQuery($query);
     
-    $this->assign('notteamExists', $teamPcpID ? FALSE : TRUE);
+    // $this->assign('notteamExists', $teamPcpID ? FALSE : TRUE);
     if($teamPcpID) {
       $eventQuery = "
                SELECT ce.title as event_title, cp.title as team_title FROM civicrm_event ce
