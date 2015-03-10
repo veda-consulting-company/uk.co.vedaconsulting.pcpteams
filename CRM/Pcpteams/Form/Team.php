@@ -10,6 +10,20 @@ require_once 'CRM/Core/Form.php';
 class CRM_Pcpteams_Form_Team extends CRM_Core_Form {
 
   function preProcess(){
+    $this->_pcpId = CRM_Utils_Request::retrieve('id', 'Positive');
+    $userId = CRM_Pcpteams_Utils::getloggedInUserId();
+    if (!$this->_pcpId) {
+      $result = civicrm_api('Pcpteams', 
+        'getcontactpcp', 
+        array(
+          'contact_id' => $userId,
+          'version'    => 3
+        )
+      );
+      if (!empty($result['id'])) {
+        $this->_pcpId = $result['id'];
+      }
+    }
     parent::preProcess();
   }
 
@@ -17,6 +31,7 @@ class CRM_Pcpteams_Form_Team extends CRM_Core_Form {
 
     // add form elements
     $this->addEntityRef('pcp_team_contact', ts('Select Team'), array('api' => array('params' => array('contact_type' => 'Organization', 'contact_sub_type' => 'Team')), 'create' => TRUE), TRUE);
+    $this->add('hidden', 'pcpId', $this->_pcpId);
     $this->addButtons(array(
       array(
         'type' => 'submit',
@@ -34,8 +49,23 @@ class CRM_Pcpteams_Form_Team extends CRM_Core_Form {
     $values = $this->exportValues();
     $teamId = $values['pcp_team_contact'];
     $userId = CRM_Pcpteams_Utils::getloggedInUserId();
+    $pcpId  = $values['pcpId'];
     CRM_Pcpteams_Utils::checkORCreateTeamRelationship($userId, $teamId, TRUE);
-    CRM_Pcpteams_Utils::pcpRedirectUrl('dashboard');
+    
+    //Update the Custom set
+    $isTeamExits = CRM_Pcpteams_Utils::checkOrUpdateUserPcpGroup( $pcpId, 'get');
+    if(isset($isTeamExits['values']) && empty($isTeamExits['values']['latest'])){
+      $params = array(
+        'value' => $teamId,
+      );
+      CRM_Pcpteams_Utils::checkOrUpdateUserPcpGroup( $pcpId, 'create', $params);
+    }
+    
+    //redirect
+    $redirectParams = array(
+      'state' => 'team',
+    );
+    CRM_Pcpteams_Utils::pcpRedirectUrl('dashboard', $redirectParams);
     parent::postProcess();
   }
 

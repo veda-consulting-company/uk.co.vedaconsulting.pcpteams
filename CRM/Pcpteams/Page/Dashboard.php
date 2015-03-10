@@ -52,9 +52,9 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
     
     // check the user has group
     $checkUserHasGroup = CRM_Pcpteams_Utils::checkOrUpdateUserPcpGroup($pcpId, 'get');
-    if(!empty($checkUserHasGroup)){
-      $pcpGroupId = $checkUserIsTeamAdmin['id'];
-      $state        = $checkUserIsTeamAdmin['state'];
+    if(isset($checkUserHasGroup['values']['latest']) && !empty($checkUserHasGroup['values']['latest'])){
+      $pcpGroupId = $checkUserHasGroup['values']['latest'];
+      $state      = "Group";
     }
     
     
@@ -72,6 +72,7 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
     $query          = "SELECT ct.team_pcp_id FROM $customGroupTableName ct WHERE ct.entity_id = '$pcpId'";
     $teamPcpID      = CRM_Core_DAO::singleValueQuery($query);
     
+    // $this->assign('notteamExists', $teamPcpID ? FALSE : TRUE);
     if($teamPcpID) {
       $eventQuery = "
                SELECT ce.title as event_title, cp.title as team_title FROM civicrm_event ce
@@ -79,7 +80,7 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
                WHERE cp.id = $teamPcpID";
       $dao = CRM_Core_DAO::executeQuery($eventQuery);
       if($dao->fetch()) {
-        CRM_Utils_System::setTitle( $pageTitle.': '.$dao->team_title );
+        // CRM_Utils_System::setTitle( $pageTitle.': '.$dao->team_title );
         $this->assign('eventTitle', $dao->event_title);
         $this->assign('teamTitle', $dao->team_title);
       }
