@@ -100,7 +100,7 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
     
     if(empty($state)){
       //FIXME : get the state name from api
-      $state = 'Team';
+      $state = 'Individual';
     }
     $this->assign('path', ucwords($state));
     parent::run();
