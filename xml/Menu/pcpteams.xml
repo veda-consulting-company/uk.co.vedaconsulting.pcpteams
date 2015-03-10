@@ -1,6 +1,13 @@
 <?xml version="1.0"?>
 <menu>
   <item>
+    <path>civicrm/pcp/page</path>
+    <page_callback>CRM_Pcpteams_Page_PCP</page_callback>
+    <title>Personal Campaign Page</title>
+    <access_callback>1</access_callback>
+    <is_public>true</is_public>
+  </item>
+  <item>
     <path>civicrm/pcp/dashboard</path>
     <page_callback>CRM_Pcpteams_Page_Dashboard</page_callback>
     <title>My Dashboard</title>

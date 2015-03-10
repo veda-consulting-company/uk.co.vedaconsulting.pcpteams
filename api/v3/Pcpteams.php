@@ -121,8 +121,8 @@ function _civicrm_api3_pcpteams_getstate_output(&$result){
     $result['state'][] = 'individual';
   }
   
-  $cfTeamPcpId = CRM_Core_Dao::getFieldValue('CRM_Core_Dao_CustomField', 'Team_PCP_ID', 'id', 'name');
-  $cforgId     = CRM_Core_Dao::getFieldValue('CRM_Core_Dao_CustomField', 'Branch_or_Partner', 'id', 'name');
+  $cfTeamPcpId = CRM_Core_Dao::getFieldValue('CRM_Core_DAO_CustomField', 'Team_PCP_ID', 'id', 'name');
+  $cforgId     = CRM_Core_Dao::getFieldValue('CRM_Core_DAO_CustomField', 'Branch_or_Partner', 'id', 'name');
   if(isset($result['custom_'.$cfTeamPcpId])){
     $result['state'][] = 'team';
   }
