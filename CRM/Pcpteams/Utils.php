@@ -62,6 +62,10 @@ class  CRM_Pcpteams_Utils {
     //get group Id from CustomGroup PCP_custom_set
     //CustomField name = 'Branch_or_partner'
     $cfId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', self::C_CF_BRANCH_PARTNER, 'id', 'name');
+    if($params['cfId']){
+      $cfId = $params['cfId'];
+    }
+    
     if(!$cfId){
       return NULL;
     }
@@ -82,7 +86,7 @@ class  CRM_Pcpteams_Utils {
     if(isset($params['id'])) {
       $customParams['id'] = $params['id'];
     }
-    
+
     return civicrm_api3('CustomValue', $action, $customParams);
     
   }
