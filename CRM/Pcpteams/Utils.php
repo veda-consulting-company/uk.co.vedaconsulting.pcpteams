@@ -186,6 +186,10 @@ class  CRM_Pcpteams_Utils {
     return CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', CRM_Pcpteams_Constant::C_CF_PCP_TYPE, 'id', 'name');
   }
   
+  static function getPcpTypeContactCustomFieldId(){
+    return CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', CRM_Pcpteams_Constant::C_CF_PCP_TYPE_CONTACT, 'id', 'name');
+  }
+  
   static function getEventDetailsbyEventId( $id ){
     if(empty($id)){
       return NULL;

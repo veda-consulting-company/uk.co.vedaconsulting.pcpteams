@@ -43,7 +43,7 @@
   <div class="crm-accordion-body pcp-dashboard-block-info-text">
     <strong>
 
-      Congratulations, you are now signed up for {$tplParams.eventTitle}
+      Congratulations, you are now signed up for {$tplParams.event_title}
     </strong>
     <br />
     <p>
@@ -110,18 +110,41 @@
         Suspendisse volutpat erat purus, quis tincidunt justo molestie eget. Fusce purus nisi, aliquam nec
 
       </p>
-      {if $createTeamUrl}
-      <input type="button" name="createteam" value="Create a Team" id="createteam" onclick="parent.location='{$createTeamUrl}'" />
-      {/if}
-      {if $joinTeamUrl}
-      <input type="button" name="jointeam" value="Join a Team" id="jointeam" onclick="parent.location='{$joinTeamUrl}'" />
+      {if empty($tplParams.team_pcp_id)}
+        {if $createTeamUrl}
+        <input type="button" name="createteam" value="Create a Team" id="createteam" onclick="parent.location='{$createTeamUrl}'" />
+        {/if}
+        {if $joinTeamUrl}
+        <input type="button" name="jointeam" value="Join a Team" id="jointeam" onclick="parent.location='{$joinTeamUrl}'" />
+        {/if}
       {/if}
       
     </div>
-      <div class="description">
-          
-          
-      </div>
+      <div class="crm-accordion-body pcp-dashboard-block-inmemoryandteam-text">
+    <table class ="form-layout" >
+                    <tr>
+                        <td>
+                            <div id="crm-contact-thumbnail" style="float:left">
+                                        <img width="100" height="97" src="{$tplParams.in_mem_image_url}">
+                            </div>
+                        </td>
+                       <td>
+                            <div id="crm-contact-thumbnail" style="float:left">
+                                        <img width="100" height="97" src="{$tplParams.team_image_url}">
+                            </div>
+                                       
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="float:left; ">
+                            {ts}{$tplParams.in_mem_display_name}{/ts}
+                        </td>
+                        <td style="float:right;">
+                            {ts}{$tplParams.team_title}{/ts}
+                        </td>
+                    </tr>
+            </table>
+  </div>
   </div>
 </div>
 <!-- End totaliser -->
@@ -130,8 +153,8 @@
           <div class="crm-accordion-header">{ts}Give to Memory{/ts}</div>
           <div class="crm-accordion-body pcp-dashboard-block-givetomemory-text">
               <p>
-              Thank you for creating this page in memory of {$tplParams.in_memoryof}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              <input type="button" name="givetomemory" value="Give in memory of " id="givetoname" onclick="parent.location='{$givetomemoryUrl}'" />
+              Thank you for creating this page in memory of {$tplParams.in_mem_display_name}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <input type="button" name="givetomemory" value="Give in memory of {$tplParams.in_mem_display_name} " id="givetoname" onclick="parent.location='{$givetomemoryUrl}'" />
               </p>
               <p>
                   Please tell us a little about your story<br />
@@ -156,15 +179,6 @@
           </div>
 <!-- End Give to in mem block -->
 
-<!-- Give to name block -->
-<div class="crm-accordion-wrapper pcp-dashboard-block-givetoname">
-    <div class="crm-accordion-header">{ts}Give to {$tplParams.fundraiser}{/ts}</div>
-    <div class="crm-accordion-body pcp-dashboard-block-givetoname-text">
-        <input type="button" name="givetoname" value="Give to {$tplParams.fundraiser}" id="givetoname" onclick="parent.location='{$tplParams.donate_to_url}'" />
-    </div>
-</div>
-
-<!-- End Give to name block -->
       <!--Donations block -->
       <div class="crm-accordion-wrapper pcp-dashboard-block-donations">
           <div class="crm-accordion-header">{ts}Donations{/ts}</div>
@@ -178,19 +192,14 @@
                       fundraisers taking
 
                       part in event
-                </div>                
-                <div class="honor_roll">
-                    <marquee behavior="scroll" direction="up" id="pcp_roll"  scrolldelay="200" bgcolor="#fafafa">
-                      {foreach from = $honor item = v}
-                      <div class="pcp_honor_roll_entry">
-                          <div class="pcp-honor_roll-nickname">{$v.nickname}</div>
-                          <div class="pcp-honor_roll-total_amount">{$v.total_amount}</div>
-                          <div class="pcp-honor_roll-personal_note">{$v.personal_note}</div>
-                      </div>
-                      {/foreach}
-                    </marquee>
+                </div>   
+                      {assign var='donar' value=$tplParams.donation_details}
+                 {foreach item=details from=$donar}
+                     {$details.donar}{ts} has donated {/ts}{$details.amount}<br />
+                 {/foreach}
+                 <div class="crm-accordion-body pcp-dashboard-block-givetoname-text">
+                    <input type="button" name="givetoname" value="Donate to {$tplParams.fundraiser}" id="givetoname" onclick="parent.location='{$tplParams.donate_to_url}'" />
                 </div>
-
           </div>
       </div>
  <!--End Donations block -->
@@ -237,39 +246,7 @@
     
     
 <!-- End team block -->
-<!-- team and in memory block -->
-<div class="crm-accordion-wrapper pcp-dashboard-block-inmemoryandteam">
-  <!-- Right side block -->
-  <div class="crm-accordion-header">{ts}Team and In Memory{/ts}</div>
-  <div class="crm-accordion-body pcp-dashboard-block-inmemoryandteam-text">
-    <table class ="form-layout" >
-                    <tr>
-                        <td>
-                            <div id="crm-contact-thumbnail" style="float:left">
-                                        <img width="100" height="97" src="{$profilePicUrl}">
-                            </div>
-                        </td>
-                       <td>
-                            <div id="crm-contact-thumbnail" style="float:left">
-                                        <img width="100" height="97" src="{$profilePicUrl}">
-                            </div>
-                                       
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="float:left; ">
-                            {ts}InMemoryofname{/ts}
-                        </td>
-                        <td style="float:right;">
-                            {ts}Team Name{/ts}
-                        </td>
-                    </tr>
-            </table>
-  </div>
-</div>
-    
-    
-<!-- End team and in memory block -->
+
 <!-- contentfilter block -->
 <div class="crm-accordion-wrapper pcp-dashboard-block-contentfilter">
 	<!-- Right side block -->
@@ -322,15 +299,6 @@
 </div>
 <!-- End Blog block -->
 
-<!-- Upload Image-->
-<div class="crm-accordion-wrapper pcp-dashboard-block-upload_image">
-  <div class="crm-accordion-header"> Upload Image </div>
-  <div class="crm-accordion-body">
-    <BUTTON>
-      Upload Image
-    </BUTTON>
-  </div>
-</div>
-<!-- End upload image -->
+
 
 
