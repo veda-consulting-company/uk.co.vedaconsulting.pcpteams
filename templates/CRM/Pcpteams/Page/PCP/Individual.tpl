@@ -125,6 +125,36 @@
   </div>
 </div>
 <!-- End totaliser -->
+<!-- Give to in mem block -->
+<div class="crm-accordion-wrapper pcp-dashboard-block-givetomemory">
+          <div class="crm-accordion-header">{ts}Give to Memory{/ts}</div>
+          <div class="crm-accordion-body pcp-dashboard-block-givetomemory-text">
+              <p>
+              Thank you for creating this page in memory of {$tplParams.in_memoryof}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <input type="button" name="givetomemory" value="Give in memory of " id="givetoname" onclick="parent.location='{$givetomemoryUrl}'" />
+              </p>
+              <p>
+                  Please tell us a little about your story<br />
+                  <input type="text" class = "crm-form-text" name="aboutmemtext">&nbsp;&nbsp;
+  <input type="button" name="aboutmemsave" value="Save" id="aboutmemsave" onclick="parent.location='{$aboutmemSaveUrl}'">
+              </p>
+              <p class="title_thick">
+                    <strong>
+                        Inmem Bio/story
+                    </strong>
+                </p>
+                <p class="block_body">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse interdum sapien sit amet sem
+
+                    varius. Vestibulum viverra mi dictum odio scelerisque semper. Morbi fermentum ut neque a mollis.
+
+                    Suspendisse volutpat erat purus, quis tincidunt justo molestie eget. Fusce purus nisi, aliquam nec<br />
+                    <input type="button" name="readmore" value="Read more" id="aboutmemsave" onclick="parent.location='{$readMoreUrl}'">
+                </p>
+</div>
+              
+          </div>
+<!-- End Give to in mem block -->
 
 <!-- Give to name block -->
 <div class="crm-accordion-wrapper pcp-dashboard-block-givetoname">
