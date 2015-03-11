@@ -43,7 +43,7 @@
   <div class="crm-accordion-body pcp-dashboard-block-info-text">
     <strong>
 
-      Congratulations, you are now signed up for {$eventTitle}
+      Congratulations, you are now signed up for {$tplParams.eventTitle}
     </strong>
     <br />
     <p>

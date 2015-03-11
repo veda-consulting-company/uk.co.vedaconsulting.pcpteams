@@ -1,4 +1,4 @@
-<!-- .tpl file invoked: CRM\Pcpteams\Page\Dashboard\Team.tpl. Call via Dashboard.tpl -->
+<!-- .tpl file invoked: CRM\Pcpteams\Page\PCP\Team.tpl. Call via PCP.tpl -->
 
 <!-- header -->
 <div class="pcp-dashboard-header">
@@ -16,17 +16,19 @@
                                     </a>
                                 </div>
                             </div>
-                                       
-
+                            {if $tplParams.event_title}
+                              </div><br /><br /><br />&nbsp;&nbsp;&nbsp;&nbsp;{ts}<h1>{$tplParams.event_title}</h1>{/ts}
+                            {/if}
                         </td>
-                       
                     </tr>
                 {/if}
+                {if $updateProfPic}
                 <tr>
                     <td>
                         <input type="button" name="profilepic" value="Upload Profile Pic" id="profilepic" onclick="parent.location='{$profilePicURl}'" />
                     </td>
                 </tr>
+                {/if}
             </table>
   </div>
 
@@ -37,11 +39,10 @@
 
 <!-- Congratulations block -->
 <div class="crm-accordion-wrapper pcp-dashboard-block-info">
-  <div class="crm-accordion-header">Event Name: {$eventTitle}</div>
+  <div class="crm-accordion-header">Event Name: {if $tplParams.event_title} {$tplParams.event_title} {/if}</div>
   <div class="crm-accordion-body pcp-dashboard-block-info-text">
     <strong>
-
-      Congratulations, you Have now created a team taking part of {$eventTitle}
+      Congratulations, you Have now created a team taking part of {$tplParams.event_title}
     </strong>
     <br />
     <p>
@@ -63,7 +64,6 @@
 </div>
 <!-- End Congratulations block -->
 
-
 <!-- Totaliser block -->
 <div class="crm-accordion-wrapper pcp-dashboard-block-totaliser">
   <div class="crm-accordion-header"> Totaliser </div>
@@ -73,7 +73,7 @@
     </div>
     <div class="pcp_block lightbground">
       <p class="title_thick">
-        Bio
+        Tell us a bit about your team 
       </p>
       <p class="block_body">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse interdum sapien sit amet sem
@@ -82,68 +82,62 @@
 
         Suspendisse volutpat erat purus, quis tincidunt justo molestie eget. Fusce purus nisi, aliquam nec
       </p>
-    </div>
-
-    <!--Fundraiser update block -->
-    <div class="pcp_fundrasier">
+      <p>
+          <input type="button" name="givetoteamname" value="Give to team name" id="givetoname" onclick="parent.location='{$giveToTeamNameUrl}'" />
+      </p>
       <p class="title_thick">
-        fundraise more, fundraise as a team
+        Invite People to the team
       </p>
       <p>
-
-
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse interdum sapien sit amet sem
-
-        varius. Vestibulum viverra mi dictum odio scelerisque semper. Morbi fermentum ut neque a mollis.
-
-        Suspendisse volutpat erat purus, quis tincidunt justo molestie eget. Fusce purus nisi, aliquam nec
-
+        <input type="button" name="inviteteam" value="Invite team members" id="createteam" onclick="parent.location='{$inviteTeamUrl}'" />
       </p>
+      <p class="title_thick">
+        Top Team fundraisers
+      </p>
+        <p>
+            <table class ="form-layout" >
+                <tr>
+                    <td>
+                        <div id="crm-contact-thumbnail" style="float:left">
+                                    <img width="100" height="97" src="{$fundRaiserPicUrl}">
+                        </div>
+                    </td>
+                   <td>
+                        <div id="crm-contact-thumbnail" style="float:left">
+                                    <img width="100" height="97" src="{$fundRaiserPicUrl}">
+                        </div>
+
+                    </td>
+                    <td>
+                        <div id="crm-contact-thumbnail" style="float:left">
+                                    <img width="100" height="97" src="{$fundRaiserPicUrl}">
+                        </div>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td style="float:left; ">
+                        <input type="button" name="jointeam" value="Join a Team" id="jointeam" onclick="parent.location='{$joinTeamUrl}'" />
+                        &nbsp;&nbsp;&nbsp;&nbsp; <input type="button" name="seeallteam" value="See all team" id="createteam" onclick="parent.location='{$seeallTeamUrl}'" />
+                    </td>
+                </tr>
+            </table>
+        </p>
     </div>
-  </div>
+ 
 </div>
+ </div>
 <!-- End totaliser -->
 
-<!-- in memory block -->
-<div class="crm-accordion-wrapper pcp-dashboard-block-donatetoname">
-  <!-- Right side block -->
-  <div class="crm-accordion-header">{ts}In Memory Name{/ts}</div>
-  <div class="crm-accordion-body pcp-dashboard-block-donatetoname-text">
-    <div class="lightbground">
-      <p class="title_text">{ts}In Memory Name{/ts}</p>
-    </div>
-    <div class="block_body block_body_alignment darkbground">
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse interdum sapien sit amet sem
-
-        varius. Vestibulum viverra mi dictum odio scelerisque semper. Morbi fermentum ut neque a mollis.
-
-        Suspendisse volutpat erat purus, quis tincidunt justo molestie eget. Fusce purus nisi, aliquam nec
-      </p>
-      <a href="{crmURL p="civicrm/pcp/reason" q="reset=1" a=1}" title="{ts}In Memory Name{/ts}" class="button">{ts}In Memory Name{/ts}</a>
-      <div style="clear: both;"></div>
-    </div>
-  </div>
-</div>
-<!-- End in memory block -->
-
 <!-- Donate to name block -->
-<div class="crm-accordion-wrapper pcp-dashboard-block-donatetoname">
+<div class="crm-accordion-wrapper pcp-dashboard-block-givetoteamname">
   <!-- Right side block -->
-  <div class="crm-accordion-header"> Donate to Name </div>
-  <div class="crm-accordion-body pcp-dashboard-block-donatetoname-text">
+  <div class="crm-accordion-header"> Give to team name </div>
+  <div class="crm-accordion-body pcp-dashboard-block-givetoteamname-text">
     <div class="lightbground">
-      <p class="title_text">Donate to Name</p>
+      <input type="button" name="givetoteamname" value="Give to team name" id="givetoname" onclick="parent.location='{$giveToTeamNameUrl}'" />
     </div>
-    <div class="block_body block_body_alignment darkbground">
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse interdum sapien sit amet sem
-
-        varius. Vestibulum viverra mi dictum odio scelerisque semper. Morbi fermentum ut neque a mollis.
-
-        Suspendisse volutpat erat purus, quis tincidunt justo molestie eget. Fusce purus nisi, aliquam nec
-      </p>
-    </div>
+    
   </div>
 </div>
 <!-- End Donate to name block -->
