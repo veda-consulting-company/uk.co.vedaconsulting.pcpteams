@@ -150,3 +150,13 @@ function civicrm_api3_pcpteams_getpcpblock($params) {
 function _civicrm_api3_pcpteams_getpcpblock_spec(&$params) {
   $params['entity_id']['api.required'] = 1;
 }
+
+function civicrm_api3_pcpteams_getallpagesbyevent($params) {
+  $dao = new CRM_PCP_DAO_PCP();
+  $dao->page_id = $params['page_id'];
+  $result       = _civicrm_api3_dao_to_array($dao);
+  return civicrm_api3_create_success($result, $params);
+}
+function _civicrm_api3_pcpteams_getallpagesbyevent_spec(&$params) {
+  $params['page_id']['api.required'] = 1;
+}
