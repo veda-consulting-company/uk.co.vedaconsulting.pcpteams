@@ -74,11 +74,15 @@ class CRM_Pcpteams_Page_PCP extends CRM_Core_Page {
     $pcpBlockDetails = civicrm_api('Pcpteams', 'getpcpblock', array('entity_id' => $pcpDetails['page_id'], 'version' => 3, 'sequential' => 1));
     $donationExist   = FALSE;
     if(!civicrm_error($pcpBlockDetails)){
-      $targetEntityId = $pcpBlockDetails['values'][0]['target_entity_id'];
+      $targetEntityId = $return['target_entity_id'] = $pcpBlockDetails['values'][0]['target_entity_id'];
       $contriAPI      = CRM_Pcpteams_Utils::getContributionDetailsByContributionPageId($targetEntityId);
       if($contriAPI['count'] > 0){
         $return['page_state'] = 'donations';
         $donationExist        = TRUE;
+        $return['amount_raised'] = 0;
+        foreach ($contriAPI['values'] as $value) {
+          $return['amount_raised'] += $value['total_amount'];
+        }
       }
     }
     
@@ -122,8 +126,7 @@ class CRM_Pcpteams_Page_PCP extends CRM_Core_Page {
   function run() {
     //get params from URL
     $state = NULL;
-    $store = array();
-    $pcpId = CRM_Utils_Request::retrieve('id', 'Positive', $store, TRUE); 
+    $pcpId = CRM_Utils_Request::retrieve('id', 'Positive', CRM_Core_DAO::$_nullArray, TRUE); 
     $state = CRM_Utils_Request::retrieve('state', 'String');
     
     //Image URL
@@ -150,7 +153,7 @@ class CRM_Pcpteams_Page_PCP extends CRM_Core_Page {
     // contact Type Individual
     if( $isIndividualPcp ){
       $state = 'Individual';
-      CRM_Utils_System::setTitle( ts('My Personal Campaign Page') );
+      $pageTitle = "My Personal Campaign Page : ". $pcpDetails['title'];
       $tplParams = self::getIndividualPcpParams($pcpDetails);
     }    
     //End Individual
@@ -158,20 +161,45 @@ class CRM_Pcpteams_Page_PCP extends CRM_Core_Page {
     // contact Type Team
     if( $isTeamPcp ){
       $state     = 'Team';
-      $pageTitle = "Team Campaign Page : ". CRM_Contact_BAO_Contact::displayName( $pcpDetails['contact_id'] );
-      CRM_Utils_System::setTitle($pageTitle);
+      $pageTitle = "Team Campaign Page : ". $pcpDetails['title'];
       $tplParams = self::getTeamPcpParams($pcpDetails);
     }    
     //End Team
     
+    //set Page title
+    CRM_Utils_System::setTitle($pageTitle);
+    
+    //logged in User
     $userId         = CRM_Pcpteams_Utils::getloggedInUserId();
+    
+    //check the user can edit the profile image (boolean)
+    $canEditProfile = CRM_Pcpteams_Utils::canEditProfileImage( $pcpId, $pcpDetails['contact_id'] );
     
     //EventTitle 
     $tplParams['event_title'] = NULL;
     if($pcpDetails['page_type'] == 'event') {
       $eventDetails   = CRM_Pcpteams_Utils::getEventDetailsbyEventId( $pcpDetails['page_id']);
+      $eventTitleLink = CRM_Utils_System::url('civicrm/event/info', "reset=1&id={$eventDetails['id']}");
       $tplParams['event_title'] = $eventDetails['title'];
     } 
+    
+    //fundraiser Name 
+    $fundraiserName = CRM_Contact_BAO_Contact::displayName($pcpDetails['contact_id']);
+    
+    //title of the page
+    $tplParams['fundraiser']    = $fundraiserName;
+    $tplParams['title_of_page'] = $fundraiserName ." does <a href={$eventTitleLink}>".$tplParams['event_title']."</a>";
+    
+    //totaliser
+    $targetAmount = CRM_Utils_Money::format($pcpDetails['goal_amount'], $pcpDetails['currency']);
+    $amountRasied = isset($tplParams['amount_raised']) ? $tplParams['amount_raised'] : 0 ;
+    $amountRasied = CRM_Utils_Money::format($amountRasied, $pcpDetails['currency']);
+    $tplParams['totaliser']     = "Target Amount : ".$targetAmount." Amount Raised : ".$amountRasied;
+    $tplParams['target_amount'] = $targetAmount;
+    $tplParams['amount_raised'] = $amountRasied;
+    
+    //donate to URL 
+    $tplParams['donate_to_url'] = CRM_Utils_System::url('civicrm/contribute/transact', "reset=1&id={$tplParams['target_entity_id']}&pcpId={$pcpId}");
     
     //Pcp layout button and URLs
     $joinTeamURl    = CRM_Utils_System::url('civicrm/pcp/team', 'reset=1&id='.$pcpId);
@@ -183,7 +211,7 @@ class CRM_Pcpteams_Page_PCP extends CRM_Core_Page {
     $this->assign('pcpId', $pcpId);
     $this->assign('createTeamUrl', $createTeamURl);
     $this->assign('joinTeamUrl', $joinTeamURl);
-    $this->assign('updateProfPic', $userId ? $updateProfPic : NULL);
+    $this->assign('updateProfPic', $canEditProfile ? $updateProfPic : NULL);
     $this->assign('branchURl', $branchURl);
     $this->assign('tplParams', $tplParams);
     $honor = CRM_PCP_BAO_PCP::honorRoll($pcpId);

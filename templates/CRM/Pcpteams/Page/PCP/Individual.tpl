@@ -17,7 +17,7 @@
                                 </div>
                             </div>
                             {if $tplParams.event_title}
-                              </div><br /><br /><br />&nbsp;&nbsp;&nbsp;&nbsp;{ts}<h1>{$tplParams.event_title}</h1>{/ts}
+                              </div><br /><br /><br />&nbsp;&nbsp;&nbsp;&nbsp;{ts}<h1>{$tplParams.title_of_page}</h1>{/ts}
                             {/if}
                         </td>
                     </tr>
@@ -71,7 +71,7 @@
   <div class="crm-accordion-header"> Totaliser </div>
   <div class="crm-accordion-body pcp-dashboard-block-totaliser-text">
     <div class="pcp_totaliser darkbground">
-      <p class="title_text">Totaliser</p>
+      <p class="title_text"><strong>{$tplParams.totaliser}</strong></p>
     </div>
     <div class="pcp_block lightbground">
       {if $tplParams.page_state eq 'new'}
@@ -158,12 +158,12 @@
 
 <!-- Give to name block -->
 <div class="crm-accordion-wrapper pcp-dashboard-block-givetoname">
-          <div class="crm-accordion-header">{ts}Give to name{/ts}</div>
-          <div class="crm-accordion-body pcp-dashboard-block-givetoname-text">
-              <input type="button" name="givetoname" value="Give to name" id="givetoname" onclick="parent.location='{$joinTeamUrl}'" />
+    <div class="crm-accordion-header">{ts}Give to {$tplParams.fundraiser}{/ts}</div>
+    <div class="crm-accordion-body pcp-dashboard-block-givetoname-text">
+        <input type="button" name="givetoname" value="Give to {$tplParams.fundraiser}" id="givetoname" onclick="parent.location='{$tplParams.donate_to_url}'" />
+    </div>
 </div>
-              
-          </div>
+
 <!-- End Give to name block -->
       <!--Donations block -->
       <div class="crm-accordion-wrapper pcp-dashboard-block-donations">
