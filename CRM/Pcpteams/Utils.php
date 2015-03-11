@@ -5,16 +5,9 @@
  * Pcp Utils,
  * to call and use the methods in all pcp forms / pages.
  */
-
+require_once 'CRM/Pcpteams/Constant.php';
 class  CRM_Pcpteams_Utils {
-  //Constants
-  CONST C_PCP_CUSTOM_GROUP_NAME = 'PCP_Custom_Set',
-        C_CUSTOM_GROUP_EXTENDS	= 'PCP',
-        C_TEAM_RELATIONSHIP_TYPE= 'Team Member of',
-        C_TEAM_ADMIN_REL_TYPE   = 'Team Admin of',
-        C_PCP_TYPE              = 'pcp_type_20150219182347',
-        C_CF_BRANCH_PARTNER     = 'Branch_or_Partner',
-        C_PCP_ID                = 7;
+
   /**
    * to get the logged in User Id
    */
@@ -36,7 +29,7 @@ class  CRM_Pcpteams_Utils {
     require_once 'CRM/Contact/BAO/Relationship.php';
     $getUserRelationships = CRM_Contact_BAO_Relationship::getRelationship( $userId, CRM_Contact_BAO_Relationship::CURRENT);
     // Team Admin Relationship
-    $relTypeAdmin   = self::C_TEAM_ADMIN_REL_TYPE;
+    $relTypeAdmin   = CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE;
     $adminRelTypeId = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', $relTypeAdmin, 'id', 'name_a_b');
     
     foreach ($getUserRelationships as $value) {
@@ -61,7 +54,7 @@ class  CRM_Pcpteams_Utils {
     
     //get group Id from CustomGroup PCP_custom_set
     //CustomField name = 'Branch_or_partner'
-    $cfId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', self::C_CF_BRANCH_PARTNER, 'id', 'name');
+    $cfId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', CRM_Pcpteams_Constant::C_CF_BRANCH_PARTNER, 'id', 'name');
     if($params['cfId']){
       $cfId = $params['cfId'];
     }
@@ -130,7 +123,7 @@ class  CRM_Pcpteams_Utils {
       CRM_Core_Session::setStatus($status);
     }
 
-    $teamRelTypeName = self::C_TEAM_RELATIONSHIP_TYPE;
+    $teamRelTypeName = CRM_Pcpteams_Constant::C_TEAM_RELATIONSHIP_TYPE;
     $relTypeId       = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', $teamRelTypeName, 'id', 'name_a_b');
 
     //check the Relationship Type Exists
@@ -164,5 +157,50 @@ class  CRM_Pcpteams_Utils {
     $id = CRM_Utils_Type::escape($id, 'Integer');
     $query = "SELECT contact_id FROM civicrm_pcp WHERE id = {$id}";
     return CRM_Core_DAO::singleValueQuery($query, CRM_Core_DAO::$_nullArray);
- }
+  }
+  
+  static function getContributionDetailsByContributionPageId( $pageId ){
+    if(empty($pageId)){
+      return NULL;
+    }
+    
+    $contributionParams = array(
+      'version'     => 3,
+      'sequential'  => 1,
+      'contribution_page_id' => $pageId
+    );
+    
+    $contributionAPI = civicrm_api3('Contribution', 'get', $contributionParams);
+    if(civicrm_error($contributionAPI)){
+      return NULL;
+    }
+    
+    return $contributionAPI;  
+  }
+  
+  static function getTeamPcpCustomFieldId(){
+    return CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', CRM_Pcpteams_Constant::C_CF_TEAMPCPID, 'id', 'name');
+  }
+  
+  static function getPcpTypeCustomFieldId(){
+    return CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', CRM_Pcpteams_Constant::C_CF_PCP_TYPE, 'id', 'name');
+  }
+  
+  static function getEventDetailsbyEventId( $id ){
+    if(empty($id)){
+      return NULL;
+    }
+    
+    $params = array(
+      'version' => 3,
+      'id'      => $id,
+    );
+    
+    $apiResult = civicrm_api3('Event', 'getsingle', $params);
+    if(civicrm_error($apiResult)){
+      return null;
+    }
+    
+    return $apiResult;
+  }
 }

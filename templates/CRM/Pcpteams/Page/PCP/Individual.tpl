@@ -16,17 +16,19 @@
                                     </a>
                                 </div>
                             </div>
-                                       
-
+                            {if $tplParams.event_title}
+                              </div><br /><br /><br />&nbsp;&nbsp;&nbsp;&nbsp;{ts}<h1>{$tplParams.event_title}</h1>{/ts}
+                            {/if}
                         </td>
-                       
                     </tr>
                 {/if}
+                {if $updateProfPic}
                 <tr>
                     <td>
                         <input type="button" name="profilepic" value="Upload Profile Pic" id="profilepic" onclick="parent.location='{$profilePicURl}'" />
                     </td>
                 </tr>
+                {/if}
             </table>
   </div>
 
@@ -37,7 +39,7 @@
 
 <!-- Congratulations block -->
 <div class="crm-accordion-wrapper pcp-dashboard-block-info">
-  <div class="crm-accordion-header">Event Name: {$eventTitle}</div>
+  <div class="crm-accordion-header">Event Name: {if $tplParams.event_title} {$tplParams.event_title} {/if}</div>
   <div class="crm-accordion-body pcp-dashboard-block-info-text">
     <strong>
 
@@ -72,6 +74,14 @@
       <p class="title_text">Totaliser</p>
     </div>
     <div class="pcp_block lightbground">
+      {if $tplParams.page_state eq 'new'}
+      <p class="title_thick">
+        A bit Information about you 
+      </p>
+      <p class="block_body">
+        This is sample text for Testing New Individual Even sign up page 7.0
+      </p>
+      {elseif $tplParams.page_state eq 'donations'}
       <p class="title_thick">
         Bio
       </p>
@@ -82,6 +92,7 @@
 
         Suspendisse volutpat erat purus, quis tincidunt justo molestie eget. Fusce purus nisi, aliquam nec
       </p>
+      {/if}
     </div>
 
     <!--Fundraiser update block -->
@@ -99,8 +110,12 @@
         Suspendisse volutpat erat purus, quis tincidunt justo molestie eget. Fusce purus nisi, aliquam nec
 
       </p>
+      {if $createTeamUrl}
       <input type="button" name="createteam" value="Create a Team" id="createteam" onclick="parent.location='{$createTeamUrl}'" />
+      {/if}
+      {if $joinTeamUrl}
       <input type="button" name="jointeam" value="Join a Team" id="jointeam" onclick="parent.location='{$joinTeamUrl}'" />
+      {/if}
       
     </div>
       <div class="description">

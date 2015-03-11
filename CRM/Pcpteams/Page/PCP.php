@@ -58,23 +58,73 @@ class CRM_Pcpteams_Page_PCP extends CRM_Core_Page {
     return NULL;
   }
   
+  /**
+   * To get all Params needed to Display the Individual Pcp
+   */
+  static function getIndividualPcpParams($pcpDetails){
+    $return = array();
+    if(empty(CRM_Utils_Array::value('id', $pcpDetails))){
+      return $return;
+    }
+    
+    //Step 1: Intially set the page state is New Page., ie., No Team, No In Memory and No Donations
+    $return['page_state'] = 'new';
+    
+    //Step 2:check this Page has some Donations
+    $pcpBlockDetails = civicrm_api('Pcpteams', 'getpcpblock', array('entity_id' => $pcpDetails['page_id'], 'version' => 3, 'sequential' => 1));
+    $donationExist   = FALSE;
+    if(!civicrm_error($pcpBlockDetails)){
+      $targetEntityId = $pcpBlockDetails['values'][0]['target_entity_id'];
+      $contriAPI      = CRM_Pcpteams_Utils::getContributionDetailsByContributionPageId($targetEntityId);
+      if($contriAPI['count'] > 0){
+        $return['page_state'] = 'donations';
+        $donationExist        = TRUE;
+      }
+    }
+    
+    //Step 3:check this Page has Team pcp id ., (check in custom set)
+    $teamPcpCfId = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
+    $teamExist   = FALSE;
+    if(isset($pcpDetails['custom_'.$teamPcpCfId])){
+      $return['page_state'] = 'team';
+      $teamExist = TRUE;
+    }
+    
+    //Step 4:check this Page has tribute in Memory ( check in custom set)
+    $pcpTypeCfId = CRM_Pcpteams_Utils::getPcpTypeCustomFieldId();
+    $pcpTypeCf   = civicrm_api3('CustomField', 'getsingle', array('version' => 3, 'id' => $pcpTypeCfId));
+    $ovInMem     = civicrm_api3('OptionValue', 'getsingle', array('version' => 3, 'option_group_id' => $pcpTypeCf['option_group_id'], 'name' => CRM_Pcpteams_Constant::C_CF_IN_MEMORY));
+    $inMemExist  = FALSE;
+    if(isset($pcpDetails['custom_'.$pcpTypeCfId]) && $pcpDetails['custom_'.$pcpTypeCfId] == $ovInMem['value']){
+      $return['page_state'] = 'in_mem';
+      $inMemExist  = TRUE;
+    }
+    
+    //Step 5:check this Page has Team and tribute in Memory ( check in custom set )
+    if($teamExist && $inMemExist){
+      $return['page_state'] = 'both';
+    }
+    
+    return $return;
+  }
+  
+  /**
+   * To get all Params needed to Display the Team Pcp
+   */
+  static function getTeamPcpParams($pcpDetails){
+    $return = array();
+    if(empty(CRM_Utils_Array::value('id', $pcpDetails))){
+      return $return;
+    }
+  }
+  
+  
   function run() {
     //get params from URL
     $state = NULL;
-    $pcpId = CRM_Utils_Request::retrieve('id', 'Positive'); //make required
+    $store = array();
+    $pcpId = CRM_Utils_Request::retrieve('id', 'Positive', $store, TRUE); 
     $state = CRM_Utils_Request::retrieve('state', 'String');
-    
-    //FIXME : this condition once the user logged in 
-    $userId= CRM_Pcpteams_Utils::getloggedInUserId();
-    if (!$pcpId && !empty($userId)) {
-      $pcpId = self::getPcpIdbyContactId($userId);
-    }
-    
-    //FATAL ERROR : if pcp id not found.
-    if (!$pcpId) {
-      CRM_Core_Error::fatal(ts('Couldn\'t determine any PCP'));
-    }
-    
     
     //Image URL
     $getPcpImgURl   = self::getPcpImageURl($pcpId);
@@ -101,6 +151,7 @@ class CRM_Pcpteams_Page_PCP extends CRM_Core_Page {
     if( $isIndividualPcp ){
       $state = 'Individual';
       CRM_Utils_System::setTitle( ts('My Personal Campaign Page') );
+      $tplParams = self::getIndividualPcpParams($pcpDetails);
     }    
     //End Individual
     
@@ -109,22 +160,32 @@ class CRM_Pcpteams_Page_PCP extends CRM_Core_Page {
       $state     = 'Team';
       $pageTitle = "Team Campaign Page : ". CRM_Contact_BAO_Contact::displayName( $pcpDetails['contact_id'] );
       CRM_Utils_System::setTitle($pageTitle);
+      $tplParams = self::getTeamPcpParams($pcpDetails);
     }    
     //End Team
     
+    $userId         = CRM_Pcpteams_Utils::getloggedInUserId();
+    
+    //EventTitle 
+    $tplParams['event_title'] = NULL;
+    if($pcpDetails['page_type'] == 'event') {
+      $eventDetails   = CRM_Pcpteams_Utils::getEventDetailsbyEventId( $pcpDetails['page_id']);
+      $tplParams['event_title'] = $eventDetails['title'];
+    } 
     
     //Pcp layout button and URLs
     $joinTeamURl    = CRM_Utils_System::url('civicrm/pcp/team', 'reset=1&id='.$pcpId);
     $createTeamURl  = CRM_Utils_System::url('civicrm/pcp/team/create', 'reset=1&id='.$pcpId);
-    $profilePicURl  = CRM_Utils_System::url('civicrm/pcp/profile', 'reset=1&id='.$pcpId);
+    $updateProfPic  = CRM_Utils_System::url('civicrm/pcp/profile', 'reset=1&id='.$pcpId);
     $branchURl      = CRM_Utils_System::url('civicrm/pcp/branchorpartner', 'reset=1&id='.$pcpId);
     
     //assign values to tpl
     $this->assign('pcpId', $pcpId);
     $this->assign('createTeamUrl', $createTeamURl);
     $this->assign('joinTeamUrl', $joinTeamURl);
-    $this->assign('profilePicURl', $profilePicURl);
+    $this->assign('updateProfPic', $userId ? $updateProfPic : NULL);
     $this->assign('branchURl', $branchURl);
+    $this->assign('tplParams', $tplParams);
     $honor = CRM_PCP_BAO_PCP::honorRoll($pcpId);
     $this->assign('honor', $honor);
     if(empty($state)){
