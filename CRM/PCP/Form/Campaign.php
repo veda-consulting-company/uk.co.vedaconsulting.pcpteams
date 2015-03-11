@@ -275,7 +275,7 @@ class CRM_PCP_Form_Campaign extends CRM_Core_Form {
 		$temp = civicrm_api3('CustomValue', 'create', $customApiParams);	
 	  //END
     }
-// echo "<pre>"; print_r($temp); echo "</pre>"; die(); 
+
     $pageStatus = isset($this->_pageId) ? ts('updated') : ts('created');
     $statusId = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcp->id, 'status_id');
 

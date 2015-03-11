@@ -8,7 +8,6 @@ require_once 'CRM/Core/Form.php';
  * @see http://wiki.civicrm.org/confluence/display/CRMDOC43/QuickForm+Reference
  */
 class CRM_Pcpteams_Form_NewTeam extends CRM_Core_Form {
-  CONST C_CONTACT_SUB_TYPE = 'Team';
   function preProcess() {
     //FIXME : get pcp Id and use Id to relate the team and pcp.
     parent::preProcess();
@@ -45,7 +44,7 @@ class CRM_Pcpteams_Form_NewTeam extends CRM_Core_Form {
     $values   = $this->exportValues();
     $orgName  = $values['organization_name'];
     $email    = $values['email-primary'];
-    $cSubType = self::C_CONTACT_SUB_TYPE;
+    $cSubType = CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE;
 
     $params   = array(
                 'version'          => '1',
@@ -62,7 +61,6 @@ class CRM_Pcpteams_Form_NewTeam extends CRM_Core_Form {
       CRM_Core_Session::setStatus(ts("Team \"{$orgName}\" has Created"), '', 'success');
       $userId = CRM_Pcpteams_Utils::getloggedInUserId();
       CRM_Pcpteams_Utils::checkORCreateTeamRelationship($userId, $createTeam['id'], TRUE);
-      CRM_Pcpteams_Utils::pcpRedirectUrl('dashboard');
     }else{
       CRM_Core_Session::setStatus(ts("Failed to Create Team \"{$orgName}\" ..."));
     }
@@ -76,13 +74,8 @@ class CRM_Pcpteams_Form_NewTeam extends CRM_Core_Form {
    * @return array (string)
    */
   function getRenderableElementNames() {
-    // The _elements list includes some items which should not be
-    // auto-rendered in the loop -- such as "qfKey" and "buttons".  These
-    // items don't have labels.  We'll identify renderable by filtering on
-    // the 'label'.
     $elementNames = array();
     foreach ($this->_elements as $element) {
-      /** @var HTML_QuickForm_Element $element */
       $label = $element->getLabel();
       if (!empty($label)) {
         $elementNames[] = $element->getName();

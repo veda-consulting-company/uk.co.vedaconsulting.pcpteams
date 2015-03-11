@@ -8,6 +8,15 @@ require_once 'CRM/Core/Form.php';
  * @see http://wiki.civicrm.org/confluence/display/CRMDOC43/QuickForm+Reference
  */
 class CRM_Pcpteams_Form_BranchorPartner extends CRM_Core_Form {
+  function preProcess(){
+    $this->_pcpId = $this->controller->get('pcpId');
+    $userId = CRM_Pcpteams_Utils::getloggedInUserId();
+    if (!$this->_pcpId) {
+     $this->_pcpId =  CRM_Pcpteams_Utils::getPcpIdByUserId($userId);
+    }
+    parent::preProcess();
+  }
+
   function buildQuickForm() {
 
     // add form elements
@@ -28,13 +37,15 @@ class CRM_Pcpteams_Form_BranchorPartner extends CRM_Core_Form {
   function postProcess() {
     $values = $this->exportValues();
     $branchOrPartnerID = $values['pcp_team_contact'];
-    $pcpId = CRM_Pcpteams_Constant::C_PCP_ID;
-    // Get custom org ID
-    $customResult = CRM_Pcpteams_Utils::checkOrUpdateUserPcpGroup($pcpId, 'get');
-    if($customResult['is_error'] == 0  && !empty($branchOrPartnerID)) {
-      // Create/Update Org ID with the user selected organization
-      CRM_Pcpteams_Utils::checkOrUpdateUserPcpGroup($pcpId, 'create', array('value' =>  $branchOrPartnerID, 'id' => 1));
-    }
+    $pcpId = $this->_pcpId;
+    
+    $cfId = CRM_Pcpteams_Utils::getBranchorPartnerCustomFieldId();
+    $params = array(
+      'version' => 3,
+      'entity_id' => $pcpId,
+      "custom_{$cfId}" => $branchOrPartnerID
+    );
+    civicrm_api3('CustomValue', 'create', $params);
     parent::postProcess();
   }
 
@@ -44,13 +55,8 @@ class CRM_Pcpteams_Form_BranchorPartner extends CRM_Core_Form {
    * @return array (string)
    */
   function getRenderableElementNames() {
-    // The _elements list includes some items which should not be
-    // auto-rendered in the loop -- such as "qfKey" and "buttons".  These
-    // items don't have labels.  We'll identify renderable by filtering on
-    // the 'label'.
     $elementNames = array();
     foreach ($this->_elements as $element) {
-      /** @var HTML_QuickForm_Element $element */
       $label = $element->getLabel();
       if (!empty($label)) {
         $elementNames[] = $element->getName();
