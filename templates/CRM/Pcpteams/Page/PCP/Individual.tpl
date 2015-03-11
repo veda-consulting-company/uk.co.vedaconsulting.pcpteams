@@ -170,6 +170,15 @@
           <div class="crm-accordion-header">{ts}Donations{/ts}</div>
           <div class="crm-accordion-body pcp-dashboard-block-donations-text">
               
+                <div>
+                      Name is <strong>{$tplParams.rankHolder}</strong> out 
+
+                      of the {$tplParams.eventPcpCount} 
+
+                      fundraisers taking
+
+                      part in event
+                </div>                
                 <div class="honor_roll">
                     <marquee behavior="scroll" direction="up" id="pcp_roll"  scrolldelay="200" bgcolor="#fafafa">
                       {foreach from = $honor item = v}
@@ -177,7 +186,7 @@
                           <div class="pcp-honor_roll-nickname">{$v.nickname}</div>
                           <div class="pcp-honor_roll-total_amount">{$v.total_amount}</div>
                           <div class="pcp-honor_roll-personal_note">{$v.personal_note}</div>
-                </div>
+                      </div>
                       {/foreach}
                     </marquee>
                 </div>

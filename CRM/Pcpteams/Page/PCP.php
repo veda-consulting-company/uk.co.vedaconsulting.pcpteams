@@ -192,14 +192,22 @@ class CRM_Pcpteams_Page_PCP extends CRM_Core_Page {
     
     //totaliser
     $targetAmount = CRM_Utils_Money::format($pcpDetails['goal_amount'], $pcpDetails['currency']);
-    $amountRasied = isset($tplParams['amount_raised']) ? $tplParams['amount_raised'] : 0 ;
-    $amountRasied = CRM_Utils_Money::format($amountRasied, $pcpDetails['currency']);
-    $tplParams['totaliser']     = "Target Amount : ".$targetAmount." Amount Raised : ".$amountRasied;
+    //FIXME : calculating the soft credits are all contribution for this page.
+    $amountRaised = CRM_PCP_BAO_PCP::thermoMeter($pcpId);
+    $amountRaised = CRM_Utils_Money::format($amountRaised, $pcpDetails['currency']);
+    $tplParams['totaliser']     = "Target Amount : ".$targetAmount." Amount Raised : ".$amountRaised;
     $tplParams['target_amount'] = $targetAmount;
-    $tplParams['amount_raised'] = $amountRasied;
+    $tplParams['amount_raised'] = $amountRaised;
     
     //donate to URL 
     $tplParams['donate_to_url'] = CRM_Utils_System::url('civicrm/contribute/transact', "reset=1&id={$tplParams['target_entity_id']}&pcpId={$pcpId}");
+    
+    //Biography
+    
+    //Fundraising Rank    
+    $eventPcps = CRM_Pcpteams_Utils::getEventPcps($pcpDetails['page_id']);
+    $tplParams['rankHolder']    = $eventPcps['rankHolder'];
+    $tplParams['eventPcpCount'] = $eventPcps['pcp_count'];
     
     //Pcp layout button and URLs
     $joinTeamURl    = CRM_Utils_System::url('civicrm/pcp/team', 'reset=1&id='.$pcpId);

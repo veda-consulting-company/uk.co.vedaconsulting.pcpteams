@@ -223,4 +223,30 @@ class  CRM_Pcpteams_Utils {
     //FIXME: If team user., Check the User is Team Admin
     return TRUE;
   }
+  
+  static function getEventPcps($eventId){
+    if(empty($eventId)){
+      return null;
+    }
+    
+    $return = array();
+    $eventDetails = civicrm_api('Pcpteams'
+                            , 'getallpagesbyevent'
+                            , array( 
+                                'version'    => 3
+                              , 'page_id'    => $eventId
+                            )
+    );
+    
+    $return['pcp_count']    = $eventDetails['count'];
+    if($eventDetails['count'] > 0){
+      foreach ($eventDetails['values'] as $pcps) {
+        $pcpAmounts[$pcps['id']] = CRM_PCP_BAO_PCP::thermoMeter($pcps['id']);
+      }
+    }
+    $maxAmoutnRaisedPcp = array_search( max($pcpAmounts) , $pcpAmounts );
+    $return['rank']     = $maxAmoutnRaisedPcp;
+    $return['rankHolder']= $eventDetails['values'][$maxAmoutnRaisedPcp]['title'];
+    return $return;
+  }
 }
