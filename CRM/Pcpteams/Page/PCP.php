@@ -77,10 +77,12 @@ class CRM_Pcpteams_Page_PCP extends CRM_Core_Page {
       $targetEntityId = $return['target_entity_id'] = $pcpBlockDetails['values'][0]['target_entity_id'];
       $contriAPI      = CRM_Pcpteams_Utils::getContributionDetailsByContributionPageId($targetEntityId);
       if($contriAPI['count'] > 0){
+        $return['donation_details'] = array();
         $return['page_state'] = 'donations';
         $donationExist        = TRUE;
         $return['amount_raised'] = 0;
         foreach ($contriAPI['values'] as $value) {
+          $return['donation_details'][] = array('donar' => $value['display_name'], 'amount' => $total_amount);
           $return['amount_raised'] += $value['total_amount'];
         }
       }
@@ -91,6 +93,10 @@ class CRM_Pcpteams_Page_PCP extends CRM_Core_Page {
     $teamExist   = FALSE;
     if(isset($pcpDetails['custom_'.$teamPcpCfId])){
       $return['page_state'] = 'team';
+      $return['team_pcp_id'] = $pcpDetails['custom_'.$teamPcpCfId];
+      $return['team_image_url'] = self::getPcpImageURl($return['team_pcp_id']);
+      $teampcpDetails  = self::getPcpDetails($return['team_pcp_id']);
+      $return['team_title'] = $teampcpDetails['title'];
       $teamExist = TRUE;
     }
     
@@ -101,6 +107,16 @@ class CRM_Pcpteams_Page_PCP extends CRM_Core_Page {
     $inMemExist  = FALSE;
     if(isset($pcpDetails['custom_'.$pcpTypeCfId]) && $pcpDetails['custom_'.$pcpTypeCfId] == $ovInMem['value']){
       $return['page_state'] = 'in_mem';
+      $pcpTypeContactCfId = CRM_Pcpteams_Utils::getPcpTypeContactCustomFieldId();
+      $inMemContactID = $pcpDetails['custom_'.$pcpTypeContactCfId.'_id'];
+      $return['pcp_type_contact_id'] = $inMemContactID;
+      $contactResult  = civicrm_api3('Contact', 'get', array('sequential' => 1, 'id' => $inMemContactID,));
+      if(!civicrm_error($contactResult)) {
+        $imageUrl     = $contactResult['values'][0]['image_URL'] ;
+        $displayName  = $contactResult['values'][0]['display_name'] ;
+        $return['in_mem_image_url'] = $imageUrl;
+        $return['in_mem_display_name'] = $displayName;
+      }
       $inMemExist  = TRUE;
     }
     

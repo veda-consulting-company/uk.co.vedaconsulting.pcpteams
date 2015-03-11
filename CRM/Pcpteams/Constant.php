@@ -17,6 +17,7 @@
           C_CF_BRANCH_PARTNER     = 'Branch_or_Partner',        //  Custom Field - Branch or Partner
           C_CF_TEAMPCPID          = 'Team_PCP_ID',              //  Custom Field - Team Pcp Id
           C_CF_PCP_TYPE           = 'PCP_Type',                 //  Custom Field - Pcp Type
+          C_CF_PCP_TYPE_CONTACT   = 'PCP_Type_Contact',                 //  Custom Field - Pcp Type Contact
           C_CF_IN_MEMORY          = 'In Memory',                //  Optionvalue - In Memory
           C_PCP_ID                = 7; 
  }
