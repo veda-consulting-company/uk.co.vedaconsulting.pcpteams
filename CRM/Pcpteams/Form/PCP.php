@@ -243,6 +243,9 @@ class CRM_Pcpteams_Form_PCP extends CRM_Core_Form {
     $pageStatus = isset($this->_pageId) ? ts('updated') : ts('created');
     $statusId = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcp->id, 'status_id');
 
+    // set pcp-id in session
+    $this->set('pcpId', $pcp->id);
+
     //send notification of PCP create/update.
     $pcpParams    = array('entity_table' => $entity_table, 'entity_id' => $pcp->page_id);
     $notifyParams = array();

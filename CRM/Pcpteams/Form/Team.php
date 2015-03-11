@@ -10,7 +10,8 @@ require_once 'CRM/Core/Form.php';
 class CRM_Pcpteams_Form_Team extends CRM_Core_Form {
 
   function preProcess(){
-    $this->_pcpId = CRM_Utils_Request::retrieve('id', 'Positive');
+    $this->_pcpId = $this->controller->get('pcpId');
+    //$this->_pcpId = CRM_Utils_Request::retrieve('id', 'Positive');
     $userId = CRM_Pcpteams_Utils::getloggedInUserId();
     if (!$this->_pcpId) {
       $result = civicrm_api('Pcpteams', 
@@ -28,14 +29,13 @@ class CRM_Pcpteams_Form_Team extends CRM_Core_Form {
   }
 
   function buildQuickForm() {
-
     // add form elements
     $this->addEntityRef('pcp_team_contact', ts('Select Team'), array('api' => array('params' => array('contact_type' => 'Organization', 'contact_sub_type' => 'Team')), 'create' => TRUE), TRUE);
-    $this->add('hidden', 'pcpId', $this->_pcpId);
+    //$this->add('hidden', 'pcpId', $this->_pcpId);
     $this->addButtons(array(
       array(
-        'type' => 'submit',
-        'name' => ts('Submit'),
+        'type' => 'next',
+        'name' => ts('Save'),
         'isDefault' => TRUE,
       ),
     ));
@@ -48,38 +48,34 @@ class CRM_Pcpteams_Form_Team extends CRM_Core_Form {
   function postProcess() {
     $values = $this->exportValues();
     $teamId = $values['pcp_team_contact'];
-    $userId = CRM_Pcpteams_Utils::getloggedInUserId();
-    $pcpId  = $values['pcpId'];
-    CRM_Pcpteams_Utils::checkORCreateTeamRelationship($userId, $teamId, TRUE);
-    //getTeamPcpId 
-    $result = civicrm_api('Pcpteams', 
+
+    // get PCP-ID for team 
+    if ($teamId) {
+      $result = civicrm_api('Pcpteams', 
         'getcontactpcp', 
         array(
           'contact_id' => $teamId,
           'version'    => 3
         )
       );
-    if (!empty($result['id'])) {
-      $teamPcpId = $result['id'];
+      if (!empty($result['id'])) {
+        $teamPcpId = $result['id'];
+      }
     }
-    //Update the Custom set
-    $teamPcpCfId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', 'Team_PCP_ID', 'id', 'name');
-    $isTeamExits = CRM_Pcpteams_Utils::checkOrUpdateUserPcpGroup( $pcpId, 'get', array( 'cfId' => $teamPcpCfId) );
 
-    if(isset($isTeamExits['values']) && empty($isTeamExits['values']['latest']) && !empty($teamPcpId)){
+    if ($teamPcpId) {
+      $teamPcpCfId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', 'Team_PCP_ID', 'id', 'name');
       $params = array(
-        'value' => $teamPcpId,
-        'cfId'  => $teamPcpCfId,
+        'version'   => 3,
+        'entity_id' => $this->_pcpId,
+        "custom_{$teamPcpCfId}" => $teamPcpId,
       );
-      CRM_Pcpteams_Utils::checkOrUpdateUserPcpGroup( $pcpId, 'create', $params);
-    }
 
-    //redirect
-    $redirectParams = array(
-      'state' => 'team',
-    );
-    CRM_Pcpteams_Utils::pcpRedirectUrl('dashboard', $redirectParams);
-    parent::postProcess();
+      $result = civicrm_api3('CustomValue', 'create', $params);
+    } else {
+      // FIXME: this check should be at validation step / form-rule
+      CRM_Core_Error::fatal("The team (ID: $teamId) doesn't have a pcp.");
+    }
   }
 
   /**

@@ -57,6 +57,7 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
     $this->_pages = array(
       'CRM_Pcpteams_Form_PCPAccount' => NULL,
       'CRM_Pcpteams_Form_PCP' => NULL,
+      'CRM_Pcpteams_Form_Team' => NULL,
     );
 
     $this->addSequentialPages($this->_pages, $action);
