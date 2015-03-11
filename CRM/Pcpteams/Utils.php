@@ -203,4 +203,24 @@ class  CRM_Pcpteams_Utils {
     
     return $apiResult;
   }
+  
+  static function canEditProfileImage( $pcpId, $pcpContactId ){
+    if(empty($pcpId) || empty($pcpContactId)){
+      return FALSE;
+    }
+    
+    //check the User is logged in
+    $userId = self::getloggedInUserId();
+    if(!$userId){
+      return FALSE;
+    }
+    
+    //Check the user is Owner of the PCP
+    if( $userId != $pcpContactId ){
+      return FALSE;
+    }
+    
+    //FIXME: If team user., Check the User is Team Admin
+    return TRUE;
+  }
 }
