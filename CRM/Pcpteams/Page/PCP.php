@@ -220,7 +220,6 @@ class CRM_Pcpteams_Page_PCP extends CRM_Core_Page {
       //FIXME : get the state name from api
       $state = 'Individual';
     }
-    print_r($tplParams);
     $this->assign('path', ucwords($state));
     parent::run();
   }
