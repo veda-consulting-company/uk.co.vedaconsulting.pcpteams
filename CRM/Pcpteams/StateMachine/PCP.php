@@ -70,6 +70,9 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
       'cpftt' => 'CRM_Pcpteams_Form_Team_ThankYou',
       'cpftw' => 'CRM_Pcpteams_Form_Team_Welcome',
       'cpftj' => 'CRM_Pcpteams_Form_Team_Join',
+      'cpfgq' => 'CRM_Pcpteams_Form_Group_Question',
+      'cpfgj' => 'CRM_Pcpteams_Form_Group_GroupName',
+      'cpftq' => 'CRM_Pcpteams_Form_Reason_Reason',
     );
 
     if (is_null($controller->get('participantId'))) {
