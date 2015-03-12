@@ -7,9 +7,9 @@ require_once 'CRM/Core/Form.php';
  *
  * @see http://wiki.civicrm.org/confluence/display/CRMDOC43/QuickForm+Reference
  */
-class CRM_Pcpteams_Form_Team_ThankYou extends CRM_Core_Form {
+class CRM_Pcpteams_Form_Team_Welcome extends CRM_Core_Form {
   function preProcess(){
-    CRM_Utils_System::setTitle(ts('Team setup succesful'));
+    CRM_Utils_System::setTitle(ts('Team Welcome'));
 
     $this->_pcpId = $this->controller->get('pcpId');
     //$this->_pcpId = CRM_Utils_Request::retrieve('id', 'Positive');
@@ -21,10 +21,10 @@ class CRM_Pcpteams_Form_Team_ThankYou extends CRM_Core_Form {
   }
   function buildQuickForm() {
 
-      $this->addButtons(array(
+    $this->addButtons(array(
       array(
         'type' => 'next',
-        'name' => ts('Submit'),
+        'name' => ts('Next'),
         'isDefault' => TRUE,
       ),
     ));
@@ -38,7 +38,7 @@ class CRM_Pcpteams_Form_Team_ThankYou extends CRM_Core_Form {
     return TRUE;
     parent::postProcess();
   }
-  
+
   /**
    * Get the fields/elements defined in this form.
    *
