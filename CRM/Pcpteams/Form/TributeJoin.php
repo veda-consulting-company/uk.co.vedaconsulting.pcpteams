@@ -7,16 +7,16 @@ require_once 'CRM/Core/Form.php';
  *
  * @see http://wiki.civicrm.org/confluence/display/CRMDOC43/QuickForm+Reference
  */
-class CRM_Pcpteams_Form_Group_Join extends CRM_Core_Form {
+class CRM_Pcpteams_Form_TributeJoin extends CRM_Core_Form {
   function preProcess(){
-    CRM_Utils_System::setTitle(ts('Group Name'));
+    CRM_Utils_System::setTitle(ts('Tribute Contact'));
     parent::preProcess();  
   }
   
   function buildQuickForm() {
 
     // add form elements
-    $this->addEntityRef('pcp_team_contact', ts('Select Team'), array('api' => array('params' => array('contact_type' => 'Organization', 'contact_sub_type' => 'Team')), 'create' => TRUE), TRUE);
+    $this->addEntityRef('pcp_tribute_contact', ts('Select Tribute Contact'), array('api' => array('params' => array('contact_type' => 'Organization',)), 'create' => TRUE), TRUE);
     $this->addButtons(array(
       array(
         'type' => 'next',
