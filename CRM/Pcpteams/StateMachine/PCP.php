@@ -63,6 +63,8 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
       'cpftq' => 'CRM_Pcpteams_Form_Team_Query',
       'cpfti' => 'CRM_Pcpteams_Form_Team_Invite',
       'cpftn' => 'CRM_Pcpteams_Form_Team_New',
+      'cpftc' => 'CRM_Pcpteams_Form_Team_Confirm',
+      'cpftt' => 'CRM_Pcpteams_Form_Team_ThankYou',
       'cpftj' => 'CRM_Pcpteams_Form_Team_Join',
     );
 
