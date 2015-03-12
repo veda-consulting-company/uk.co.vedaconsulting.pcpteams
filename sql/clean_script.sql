@@ -79,4 +79,14 @@ FROM civicrm_pcp_block pb
 LEFT JOIN civicrm_pcp pcp on pb.id = pcp.pcp_block_id
 WHERE pcp.id IS NULL;
 
+DELETE uff.*
+FROM civicrm_uf_field uff
+LEFT JOIN civicrm_uf_group ufg on ufg.id = uff.uf_group_id
+WHERE ufg.name = 'Pcp_Supporter_Profile';
 
+DELETE ufj.*
+FROM civicrm_uf_join ufj
+LEFT JOIN civicrm_uf_group ufg on ufg.id = ufj.uf_group_id
+WHERE ufg.name = 'Pcp_Supporter_Profile';
+
+DELETE FROM civicrm_uf_group WHERE name = 'Pcp_Supporter_Profile';
