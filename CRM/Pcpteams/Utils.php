@@ -16,13 +16,30 @@ class  CRM_Pcpteams_Utils {
     $contactID  = $session->get('userID'        );
     return $contactID;
   }
-
+  
+  static function getPcpIdByUserId($userId){
+    if(empty($userId)){
+      return NULL;
+    }
+     $result = civicrm_api('Pcpteams', 
+        'getcontactpcp', 
+        array(
+          'contact_id' => $userId,
+          'version'    => 3
+        )
+      );
+      if (!empty($result['id'])) {
+        return $result['id'];
+      }
+    return null;
+  }
+  
   // FIXME: 
   // 1. change function name to isUserTeamAdmin
   // 2. Ideally we need isUserTeamMember
   // 3. pure sql query
   // 4. Make this an API
-  static function checkUserIsaTeamAdmin( $userId ){
+  static function isUserTeamAdmin( $userId ){
     if(empty($userId)){
       return NULL;
     }
@@ -42,47 +59,6 @@ class  CRM_Pcpteams_Utils {
     return null;
   }  
 
-  // FIXME:
-  // 1. split function into two - 
-  // A. civicrm_api('pcpteams', get, $params) - this already exist
-  // B. civicrm_api('pcpteams', create, $params) 
-  // 2. change all places to use the api instead of this function
-  static function checkOrUpdateUserPcpGroup( $pcpId, $action = 'get', $params = array() ){
-    if(empty($pcpId )){
-      return NULL;
-    }
-    
-    //get group Id from CustomGroup PCP_custom_set
-    //CustomField name = 'Branch_or_partner'
-    $cfId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', CRM_Pcpteams_Constant::C_CF_BRANCH_PARTNER, 'id', 'name');
-    if($params['cfId']){
-      $cfId = $params['cfId'];
-    }
-    
-    if(!$cfId){
-      return NULL;
-    }
-      
-    $customParams = array(
-      'version'   => 1,
-      'entity_id' => $pcpId,
-    );
-    
-    if($action == 'get') {
-      $customParams['return.custom_'.$cfId] = 1;
-    }
-    
-    if($action == 'create' ) {
-      $customParams['custom_'.$cfId]  = $params['value'];
-      
-    }
-    if(isset($params['id'])) {
-      $customParams['id'] = $params['id'];
-    }
-
-    return civicrm_api3('CustomValue', $action, $customParams);
-    
-  }
   
   static function getContactWithHyperlink($id){
     if(empty($id)){
@@ -94,22 +70,6 @@ class  CRM_Pcpteams_Utils {
     return sprintf("<a href =\"{$url}\">%s</a>", $id, $contactName['0']);
   }
 
-  // FIXME:
-  // 1. Ideally we should do a pushUserContext() for dashboard and get rid of this one.
-  static function pcpRedirectUrl($pageName, $qParams = array()){
-    $url = CRM_Utils_System::url('civicrm/pcp/dashboard', 'reset=1');
-    if($pageName){
-      $url = CRM_Utils_System::url("civicrm/pcp/{$pageName}", 'reset=1');
-    }
-
-    if($qParams){
-      foreach ($qParams as $key => $value) {
-        $url .= sprintf("&%s=%s", $key, $value);
-      }
-    }
-
-    CRM_Utils_System::redirect($url);
-  }
 
   // FIXME:
   // 1. split it into get and create relationship apis
@@ -184,6 +144,10 @@ class  CRM_Pcpteams_Utils {
   
   static function getPcpTypeCustomFieldId(){
     return CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', CRM_Pcpteams_Constant::C_CF_PCP_TYPE, 'id', 'name');
+  }  
+  
+  static function getBranchorPartnerCustomFieldId(){
+    return CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', CRM_Pcpteams_Constant::C_CF_BRANCH_PARTNER, 'id', 'name');
   }
   
   static function getPcpTypeContactCustomFieldId(){

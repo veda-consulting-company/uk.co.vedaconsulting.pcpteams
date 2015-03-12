@@ -14,16 +14,7 @@ class CRM_Pcpteams_Form_Team extends CRM_Core_Form {
     //$this->_pcpId = CRM_Utils_Request::retrieve('id', 'Positive');
     $userId = CRM_Pcpteams_Utils::getloggedInUserId();
     if (!$this->_pcpId) {
-      $result = civicrm_api('Pcpteams', 
-        'getcontactpcp', 
-        array(
-          'contact_id' => $userId,
-          'version'    => 3
-        )
-      );
-      if (!empty($result['id'])) {
-        $this->_pcpId = $result['id'];
-      }
+     $this->_pcpId =  CRM_Pcpteams_Utils::getPcpIdByUserId($userId);
     }
     parent::preProcess();
   }
@@ -31,7 +22,7 @@ class CRM_Pcpteams_Form_Team extends CRM_Core_Form {
   function buildQuickForm() {
     // add form elements
     $this->addEntityRef('pcp_team_contact', ts('Select Team'), array('api' => array('params' => array('contact_type' => 'Organization', 'contact_sub_type' => 'Team')), 'create' => TRUE), TRUE);
-    //$this->add('hidden', 'pcpId', $this->_pcpId);
+
     $this->addButtons(array(
       array(
         'type' => 'next',
@@ -70,7 +61,6 @@ class CRM_Pcpteams_Form_Team extends CRM_Core_Form {
         'entity_id' => $this->_pcpId,
         "custom_{$teamPcpCfId}" => $teamPcpId,
       );
-
       $result = civicrm_api3('CustomValue', 'create', $params);
     } else {
       // FIXME: this check should be at validation step / form-rule

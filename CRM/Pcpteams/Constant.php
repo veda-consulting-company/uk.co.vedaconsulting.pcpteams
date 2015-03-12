@@ -19,6 +19,7 @@
           C_CF_PCP_TYPE           = 'PCP_Type',                 //  Custom Field - Pcp Type
           C_CF_PCP_TYPE_CONTACT   = 'PCP_Type_Contact',                 //  Custom Field - Pcp Type Contact
           C_CF_IN_MEMORY          = 'In Memory',                //  Optionvalue - In Memory
+          C_CONTACT_SUB_TYPE      = 'Team',                     //  Contact Sub Type - Team
           C_PCP_ID                = 7; 
  }
  

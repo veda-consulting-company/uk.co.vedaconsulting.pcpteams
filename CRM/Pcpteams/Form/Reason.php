@@ -8,19 +8,10 @@ require_once 'CRM/Core/Form.php';
  */
 class CRM_Pcpteams_Form_Reason extends CRM_Core_Form {
   function preProcess() {
-    $this->_pcpId = CRM_Utils_Request::retrieve('id', 'Positive');
+    $this->_pcpId = $this->controller->get('pcpId');
     $userId = CRM_Pcpteams_Utils::getloggedInUserId();
     if (!$this->_pcpId) {
-      $result = civicrm_api('Pcpteams', 
-        'getcontactpcp', 
-        array(
-          'contact_id' => $userId,
-          'version'    => 3
-        )
-      );
-      if (!empty($result['id'])) {
-        $this->_pcpId = $result['id'];
-      }
+     $this->_pcpId =  CRM_Pcpteams_Utils::getPcpIdByUserId($userId);
     }
 
     //Fixme: validate the contact id, and check permission can view / edit this pcp.
@@ -37,7 +28,6 @@ class CRM_Pcpteams_Form_Reason extends CRM_Core_Form {
     $this->add("select", "pcp_type", ts('PCP Type'), $pcp_type);
 
     $this->addEntityRef('pcp_contact_id', ts('Search Contact'), array('api' => array('params' => array('contact_type' => 'Organization')), 'create' => TRUE), TRUE);
-    $this->add('hidden', 'pcpId', $this->_pcpId);
     // InMemory - Deceased date 
     $this->addDate('deceased_date', ts('Deceased date'), FALSE, array('formatType' => 'birth'));
 
@@ -84,7 +74,7 @@ class CRM_Pcpteams_Form_Reason extends CRM_Core_Form {
     
     if(!$pcpFound) {
       CRM_Core_Session::setStatus('PCP Not Found. Creating New PCP Record');
-      $PcpID  = CRM_Pcpteams_Constant::C_PCP_ID;
+      $PcpID  = $this->_pcpId;
       $insertQuery  = "
         INSERT INTO `civicrm_value_pcp_custom_set` (`id`, `entity_id`, `team_pcp_id`, `pcp_type`, `pcp_type_contact`) VALUES (NULL, $PcpID, NULL, '$pcp_type', $pcp_type_contact)";
       $dao  = CRM_Core_DAO::executeQuery($insertQuery);
