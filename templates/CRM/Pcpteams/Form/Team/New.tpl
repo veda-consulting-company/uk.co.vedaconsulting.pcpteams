@@ -1,16 +1,6 @@
 <!-- ( Main Div ) -->
 <div class="crm-form-block crm-search-form-block">
-
-  <!-- ( HEADER ) -->
-
-  <div class="crm-submit-buttons">
-  {include file="CRM/common/formButtons.tpl" location="top"}
-  </div>
-
-  <div class="help">
-    {ts}Fixme.. This is test help text. {/ts}
-  </div>
-  <!-- ( FIELD (AUTOMATIC LAYOUT) ) -->
+    <h2>{ts}That's great! Please enter your team name{/ts}<br /></h2>
 
   {foreach from=$elementNames item=elementName}
     <div class="crm-section">
@@ -19,6 +9,7 @@
       <div class="clear"></div>
     </div>
   {/foreach}
+  <span class="bold"><a href="{$skipURL}">Skip team setup</a></span>
 
   <!-- ( FOOTER ) -->
   <div class="crm-submit-buttons">

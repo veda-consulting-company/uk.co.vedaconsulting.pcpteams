@@ -15,16 +15,18 @@ class CRM_Pcpteams_Form_Team_New extends CRM_Core_Form {
   function buildQuickForm() {
 
     // add form elements
-    $this->add('text', 'organization_name', ts('Organization Name'), array(), TRUE);
+    $this->add('text', 'organization_name', ts('Team Name'), array(), TRUE);
     $this->add('text', 'email-primary', ts('Email'), CRM_Core_DAO::getAttribute('CRM_Core_DAO_Email', 'email'));
 
     $this->addButtons(array(
       array(
         'type' => 'next',
-        'name' => ts('Submit'),
+        'name' => ts('Next'),
         'isDefault' => TRUE,
       ),
     ));
+    $groupURL = CRM_Utils_System::url('civicrm/pcp/page', 'reset=1');
+    $this->assign('skipURL', $groupURL);
 
     // export form elements
     $this->assign('elementNames', $this->getRenderableElementNames());

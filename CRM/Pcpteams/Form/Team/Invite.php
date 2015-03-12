@@ -20,8 +20,7 @@ class CRM_Pcpteams_Form_Team_Invite extends CRM_Core_Form {
   }
 
   function buildQuickForm() {
-    $el = $this->add('textarea', 'description', ts('') , '',
-      CRM_Core_DAO::getAttribute('CRM_Contact_DAO_Group', 'description')
+    $el = $this->add('textarea', 'description', ts('') , ''
     );
     $el->freeze();
     $teamOptions = array();
