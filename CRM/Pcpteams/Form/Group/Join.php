@@ -7,19 +7,19 @@ require_once 'CRM/Core/Form.php';
  *
  * @see http://wiki.civicrm.org/confluence/display/CRMDOC43/QuickForm+Reference
  */
-class CRM_Pcpteams_Form_Reason_Reason extends CRM_Core_Form {
+class CRM_Pcpteams_Form_Group_Join extends CRM_Core_Form {
+  function preProcess(){
+    CRM_Utils_System::setTitle(ts('Group Name'));
+    parent::preProcess();  
+  }
+  
   function buildQuickForm() {
 
-    $teamOptions = array();
-    $teamOptions = array(
-        ts(' I just want to support you'),
-        ts(' Iam doing this in memory of someone'),
-        ts(' Iam doing this in celebration of an event')
-      );
-    $this->addRadio('teamOption', '', $teamOptions, NULL, '<br/><br/>');
+    // add form elements
+    $this->addEntityRef('pcp_team_contact', ts('Select Team'), array('api' => array('params' => array('contact_type' => 'Organization', 'contact_sub_type' => 'Team')), 'create' => TRUE), TRUE);
     $this->addButtons(array(
       array(
-        'type' => 'submit',
+        'type' => 'next',
         'name' => ts('Next'),
         'isDefault' => TRUE,
       ),
@@ -32,7 +32,7 @@ class CRM_Pcpteams_Form_Reason_Reason extends CRM_Core_Form {
 
   function postProcess() {
     $values = $this->exportValues();
-    //FIXME: postProcess
+    //FIXME: PostProcess
     parent::postProcess();
   }
 
@@ -42,8 +42,13 @@ class CRM_Pcpteams_Form_Reason_Reason extends CRM_Core_Form {
    * @return array (string)
    */
   function getRenderableElementNames() {
+    // The _elements list includes some items which should not be
+    // auto-rendered in the loop -- such as "qfKey" and "buttons".  These
+    // items don't have labels.  We'll identify renderable by filtering on
+    // the 'label'.
     $elementNames = array();
     foreach ($this->_elements as $element) {
+      /** @var HTML_QuickForm_Element $element */
       $label = $element->getLabel();
       if (!empty($label)) {
         $elementNames[] = $element->getName();

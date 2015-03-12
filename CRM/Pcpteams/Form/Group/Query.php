@@ -7,7 +7,12 @@ require_once 'CRM/Core/Form.php';
  *
  * @see http://wiki.civicrm.org/confluence/display/CRMDOC43/QuickForm+Reference
  */
-class CRM_Pcpteams_Form_Group_Question extends CRM_Core_Form {
+class CRM_Pcpteams_Form_Group_Query extends CRM_Core_Form {
+  function preProcess(){
+    CRM_Utils_System::setTitle(ts('Group Question'));
+    parent::preProcess();  
+  }
+  
   function buildQuickForm() {
 
     $teamOptions = array();
@@ -19,7 +24,7 @@ class CRM_Pcpteams_Form_Group_Question extends CRM_Core_Form {
     $this->addRadio('teamOption', '', $teamOptions, NULL, '<br/><br/>');
     $this->addButtons(array(
       array(
-        'type' => 'submit',
+        'type' => 'next',
         'name' => ts('Next'),
         'isDefault' => TRUE,
       ),
