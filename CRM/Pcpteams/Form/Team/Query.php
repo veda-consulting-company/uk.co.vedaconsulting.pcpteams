@@ -3,41 +3,42 @@
 require_once 'CRM/Core/Form.php';
 
 class CRM_Pcpteams_Form_Team_Query extends CRM_Core_Form {
+
+  function preProcess() {
+    CRM_Utils_System::setTitle(ts('Team Question'));
+  }
+
   function buildQuickForm() {
-   //$this->createElement('radio','delete_participant' , '', 'Kajan', 1, '<br />');
-     //$this->addRadio('delete_participant', NULL, NULL, NULL, '<br />');
+    //$this->createElement('radio','delete_participant' , '', 'Kajan', 1, '<br />');
+    //$this->addRadio('delete_participant', NULL, NULL, NULL, '<br />');
     $teamOptions = array();
-      $teamOptions[] = $this->createElement('radio',
-        NULL, NULL, ts(' No, I am doing this event on my own'), 1, '<br />'
-      );
-      $teamOptions[] = $this->createElement('radio',
-        NULL, NULL, ts(' Yes, I would like to create my own team'), 2, '<br />'
-      );
-      $teamOptions[] = $this->createElement('radio',
-        NULL, NULL, ts(' Yes, I would like to join an existing team'), 3, '<br />'
-      );
+    $teamOptions[] = $this->createElement('radio',
+      NULL, NULL, ts(' No, I am doing this event on my own'), 1, '<br />'
+    );
+    $teamOptions[] = $this->createElement('radio',
+      NULL, NULL, ts(' Yes, I would like to create my own team'), 2, '<br />'
+    );
+    $teamOptions[] = $this->createElement('radio',
+      NULL, NULL, ts(' Yes, I would like to join an existing team'), 3, '<br />'
+    );
 
     $this->addGroup($teamOptions, 'teamOption'
     );
-     $this->addButtons(array(
+    $this->addButtons(array(
       array(
         'type' => 'next',
         'name' => ts('Next'),
         'isDefault' => TRUE,
       ),
     ));
-//    $this->assign('elementNames', $this->getRenderableElementNames());
-    parent::buildQuickForm();
+    $this->assign('elementNames', $this->getRenderableElementNames());
   }
 
   function postProcess() {
     $values = $this->exportValues();
-    parent::postProcess();
   }
 
   function getRenderableElementNames() {
-    print_r($this->_elements);
-//    die();
     $elementNames = array();
     foreach ($this->_elements as $element) {
       /** @var HTML_QuickForm_Element $element */

@@ -7,10 +7,9 @@ require_once 'CRM/Core/Form.php';
  *
  * @see http://wiki.civicrm.org/confluence/display/CRMDOC43/QuickForm+Reference
  */
-class CRM_Pcpteams_Form_NewTeam extends CRM_Core_Form {
+class CRM_Pcpteams_Form_Team_New extends CRM_Core_Form {
   function preProcess() {
-    //FIXME : get pcp Id and use Id to relate the team and pcp.
-    parent::preProcess();
+    CRM_Utils_System::setTitle(ts('Team Name'));
   }
 
   function buildQuickForm() {
@@ -21,7 +20,7 @@ class CRM_Pcpteams_Form_NewTeam extends CRM_Core_Form {
 
     $this->addButtons(array(
       array(
-        'type' => 'submit',
+        'type' => 'next',
         'name' => ts('Submit'),
         'isDefault' => TRUE,
       ),
@@ -29,7 +28,7 @@ class CRM_Pcpteams_Form_NewTeam extends CRM_Core_Form {
 
     // export form elements
     $this->assign('elementNames', $this->getRenderableElementNames());
-    $this->addFormRule(array('CRM_Pcpteams_Form_NewTeam', 'formRule'));
+    $this->addFormRule(array('CRM_Pcpteams_Form_Team_New', 'formRule'));
     parent::buildQuickForm();
   }
 
@@ -41,6 +40,8 @@ class CRM_Pcpteams_Form_NewTeam extends CRM_Core_Form {
   }
 
   function postProcess() {
+    return TRUE; // remove me
+
     $values   = $this->exportValues();
     $orgName  = $values['organization_name'];
     $email    = $values['email-primary'];

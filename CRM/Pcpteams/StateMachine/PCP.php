@@ -58,7 +58,11 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
     $pages = array(
       'cpfpa' => 'CRM_Pcpteams_Form_PCPAccount',
       'cpfp'  => 'CRM_Pcpteams_Form_PCP',
-      'cpft'  => 'CRM_Pcpteams_Form_Team',
+      'cpfed' => 'CRM_Pcpteams_Form_Event_Details',
+      'cpfec' => 'CRM_Pcpteams_Form_Event_Confirm',
+      'cpftq' => 'CRM_Pcpteams_Form_Team_Query',
+      'cpftn' => 'CRM_Pcpteams_Form_Team_New',
+      'cpftj' => 'CRM_Pcpteams_Form_Team_Join',
     );
 
     if (!$step) {

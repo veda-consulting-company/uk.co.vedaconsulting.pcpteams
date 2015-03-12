@@ -8,7 +8,7 @@
 	</div>
 
 	<div class="help">
-		{ts}Fixme.. This is test help text. Please select the Pcp team. {/ts}
+		{ts}This is a help text for Event Details screen.{/ts}
 	</div>
 	<!-- ( FIELD (AUTOMATIC LAYOUT) ) -->
 
