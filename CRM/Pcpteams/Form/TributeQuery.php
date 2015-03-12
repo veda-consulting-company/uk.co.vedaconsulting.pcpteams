@@ -7,19 +7,19 @@ require_once 'CRM/Core/Form.php';
  *
  * @see http://wiki.civicrm.org/confluence/display/CRMDOC43/QuickForm+Reference
  */
-class CRM_Pcpteams_Form_Group_Query extends CRM_Core_Form {
+class CRM_Pcpteams_Form_TributeQuery extends CRM_Core_Form {
   function preProcess(){
-    CRM_Utils_System::setTitle(ts('Group Question'));
+    CRM_Utils_System::setTitle(ts('Reason'));
     parent::preProcess();  
   }
   
   function buildQuickForm() {
-
+    
     $teamOptions = array();
     $teamOptions = array(
-        ts(' No, Iam doing this event on my own'),
-        ts(' Yes, Iam fundraising with a corporate partner'),
-        ts(' Yes, Iam fundraising with a local branch')
+        ts(' I just want to support you'),
+        ts(' Iam doing this in memory of someone'),
+        ts(' Iam doing this in celebration of an event')
       );
     $this->addRadio('teamOption', '', $teamOptions, NULL, '<br/><br/>');
     $this->addButtons(array(
