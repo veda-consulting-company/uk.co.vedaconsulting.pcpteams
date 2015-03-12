@@ -119,6 +119,23 @@ class  CRM_Pcpteams_Utils {
     return CRM_Core_DAO::singleValueQuery($query, CRM_Core_DAO::$_nullArray);
   }
   
+  static function isaParticipantFor($eventId) {
+    if (empty($eventId)) {
+      return 0;
+    } 
+    $contactId = self::getloggedInUserId();
+
+    $result = civicrm_api3('Participant', 'get', array('contact_id' => $contactId));
+    if(!civicrm_error($result)) {
+      foreach ($result['values'] as $key => $val) {
+        if ($val['event_id'] == $eventId) {
+          return $val['id'];
+        }
+      }
+    }
+    return 0;
+  }
+
   static function getContributionDetailsByContributionPageId( $pageId ){
     if(empty($pageId)){
       return NULL;

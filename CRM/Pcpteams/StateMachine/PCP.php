@@ -54,6 +54,9 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
     $session = CRM_Core_Session::singleton();
     $session->set('singleForm', FALSE);
 
+    // retrieve and store in controller session
+    $eventId = CRM_Utils_Request::retrieve('eventId', 'Positive', $controller);
+
     $step  = CRM_Utils_Request::retrieve('code', 'String', $controller);
     $pages = array(
       'cpfpa' => 'CRM_Pcpteams_Form_PCPAccount',
@@ -68,6 +71,16 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
       'cpftw' => 'CRM_Pcpteams_Form_Team_Welcome',
       'cpftj' => 'CRM_Pcpteams_Form_Team_Join',
     );
+
+    if (is_null($controller->get('participantId'))) {
+      $participantId = CRM_Pcpteams_Utils::isaParticipantFor($eventId);
+      // store in session so we not checking everytime
+      $controller->set('participantId', $participantId);
+    }
+
+    if ($controller->get('participantId')) {
+      unset($pages['cpfed'], $pages['cpfec']);
+    }
 
     if (!$step) {
       // if no code, set it true, so we consider all pages
