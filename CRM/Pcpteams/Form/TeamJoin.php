@@ -7,7 +7,7 @@ require_once 'CRM/Core/Form.php';
  * Civi 4.5
  * Extends Core Form Controller.
  */
-class CRM_Pcpteams_Form_Team_Join extends CRM_Core_Form {
+class CRM_Pcpteams_Form_TeamJoin extends CRM_Core_Form {
 
   function preProcess(){
     CRM_Utils_System::setTitle(ts('Join a Team'));

@@ -7,7 +7,7 @@ require_once 'CRM/Core/Form.php';
  *
  * @see http://wiki.civicrm.org/confluence/display/CRMDOC43/QuickForm+Reference
  */
-class CRM_Pcpteams_Form_Team_New extends CRM_Core_Form {
+class CRM_Pcpteams_Form_TeamNew extends CRM_Core_Form {
   function preProcess() {
     CRM_Utils_System::setTitle(ts('Team Name'));
   }
@@ -30,7 +30,7 @@ class CRM_Pcpteams_Form_Team_New extends CRM_Core_Form {
 
     // export form elements
     $this->assign('elementNames', $this->getRenderableElementNames());
-    $this->addFormRule(array('CRM_Pcpteams_Form_Team_New', 'formRule'));
+    $this->addFormRule(array('CRM_Pcpteams_Form_TeamNew', 'formRule'));
     parent::buildQuickForm();
   }
 

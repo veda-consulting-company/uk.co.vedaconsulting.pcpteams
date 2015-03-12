@@ -2,7 +2,7 @@
 
 require_once 'CRM/Core/Form.php';
 
-class CRM_Pcpteams_Form_Team_Query extends CRM_Core_Form {
+class CRM_Pcpteams_Form_TeamQuery extends CRM_Core_Form {
 
   function preProcess() {
     CRM_Utils_System::setTitle(ts('Team Question'));
