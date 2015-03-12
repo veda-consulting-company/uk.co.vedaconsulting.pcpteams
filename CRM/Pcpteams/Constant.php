@@ -16,8 +16,8 @@
           C_PCP_TYPE              = 'pcp_type_20150219182347',  //  OptionGroupName
           C_CF_BRANCH_PARTNER     = 'Branch_or_Partner',        //  Custom Field - Branch or Partner
           C_CF_TEAMPCPID          = 'Team_PCP_ID',              //  Custom Field - Team Pcp Id
-          C_CF_PCP_TYPE           = 'PCP_Type',                 //  Custom Field - Pcp Type
-          C_CF_PCP_TYPE_CONTACT   = 'PCP_Type_Contact',                 //  Custom Field - Pcp Type Contact
+          C_CF_PCP_TYPE           = 'Tribute',                  //  Custom Field - Tribute 
+          C_CF_PCP_TYPE_CONTACT   = 'Tribute_Contact',          //  Custom Field - Tribute Contact
           C_CF_IN_MEMORY          = 'In Memory',                //  Optionvalue - In Memory
           C_CONTACT_SUB_TYPE      = 'Team',                     //  Contact Sub Type - Team
           C_PCP_ID                = 7; 

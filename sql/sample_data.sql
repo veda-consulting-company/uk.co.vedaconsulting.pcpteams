@@ -80,7 +80,7 @@ INSERT INTO `civicrm_price_set_entity` (`entity_table`, `entity_id`, `price_set_
 ('civicrm_contribution_page', @contrib_page_id, @price_set_id_contribution);
 
 -- create pcp block for contribution page
-select @supporter_profile_id := id from civicrm_uf_group where name = 'supporter_profile';
+select @supporter_profile_id := id from civicrm_uf_group where name = 'Pcp_Supporter_Profile';
 INSERT INTO `civicrm_pcp_block` (`entity_table`, `entity_id`, `target_entity_type`, `target_entity_id`, `supporter_profile_id`, `is_approval_needed`, `is_tellfriend_enabled`, `tellfriend_limit`, `link_text`, `is_active`, `notify_email`) VALUES
 ('civicrm_event', @event_id, 'contribute', @contrib_page_id, @supporter_profile_id, 1, 1, 5, 'Promote this donation with a personal campaign page', 1, 'deepak@vedaconsulting.co.uk');
 SELECT @pcp_block_id := LAST_INSERT_ID();
