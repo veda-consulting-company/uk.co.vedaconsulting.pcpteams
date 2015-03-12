@@ -59,7 +59,6 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
       'cpfpa' => 'CRM_Pcpteams_Form_PCPAccount',
       'cpfp'  => 'CRM_Pcpteams_Form_PCP',
       'cpft'  => 'CRM_Pcpteams_Form_Team',
-      'cpftn' => 'CRM_Pcpteams_Form_TeamN',
     );
 
     if (!$step) {
