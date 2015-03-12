@@ -3,6 +3,10 @@ DELETE FROM civicrm_event where title like '% 2015';
 DELETE FROM civicrm_contribution where trxn_id like 'live_%';
 
 DELETE FROM civicrm_contact where organization_name like 'LLR Team %';
+DELETE FROM civicrm_contact where organization_name like 'Veda Team %';
+DELETE FROM civicrm_contact where organization_name like 'Test Team %';
+DELETE FROM civicrm_contact where organization_name like 'Pcp Team %';
+DELETE FROM civicrm_contact where organization_name like 'Sample Team %';
 DELETE FROM civicrm_contact where last_name like 'Morley %';
 DELETE FROM civicrm_contact where last_name like 'Molava %';
 DELETE FROM civicrm_contact where last_name like 'Gone %';

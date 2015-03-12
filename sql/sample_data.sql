@@ -89,7 +89,7 @@ SELECT @pcp_block_id := LAST_INSERT_ID();
 SELECT @org_name := CONCAT('LLR Team', " ", CEIL(RAND()*100));
 
 INSERT INTO `civicrm_contact` (`contact_type`, `contact_sub_type`, `do_not_email`, `do_not_phone`, `do_not_mail`, `do_not_sms`, `do_not_trade`, `is_opt_out`, `legal_identifier`, `external_identifier`, `sort_name`, `display_name`, `nick_name`, `legal_name`, `image_URL`, `preferred_communication_method`, `preferred_language`, `preferred_mail_format`, `hash`, `api_key`, `source`, `first_name`, `middle_name`, `last_name`, `prefix_id`, `suffix_id`, `formal_title`, `communication_style_id`, `email_greeting_id`, `email_greeting_custom`, `email_greeting_display`, `postal_greeting_id`, `postal_greeting_custom`, `postal_greeting_display`, `addressee_id`, `addressee_custom`, `addressee_display`, `job_title`, `gender_id`, `birth_date`, `is_deceased`, `deceased_date`, `household_name`, `primary_contact_id`, `organization_name`, `sic_code`, `user_unique_id`, `employer_id`, `is_deleted`) VALUES
-('Organization', NULL, 0, 0, 0, 0, 0, 0, NULL, NULL, @org_name, @org_name, NULL, NULL, NULL, NULL, NULL, 'Both', '3102204687', NULL, 'Sample Data', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, NULL, @org_name, NULL, NULL, NULL, 0, NULL, NULL, NULL, @org_name, NULL, NULL, NULL, 0);
+('Organization', 'Team', 0, 0, 0, 0, 0, 0, NULL, NULL, @org_name, @org_name, NULL, NULL, NULL, NULL, NULL, 'Both', '3102204687', NULL, 'Sample Data', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, NULL, @org_name, NULL, NULL, NULL, 0, NULL, NULL, NULL, @org_name, NULL, NULL, NULL, 0);
 SELECT @contact_id_lteam := LAST_INSERT_ID();
 
 -- pcp page for contact1
@@ -176,7 +176,7 @@ INSERT INTO `civicrm_contact` (`contact_type`, `contact_sub_type`, `do_not_email
 SELECT @pcp_type_contact_id := LAST_INSERT_ID();
 
 -- custom set 
-INSERT INTO `civicrm_value_pcp_custom_set`(`entity_id`, `team_pcp_id`, `pcp_type`, `pcp_type_contact`) VALUES (@pcp_id_chris, @pcp_id_llr, 'in_memory', @pcp_type_contact_id);
+INSERT INTO `civicrm_value_pcp_custom_set`(`entity_id`, `team_pcp_id`, `tribute`, `tribute_contact_id`) VALUES (@pcp_id_chris, @pcp_id_llr, 'in_memory', @pcp_type_contact_id);
 
 
 -- set custom value for llr pcp 
@@ -188,4 +188,22 @@ INSERT INTO `civicrm_contact` (`contact_type`, `contact_sub_type`, `do_not_email
 SELECT @pcp_type_contact_id_2 := LAST_INSERT_ID();
 
 -- custom set 
-INSERT INTO `civicrm_value_pcp_custom_set`(`entity_id`, `team_pcp_id`, `pcp_type`, `pcp_type_contact`) VALUES (@pcp_id_llr, NULL, 'in_celebration', @pcp_type_contact_id_2);
+INSERT INTO `civicrm_value_pcp_custom_set`(`entity_id`, `team_pcp_id`, `tribute`, `tribute_contact_id`) VALUES (@pcp_id_llr, NULL, 'in_celebration', @pcp_type_contact_id_2);
+
+-- ############################## Sample data changes Mv:12/03/2015 #####################################
+-- set Foreign key for team pcp id 
+ALTER TABLE `civicrm_value_pcp_custom_set`
+  MODIFY `team_pcp_id` int(10) unsigned DEFAULT NULL,
+  ADD CONSTRAINT `FK_civicrm_value_pcp_custom_set_team_pcp_id` FOREIGN KEY (`team_pcp_id`) REFERENCES `civicrm_pcp` (`id`) ON DELETE SET NULL;
+
+-- create sample teams
+SELECT @veda_name := CONCAT('Veda Team', " ", CEIL(RAND()*100));
+SELECT @test_name := CONCAT('Test Team', " ", CEIL(RAND()*100));
+SELECT @pcp_name  := CONCAT('Pcp Team', " ", CEIL(RAND()*100));
+SELECT @sample_name  := CONCAT('Sample Team', " ", CEIL(RAND()*100));
+
+INSERT INTO `civicrm_contact` (`contact_type`, `contact_sub_type`, `do_not_email`, `do_not_phone`, `do_not_mail`, `do_not_sms`, `do_not_trade`, `is_opt_out`, `legal_identifier`, `external_identifier`, `sort_name`, `display_name`, `nick_name`, `legal_name`, `image_URL`, `preferred_communication_method`, `preferred_language`, `preferred_mail_format`, `hash`, `api_key`, `source`, `first_name`, `middle_name`, `last_name`, `prefix_id`, `suffix_id`, `formal_title`, `communication_style_id`, `email_greeting_id`, `email_greeting_custom`, `email_greeting_display`, `postal_greeting_id`, `postal_greeting_custom`, `postal_greeting_display`, `addressee_id`, `addressee_custom`, `addressee_display`, `job_title`, `gender_id`, `birth_date`, `is_deceased`, `deceased_date`, `household_name`, `primary_contact_id`, `organization_name`, `sic_code`, `user_unique_id`, `employer_id`, `is_deleted`) VALUES
+('Organization', 'Team', 0, 0, 0, 0, 0, 0, NULL, NULL, @veda_name, @veda_name, NULL, NULL, NULL, NULL, NULL, 'Both', '3102204687', NULL, 'Sample Data', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, NULL, @veda_name, NULL, NULL, NULL, 0, NULL, NULL, NULL, @veda_name, NULL, NULL, NULL, 0),
+('Organization', 'Team', 0, 0, 0, 0, 0, 0, NULL, NULL, @test_name, @test_name, NULL, NULL, NULL, NULL, NULL, 'Both', '3102204687', NULL, 'Sample Data', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, NULL, @test_name, NULL, NULL, NULL, 0, NULL, NULL, NULL, @test_name, NULL, NULL, NULL, 0),
+('Organization', 'Team', 0, 0, 0, 0, 0, 0, NULL, NULL, @pcp_name, @pcp_name, NULL, NULL, NULL, NULL, NULL, 'Both', '3102204687', NULL, 'Sample Data', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, NULL, @pcp_name, NULL, NULL, NULL, 0, NULL, NULL, NULL, @pcp_name, NULL, NULL, NULL, 0),
+('Organization', 'Team', 0, 0, 0, 0, 0, 0, NULL, NULL, @sample_name, @sample_name, NULL, NULL, NULL, NULL, NULL, 'Both', '3102204687', NULL, 'Sample Data', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, NULL, @sample_name, NULL, NULL, NULL, 0, NULL, NULL, NULL, @sample_name, NULL, NULL, NULL, 0);
