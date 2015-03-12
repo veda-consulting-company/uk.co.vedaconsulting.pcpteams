@@ -75,13 +75,13 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
       'cpftrq' => 'CRM_Pcpteams_Form_Tribute_Query',
     );
 
-    if (is_null($controller->get('participantId'))) {
+    if ($eventId && is_null($controller->get('participantId'))) {
       $participantId = CRM_Pcpteams_Utils::isaParticipantFor($eventId);
       // store in session so we not checking everytime
       $controller->set('participantId', $participantId);
     }
 
-    if ($controller->get('participantId')) {
+    if (!$eventId || $controller->get('participantId')) {
       unset($pages['cpfed'], $pages['cpfec']);
     }
 
