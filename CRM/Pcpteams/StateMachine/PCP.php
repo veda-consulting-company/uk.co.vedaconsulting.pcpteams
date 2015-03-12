@@ -54,11 +54,34 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
     $session = CRM_Core_Session::singleton();
     $session->set('singleForm', FALSE);
 
-    $this->_pages = array(
-      'CRM_Pcpteams_Form_PCPAccount' => NULL,
-      'CRM_Pcpteams_Form_PCP' => NULL,
-      'CRM_Pcpteams_Form_Team' => NULL,
+    $step  = CRM_Utils_Request::retrieve('code', 'String', $controller);
+    $pages = array(
+      'cpfpa' => 'CRM_Pcpteams_Form_PCPAccount',
+      'cpfp'  => 'CRM_Pcpteams_Form_PCP',
+      'cpft'  => 'CRM_Pcpteams_Form_Team',
+      'cpftn' => 'CRM_Pcpteams_Form_TeamN',
     );
+
+    if (!$step) {
+      // if no code, set it true, so we consider all pages
+      $stepFound = true;
+    } else {
+      // otherwise set it to false, we consider all pages starting from the code
+      $stepFound = false;
+      if (!$session->get('userID')) {
+        // if user not logged in, inject the account page anyway
+        $this->_pages[$pages['cpfpa']] = NULL;
+      }
+    }
+
+    foreach ($pages as $pCode => $page) {
+      if ($pCode == $step) {
+        $stepFound = true;
+      }
+      if ($stepFound) {
+        $this->_pages[$page] = NULL;
+      }
+    }
 
     $this->addSequentialPages($this->_pages, $action);
   }
