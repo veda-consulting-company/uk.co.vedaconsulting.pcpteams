@@ -36,6 +36,7 @@ class CRM_Pcpteams_Form_TeamQuery extends CRM_Core_Form {
 
   function postProcess() {
     $values = $this->exportValues();
+    $this->set("workflowTeam", $values['teamOption']);
   }
 
   function getRenderableElementNames() {

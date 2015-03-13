@@ -1,31 +1,28 @@
 <?php
 
-require_once 'CRM/Core/Form.php';
-
 /**
  * Search Pcp Team Class
  * Civi 4.5
  * Extends Core Form Controller.
  */
-class CRM_Pcpteams_Form_TeamJoin extends CRM_Core_Form {
+class CRM_Pcpteams_Form_TeamJoin {
 
-  function preProcess(){
+  function preProcess(&$form){
     CRM_Utils_System::setTitle(ts('Join a Team'));
 
-    $this->_pcpId = $this->controller->get('pcpId');
-    //$this->_pcpId = CRM_Utils_Request::retrieve('id', 'Positive');
+    $form->_pcpId = $form->controller->get('pcpId');
+    //$form->_pcpId = CRM_Utils_Request::retrieve('id', 'Positive');
     $userId = CRM_Pcpteams_Utils::getloggedInUserId();
-    if (!$this->_pcpId) {
-     $this->_pcpId =  CRM_Pcpteams_Utils::getPcpIdByUserId($userId);
+    if (!$form->_pcpId) {
+     $form->_pcpId =  CRM_Pcpteams_Utils::getPcpIdByUserId($userId);
     }
-    parent::preProcess();
   }
 
-  function buildQuickForm() {
+  function buildQuickForm(&$form) {
     // add form elements
-    $this->addEntityRef('pcp_team_contact', ts('Team name'), array('api' => array('params' => array('contact_type' => 'Organization', 'contact_sub_type' => 'Team')), 'create' => TRUE), TRUE);
+    $form->addEntityRef('pcp_team_contact', ts('Team name'), array('api' => array('params' => array('contact_type' => 'Organization', 'contact_sub_type' => 'Team')), 'create' => TRUE), TRUE);
 
-    $this->addButtons(array(
+    $form->addButtons(array(
       array(
         'type' => 'next',
         'name' => ts('Save'),
@@ -34,12 +31,11 @@ class CRM_Pcpteams_Form_TeamJoin extends CRM_Core_Form {
     ));
 
     // export form elements
-    $this->assign('elementNames', $this->getRenderableElementNames());
-    parent::buildQuickForm();
+    $form->assign('elementNames', $form->getRenderableElementNames());
   }
 
-  function postProcess() {
-    $values = $this->exportValues();
+  function postProcess(&$form) {
+    $values = $form->exportValues();
     $teamId = $values['pcp_team_contact'];
 
     // get PCP-ID for team 
@@ -60,7 +56,7 @@ class CRM_Pcpteams_Form_TeamJoin extends CRM_Core_Form {
       $teamPcpCfId = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
       $params = array(
         'version'   => 3,
-        'entity_id' => $this->_pcpId,
+        'entity_id' => $form->_pcpId,
         "custom_{$teamPcpCfId}" => $teamPcpId,
       );
       $result = civicrm_api3('CustomValue', 'create', $params);
@@ -70,20 +66,4 @@ class CRM_Pcpteams_Form_TeamJoin extends CRM_Core_Form {
     }
   }
 
-  /**
-   * Get the fields/elements defined in this form.
-   *
-   * @return array (string)
-   */
-  function getRenderableElementNames() {
-    $elementNames = array();
-    foreach ($this->_elements as $element) {
-      /** @var HTML_QuickForm_Element $element */
-      $label = $element->getLabel();
-      if (!empty($label)) {
-        $elementNames[] = $element->getName();
-      }
-    }
-    return $elementNames;
-  }
 }

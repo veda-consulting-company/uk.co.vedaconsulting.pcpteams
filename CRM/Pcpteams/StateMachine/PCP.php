@@ -56,6 +56,7 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
 
     // retrieve and store in controller session
     $eventId = CRM_Utils_Request::retrieve('eventId', 'Positive', $controller);
+    $workflowTeam = $controller->get('workflowTeam');
 
     $step  = CRM_Utils_Request::retrieve('code', 'String', $controller);
     $pages = array(
@@ -64,17 +65,22 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
       'cpfed' => 'CRM_Pcpteams_Form_EventDetails',
       'cpfec' => 'CRM_Pcpteams_Form_EventConfirm',
       'cpftq' => 'CRM_Pcpteams_Form_TeamQuery',
-      'cpfti' => 'CRM_Pcpteams_Form_TeamInvite',
-      'cpftn' => 'CRM_Pcpteams_Form_TeamNew',
+      'cpftn' => 'CRM_Pcpteams_Form_TeamReact',
       'cpftc' => 'CRM_Pcpteams_Form_TeamConfirm',
       'cpftt' => 'CRM_Pcpteams_Form_TeamThankYou',
       'cpftw' => 'CRM_Pcpteams_Form_TeamWelcome',
-      'cpftj' => 'CRM_Pcpteams_Form_TeamJoin',
-      'cpfgq' => 'CRM_Pcpteams_Form_GroupQuery',
-      'cpfgj' => 'CRM_Pcpteams_Form_GroupJoin',
+      'cpfgq'  => 'CRM_Pcpteams_Form_GroupQuery',
+      'cpfgj'  => 'CRM_Pcpteams_Form_GroupJoin',
       'cpftrq' => 'CRM_Pcpteams_Form_TributeQuery',
       'cpftrj' => 'CRM_Pcpteams_Form_TributeJoin',
     );
+
+    if ($workflowTeam == 'invite') { // team invite
+      unset($pages['cpftq']); // unset team query
+      $pages = $pages + array(
+        'cpfti' => 'CRM_Pcpteams_Form_TeamInvite',
+      );
+    }
 
     if ($eventId && is_null($controller->get('participantId'))) {
       $participantId = CRM_Pcpteams_Utils::isaParticipantFor($eventId);
@@ -82,6 +88,7 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
       $controller->set('participantId', $participantId);
     }
 
+    // if no event or already registered, skip event pages
     if (!$eventId || $controller->get('participantId')) {
       unset($pages['cpfed'], $pages['cpfec']);
     }
@@ -110,4 +117,3 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
     $this->addSequentialPages($this->_pages, $action);
   }
 }
-

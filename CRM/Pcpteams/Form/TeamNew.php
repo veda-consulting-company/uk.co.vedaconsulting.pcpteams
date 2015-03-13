@@ -1,24 +1,22 @@
 <?php
 
-require_once 'CRM/Core/Form.php';
-
 /**
  * Form controller class
  *
  * @see http://wiki.civicrm.org/confluence/display/CRMDOC43/QuickForm+Reference
  */
-class CRM_Pcpteams_Form_TeamNew extends CRM_Core_Form {
-  function preProcess() {
+class CRM_Pcpteams_Form_TeamNew {
+
+  function preProcess(&$form) {
     CRM_Utils_System::setTitle(ts('Team Name'));
   }
 
-  function buildQuickForm() {
-
+  function buildQuickForm(&$form) {
     // add form elements
-    $this->add('text', 'organization_name', ts('Team Name'), array(), TRUE);
-    $this->add('text', 'email-primary', ts('Email'), CRM_Core_DAO::getAttribute('CRM_Core_DAO_Email', 'email'));
+    $form->add('text', 'organization_name', ts('Team Name'), array(), TRUE);
+    $form->add('text', 'email-primary', ts('Email'), CRM_Core_DAO::getAttribute('CRM_Core_DAO_Email', 'email'));
 
-    $this->addButtons(array(
+    $form->addButtons(array(
       array(
         'type' => 'next',
         'name' => ts('Next'),
@@ -26,12 +24,11 @@ class CRM_Pcpteams_Form_TeamNew extends CRM_Core_Form {
       ),
     ));
     $groupURL = CRM_Utils_System::url('civicrm/pcp/page', 'reset=1');
-    $this->assign('skipURL', $groupURL);
+    $form->assign('skipURL', $groupURL);
 
     // export form elements
-    $this->assign('elementNames', $this->getRenderableElementNames());
-    $this->addFormRule(array('CRM_Pcpteams_Form_TeamNew', 'formRule'));
-    parent::buildQuickForm();
+    $form->assign('elementNames', $form->getRenderableElementNames());
+    $form->addFormRule(array('CRM_Pcpteams_Form_TeamNew', 'formRule'));
   }
 
   static function formRule($params) {
@@ -41,10 +38,10 @@ class CRM_Pcpteams_Form_TeamNew extends CRM_Core_Form {
     return empty($errors) ? TRUE : $errors;
   }
 
-  function postProcess() {
+  function postProcess(&$form) {
     return TRUE; // remove me
 
-    $values   = $this->exportValues();
+    $values   = $form->exportValues();
     $orgName  = $values['organization_name'];
     $email    = $values['email-primary'];
     $cSubType = CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE;
@@ -67,23 +64,5 @@ class CRM_Pcpteams_Form_TeamNew extends CRM_Core_Form {
     }else{
       CRM_Core_Session::setStatus(ts("Failed to Create Team \"{$orgName}\" ..."));
     }
-
-    parent::postProcess();
-  }
-
-  /**
-   * Get the fields/elements defined in this form.
-   *
-   * @return array (string)
-   */
-  function getRenderableElementNames() {
-    $elementNames = array();
-    foreach ($this->_elements as $element) {
-      $label = $element->getLabel();
-      if (!empty($label)) {
-        $elementNames[] = $element->getName();
-      }
-    }
-    return $elementNames;
   }
 }
