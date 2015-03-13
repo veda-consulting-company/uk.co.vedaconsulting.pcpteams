@@ -9,13 +9,13 @@ class CRM_Pcpteams_Form_TeamReact extends CRM_Core_Form {
   function preProcess() {
     $workflowTeam = $this->get("workflowTeam");
 
-    if ($workflowTeam == 2) { // create team
+    if ($workflowTeam == 1) { // create team
       $this->_reactToFile = "TeamNew";
     }
     else if ($workflowTeam == 'invite') { // join team
       $this->_reactToFile = "TeamInvite";
     }
-    else { // join team
+    else {// join team
       $this->_reactToFile = "TeamJoin";
     }
 
@@ -40,7 +40,6 @@ class CRM_Pcpteams_Form_TeamReact extends CRM_Core_Form {
    * @return array (string)
    */
   function getRenderableElementNames() {
-    CRM_Core_Error::debug_var('$this->_elements', $this->_elements);
     $elementNames = array();
     foreach ($this->_elements as $element) {
       /** @var HTML_QuickForm_Element $element */
