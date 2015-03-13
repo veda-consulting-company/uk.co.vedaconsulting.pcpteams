@@ -75,5 +75,12 @@ class CRM_Pcpteams_Form_TeamInvite {
 
   function postProcess(&$form) {
     $values = $form->exportValues();
+    if ($values['teamOption'] == 1) { // join team
+      $this->set("workflowTeam", 2); // follow the flow as if teamQuery would have chosen join
+      CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/support', "code=cpftn&qfKey={$this->controller->_key}"));
+    }
+    else if ($values['teamOption'] == 2) {
+      CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/support', "code=cpfgq&qfKey={$this->controller->_key}"));
+    }
   }
 }

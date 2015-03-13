@@ -65,15 +65,15 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
 
     $step  = CRM_Utils_Request::retrieve('code', 'String', $controller);
     $pages = array(
-      'cpfpa' => 'CRM_Pcpteams_Form_PCPAccount',
-      'cpfp'  => 'CRM_Pcpteams_Form_PCP',
-      'cpfed' => 'CRM_Pcpteams_Form_EventDetails',
-      'cpfec' => 'CRM_Pcpteams_Form_EventConfirm',
-      'cpftq' => 'CRM_Pcpteams_Form_TeamQuery',
-      'cpftn' => 'CRM_Pcpteams_Form_TeamReact',
-      'cpftc' => 'CRM_Pcpteams_Form_TeamConfirm',
-      'cpftt' => 'CRM_Pcpteams_Form_TeamThankYou',
-      'cpftw' => 'CRM_Pcpteams_Form_TeamWelcome',
+      'cpfpa'  => 'CRM_Pcpteams_Form_PCPAccount',
+      'cpfp'   => 'CRM_Pcpteams_Form_PCP',
+      'cpfed'  => 'CRM_Pcpteams_Form_EventDetails',
+      'cpfec'  => 'CRM_Pcpteams_Form_EventConfirm',
+      'cpftq'  => 'CRM_Pcpteams_Form_TeamQuery',
+      'cpftn'  => 'CRM_Pcpteams_Form_TeamReact',
+      'cpftc'  => 'CRM_Pcpteams_Form_TeamConfirm',
+      'cpftt'  => 'CRM_Pcpteams_Form_TeamThankYou',
+      'cpftw'  => 'CRM_Pcpteams_Form_TeamWelcome',
       'cpfgq'  => 'CRM_Pcpteams_Form_GroupQuery',
       'cpfgj'  => 'CRM_Pcpteams_Form_GroupJoin',
       'cpftrq' => 'CRM_Pcpteams_Form_TributeQuery',
@@ -81,9 +81,6 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
     );
     if ($workflowTeam == 'invite') { // team invite
       unset($pages['cpftq']); // unset team query
-      //$pages = $pages + array(
-        //'cpfti' => 'CRM_Pcpteams_Form_TeamInvite',
-      //);
     }
     if ($eventId && is_null($controller->get('participantId'))) {
       $participantId = CRM_Pcpteams_Utils::isaParticipantFor($eventId);
