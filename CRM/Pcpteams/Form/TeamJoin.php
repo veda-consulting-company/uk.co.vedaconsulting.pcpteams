@@ -60,6 +60,10 @@ class CRM_Pcpteams_Form_TeamJoin {
         "custom_{$teamPcpCfId}" => $teamPcpId,
       );
       $result = civicrm_api3('CustomValue', 'create', $params);
+       // Get team contact ID
+      $teamContactID    = CRM_Pcpteams_Utils::getcontactIdbyPcpId($teamPcpId);
+      $form->_teamName  = CRM_Contact_BAO_Contact::displayName($teamContactID);
+      $form->set('teamName', $form->_teamName);
     } else {
       // FIXME: this check should be at validation step / form-rule
       CRM_Core_Error::fatal("The team (ID: $teamId) doesn't have a pcp.");
