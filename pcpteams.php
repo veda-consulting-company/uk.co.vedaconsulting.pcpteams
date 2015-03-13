@@ -159,5 +159,16 @@ function pcpteams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
   }
 }
 
+function pcpteams_civicrm_buildForm($formName, &$form) {
+  if($formName == 'CRM_Event_Form_Registration_ThankYou') {
+    $template              = CRM_Core_Smarty::singleton( );
+    $beginHookFormElements = $template->get_template_vars();
+    if($beginHookFormElements['pcpLink']) {
+      $pageId = $form->getVar('_eventId');
+      $supportURL  = CRM_Utils_System::url('civicrm/pcp/support', 'reset=1&pageId='.$pageId.'&component=event');
+      $form->assign('pcpLink', $supportURL);
+    }
+  }
+}
 
 
