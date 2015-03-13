@@ -15,9 +15,6 @@ class CRM_Pcpteams_Form_TeamInvite {
       CRM_Core_Error::fatal(ts('Unable to Find Team Record for this URL. Please check the Team is active...'));
     }
     CRM_Utils_System::setTitle(ts('Invited to join a team'));
-  }
-  
-  function setDefaultValues(&$form) {
     $teamContactID = CRM_Pcpteams_Utils::getcontactIdbyPcpId($form->_pcpId);
     $teamPcpResult = civicrm_api('Pcpteams', 
         'get', 
@@ -29,11 +26,12 @@ class CRM_Pcpteams_Form_TeamInvite {
     );
     if(!civicrm_error($teamPcpResult)){
       $teamTitle    = $teamPcpResult['values'][0]['title'];
+      $form->assign('teamTitle', $teamTitle );
       $teamPageID   = $teamPcpResult['values'][0]['page_id'];
       $teamPageType = $teamPcpResult['values'][0]['page_type'];
       if($teamPageType == 'event' && !empty($teamPageID)) {
         $eventDetails   = CRM_Pcpteams_Utils::getEventDetailsbyEventId( $teamPageID);
-        $eventTitle     = $eventDetails['title'];
+        $form->assign('eventTitle', $eventDetails['title'] );
       }
     }
     $teamAdminRelationshipTypeID  = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE, 'id', 'name_a_b');
@@ -42,19 +40,16 @@ class CRM_Pcpteams_Form_TeamInvite {
       'relationship_type_id' => $teamAdminRelationshipTypeID,
       'contact_id_b' => $teamContactID,
       ));
-    $teamAdminDisplayName = "Team Captain Not Found";
+        $teamAdminDisplayName = "Team Captain Not Found";
     if(!civicrm_error($relationshipResult) && $relationshipResult['values']) {
       $teamAdminContactID = $relationshipResult['values'][0]['contact_id_a'];
       $teamAdminDisplayName =  CRM_Contact_BAO_Contact::displayName($teamAdminContactID);
     }
-    $defaults = array();
-    $defaults['description'] = $teamTitle."<br/><br/>Captain - ".$teamAdminDisplayName."<br/> <br/>Event - ".$eventTitle."<br/><br/>";
-    return $defaults;
+        $form->assign('teamAdminDisplayName', $teamAdminDisplayName);
+    
   }
-
+  
   function buildQuickForm(&$form) {
-    $el = $form->add('textarea', 'description', ts('') , '');
-    $el->freeze();
     $teamOptions = array();
     $teamOptions = array(
         ts(' Yes, this is the team'),
