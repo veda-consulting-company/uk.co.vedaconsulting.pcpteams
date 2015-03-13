@@ -57,6 +57,9 @@ class CRM_Pcpteams_Form_TeamInvite extends CRM_Core_Form {
         }
       }
     }
+    if(empty($teamAdminDisplayName)){
+      $teamAdminDisplayName = "Team Captain Not Found";
+    }
     $defaults = array();
     $defaults['description'] = $teamTitle."<br/><br/>Captain - ".$teamAdminDisplayName."<br/> <br/>Event - ".$eventTitle."London Bikeathon<br/><br/>";
     return $defaults;
