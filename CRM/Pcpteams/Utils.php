@@ -234,4 +234,39 @@ class  CRM_Pcpteams_Utils {
     $return['rankHolder']= $eventDetails['values'][$maxAmoutnRaisedPcp]['title'];
     return $return;
   }
+  
+  static function getPcpEventTitle($pcpId){
+    if(empty($pcpId)){
+      return null;
+    }
+    $pcpResult = civicrm_api('Pcpteams', 
+       'get', 
+       array(
+         'pcp_id'     => $pcpId,
+         'version'    => 3,
+         'sequential' => 1,
+       )
+    );
+    if(!civicrm_error($pcpResult)){
+      $pageID         = $pcpResult['values'][0]['page_id'];
+      $eventDetails   = CRM_Pcpteams_Utils::getEventDetailsbyEventId($pageID);
+      return $eventDetails['title'];
+    }
+  }
+  
+  static function getTeamAdmin($pcpId){
+    if(empty($pcpId)){
+      return null;
+    }
+    $teamContactID = CRM_Pcpteams_Utils::getcontactIdbyPcpId($pcpId);
+    $teamAdminRelationshipTypeID  = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE, 'id', 'name_a_b');
+    $relationshipResult = civicrm_api3('Relationship', 'get', array(
+      'sequential' => 1,
+      'relationship_type_id' => $teamAdminRelationshipTypeID,
+      'contact_id_b' => $teamContactID,
+      ));
+    if(!civicrm_error($relationshipResult) && $relationshipResult['values']) {
+      return $relationshipResult['values'][0]['contact_id_a'];
+    }
+  }
 }
