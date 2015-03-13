@@ -13,7 +13,6 @@
       <table_name>civicrm_value_pcp_custom_set</table_name>
       <is_multiple>0</is_multiple>
       <collapse_adv_display>0</collapse_adv_display>
-      <created_date>2015-02-18 17:08:38</created_date>
     </CustomGroup>
   </CustomGroups>
   <CustomFields>
@@ -171,7 +170,6 @@
       <is_cms_user>2</is_cms_user>
       <is_reserved>0</is_reserved>
       <name>Pcp_Supporter_Profile</name>
-      <created_date>2015-03-12 15:13:20</created_date>
       <is_proximity_search>0</is_proximity_search>
     </ProfileGroup>
   </ProfileGroups>
