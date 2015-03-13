@@ -10,7 +10,6 @@ require_once 'CRM/Core/Form.php';
 class CRM_Pcpteams_Form_GroupQuery extends CRM_Core_Form {
   function preProcess(){
     CRM_Utils_System::setTitle(ts('Group Question'));
-    parent::preProcess();  
   }
   
   function buildQuickForm() {
@@ -32,13 +31,11 @@ class CRM_Pcpteams_Form_GroupQuery extends CRM_Core_Form {
 
     // export form elements
     $this->assign('elementNames', $this->getRenderableElementNames());
-    parent::buildQuickForm();
   }
 
   function postProcess() {
     $values = $this->exportValues();
-    //FIXME: postProcess
-    parent::postProcess();
+    $this->set("workflowGroup", $values['teamOption']);
   }
 
   /**
