@@ -55,8 +55,13 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
     $session->set('singleForm', FALSE);
 
     // retrieve and store in controller session
-    $eventId = CRM_Utils_Request::retrieve('eventId', 'Positive', $controller);
+    $eventId   = CRM_Utils_Request::retrieve('eventId', 'Positive', $controller);
+    $teamPcpId = CRM_Utils_Request::retrieve('tpId', 'Positive', $controller);
     $workflowTeam = $controller->get('workflowTeam');
+
+    if ($teamPcpId && !$workflowTeam) {
+      $controller->set('workflowTeam', 'invite');
+    }
 
     $step  = CRM_Utils_Request::retrieve('code', 'String', $controller);
     $pages = array(
@@ -74,14 +79,12 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
       'cpftrq' => 'CRM_Pcpteams_Form_TributeQuery',
       'cpftrj' => 'CRM_Pcpteams_Form_TributeJoin',
     );
-
     if ($workflowTeam == 'invite') { // team invite
       unset($pages['cpftq']); // unset team query
-      $pages = $pages + array(
-        'cpfti' => 'CRM_Pcpteams_Form_TeamInvite',
-      );
+      //$pages = $pages + array(
+        //'cpfti' => 'CRM_Pcpteams_Form_TeamInvite',
+      //);
     }
-
     if ($eventId && is_null($controller->get('participantId'))) {
       $participantId = CRM_Pcpteams_Utils::isaParticipantFor($eventId);
       // store in session so we not checking everytime

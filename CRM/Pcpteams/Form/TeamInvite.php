@@ -7,22 +7,22 @@ require_once 'CRM/Core/Form.php';
  *
  * @see http://wiki.civicrm.org/confluence/display/CRMDOC43/QuickForm+Reference
  */
-class CRM_Pcpteams_Form_TeamInvite extends CRM_Core_Form {
+class CRM_Pcpteams_Form_TeamInvite {
 
-  function preProcess() {
-    $this->_pcpId = CRM_Utils_Request::retrieve('id', 'Positive', CRM_Core_DAO::$_nullArray, TRUE); 
-    if (empty($this->_pcpId)) {
+  function preProcess(&$form) {
+    $form->_pcpId = CRM_Utils_Request::retrieve('tpId', 'Positive', $form, TRUE); 
+    if (empty($form->_pcpId)) {
       CRM_Core_Error::fatal(ts('Unable to Find Team Record for this URL. Please check the Team is active...'));
     }
     CRM_Utils_System::setTitle(ts('Invited to join a team'));
   }
   
-  function setDefaultValues() {
-    $teamContactID   = CRM_Pcpteams_Utils::getcontactIdbyPcpId($this->_pcpId);
+  function setDefaultValues(&$form) {
+    $teamContactID = CRM_Pcpteams_Utils::getcontactIdbyPcpId($form->_pcpId);
     $teamPcpResult = civicrm_api('Pcpteams', 
         'get', 
         array(
-          'pcp_id'     => $this->_pcpId,
+          'pcp_id'     => $form->_pcpId,
           'version'    => 3,
           'sequential' => 1,
         )
@@ -52,9 +52,8 @@ class CRM_Pcpteams_Form_TeamInvite extends CRM_Core_Form {
     return $defaults;
   }
 
-  function buildQuickForm() {
-    $el = $this->add('textarea', 'description', ts('') , ''
-    );
+  function buildQuickForm(&$form) {
+    $el = $form->add('textarea', 'description', ts('') , '');
     $el->freeze();
     $teamOptions = array();
     $teamOptions = array(
@@ -62,33 +61,19 @@ class CRM_Pcpteams_Form_TeamInvite extends CRM_Core_Form {
         ts(' No, I would like to join another team'),
         ts(' I do not want to join any team')
       );
-      $this->addRadio('teamOption', '', $teamOptions, NULL, '<br/><br/>');
+    $form->addRadio('teamOption', '', $teamOptions, NULL, '<br/><br/>');
 
-    $this->addButtons(array(
+    $form->addButtons(array(
       array(
         'type' => 'next',
         'name' => ts('Next'),
         'isDefault' => TRUE,
       ),
     ));
-    $this->assign('elementNames', $this->getRenderableElementNames());
+    $form->assign('elementNames', $form->getRenderableElementNames());
   }
 
-  function postProcess() {
-    return TRUE;
-    $values = $this->exportValues();
+  function postProcess(&$form) {
+    $values = $form->exportValues();
   }
-
-  function getRenderableElementNames() {
-    $elementNames = array();
-    foreach ($this->_elements as $element) {
-      /** @var HTML_QuickForm_Element $element */
-      $label = $element->getLabel();
-      if (!empty($label)) {
-        $elementNames[] = $element->getName();
-      }
-    }
-    return $elementNames;
-  }
- 
 }
