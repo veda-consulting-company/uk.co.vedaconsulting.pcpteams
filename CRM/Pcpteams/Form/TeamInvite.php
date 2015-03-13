@@ -36,32 +36,19 @@ class CRM_Pcpteams_Form_TeamInvite extends CRM_Core_Form {
         $eventTitle     = $eventDetails['title'];
       }
     }
-    $relationshipTypeResult = civicrm_api3('RelationshipType', 'get', array(
+    $teamAdminRelationshipTypeID  = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE, 'id', 'name_a_b');
+    $relationshipResult = civicrm_api3('Relationship', 'get', array(
       'sequential' => 1,
-      'name_a_b' => "Team Admin of",
-    ));
-    
-    if(!civicrm_error($relationshipTypeResult)) {
-      $teamAdminRelationshipTypeID  = $relationshipTypeResult['id'];
-      $relationshipResult = civicrm_api3('Relationship', 'get', array(
-        'sequential' => 1,
-        'relationship_type_id' => $teamAdminRelationshipTypeID,
-        'contact_id_b' => $teamContactID,
-        ));
-      $teamAdminDisplayName = "";
-      if(!civicrm_error($relationshipResult) && $relationshipResult['values']) {
-        $teamAdminContactID = $relationshipResult['values'][0]['contact_id_a'];
-        $contactResult  = civicrm_api3('Contact', 'get', array('sequential' => 1, 'id' => $teamAdminContactID,));
-        if(!civicrm_error($contactResult)) {
-          $teamAdminDisplayName  = $contactResult['values'][0]['display_name'] ;
-        }
-      }
-    }
-    if(empty($teamAdminDisplayName)){
-      $teamAdminDisplayName = "Team Captain Not Found";
+      'relationship_type_id' => $teamAdminRelationshipTypeID,
+      'contact_id_b' => $teamContactID,
+      ));
+    $teamAdminDisplayName = "Team Captain Not Found";
+    if(!civicrm_error($relationshipResult) && $relationshipResult['values']) {
+      $teamAdminContactID = $relationshipResult['values'][0]['contact_id_a'];
+      $teamAdminDisplayName =  CRM_Contact_BAO_Contact::displayName($teamAdminContactID);
     }
     $defaults = array();
-    $defaults['description'] = $teamTitle."<br/><br/>Captain - ".$teamAdminDisplayName."<br/> <br/>Event - ".$eventTitle."London Bikeathon<br/><br/>";
+    $defaults['description'] = $teamTitle."<br/><br/>Captain - ".$teamAdminDisplayName."<br/> <br/>Event - ".$eventTitle."<br/><br/>";
     return $defaults;
   }
 
