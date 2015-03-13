@@ -10,18 +10,23 @@ require_once 'CRM/Core/Form.php';
 class CRM_Pcpteams_Form_TeamInvite {
 
   function preProcess(&$form) {
-    $form->_pcpId = CRM_Utils_Request::retrieve('tpId', 'Positive', $form, TRUE); 
-    if (empty($form->_pcpId)) {
+    $form->_teamPcpId = CRM_Utils_Request::retrieve('tpId', 'Positive', $form, TRUE); 
+    if (empty($form->_teamPcpId)) {
       CRM_Core_Error::fatal(ts('Unable to Find Team Record for this URL. Please check the Team is active...'));
     }
     CRM_Utils_System::setTitle(ts('Invited to join a team'));
+    
+    $userId = CRM_Pcpteams_Utils::getloggedInUserId();
+    if ($userId) {
+     $form->_pcpId =  CRM_Pcpteams_Utils::getPcpIdByUserId($userId);
+    }
     // Get team contact ID
-    $teamContactID    = CRM_Pcpteams_Utils::getcontactIdbyPcpId($form->_pcpId);
+    $teamContactID    = CRM_Pcpteams_Utils::getcontactIdbyPcpId($form->_teamPcpId);
     $form->_teamName  = CRM_Contact_BAO_Contact::displayName($teamContactID);
     // Get Event Title
-    $eventTitle       = CRM_Pcpteams_Utils::getPcpEventTitle($form->_pcpId);
+    $eventTitle       = CRM_Pcpteams_Utils::getPcpEventTitle($form->_teamPcpId);
     // Get Team Admin Contact ID
-    $teamAdminContactID = CRM_Pcpteams_Utils::getTeamAdmin($form->_pcpId);
+    $teamAdminContactID = CRM_Pcpteams_Utils::getTeamAdmin($form->_teamPcpId);
     
     $teamAdminDisplayName   = "Team Captain Not Found";
     if($teamAdminContactID) {
@@ -63,6 +68,15 @@ class CRM_Pcpteams_Form_TeamInvite {
     }
     else if ($values['teamOption'] == 0) {
       $form->set('teamName', $form->_teamName);
+      if($form->_pcpId) {
+        $teamPcpCfId = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
+        $params = array(
+          'version'   => 3,
+          'entity_id' => $form->_pcpId,
+          "custom_{$teamPcpCfId}" => $form->_teamPcpId,
+        );
+        $result = civicrm_api3('CustomValue', 'create', $params);
+      }
     }
   }
 }

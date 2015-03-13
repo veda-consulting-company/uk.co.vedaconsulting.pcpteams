@@ -1,5 +1,5 @@
 <div class="crm-form-block crm-search-form-block">
-        <h2>{ts}Good luck 'Team name'!{/ts}</h2><br />
+        <h2>{ts}Good luck  {$teamTitle}!{/ts}</h2><br />
         <span class="bold">{ts}Your team has been created
             and we have emailed your team mates asking them to join you.
             You will receive and email when each of them accepts your invite
