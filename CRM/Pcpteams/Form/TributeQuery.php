@@ -37,8 +37,7 @@ class CRM_Pcpteams_Form_TributeQuery extends CRM_Core_Form {
 
   function postProcess() {
     $values = $this->exportValues();
-    //FIXME: postProcess
-    parent::postProcess();
+    $this->set("workflowTribute", $values['teamOption']);
   }
 
   /**

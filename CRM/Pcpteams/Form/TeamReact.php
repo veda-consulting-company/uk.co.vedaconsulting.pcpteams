@@ -7,17 +7,9 @@
  */
 class CRM_Pcpteams_Form_TeamReact extends CRM_Core_Form {
   function preProcess() {
-    $workflowTeam = $this->get("workflowTeam");
-
-    if ($workflowTeam == 1) { // create team
-      $this->_reactToFile = "TeamNew";
-    }
-    else if ($workflowTeam == 'invite') { // join team
-      $this->_reactToFile = "TeamInvite";
-    }
-    else {// join team
-      $this->_reactToFile = "TeamJoin";
-    }
+    $workflowTeam   = $this->get("workflowTeam");
+    
+    $this->_reactToFile = $this->getTeamReactFile($workflowTeam);
 
     $className = 'CRM_Pcpteams_Form_' . $this->_reactToFile;
     $className::preProcess($this);
@@ -50,4 +42,20 @@ class CRM_Pcpteams_Form_TeamReact extends CRM_Core_Form {
     }
     return $elementNames;
   }
+  
+  function getTeamReactFile($workflowTeam){
+   switch ($workflowTeam) {
+      case '0':
+      case 'invite':
+        return 'TeamInvite';
+        break;      
+      case '1':
+        return 'TeamNew';
+        break;
+      
+      default:
+        return 'TeamJoin';
+        break;
+    } 
+  }  
 }

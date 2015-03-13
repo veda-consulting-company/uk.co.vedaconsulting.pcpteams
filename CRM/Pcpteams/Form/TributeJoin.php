@@ -10,13 +10,38 @@ require_once 'CRM/Core/Form.php';
 class CRM_Pcpteams_Form_TributeJoin extends CRM_Core_Form {
   function preProcess(){
     CRM_Utils_System::setTitle(ts('Tribute Contact'));
+    
+    $this->_pcpId = $this->controller->get('pcpId');
+    $selectedValue = $this->get('workflowTribute');
+    if( $selectedValue == 2){
+      $this->_tributeReason   = CRM_Pcpteams_Constant::C_CF_IN_CELEBRATION;
+      $this->_contactSubType  = CRM_Pcpteams_Constant::C_CONTACTTYPE_IN_CELEB; 
+    }else{
+      $this->_tributeReason   = CRM_Pcpteams_Constant::C_CF_IN_MEMORY;
+      $this->_contactSubType  = CRM_Pcpteams_Constant::C_CONTACTTYPE_IN_MEM;
+    }
+
+    $this->assign('tributeReason', $this->_tributeReason);
+    $this->assign('tributeContact', $this->_contactSubType);
     parent::preProcess();  
+  }
+  
+  function setDefaultValues() {
+    $dafaults = array();
+    if ($this->_pcpId) {
+      $result = civicrm_api('Pcpteams', 'get', array('version' => 3, 'sequential' => 1, 'pcp_id' => $this->_pcpId));
+      $tributeCCfId = CRM_Pcpteams_Utils::getPcpTypeContactCustomFieldId();
+      if(isset($result['values'][0]["custom_{$tributeCCfId}"])){
+        $defaults['pcp_tribute_contact'] = $result['values'][0]["custom_{$tributeCCfId}_id"];
+      }
+    }
+    return $defaults;
   }
   
   function buildQuickForm() {
 
     // add form elements
-    $this->addEntityRef('pcp_tribute_contact', ts('Select Tribute Contact'), array('api' => array('params' => array('contact_type' => 'Organization',)), 'create' => TRUE), TRUE);
+    $this->addEntityRef('pcp_tribute_contact', ts('Select Tribute Contact'), array('api' => array('params' => array('contact_type' => 'Organization', 'contact_sub_type' => $this->_contactSubType)), 'create' => TRUE), TRUE);
     $this->addButtons(array(
       array(
         'type' => 'next',
@@ -34,12 +59,11 @@ class CRM_Pcpteams_Form_TributeJoin extends CRM_Core_Form {
     $values   = $this->exportValues();
     $tributeId = $values['pcp_tribute_contact'];
 
-    $this->_SelectedReason= CRM_Pcpteams_Constant::C_CF_IN_MEMORY; //FIXME : selected reason 
     
-    if ($tributeId) {
+    if ($tributeId && $this->_tributeReason) {
       $tributeCfId        = CRM_Pcpteams_Utils::getPcpTypeCustomFieldId();
       $tributeContactCfId = CRM_Pcpteams_Utils::getPcpTypeContactCustomFieldId();
-      $selectedReason     = CRM_Core_OptionGroup::getValue(CRM_Pcpteams_Constant::C_PCP_TYPE, $this->_SelectedReason, 'name');
+      $selectedReason     = CRM_Core_OptionGroup::getValue(CRM_Pcpteams_Constant::C_PCP_TYPE, $this->_tributeReason, 'name');
       $tributeContatparams= array(
         'version'   => 3,
         'entity_id' => $this->_pcpId,
