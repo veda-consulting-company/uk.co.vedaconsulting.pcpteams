@@ -9,6 +9,7 @@ require_once 'CRM/Core/Form.php';
  */
 class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
   function preProcess(){
+    $this->assign('teamTitle', $this->get('teamName'));
     CRM_Utils_System::setTitle(ts('Team Name Available'));
 
     $this->_pcpId = $this->controller->get('pcpId');
