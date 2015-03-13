@@ -57,7 +57,7 @@ class CRM_Pcpteams_Form_TeamJoin extends CRM_Core_Form {
     }
 
     if ($teamPcpId) {
-      $teamPcpCfId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', 'Team_PCP_ID', 'id', 'name');
+      $teamPcpCfId = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
       $params = array(
         'version'   => 3,
         'entity_id' => $this->_pcpId,

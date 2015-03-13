@@ -31,9 +31,23 @@ class CRM_Pcpteams_Form_TributeJoin extends CRM_Core_Form {
   }
 
   function postProcess() {
-    $values = $this->exportValues();
-    //FIXME: PostProcess
-    parent::postProcess();
+    $values   = $this->exportValues();
+    $tributeId = $values['pcp_tribute_contact'];
+
+    $this->_SelectedReason= CRM_Pcpteams_Constant::C_CF_IN_MEMORY; //FIXME : selected reason 
+    
+    if ($tributeId) {
+      $tributeCfId        = CRM_Pcpteams_Utils::getPcpTypeCustomFieldId();
+      $tributeContactCfId = CRM_Pcpteams_Utils::getPcpTypeContactCustomFieldId();
+      $selectedReason     = CRM_Core_OptionGroup::getValue(CRM_Pcpteams_Constant::C_PCP_TYPE, $this->_SelectedReason, 'name');
+      $tributeContatparams= array(
+        'version'   => 3,
+        'entity_id' => $this->_pcpId,
+        "custom_{$tributeCfId}" => $selectedReason,
+        "custom_{$tributeContactCfId}" => $tributeId,
+      );
+      $result = civicrm_api3('CustomValue', 'create', $tributeContatparams);
+    } 
   }
 
   /**
@@ -42,13 +56,8 @@ class CRM_Pcpteams_Form_TributeJoin extends CRM_Core_Form {
    * @return array (string)
    */
   function getRenderableElementNames() {
-    // The _elements list includes some items which should not be
-    // auto-rendered in the loop -- such as "qfKey" and "buttons".  These
-    // items don't have labels.  We'll identify renderable by filtering on
-    // the 'label'.
     $elementNames = array();
     foreach ($this->_elements as $element) {
-      /** @var HTML_QuickForm_Element $element */
       $label = $element->getLabel();
       if (!empty($label)) {
         $elementNames[] = $element->getName();
