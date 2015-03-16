@@ -119,8 +119,26 @@
       <is_reserved>1</is_reserved>
       <is_active>1</is_active>
     </OptionGroup>
+    <OptionGroup>
+      <name>cg_extend_objects</name>
+      <title>Objects a custom group extends to</title>
+      <is_reserved>1</is_reserved>
+      <is_active>1</is_active>
+    </OptionGroup>    
   </OptionGroups>
   <OptionValues>
+    <OptionValue>
+      <label>Personal Campaign Page</label>
+      <value>PCP</value>
+      <name>civicrm_pcp</name>
+      <filter>0</filter>
+      <is_default>0</is_default>
+      <weight>1</weight>
+      <is_optgroup>0</is_optgroup>
+      <is_reserved>0</is_reserved>
+      <is_active>1</is_active>
+      <option_group_name>cg_extend_objects</option_group_name>
+    </OptionValue>
     <OptionValue>
       <label>In Memory</label>
       <value>in_memory</value>
@@ -144,24 +162,12 @@
       <is_active>1</is_active>
       <option_group_name>pcp_tribute</option_group_name>
     </OptionValue>
-  <OptionValue>
-      <label>Personal Campaign Page</label>
-      <value>PCP</value>
-      <name>civicrm_pcp</name>
-      <filter>0</filter>
-      <is_default>0</is_default>
-      <weight>1</weight>
-      <is_optgroup>0</is_optgroup>
-      <is_reserved>0</is_reserved>
-      <is_active>1</is_active>
-      <option_group_name>cg_extend_objects</option_group_name>
-    </OptionValue>
   </OptionValues>
   <ProfileGroups>
     <ProfileGroup>
       <is_active>1</is_active>
       <group_type>Contact,Individual</group_type>
-      <title>Pcp Supporter Profile</title>
+      <title>PCP Supporter Profile</title>
       <add_captcha>0</add_captcha>
       <is_map>0</is_map>
       <is_edit_link>0</is_edit_link>
@@ -169,7 +175,7 @@
       <is_update_dupe>0</is_update_dupe>
       <is_cms_user>2</is_cms_user>
       <is_reserved>0</is_reserved>
-      <name>Pcp_Supporter_Profile</name>
+      <name>PCP_Supporter_Profile</name>
       <is_proximity_search>0</is_proximity_search>
     </ProfileGroup>
   </ProfileGroups>
@@ -188,7 +194,7 @@
       <label>E-mail address</label>
       <field_type>Contact</field_type>
       <is_multi_summary>0</is_multi_summary>
-      <profile_group_name>Pcp Supporter Profile</profile_group_name>
+      <profile_group_name>PCP Supporter Profile</profile_group_name>
     </ProfileField>
     <ProfileField>
       <field_name>prefix_id</field_name>
@@ -204,7 +210,7 @@
       <label>Title</label>
       <field_type>Individual</field_type>
       <is_multi_summary>0</is_multi_summary>
-      <profile_group_name>Pcp Supporter Profile</profile_group_name>
+      <profile_group_name>PCP Supporter Profile</profile_group_name>
     </ProfileField>
     <ProfileField>
       <field_name>first_name</field_name>
@@ -220,7 +226,7 @@
       <label>First Name</label>
       <field_type>Individual</field_type>
       <is_multi_summary>0</is_multi_summary>
-      <profile_group_name>Pcp Supporter Profile</profile_group_name>
+      <profile_group_name>PCP Supporter Profile</profile_group_name>
     </ProfileField>
     <ProfileField>
       <field_name>last_name</field_name>
@@ -236,7 +242,7 @@
       <label>Last Name</label>
       <field_type>Individual</field_type>
       <is_multi_summary>0</is_multi_summary>
-      <profile_group_name>Pcp Supporter Profile</profile_group_name>
+      <profile_group_name>PCP Supporter Profile</profile_group_name>
     </ProfileField>
     <ProfileField>
       <field_name>street_address</field_name>
@@ -252,7 +258,7 @@
       <label>Address line one</label>
       <field_type>Contact</field_type>
       <is_multi_summary>0</is_multi_summary>
-      <profile_group_name>Pcp Supporter Profile</profile_group_name>
+      <profile_group_name>PCP Supporter Profile</profile_group_name>
     </ProfileField>
     <ProfileField>
       <field_name>supplemental_address_1</field_name>
@@ -268,7 +274,7 @@
       <label>Address line two</label>
       <field_type>Contact</field_type>
       <is_multi_summary>0</is_multi_summary>
-      <profile_group_name>Pcp Supporter Profile</profile_group_name>
+      <profile_group_name>PCP Supporter Profile</profile_group_name>
     </ProfileField>
     <ProfileField>
       <field_name>city</field_name>
@@ -284,7 +290,7 @@
       <label>City</label>
       <field_type>Contact</field_type>
       <is_multi_summary>0</is_multi_summary>
-      <profile_group_name>Pcp Supporter Profile</profile_group_name>
+      <profile_group_name>PCP Supporter Profile</profile_group_name>
     </ProfileField>
     <ProfileField>
       <field_name>postal_code</field_name>
@@ -300,7 +306,7 @@
       <label>Postcode</label>
       <field_type>Contact</field_type>
       <is_multi_summary>0</is_multi_summary>
-      <profile_group_name>Pcp Supporter Profile</profile_group_name>
+      <profile_group_name>PCP Supporter Profile</profile_group_name>
     </ProfileField>
   </ProfileFields>
   <ProfileJoins>
@@ -308,7 +314,7 @@
       <is_active>1</is_active>
       <module>Profile</module>
       <weight>12</weight>
-      <profile_group_name>Pcp Supporter Profile</profile_group_name>
+      <profile_group_name>PCP Supporter Profile</profile_group_name>
     </ProfileJoin>
   </ProfileJoins>
 </CustomData>
