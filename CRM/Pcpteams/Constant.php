@@ -20,7 +20,7 @@
           C_CF_PCP_TYPE_CONTACT   = 'Tribute_Contact',          //  Custom Field - Tribute Contact
           C_CF_IN_MEMORY          = 'In Memory',                //  Optionvalue - In Memory
           C_CF_IN_CELEBRATION     = 'In Celebration',           //  Optionvalue - In Celebration
-          C_CONTACT_SUB_TYPE      = 'Team',                     //  Contact Sub Type - Team
+          // C_CONTACT_SUB_TYPE      = 'Team',                     //  Contact Sub Type - Team
           C_CONTACTTYPE_BRANCH    = 'Branch',                   //  Contact Sub Type - Branch
           C_CONTACTTYPE_PARTNER   = 'Corporate_Partner',        //  Contact Sub Type - Corporate Partner
           C_CONTACTTYPE_IN_MEM    = 'In_Memory',                //  Contact Sub Type - In Memory

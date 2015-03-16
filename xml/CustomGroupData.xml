@@ -70,7 +70,7 @@
     </CustomField>    
     <CustomField>
       <name>Branch_or_Partner</name>
-      <label>Branch or Partne</label>
+      <label>Branch or Partner</label>
       <data_type>ContactReference</data_type>
       <html_type>Autocomplete-Select</html_type>
       <is_required>0</is_required>

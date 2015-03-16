@@ -69,6 +69,10 @@ class CRM_Pcpteams_Form_GroupJoin extends CRM_Core_Form {
         "custom_{$branchCfId}" => $branchId,
       );
       $result = civicrm_api3('CustomValue', 'create', $params);
+      if(!civicrm_error($result)){
+        $branchName = CRM_Contact_BAO_Contact::displayName($branchId);
+        CRM_Core_Session::setStatus(ts("Successfully added to the branch {$branchName}"), '', 'success');
+      }
     } 
   }
 
