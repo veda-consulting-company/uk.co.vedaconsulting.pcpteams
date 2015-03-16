@@ -8,7 +8,6 @@
 class CRM_Pcpteams_Form_TeamReact extends CRM_Core_Form {
   function preProcess() {
     $workflowTeam   = $this->get("workflowTeam");
-    
     $this->_reactToFile = $this->getTeamReactFile($workflowTeam);
 
     $className = 'CRM_Pcpteams_Form_' . $this->_reactToFile;

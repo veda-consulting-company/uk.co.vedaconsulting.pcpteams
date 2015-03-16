@@ -71,6 +71,7 @@ class CRM_Pcpteams_Form_PCPAccount extends CRM_Core_Form {
     $this->_action    = CRM_Utils_Request::retrieve('action', 'String', $this, FALSE);
     $this->_pageId    = CRM_Utils_Request::retrieve('pageId', 'Positive', $this);
     $this->_tpId      = CRM_Utils_Request::retrieve('tpId', 'Positive', $this);
+    $this->_code      = CRM_Utils_Request::retrieve('code', 'String', $this);
     $this->_component = CRM_Utils_Request::retrieve('component', 'String', $this);
     $this->_id        = CRM_Utils_Request::retrieve('id', 'Positive', $this);
 

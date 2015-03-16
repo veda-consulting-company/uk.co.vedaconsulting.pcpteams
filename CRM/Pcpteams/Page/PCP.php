@@ -226,7 +226,7 @@ class CRM_Pcpteams_Page_PCP extends CRM_Core_Page {
     $tplParams['eventPcpCount'] = $eventPcps['pcp_count'];
     
     //Pcp layout button and URLs
-    $joinTeamURl    = CRM_Utils_System::url('civicrm/pcp/support', 'reset=1&id='.$pcpId);
+    $joinTeamURl    = CRM_Utils_System::url('civicrm/pcp/support', 'reset=1&id='.$pcpId . '&code=cpftn');
     $createTeamURl  = CRM_Utils_System::url('civicrm/pcp/support', 'reset=1&id='.$pcpId);
     $updateProfPic  = CRM_Utils_System::url('civicrm/pcp/profile', 'reset=1&id='.$pcpId);
     $branchURl      = CRM_Utils_System::url('civicrm/pcp/branchorpartner', 'reset=1&id='.$pcpId);
