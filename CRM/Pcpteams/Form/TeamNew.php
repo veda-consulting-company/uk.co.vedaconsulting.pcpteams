@@ -67,7 +67,7 @@ class CRM_Pcpteams_Form_TeamNew {
     // Create/Update custom record with team pcp id and create relationship with user as Team Admin
     if($teamPcpId) {
       $userId = CRM_Pcpteams_Utils::getloggedInUserId();
-      CRM_Pcpteams_Utils::checkORCreateTeamRelationship($userId, $createTeam['id'], TRUE);
+      CRM_Pcpteams_Utils::checkORCreateTeamRelationship($userId, $createTeam['id'], TRUE, 'create');
       $teamPcpCfId = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
         $params = array(
           'version'   => 3,
@@ -76,7 +76,7 @@ class CRM_Pcpteams_Form_TeamNew {
         );
       $result = civicrm_api3('CustomValue', 'create', $params);
       $form->set('teamName', $orgName);
-
+      CRM_Pcpteams_Utils::createPcpActivity($userId, CRM_Pcpteams_Constant::C_CF_TEAM_CREATE, 'Team is created'.$orgName, 'New Team Creation');
     }
     else{
       CRM_Core_Session::setStatus(ts("Failed to Create Team \"{$orgName}\" ..."));

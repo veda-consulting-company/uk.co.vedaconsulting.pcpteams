@@ -70,6 +70,36 @@ function pcpteams_civicrm_uninstall() {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_enable
  */
 function pcpteams_civicrm_enable() {
+  $optionGroupParams = array('version' => '3' ,'name' => 'activity_type');
+  $optionGroup       = civicrm_api('OptionGroup', 'Get', $optionGroupParams);
+  
+  foreach (array('PCP Team Create'
+                , 'PCP Team Join'
+                , 'PCP Team Invite'
+                ) as $activityType) {
+    
+    if(!CRM_Core_DAO::getFieldValue('CRM_Core_DAO_OptionValue', $activityType, 'id', 'name')) {
+      $activityParams = array('version' => '3'
+                             ,'option_group_id' => $optionGroup['id']
+                             ,'name' => $activityType
+                             );
+      $activityType = civicrm_api('OptionValue', 'Create', $activityParams);
+    }
+  }
+    
+  $config           = CRM_Core_Config::singleton();
+  $extenDr          = $config->extensionsDir;
+  $messageHtmlSampleTeamInviteFile  = $extenDr . DIRECTORY_SEPARATOR .'uk.co.vedaconsulting.pcpteams'. DIRECTORY_SEPARATOR.'sample_team_invite.html';
+  $messageHtml      = file_get_contents($messageHtmlSampleTeamInviteFile);
+  $message_params = array(
+    'sequential'  => 1,
+    'version'     => 3,
+    'msg_title'   => "Sample Team Invite Template",
+    'msg_subject' => "Sample Team Invite",
+    'is_default'  => 1,
+    'msg_html'    => $messageHtml,
+  );
+  $result = civicrm_api3('MessageTemplate', 'create', $message_params);
   return _pcpteams_civix_civicrm_enable();
 }
 
@@ -79,6 +109,10 @@ function pcpteams_civicrm_enable() {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_disable
  */
 function pcpteams_civicrm_disable() {
+  $result = civicrm_api3('MessageTemplate', 'get', array( 'sequential' => 1, 'version'=> 3, 'msg_title' => "Sample Team Invite Template",));
+  if($result['is_error'] == 0 && $result['id']) {
+    $deleteResult = civicrm_api3('MessageTemplate', 'delete', array('version' => 3, 'sequential' => 1, 'id' => $result['id'],));
+  }
   return _pcpteams_civix_civicrm_disable();
 }
 

@@ -77,13 +77,17 @@ class  CRM_Pcpteams_Utils {
   /**
    * To check the valid relationship is exists., Create If not Found one.
    */
-  static function checkORCreateTeamRelationship($iContactIdA, $iContactIdB, $checkandCreate = FALSE ){
+  static function checkORCreateTeamRelationship($iContactIdA, $iContactIdB, $checkandCreate = FALSE, $action ){
     if(empty($iContactIdA) || empty($iContactIdB)){
       $status = empty($iContactIdB) ? 'Team Contact is Missing' : 'Team Member Contact Id is Missing';
       CRM_Core_Session::setStatus($status);
     }
-
-    $teamRelTypeName = CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE;
+    // When a new team is created
+    if($action == 'create') {
+      $teamRelTypeName = CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE;
+    } else {
+      $teamRelTypeName = CRM_Pcpteams_Constant::C_TEAM_RELATIONSHIP_TYPE;
+    }
     $relTypeId       = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', $teamRelTypeName, 'id', 'name_a_b');
 
     //check the Relationship Type Exists
@@ -302,4 +306,50 @@ class  CRM_Pcpteams_Utils {
          WHERE `contact_type` = 'Organization' AND `contact_sub_type` = 'Team' AND `display_name` LIKE '%{$displayname}'";
     return CRM_Core_DAO::singleValueQuery($query);
   }
+  
+  static function getActivityTypeId ($activityname) {
+    if(empty($activityname)){
+      return null;
+    }
+    $optionGroupParams  = array('version' => '3'
+                              ,'name' => CRM_Pcpteams_Constant::C_ACTIVITY_TYPE);
+    $optionGroup        = civicrm_api('OptionGroup', 'Get', $optionGroupParams);
+
+    $activityParams     = array('version' => '3'
+                           ,'option_group_id' => $optionGroup['id']
+                           ,'name' => $activityname);
+    $activityType       = civicrm_api('OptionValue', 'get', $activityParams);
+
+    return $activityType['values'][$activityType['id']]['value'];
+  }
+  
+  static function createPcpActivity( $contact_id, $activityname, $html , $subject){
+    if(empty($contact_id)){
+      return null;
+    }
+    $activityTypeID = CRM_Pcpteams_Utils::getActivityTypeId($activityname);
+
+    $activityParams = array(
+                            'source_contact_id' => $contact_id,
+                            'target_contact_id' => $contact_id,
+                            'activity_type_id' => $activityTypeID,
+                            'subject' => $subject,
+                            'details' => $html,
+                            'activity_date_time' => date( 'YmdHis' ),
+                            'status_id' => 2,
+                            'version' => 3
+                           );
+
+    $result = civicrm_api( 'activity','create', $activityParams );
+  }
+  
+  static function overrideLoginUrl(&$form) {
+    $template              = CRM_Core_Smarty::singleton( );
+    $beginHookFormElements = $template->get_template_vars();
+    if($beginHookFormElements['loginURL']) {
+      $loginURL = $beginHookFormElements['loginURL'].urlencode('&tpId='.$form->_tpId);
+      $form->assign('loginURL', $loginURL);
+    }
+  }
+  
 }

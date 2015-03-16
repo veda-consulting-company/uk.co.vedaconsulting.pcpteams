@@ -1,6 +1,6 @@
 <div class="crm-form-block crm-search-form-block">
         <h2>{ts}Welcome to {$teamTitle}!{/ts}</h2><br />
-        <span class="bold">{ts}You are now a member of 'Team name', don't forget to share your team page later to encourage your friends to get involved
+        <span class="bold">{ts}You are now a member of {$teamTitle}, don't forget to share your team page later to encourage your friends to get involved
             {/ts}</span>
 	{foreach from=$elementNames item=elementName}
 	  <div class="crm-section">
