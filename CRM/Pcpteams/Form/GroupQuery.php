@@ -23,15 +23,24 @@ class CRM_Pcpteams_Form_GroupQuery extends CRM_Core_Form {
     $this->addButtons(array(
       array(
         'type' => 'next',
-        'name' => ts('Next'),
+        'name' => ts('Continue'),
         'isDefault' => TRUE,
       ),
     ));
-
+    $this->addFormRule(array('CRM_Pcpteams_Form_GroupQuery', 'formRule'), $this);
     // export form elements
     $this->assign('elementNames', $this->getRenderableElementNames());
   }
+  
+  static function formRule($fields){
+    $errors = array();
+    if (empty($fields['teamOption'])) {
+      $errors['teamOption'] = ts('Please select at least one field.');
+    }
 
+    return empty($errors) ? TRUE : $errors;
+  }
+  
   function postProcess() {
     $values = $this->exportValues();
     if ($values['teamOption'] == 0) { 

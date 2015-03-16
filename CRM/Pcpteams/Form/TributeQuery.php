@@ -25,16 +25,25 @@ class CRM_Pcpteams_Form_TributeQuery extends CRM_Core_Form {
     $this->addButtons(array(
       array(
         'type' => 'next',
-        'name' => ts('Next'),
+        'name' => ts('Continue'),
         'isDefault' => TRUE,
       ),
     ));
-
+    $this->addFormRule(array('CRM_Pcpteams_Form_TributeQuery', 'formRule'), $this);
     // export form elements
     $this->assign('elementNames', $this->getRenderableElementNames());
     parent::buildQuickForm();
   }
+  
+  static function formRule($fields){
+    $errors = array();
+    if (empty($fields['teamOption'])) {
+      $errors['teamOption'] = ts('Please select at least one field.');
+    }
 
+    return empty($errors) ? TRUE : $errors;
+  }
+  
   function postProcess() {
     $values = $this->exportValues();
     $this->set("workflowTribute", $values['teamOption']);

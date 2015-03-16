@@ -18,7 +18,7 @@ class CRM_Pcpteams_Form_EventDetails extends CRM_Core_Form {
     $this->addButtons(array(
       array(
         'type' => 'next',
-        'name' => ts('Save'),
+        'name' => ts('Continue'),
         'isDefault' => TRUE,
       ),
     ));

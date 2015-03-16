@@ -51,7 +51,6 @@
                val = $el.val();
                var params = {};
                 params.id = val;
-                params.contact_sub_type = contactSubType;
                CRM.api3('pcpteams', 'getContactlist', params).done(function(result) {
                 callback(result.values[0]);
                 // Trigger change (store data to avoid an infinite loop of lookups)
