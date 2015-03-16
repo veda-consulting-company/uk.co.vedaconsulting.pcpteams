@@ -77,6 +77,10 @@ class CRM_Pcpteams_Form_TributeJoin extends CRM_Core_Form {
         "custom_{$tributeContactCfId}" => $tributeId,
       );
       $result = civicrm_api3('CustomValue', 'create', $tributeContatparams);
+      if(!civicrm_error($result)){
+        $tributeName = CRM_Contact_BAO_Contact::displayName($tributeId);
+        CRM_Core_Session::setStatus(ts("Successfully added to {$this->_tributeReason} of {$tributeName}"), '', 'success');
+      }      
     } 
     //FIXME: need to discuss with DS, to redirect the after completed the form entries
     CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/page', 'reset=1&id='.$this->_pcpId));
