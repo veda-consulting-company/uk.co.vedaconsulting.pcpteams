@@ -37,7 +37,20 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
   }
 
   function postProcess() {
-    return TRUE;
+    //return TRUE;
+    $values = $this->controller->exportValues($this->_name); 
+    $emails = array_map('trim', explode(',', $values['description']));
+    $userId = CRM_Pcpteams_Utils::getloggedInUserId();
+    // Find the msg_tpl ID of sample invite template
+    $result = civicrm_api3('MessageTemplate', 'get', array( 'sequential' => 1, 'version'=> 3, 'msg_title' => "Sample Team Invite Template",));
+    if(!civicrm_error($result) && $result['id']) {
+      // Send Invitation emails
+      CRM_Pcpteams_Utils::sendInviteEmail($result['id'], $userId, $emails);
+    }
+    
+    // Create Team Invite activity
+    CRM_Pcpteams_Utils::createPcpActivity($userId, CRM_Pcpteams_Constant::C_CF_TEAM_INVITE, 'Invited to '.$this->teamTitle, 'PCP Team Invite');
+    
     parent::postProcess();
   }
 
