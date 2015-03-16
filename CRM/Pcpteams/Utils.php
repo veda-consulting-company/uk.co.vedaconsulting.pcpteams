@@ -83,7 +83,7 @@ class  CRM_Pcpteams_Utils {
       CRM_Core_Session::setStatus($status);
     }
 
-    $teamRelTypeName = CRM_Pcpteams_Constant::C_TEAM_RELATIONSHIP_TYPE;
+    $teamRelTypeName = CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE;
     $relTypeId       = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', $teamRelTypeName, 'id', 'name_a_b');
 
     //check the Relationship Type Exists
@@ -268,5 +268,38 @@ class  CRM_Pcpteams_Utils {
     if(!civicrm_error($relationshipResult) && $relationshipResult['values']) {
       return $relationshipResult['values'][0]['contact_id_a'];
     }
+  }
+  
+  static function createDummyPcp($pcpContactId, $pageId){
+    if(empty($pcpContactId) || empty($pageId)){
+      return FALSE;
+    }
+    $pcpResult = civicrm_api('Pcpteams', 
+        'create', 
+        array(
+              'version'         => 3,
+              'pcp_title'       => "Dummy PCP Title",
+              'pcp_intro_text'  => "Dummy Introduction",
+              'pcp_contact_id'  => $pcpContactId,
+              'page_id'         => $pageId,
+              'page_type'       => 'event',
+              'intro_text'      => 'This is introduction test',
+              'goal_amount'     => 10000,
+            )
+         );
+    if(!civicrm_error($pcpResult) && $pcpResult['id']) {
+      return $pcpResult['id'];
+    }
+    
+  }
+  
+  static function checkTeamExists($displayname) {
+    if(empty($displayname)){
+      return null;
+    }
+    $query = 
+        "SELECT id FROM `civicrm_contact` 
+         WHERE `contact_type` = 'Organization' AND `contact_sub_type` = 'Team' AND `display_name` LIKE '%{$displayname}'";
+    return CRM_Core_DAO::singleValueQuery($query);
   }
 }
