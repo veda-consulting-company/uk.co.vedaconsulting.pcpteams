@@ -192,6 +192,7 @@ function civicrm_api3_pcpteams_getContactList($params) {
   //Fixme: tidy up the codings
   //contact_sub_type
     $where = null;
+    $params['sequential'] = 1;
     if (!empty($params['contact_sub_type'])) {
       $contactSubType = CRM_Utils_Type::escape($params['contact_sub_type'], 'String');
       
@@ -234,7 +235,6 @@ function civicrm_api3_pcpteams_getContactList($params) {
         'icon_class' =>  $dao->contact_type,
       );
     }
-
 
   return civicrm_api3_create_success($result, $params, 'pcpteams');
 }
