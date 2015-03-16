@@ -133,7 +133,7 @@ class CRM_Pcpteams_Page_PCP extends CRM_Core_Page {
    */
   static function getTeamPcpParams($pcpDetails){
     $return = array();
-    if(empty(CRM_Utils_Array::value('id', $pcpDetails))){
+    if (empty($pcpDetails['id'])) {
       return $return;
     }
   }
