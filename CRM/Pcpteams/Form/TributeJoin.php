@@ -27,12 +27,17 @@ class CRM_Pcpteams_Form_TributeJoin extends CRM_Core_Form {
   }
   
   function setDefaultValues() {
-    $dafaults = array();
+    $defaults = array();
     if ($this->_pcpId) {
       $result = civicrm_api('Pcpteams', 'get', array('version' => 3, 'sequential' => 1, 'pcp_id' => $this->_pcpId));
       $tributeCCfId = CRM_Pcpteams_Utils::getPcpTypeContactCustomFieldId();
       if(isset($result['values'][0]["custom_{$tributeCCfId}"])){
         $defaults['pcp_tribute_contact'] = $result['values'][0]["custom_{$tributeCCfId}_id"];
+        $defaultValues = array(
+          'id' => $result['values'][0]["custom_{$tributeCCfId}_id"],
+          'label' => CRM_Contact_BAO_Contact::displayName( $result['values'][0]["custom_{$tributeCCfId}_id"] ),
+        );
+        $this->assign('defaultValues', json_encode($defaultValues));
       }
     }
     return $defaults;
@@ -41,7 +46,8 @@ class CRM_Pcpteams_Form_TributeJoin extends CRM_Core_Form {
   function buildQuickForm() {
 
     // add form elements
-    $this->addEntityRef('pcp_tribute_contact', ts('Select Tribute Contact'), array('api' => array('params' => array('contact_type' => 'Organization', 'contact_sub_type' => $this->_contactSubType)), 'create' => TRUE), TRUE);
+    $this->add('text', 'pcp_tribute_contact', ts('Select '.$this->_tributeReason), array('size' => '40'), TRUE);
+    
     $this->addButtons(array(
       array(
         'type' => 'next',
@@ -72,6 +78,8 @@ class CRM_Pcpteams_Form_TributeJoin extends CRM_Core_Form {
       );
       $result = civicrm_api3('CustomValue', 'create', $tributeContatparams);
     } 
+    //FIXME: need to discuss with DS, to redirect the after completed the form entries
+    CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/page', 'reset=1&id='.$this->_pcpId));
   }
 
   /**

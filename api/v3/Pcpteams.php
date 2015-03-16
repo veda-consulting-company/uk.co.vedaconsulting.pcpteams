@@ -161,3 +161,49 @@ function civicrm_api3_pcpteams_getallpagesbyevent($params) {
 function _civicrm_api3_pcpteams_getallpagesbyevent_spec(&$params) {
   $params['page_id']['api.required'] = 1;
 }
+
+function civicrm_api3_pcpteams_getContactList($params) {
+  //Fixme: tidy up the codings
+  //contact_sub_type
+  $where = null;
+  if (!empty($params['contact_sub_type'])) {
+    $contactSubType = CRM_Utils_Type::escape($params['contact_sub_type'], 'String');
+    $where .= " AND contact_sub_type = '{$contactSubType}'";
+  }
+  
+  //if get id from params
+  if (!empty($params['id'])) {
+    $where .= " AND id = " . (int) $params['id'];
+  }
+  
+  //search name
+  $name = $params['input'];
+  $strSearch = "%$name%";
+  if(isset($params['input'])){
+    
+    $where .= " AND display_name like '$strSearch'";
+  }
+  
+  //query
+  $query = "
+    Select id, display_name
+    FROM civicrm_contact 
+  ";
+  
+  //where clause
+  if(!empty($where)){
+    $query .= " WHERE (1) {$where}";
+  }
+  
+  //LIMIT
+  $query .= " LIMIT 0, 15";
+
+  $dao = CRM_Core_DAO::executeQuery($query);
+  while($dao->fetch()){
+    $result[] = array(
+      'id'    =>  $dao->id,
+      'label' =>  $dao->display_name,
+    );
+  }
+  return civicrm_api3_create_success($result, $params);
+}
