@@ -61,7 +61,7 @@
                CRM.api3('pcpteams', 'getContactlist', params).done(function(result) {
                 callback(result.values[0]);
                 // Trigger change (store data to avoid an infinite loop of lookups)
-                $el.data('entity-value', result.values).trigger('change');
+                // $el.data('entity-value', result.values).trigger('change');
               });
             }
         });  
