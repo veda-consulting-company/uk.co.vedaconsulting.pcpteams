@@ -22,16 +22,19 @@
 {literal}
 <script type="text/javascript">
       cj(document).ready(function () {  
-       var apiUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='className=CRM_Pcpteams_Page_AJAX&fnName=getContactList&json=1'}";{literal}
         cj("#pcp_team_contact").select2({  
             placeholder: "Search Team",  
             ajax: {
-              url: apiUrl,
-              type: "POST",
+              url: CRM.url('civicrm/ajax/rest'),
               data: function (input, page_num) {
+                var params = {};
+                params.input = input;
+                params.contact_sub_type = 'Team';
+                params.page_num = page_num;
                 return {
-                  input: input,
-                  contact_sub_type: 'Team'
+                  entity: 'pcpteams',
+                  action: 'getContactlist',
+                  json: JSON.stringify(params)
                 };
               },
               results: function(data) {
@@ -45,12 +48,15 @@
             },
             escapeMarkup: function (m) {return m;},
             initSelection: function($el, callback) {
-              var
-                val = {/literal}{$defaultValues}{literal};
-                if (val === '') {
-                  return;
-                }
-                callback(val);
+               val = $el.val();
+               var params = {};
+                params.id = val;
+                params.contact_sub_type = contactSubType;
+               CRM.api3('pcpteams', 'getContactlist', params).done(function(result) {
+                callback(result.values[0]);
+                // Trigger change (store data to avoid an infinite loop of lookups)
+                $el.data('entity-value', result.values).trigger('change');
+              });
             }
         });  
     }); 

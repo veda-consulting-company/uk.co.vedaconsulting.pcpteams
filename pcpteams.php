@@ -172,3 +172,21 @@ function pcpteams_civicrm_buildForm($formName, &$form) {
 }
 
 
+/**
+ * Implementation of hook_civicrm_alterAPIPermissions
+ * Copying the permissions same as entity = 'Contact'
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_alterAPIPermissions
+ */
+function pcpteams_civicrm_alterAPIPermissions($entity, $action, &$params, &$permissions) {
+    $permissions['pcpteams'] = array(
+    'create' => array(
+      'access CiviCRM',
+    ),
+    // managed by query object
+    'get' => array(),
+    'getContactlist' => array(
+      'access CiviCRM',
+      // 'access AJAX API',
+    ),
+  );
+}
