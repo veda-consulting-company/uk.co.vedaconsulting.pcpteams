@@ -36,11 +36,37 @@
 
 
 function civicrm_api3_pcpteams_create($params) {
-  $result = array();
-  return civicrm_api3_create_success($result, $params);
+  $params['title']      = $params['pcp_title'];
+  $params['intro_text'] = $params['pcp_intro_text'];
+  $params['contact_id'] = $params['pcp_contact_id'];
+  $params['page_id']    = $params['page_id'];
+  $params['page_type']  = $params['page_type'];
+
+  // since we are allowing html input from the user
+  // we also need to purify it, so lets clean it up
+  $htmlFields = array( 'intro_text', 'page_text', 'title' );
+  foreach ( $htmlFields as $field ) {
+    if ( ! empty($params[$field]) ) {
+      $params[$field] = CRM_Utils_String::purifyHTML($params[$field]);
+    }
+  }
+  $entity_table = CRM_PCP_BAO_PCP::getPcpEntityTable($params['page_type']);
+  $pcpBlock = new CRM_PCP_DAO_PCPBlock();
+  $pcpBlock->entity_table = $entity_table;
+  $pcpBlock->entity_id = $params['page_id'];
+  $pcpBlock->find(TRUE);
+  $params['pcp_block_id'] = $pcpBlock->id;
+  $params['goal_amount']  = CRM_Utils_Rule::cleanMoney($params['goal_amount']);
+  $params['status_id'] = 1;
+
+  $pcp = CRM_PCP_BAO_PCP::add($params, FALSE);
+  $values = array();
+   _civicrm_api3_object_to_array_unique_fields($pcp, $values[$pcp->id]);
+  return civicrm_api3_create_success($values, $params, 'Pcpteams', 'create');
 }
 function _civicrm_api3_pcpteams_create_spec(&$params) {
-  $params['title']['api.required'] = 1;
+  $params['pcp_title']['api.required'] = 1;
+  $params['pcp_contact_id']['api.required'] = 1;
 }
 
 function civicrm_api3_pcpteams_get($params) {

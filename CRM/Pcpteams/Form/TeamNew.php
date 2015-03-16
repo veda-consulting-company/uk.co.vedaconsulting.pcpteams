@@ -9,6 +9,12 @@ class CRM_Pcpteams_Form_TeamNew {
 
   function preProcess(&$form) {
     CRM_Utils_System::setTitle(ts('Team Name'));
+    $form->_pcpId   = $form->controller->get('pcpId');
+    $form->_pageId  = $form->controller->get('component_page_id');
+    $userId = CRM_Pcpteams_Utils::getloggedInUserId();
+    if (!$form->_pcpId) {
+     $form->_pcpId =  CRM_Pcpteams_Utils::getPcpIdByUserId($userId);
+    }
   }
 
   function buildQuickForm(&$form) {
@@ -35,12 +41,13 @@ class CRM_Pcpteams_Form_TeamNew {
     if (!empty($params['email-primary']) && !filter_var($params['email-primary'], FILTER_VALIDATE_EMAIL)) {
       $errors['email-primary'] = ts('Not Valid Email');
     }
+    if(CRM_Pcpteams_Utils::checkTeamExists($params['organization_name'])) {
+      $errors['organization_name'] = ts('Team Already Exists');
+    }
     return empty($errors) ? TRUE : $errors;
   }
 
   function postProcess(&$form) {
-    return TRUE; // remove me
-
     $values   = $form->exportValues();
     $orgName  = $values['organization_name'];
     $email    = $values['email-primary'];
@@ -55,13 +62,23 @@ class CRM_Pcpteams_Form_TeamNew {
                 );
     $createTeam = civicrm_api3('Contact', 'create', $params);
 
-    //FIXME: relate the PCP and Created Team
-
-    if(!civicrm_error($createTeam)){
-      CRM_Core_Session::setStatus(ts("Team \"{$orgName}\" has Created"), '', 'success');
+    // Create Dummy Team PCP Page
+    $teamPcpId = CRM_Pcpteams_Utils::createDummyPcp($createTeam['id'], $form->_pageId);
+    // Create/Update custom record with team pcp id and create relationship with user as Team Admin
+    if($teamPcpId) {
       $userId = CRM_Pcpteams_Utils::getloggedInUserId();
       CRM_Pcpteams_Utils::checkORCreateTeamRelationship($userId, $createTeam['id'], TRUE);
-    }else{
+      $teamPcpCfId = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
+        $params = array(
+          'version'   => 3,
+          'entity_id' => $form->_pcpId,
+          "custom_{$teamPcpCfId}" =>$teamPcpId,
+        );
+      $result = civicrm_api3('CustomValue', 'create', $params);
+      $form->set('teamName', $orgName);
+
+    }
+    else{
       CRM_Core_Session::setStatus(ts("Failed to Create Team \"{$orgName}\" ..."));
     }
   }
