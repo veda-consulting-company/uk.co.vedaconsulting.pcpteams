@@ -196,11 +196,6 @@ SELECT @pcp_type_contact_id_2 := LAST_INSERT_ID();
 INSERT INTO `civicrm_value_pcp_custom_set`(`entity_id`, `team_pcp_id`, `tribute`, `tribute_contact_id`) VALUES (@pcp_id_llr, NULL, 'in_celebration', @pcp_type_contact_id_2);
 
 -- ############################## Sample data changes Mv:12/03/2015 #####################################
--- set Foreign key for team pcp id 
-ALTER TABLE `civicrm_value_pcp_custom_set`
-  MODIFY `team_pcp_id` int(10) unsigned DEFAULT NULL,
-  ADD CONSTRAINT `FK_civicrm_value_pcp_custom_set_team_pcp_id` FOREIGN KEY (`team_pcp_id`) REFERENCES `civicrm_pcp` (`id`) ON DELETE SET NULL;
-
 -- create sample teams
 SELECT @veda_name := CONCAT('Veda Team', " ", CEIL(RAND()*100));
 SELECT @test_name := CONCAT('Test Team', " ", CEIL(RAND()*100));

@@ -31,7 +31,7 @@ function pcpteams_civicrm_install() {
   //create custom group from xml file 
   // Create OptionGroup, OptionValues, RelationshipType, CustomGroup and CustomFields
   $extensionDir = dirname( __FILE__ ) . DIRECTORY_SEPARATOR;
-  $customDataXMLFile = $extensionDir  . 'CustomGroupData.xml';
+  $customDataXMLFile = $extensionDir  . '/xml/CustomGroupData.xml';
   require_once 'CRM/Utils/Migrate/Import.php';
   $import = new CRM_Utils_Migrate_Import( );
   $import->run( $customDataXMLFile );
@@ -51,6 +51,12 @@ function pcpteams_civicrm_install() {
       CRM_Contact_BAO_ContactType::add($params);
     }
   }
+  
+  //set foreignkey
+  $sql = "ALTER TABLE `civicrm_value_pcp_custom_set`
+  MODIFY `team_pcp_id` int(10) unsigned DEFAULT NULL,
+  ADD CONSTRAINT `FK_civicrm_value_pcp_custom_set_team_pcp_id` FOREIGN KEY (`team_pcp_id`) REFERENCES `civicrm_pcp` (`id`) ON DELETE SET NULL";
+  CRM_Core_DAO::executeQuery($sql);
 
   return _pcpteams_civix_civicrm_install();
 }
@@ -61,6 +67,40 @@ function pcpteams_civicrm_install() {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_uninstall
  */
 function pcpteams_civicrm_uninstall() {
+  //Remove required data added when install extensions
+  CRM_Core_DAO::executeQuery("
+    DROP TABLE IF EXISTS civicrm_value_pcp_custom_set");
+  CRM_Core_DAO::executeQuery("
+    DELETE opv.* 
+    FROM civicrm_option_value opv
+    INNER JOIN civicrm_option_group og on opv.option_group_id = og.id
+    where og.name = 'pcp_tribute'");
+  CRM_Core_DAO::executeQuery("
+    DELETE FROM civicrm_option_group where name = 'pcp_tribute'");
+  CRM_Core_DAO::executeQuery("
+    DELETE cf.* 
+    FROM civicrm_custom_field cf
+    INNER JOIN civicrm_custom_group cg on cf.custom_group_id = cg.id
+    where cg.name = 'PCP_Custom_Set'");
+  CRM_Core_DAO::executeQuery("
+    DELETE FROM civicrm_custom_group where name = 'PCP_Custom_Set'");  
+  CRM_Core_DAO::executeQuery("
+    DELETE pb.* 
+    FROM civicrm_pcp_block pb
+    LEFT JOIN civicrm_pcp pcp on pb.id = pcp.pcp_block_id
+    WHERE pcp.id IS NULL");  
+  CRM_Core_DAO::executeQuery("
+    DELETE uff.*
+    FROM civicrm_uf_field uff
+    LEFT JOIN civicrm_uf_group ufg on ufg.id = uff.uf_group_id
+    WHERE ufg.name = 'PCP_Supporter_Profile'");  
+  CRM_Core_DAO::executeQuery("
+    DELETE ufj.*
+    FROM civicrm_uf_join ufj
+    LEFT JOIN civicrm_uf_group ufg on ufg.id = ufj.uf_group_id
+    WHERE ufg.name = 'PCP_Supporter_Profile'");  
+  CRM_Core_DAO::executeQuery("
+    DELETE FROM civicrm_uf_group WHERE name = 'PCP_Supporter_Profile'");
   return _pcpteams_civix_civicrm_uninstall();
 }
 
