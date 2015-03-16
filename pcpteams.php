@@ -58,6 +58,23 @@ function pcpteams_civicrm_install() {
   ADD CONSTRAINT `FK_civicrm_value_pcp_custom_set_team_pcp_id` FOREIGN KEY (`team_pcp_id`) REFERENCES `civicrm_pcp` (`id`) ON DELETE SET NULL";
   CRM_Core_DAO::executeQuery($sql);
 
+  $optionGroupParams = array('version' => '3' ,'name' => 'activity_type');
+  $optionGroup       = civicrm_api('OptionGroup', 'Get', $optionGroupParams);
+  
+  foreach (array(CRM_Pcpteams_Constant::C_CF_TEAM_CREATE
+                , CRM_Pcpteams_Constant::C_CF_TEAM_JOIN
+                , CRM_Pcpteams_Constant::C_CF_TEAM_INVITE
+                ) as $activityType) {
+    
+    if(!CRM_Core_DAO::getFieldValue('CRM_Core_DAO_OptionValue', $activityType, 'id', 'name')) {
+      $activityParams = array('version' => '3'
+                             ,'option_group_id' => $optionGroup['id']
+                             ,'name' => $activityType
+                             );
+      $activityType = civicrm_api('OptionValue', 'Create', $activityParams);
+    }
+  }
+
   return _pcpteams_civix_civicrm_install();
 }
 
@@ -101,6 +118,12 @@ function pcpteams_civicrm_uninstall() {
     WHERE ufg.name = 'PCP_Supporter_Profile'");  
   CRM_Core_DAO::executeQuery("
     DELETE FROM civicrm_uf_group WHERE name = 'PCP_Supporter_Profile'");
+  
+  // Delete Sample PCP Team Invite TPL
+  $result = civicrm_api3('MessageTemplate', 'get', array( 'sequential' => 1, 'version'=> 3, 'msg_title' => "Sample Team Invite Template",));
+  if($result['is_error'] == 0 && $result['id']) {
+    $deleteResult = civicrm_api3('MessageTemplate', 'delete', array('version' => 3, 'sequential' => 1, 'id' => $result['id'],));
+  }
   return _pcpteams_civix_civicrm_uninstall();
 }
 
@@ -110,23 +133,7 @@ function pcpteams_civicrm_uninstall() {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_enable
  */
 function pcpteams_civicrm_enable() {
-  $optionGroupParams = array('version' => '3' ,'name' => 'activity_type');
-  $optionGroup       = civicrm_api('OptionGroup', 'Get', $optionGroupParams);
-  
-  foreach (array('PCP Team Create'
-                , 'PCP Team Join'
-                , 'PCP Team Invite'
-                ) as $activityType) {
-    
-    if(!CRM_Core_DAO::getFieldValue('CRM_Core_DAO_OptionValue', $activityType, 'id', 'name')) {
-      $activityParams = array('version' => '3'
-                             ,'option_group_id' => $optionGroup['id']
-                             ,'name' => $activityType
-                             );
-      $activityType = civicrm_api('OptionValue', 'Create', $activityParams);
-    }
-  }
-    
+
   $config           = CRM_Core_Config::singleton();
   $extenDr          = $config->extensionsDir;
   $messageHtmlSampleTeamInviteFile  = $extenDr . DIRECTORY_SEPARATOR .'uk.co.vedaconsulting.pcpteams'. DIRECTORY_SEPARATOR.'sample_team_invite.html';
@@ -149,10 +156,6 @@ function pcpteams_civicrm_enable() {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_disable
  */
 function pcpteams_civicrm_disable() {
-  $result = civicrm_api3('MessageTemplate', 'get', array( 'sequential' => 1, 'version'=> 3, 'msg_title' => "Sample Team Invite Template",));
-  if($result['is_error'] == 0 && $result['id']) {
-    $deleteResult = civicrm_api3('MessageTemplate', 'delete', array('version' => 3, 'sequential' => 1, 'id' => $result['id'],));
-  }
   return _pcpteams_civix_civicrm_disable();
 }
 

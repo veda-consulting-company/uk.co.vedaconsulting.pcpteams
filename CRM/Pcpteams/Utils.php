@@ -328,19 +328,20 @@ class  CRM_Pcpteams_Utils {
       return null;
     }
     $activityTypeID = CRM_Pcpteams_Utils::getActivityTypeId($activityname);
+    if($activityTypeID) {
+      $activityParams = array(
+                              'source_contact_id' => $contact_id,
+                              'target_contact_id' => $contact_id,
+                              'activity_type_id' => $activityTypeID,
+                              'subject' => $subject,
+                              'details' => $html,
+                              'activity_date_time' => date( 'YmdHis' ),
+                              'status_id' => 2,
+                              'version' => 3
+                             );
 
-    $activityParams = array(
-                            'source_contact_id' => $contact_id,
-                            'target_contact_id' => $contact_id,
-                            'activity_type_id' => $activityTypeID,
-                            'subject' => $subject,
-                            'details' => $html,
-                            'activity_date_time' => date( 'YmdHis' ),
-                            'status_id' => 2,
-                            'version' => 3
-                           );
-
-    $result = civicrm_api( 'activity','create', $activityParams );
+      return civicrm_api( 'activity','create', $activityParams );
+    }
   }
   
   static function overrideLoginUrl(&$form) {
@@ -352,4 +353,57 @@ class  CRM_Pcpteams_Utils {
     }
   }
   
+  static function sendInviteEmail($message_template_id, $contact_id, $emails = array() ) {
+    $message_template_params = array(
+				'version' => 3,
+				'id' => $message_template_id,
+				);
+    $message_template_result = civicrm_api('MessageTemplate', 'get', $message_template_params);
+
+    // Get the message template html, subject
+    $html = $message_template_result['values'][$message_template_id]['msg_html'];
+    $text = $message_template_result['values'][$message_template_id]['msg_text'];
+    $subject = $message_template_result['values'][$message_template_id]['msg_subject'];
+
+    $mailing = new CRM_Mailing_BAO_Mailing;
+    $mailing->body_text = $text;
+    $mailing->body_html = $html;
+    $tokens = $mailing->getTokens();
+
+    // Replace tokens in html, text, subject
+    $subject = CRM_Utils_Token::replaceDomainTokens($subject, $domain, true, $tokens['text']);
+    $text    = CRM_Utils_Token::replaceDomainTokens($text,    $domain, true, $tokens['text']);
+    $html    = CRM_Utils_Token::replaceDomainTokens($html,    $domain, true, $tokens['html']);
+    if ($contact_id) {
+      $contact = new CRM_Contact_BAO_Contact();
+      $contact->id = $contact_id;
+      $contact->find(TRUE);
+      $contact_details = (array) $contact;
+      $subject = CRM_Utils_Token::replaceContactTokens($subject, $contact_details, false, $tokens['text']);
+      $text    = CRM_Utils_Token::replaceContactTokens($text,    $contact_details, false, $tokens['text']);
+      $html    = CRM_Utils_Token::replaceContactTokens($html,    $contact_details, false, $tokens['html']);
+
+      $category = array('contact');
+      $subject = CRM_Utils_Token::replaceHookTokens($subject, $contact_details , $category ,  false, false);
+      $text    = CRM_Utils_Token::replaceHookTokens($text,    $contact_details , $category ,  false, false);
+      $html    = CRM_Utils_Token::replaceHookTokens($html,    $contact_details , $category , true, false);
+    }
+
+    $params['text']       = $text;
+    $params['html']       = $html;
+    $params['subject']    = $subject;
+
+    // Get the system default from email address
+    $domainEmail = CRM_Core_BAO_Domain::getNameAndEmail();
+    $params['from'] = "$domainEmail[0] <$domainEmail[1]>";
+    
+    foreach($emails as $email) {
+      if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        continue;
+      }
+      $params['toEmail']  = $email;
+      // Comment below line abort sending email
+      $sent = CRM_Utils_Mail::send( $params );
+    }
+  }
 }
