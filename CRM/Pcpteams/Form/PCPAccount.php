@@ -70,6 +70,7 @@ class CRM_Pcpteams_Form_PCPAccount extends CRM_Core_Form {
     $config           = CRM_Core_Config::singleton();
     $this->_action    = CRM_Utils_Request::retrieve('action', 'String', $this, FALSE);
     $this->_pageId    = CRM_Utils_Request::retrieve('pageId', 'Positive', $this);
+    $this->_tpId      = CRM_Utils_Request::retrieve('tpId', 'Positive', $this);
     $this->_component = CRM_Utils_Request::retrieve('component', 'String', $this);
     $this->_id        = CRM_Utils_Request::retrieve('id', 'Positive', $this);
 
@@ -161,7 +162,9 @@ class CRM_Pcpteams_Form_PCPAccount extends CRM_Core_Form {
     }
     else {
       CRM_Core_BAO_CMSUser::buildForm($this, $id, TRUE);
-
+      // Override LoginUrl
+      CRM_Pcpteams_Utils::overrideLoginUrl($this);
+      
       $fields = CRM_Core_BAO_UFGroup::getFields($id, FALSE, CRM_Core_Action::ADD);
     }
 

@@ -24,7 +24,12 @@
           C_CONTACTTYPE_BRANCH    = 'Branch',                   //  Contact Sub Type - Branch
           C_CONTACTTYPE_PARTNER   = 'Corporate_Partner',        //  Contact Sub Type - Corporate Partner
           C_CONTACTTYPE_IN_MEM    = 'In_Memory',                //  Contact Sub Type - In Memory
-          C_CONTACTTYPE_IN_CELEB  = 'In_Celebration';           //  Contact Sub Type - In Celebration
+          C_CONTACTTYPE_IN_CELEB  = 'In_Celebration',           //  Contact Sub Type - In Celebration
+          C_ACTIVITY_TYPE         = 'activity_type',            //  OptionGroupName
+          C_CF_TEAM_CREATE        = 'PCP Team Create',           //  Optionvalue - team create
+          C_CF_TEAM_JOIN          = 'PCP Team Join',             //  Optionvalue - team join
+          C_CF_TEAM_INVITE        = 'PCP Team Invite',           //  Optionvalue - team invite
+          C_CONTACT_SUB_TYPE      = 'Team';                     //  Contact Sub Type - Team
  }
  
 ?>
