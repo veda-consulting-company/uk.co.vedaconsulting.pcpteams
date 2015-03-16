@@ -137,7 +137,7 @@ class CRM_Pcpteams_Form_PCP extends CRM_Core_Form {
       array(
         array(
           'type' => 'upload',
-          'name' => ts('Save'),
+          'name' => ts('Continue'),
           'isDefault' => TRUE,
         ),
         array(

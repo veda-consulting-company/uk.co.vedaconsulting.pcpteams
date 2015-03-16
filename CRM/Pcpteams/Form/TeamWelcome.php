@@ -25,7 +25,7 @@ class CRM_Pcpteams_Form_TeamWelcome extends CRM_Core_Form {
     $this->addButtons(array(
       array(
         'type' => 'next',
-        'name' => ts('Next'),
+        'name' => ts('Continue'),
         'isDefault' => TRUE,
       ),
     ));

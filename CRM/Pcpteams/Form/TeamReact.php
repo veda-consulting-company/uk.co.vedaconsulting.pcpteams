@@ -16,10 +16,18 @@ class CRM_Pcpteams_Form_TeamReact extends CRM_Core_Form {
     $this->assign('reactClass', $this->_reactToFile);
   }
 
+  function setDefaultValues() {
+    if($this->_reactToFile == 'TeamJoin'){
+      $className = 'CRM_Pcpteams_Form_' . $this->_reactToFile;
+      $className::setDefaultValues($this);
+    }
+  }
+  
   function buildQuickForm() {
     $className = 'CRM_Pcpteams_Form_' . $this->_reactToFile;
     $className::buildQuickForm($this);
-  }
+  }  
+  
 
   function postProcess() {
     $className = 'CRM_Pcpteams_Form_' . $this->_reactToFile;
