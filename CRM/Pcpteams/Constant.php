@@ -1,14 +1,6 @@
 <?php
-/*
- +--------------------------------------------------------------------+
- | CiviCRM version 4.5                                                |
- +--------------------------------------------------------------------+
- | To maintain all Constansts using in pcpteams extensions            |
- +--------------------------------------------------------------------+
-*/
  
  class CRM_Pcpteams_Constant {
-  
     CONST C_PCP_CUSTOM_GROUP_NAME = 'PCP_Custom_Set',           //  Pcp Custom Group
           C_CUSTOM_GROUP_EXTENDS  = 'PCP',                      //  Custom Group Extends     
           C_TEAM_RELATIONSHIP_TYPE= 'Team Member of',           //  Relationship Type - Team member 
@@ -20,7 +12,6 @@
           C_CF_PCP_TYPE_CONTACT   = 'Tribute_Contact',          //  Custom Field - Tribute Contact
           C_CF_IN_MEMORY          = 'In Memory',                //  Optionvalue - In Memory
           C_CF_IN_CELEBRATION     = 'In Celebration',           //  Optionvalue - In Celebration
-          // C_CONTACT_SUB_TYPE      = 'Team',                     //  Contact Sub Type - Team
           C_CONTACTTYPE_BRANCH    = 'Branch',                   //  Contact Sub Type - Branch
           C_CONTACTTYPE_PARTNER   = 'Corporate_Partner',        //  Contact Sub Type - Corporate Partner
           C_CONTACTTYPE_IN_MEM    = 'In_Memory',                //  Contact Sub Type - In Memory
@@ -31,5 +22,4 @@
           C_CF_TEAM_INVITE        = 'PCP Team Invite',           //  Optionvalue - team invite
           C_CONTACT_SUB_TYPE      = 'Team';                     //  Contact Sub Type - Team
  }
- 
 ?>

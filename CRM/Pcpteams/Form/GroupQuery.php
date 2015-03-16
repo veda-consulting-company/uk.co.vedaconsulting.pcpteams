@@ -13,7 +13,6 @@ class CRM_Pcpteams_Form_GroupQuery extends CRM_Core_Form {
   }
   
   function buildQuickForm() {
-
     $teamOptions = array();
     $teamOptions = array(
         ts(' No, Iam doing this event on my own'),
@@ -35,7 +34,9 @@ class CRM_Pcpteams_Form_GroupQuery extends CRM_Core_Form {
 
   function postProcess() {
     $values = $this->exportValues();
-    $this->set("workflowGroup", $values['teamOption']);
+    if ($values['teamOption'] == 0) { 
+      CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/support', "code=cpftrq&qfKey={$this->controller->_key}"));
+    }
   }
 
   /**

@@ -28,7 +28,11 @@ class CRM_Pcpteams_Form_TeamQuery extends CRM_Core_Form {
 
   function postProcess() {
     $values = $this->exportValues();
-    $this->set("workflowTeam", $values['teamOption']);
+    if ($values['teamOption'] == 0) {
+      CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/support', "code=cpfgq&qfKey={$this->controller->_key}"));
+    } else {
+      $this->set("workflowTeam", $values['teamOption']);
+    }
   }
 
   function getRenderableElementNames() {

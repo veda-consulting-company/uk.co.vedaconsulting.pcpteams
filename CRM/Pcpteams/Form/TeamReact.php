@@ -45,7 +45,6 @@ class CRM_Pcpteams_Form_TeamReact extends CRM_Core_Form {
   
   function getTeamReactFile($workflowTeam){
    switch ($workflowTeam) {
-      case '0':
       case 'invite':
         return 'TeamInvite';
         break;      
