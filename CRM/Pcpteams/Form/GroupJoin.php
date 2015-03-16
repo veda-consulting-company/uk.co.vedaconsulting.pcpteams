@@ -19,16 +19,22 @@ class CRM_Pcpteams_Form_GroupJoin extends CRM_Core_Form {
       $this->_contactSubType  = CRM_Pcpteams_Constant::C_CONTACTTYPE_BRANCH;
     }
     $this->assign('branchOrPartner', str_replace('_', ' ', $this->_contactSubType));
+    $this->assign('contactSubType',  $this->_contactSubType);
     parent::preProcess();  
   }
   
   function setDefaultValues() {
-    $dafaults = array();
+    $defaults = array();
     if ($this->_pcpId) {
       $result = civicrm_api('Pcpteams', 'get', array('version' => 3, 'sequential' => 1, 'pcp_id' => $this->_pcpId));
       $branchCfId = CRM_Pcpteams_Utils::getBranchorPartnerCustomFieldId();
       if(isset($result['values'][0]["custom_{$branchCfId}"])){
         $defaults['pcp_branch_contact'] = $result['values'][0]["custom_{$branchCfId}_id"];
+        $defaultValues = array(
+          'id' => $result['values'][0]["custom_{$branchCfId}_id"],
+          'label' => CRM_Contact_BAO_Contact::displayName( $result['values'][0]["custom_{$branchCfId}_id"] ),
+        );
+        $this->assign('defaultValues', json_encode($defaultValues));
       }
     }
     return $defaults;
@@ -37,7 +43,7 @@ class CRM_Pcpteams_Form_GroupJoin extends CRM_Core_Form {
   function buildQuickForm() {
 
     // add form elements
-    $this->addEntityRef('pcp_branch_contact', ts('Select Branch'), array('api' => array('params' => array('contact_type' => 'Organization', 'contact_sub_type' => $this->_contactSubType)), 'create' => TRUE), TRUE);
+    $this->add('text', 'pcp_branch_contact', ts('Select '.$this->_contactSubType), array('size' => '40'), TRUE);
     $this->addButtons(array(
       array(
         'type' => 'next',

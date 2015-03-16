@@ -20,8 +20,8 @@ class CRM_Pcpteams_Form_TeamJoin {
 
   function buildQuickForm(&$form) {
     // add form elements
-    $form->addEntityRef('pcp_team_contact', ts('Team name'), array('api' => array('params' => array('contact_type' => 'Organization', 'contact_sub_type' => 'Team')), 'create' => TRUE), TRUE);
-
+    // $form->addEntityRef('pcp_team_contact', ts('Team name'), array('api' => array('params' => array('contact_type' => 'Organization', 'contact_sub_type' => 'Team')), 'create' => TRUE), TRUE);
+    $form->add('text', 'pcp_team_contact', ts('Team Name'), array('size' => '40'), TRUE);
     $form->addButtons(array(
       array(
         'type' => 'next',
