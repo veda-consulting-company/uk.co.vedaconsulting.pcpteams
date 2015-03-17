@@ -29,7 +29,7 @@ class CRM_Pcpteams_Form_EventConfirm extends CRM_Core_Form {
   }
 
   function postProcess() {
-    $eventId = $this->controller->get('eventId');
+    $eventId = $this->get('pageId');
     CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/event/register', "reset=1&id=$eventId"));
   }
 

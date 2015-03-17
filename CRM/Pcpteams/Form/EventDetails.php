@@ -11,10 +11,17 @@ class CRM_Pcpteams_Form_EventDetails extends CRM_Core_Form {
 
   function preProcess() {
     CRM_Utils_System::setTitle(ts('Event Details'));
+
+    $obj = new CRM_Event_Page_EventInfo();
+    $obj->set('id', $this->get('pageId'));
+
+    ob_start();
+    $op = $obj->run();
+    $tvar = $obj->get_template_vars();
+    ob_end_clean();
   }
 
   function buildQuickForm() {
-
     $this->addButtons(array(
       array(
         'type' => 'next',
@@ -25,7 +32,6 @@ class CRM_Pcpteams_Form_EventDetails extends CRM_Core_Form {
 
     // export form elements
     $this->assign('elementNames', $this->getRenderableElementNames());
-    parent::buildQuickForm();
   }
 
   function postProcess() {
