@@ -48,6 +48,15 @@ class CRM_Pcpteams_Form_TeamNew {
   }
 
   function postProcess(&$form) {
+    $dedupeParams = CRM_Dedupe_Finder::formatParams($dedupeParams, 'Individual');
+    $dedupeParams['first_name'] = 'madav';
+    $dedupeParams['email'] = 'madavatest@gmail.com';
+    $dedupeParams['postal_code'] = 'KT5 5EH';
+    $ruleGrpID = CRM_Core_DAO::getFieldValue('CRM_Dedupe_DAO_RuleGroup', 'Sports Import Dedupe Rule', 'id', 'title');
+    $dedupeParams = CRM_Dedupe_Finder::formatParams($dedupeParams, 'Individual');
+    $ids = CRM_Dedupe_Finder::dupesByParams($dedupeParams, 'Individual', 'Supervised', array(), $ruleGrpID);
+    print_r($ids);
+    die();
     $values   = $form->exportValues();
     $orgName  = $values['organization_name'];
     $email    = $values['email-primary'];
