@@ -2,14 +2,15 @@
 <div class="crm-form-block crm-search-form-block">
 	
 	<!-- ( HEADER ) -->
-
-	<div class="crm-submit-buttons">
-	{include file="CRM/common/formButtons.tpl" location="top"}
-	</div>
-
-	<div class="help">
-		{ts}This is a help text for Event Details screen.{/ts}
-	</div>
+	 <br>
+	 <h2>{ts}Thanks for choosing to Support us for '{$eventDetails.title}'{/ts}</h2>
+	 <br>
+	 
+	 <div>
+	 	<p>
+	 		Please Confirm  that you have already claimed plae in the event
+	 	</p>
+	 </div>
 	<!-- ( FIELD (AUTOMATIC LAYOUT) ) -->
 
 	{foreach from=$elementNames item=elementName}
@@ -19,7 +20,10 @@
 	    <div class="clear"></div>
 	  </div>
 	{/foreach}
-		
+	
+	<br>
+	<br>
+	<br>
 	<!-- ( FOOTER ) -->
 	<div class="crm-submit-buttons">
 	{include file="CRM/common/formButtons.tpl" location="bottom"}

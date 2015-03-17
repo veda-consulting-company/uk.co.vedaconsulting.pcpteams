@@ -14,7 +14,10 @@ class CRM_Pcpteams_Form_EventConfirm extends CRM_Core_Form {
   }
 
   function buildQuickForm() {
-
+    $this->_pageId = $this->controller->get('pageId');
+    $eventDetails = CRM_Pcpteams_Utils::getEventDetailsbyEventId($this->_pageId);
+    
+    $this->addElement('checkbox', 'is_have_place', ts('Yes I have a Place'));
     $this->addButtons(array(
       array(
         'type' => 'next',
@@ -24,6 +27,7 @@ class CRM_Pcpteams_Form_EventConfirm extends CRM_Core_Form {
     ));
 
     // export form elements
+    $this->assign('eventDetails', $eventDetails);
     $this->assign('elementNames', $this->getRenderableElementNames());
     parent::buildQuickForm();
   }
