@@ -125,6 +125,12 @@
       <is_reserved>1</is_reserved>
       <is_active>1</is_active>
     </OptionGroup>    
+    <OptionGroup>
+      <name>activity_type</name>
+      <title>Activity Type</title>
+      <is_reserved>1</is_reserved>
+      <is_active>1</is_active>
+    </OptionGroup> 
   </OptionGroups>
   <OptionValues>
     <OptionValue>
@@ -161,6 +167,66 @@
       <is_reserved>0</is_reserved>
       <is_active>1</is_active>
       <option_group_name>pcp_tribute</option_group_name>
+    </OptionValue>
+    <OptionValue>
+      <label>PCP Team Create</label>
+      <value>pcp_team_create</value>
+      <name>PCP Team Create</name>
+      <filter>0</filter>
+      <is_default>0</is_default>
+      <weight>1</weight>
+      <is_optgroup>0</is_optgroup>
+      <is_reserved>0</is_reserved>
+      <is_active>1</is_active>
+      <option_group_name>activity_type</option_group_name>
+    </OptionValue>
+    <OptionValue>
+      <label>PCP Team Join</label>
+      <value>pcp_team_join</value>
+      <name>PCP Team Join</name>
+      <filter>0</filter>
+      <is_default>0</is_default>
+      <weight>2</weight>
+      <is_optgroup>0</is_optgroup>
+      <is_reserved>0</is_reserved>
+      <is_active>1</is_active>
+      <option_group_name>activity_type</option_group_name>
+    </OptionValue>
+    <OptionValue>
+      <label>PCP Team Invite</label>
+      <value>pcp_team_invite</value>
+      <name>PCP Team Invite</name>
+      <filter>0</filter>
+      <is_default>0</is_default>
+      <weight>3</weight>
+      <is_optgroup>0</is_optgroup>
+      <is_reserved>0</is_reserved>
+      <is_active>1</is_active>
+      <option_group_name>activity_type</option_group_name>
+    </OptionValue>
+    <OptionValue>
+      <label>PCP Group Join</label>
+      <value>pcp_group_join</value>
+      <name>PCP Group Join</name>
+      <filter>0</filter>
+      <is_default>0</is_default>
+      <weight>4</weight>
+      <is_optgroup>0</is_optgroup>
+      <is_reserved>0</is_reserved>
+      <is_active>1</is_active>
+      <option_group_name>activity_type</option_group_name>
+    </OptionValue>
+    <OptionValue>
+      <label>PCP Tribute Join</label>
+      <value>pcp_tribute_join</value>
+      <name>PCP Tribute Join</name>
+      <filter>0</filter>
+      <is_default>0</is_default>
+      <weight>5</weight>
+      <is_optgroup>0</is_optgroup>
+      <is_reserved>0</is_reserved>
+      <is_active>1</is_active>
+      <option_group_name>activity_type</option_group_name>
     </OptionValue>
   </OptionValues>
   <ProfileGroups>

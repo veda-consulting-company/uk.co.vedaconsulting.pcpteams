@@ -20,6 +20,8 @@
           C_CF_TEAM_CREATE        = 'PCP Team Create',           //  Optionvalue - team create
           C_CF_TEAM_JOIN          = 'PCP Team Join',             //  Optionvalue - team join
           C_CF_TEAM_INVITE        = 'PCP Team Invite',           //  Optionvalue - team invite
+          C_CF_GROUP_JOIN         = 'PCP Group Join',             //  Optionvalue - Group Join
+          C_CF_TRIBUTE_JOIN       = 'PCP Tribute Join',           //  Optionvalue - Tribute Join
           C_CONTACT_SUB_TYPE      = 'Team';                     //  Contact Sub Type - Team
  }
 ?>
