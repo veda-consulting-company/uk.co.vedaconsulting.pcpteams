@@ -30,7 +30,7 @@ class CRM_Pcpteams_Form_TeamQuery extends CRM_Core_Form {
   static function formRule($fields){
     $errors = array();
     if (!isset($fields['teamOption'])) {
-      $errors['teamOption'] = ts('Please select at least one field.');
+      $errors['_qf_default'] = ts("Please select at least one option.");
     }
 
     return empty($errors) ? TRUE : $errors;
