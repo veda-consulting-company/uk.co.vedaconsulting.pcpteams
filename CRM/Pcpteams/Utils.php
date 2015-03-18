@@ -419,7 +419,7 @@ class  CRM_Pcpteams_Utils {
     }
   }
   
-  static function isPcpExists($eventId, $component = 'event') {
+  static function getPcpBlockId($eventId, $component = 'event') {
      if(empty($eventId)){
       return null;
     }
