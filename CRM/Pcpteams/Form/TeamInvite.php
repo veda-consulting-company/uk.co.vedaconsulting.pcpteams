@@ -10,29 +10,28 @@ require_once 'CRM/Core/Form.php';
 class CRM_Pcpteams_Form_TeamInvite {
 
   function preProcess(&$form) {
-    $form->_teamPcpId = CRM_Utils_Request::retrieve('tpId', 'Positive', $form, TRUE); 
-    if (empty($form->_teamPcpId)) {
+    CRM_Utils_System::setTitle(ts('Invited to join a team'));
+
+    $teamPcpId = $form->get('tpId');
+    if (empty($teamPcpId) {
       CRM_Core_Error::fatal(ts('Unable to Find Team Record for this URL. Please check the Team is active...'));
     }
-    CRM_Utils_System::setTitle(ts('Invited to join a team'));
-    
-    $userId = CRM_Pcpteams_Utils::getloggedInUserId();
-    if ($userId) {
-     $form->_pcpId =  CRM_Pcpteams_Utils::getPcpIdByUserId($userId);
+
+    if (!$form->get('page_id')) {
+      CRM_Core_Error::fatal(ts("Can't determine pcp id."));
     }
-    // Get team contact ID
-    $teamContactID    = CRM_Pcpteams_Utils::getcontactIdbyPcpId($form->_teamPcpId);
-    $form->_teamName  = CRM_Contact_BAO_Contact::displayName($teamContactID);
-    // Get Event Title
-    $eventTitle       = CRM_Pcpteams_Utils::getPcpEventTitle($form->_teamPcpId);
-    // Get Team Admin Contact ID
-    $teamAdminContactID = CRM_Pcpteams_Utils::getTeamAdmin($form->_teamPcpId);
+
+    $teamContactID  = CRM_Pcpteams_Utils::getcontactIdbyPcpId($teamPcpId);
+    $teamName       = CRM_Contact_BAO_Contact::displayName($teamContactID);
+    $eventTitle     = CRM_Pcpteams_Utils::getPcpEventTitle($teamPcpId);
+    $teamAdminContactID = CRM_Pcpteams_Utils::getTeamAdmin($teamPcpId);
     
     $teamAdminDisplayName   = "Team Captain Not Found";
     if($teamAdminContactID) {
       $teamAdminDisplayName =  CRM_Contact_BAO_Contact::displayName($teamAdminContactID);
     }
-    $form->assign('teamTitle', $form->_teamName );
+    $form->assign('teamTitle', $teamName );
+    $form->set('teamName', $teamName);
     $form->assign('teamAdminDisplayName', $teamAdminDisplayName);
     $form->assign('eventTitle', $eventTitle );
     
@@ -67,13 +66,12 @@ class CRM_Pcpteams_Form_TeamInvite {
       CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/support', "code=cpfgq&qfKey={$this->controller->_key}"));
     }
     else if ($values['teamOption'] == 0) {
-      $form->set('teamName', $form->_teamName);
       if($form->_pcpId) {
         $teamPcpCfId = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
         $params = array(
           'version'   => 3,
-          'entity_id' => $form->_pcpId,
-          "custom_{$teamPcpCfId}" => $form->_teamPcpId,
+          'entity_id' => $form->get('page_id'),
+          "custom_{$teamPcpCfId}" => $form->get('tpId')
         );
         $result = civicrm_api3('CustomValue', 'create', $params);
       }

@@ -16,22 +16,25 @@ class  CRM_Pcpteams_Utils {
     $contactID  = $session->get('userID'        );
     return $contactID;
   }
-  
-  static function getPcpIdByUserId($userId){
-    if(empty($userId)){
-      return NULL;
-    }
-     $result = civicrm_api('Pcpteams', 
-        'getcontactpcp', 
-        array(
-          'contact_id' => $userId,
-          'version'    => 3
-        )
-      );
-      if (!empty($result['id'])) {
-        return $result['id'];
+
+  // FIXME: convert this to API
+  static function getPcpId($componentPageId, $component, $isCreatePCP = FALSE) {
+    $cid = CRM_Pcpteams_Utils::getloggedInUserId();
+    if ($cid) {
+      $dao = new CRM_PCP_DAO_PCP();
+      $dao->contact_id = $cid;
+      $dao->page_id    = $componentPageId;
+      $dao->page_type  = $component;
+      if ($dao->find(TRUE)) {
+        return $dao->id;
       }
-    return null;
+      else if ($isCreatePCP) {
+        return self::createDefaultPCP($cid, $componentPageId, $component);
+      }
+    } else {
+      CRM_Core_Error::fatal(ts("Can't find find PCP for unknown user."));
+    }
+    return NULL;
   }
   
   // FIXME: 
@@ -273,28 +276,29 @@ class  CRM_Pcpteams_Utils {
       return $relationshipResult['values'][0]['contact_id_a'];
     }
   }
-  
-  static function createDummyPcp($pcpContactId, $pageId){
-    if(empty($pcpContactId) || empty($pageId)){
+
+  // FIXME: pcp title should be combination of contact name and event name
+  // similarly the description
+  static function createDefaultPcp($pcpContactId, $componentPageId, $component = 'event') {
+    if (empty($pcpContactId) || empty($componentPageId)) {
       return FALSE;
     }
     $pcpResult = civicrm_api('Pcpteams', 
-        'create', 
-        array(
-              'version'         => 3,
-              'pcp_title'       => "Dummy PCP Title",
-              'pcp_intro_text'  => "Dummy Introduction",
-              'pcp_contact_id'  => $pcpContactId,
-              'page_id'         => $pageId,
-              'page_type'       => 'event',
-              'intro_text'      => 'This is introduction test',
-              'goal_amount'     => 10000,
-            )
-         );
+      'create', 
+      array(
+        'version'         => 3,
+        'pcp_title'       => "Dummy PCP Title",
+        'pcp_intro_text'  => "Dummy Introduction",
+        'pcp_contact_id'  => $pcpContactId,
+        'page_id'         => $componentPageId,
+        'page_type'       => $component,
+        'intro_text'      => 'This is introduction test',
+      )
+    );
     if(!civicrm_error($pcpResult) && $pcpResult['id']) {
       return $pcpResult['id'];
     }
-    
+    return NULL;
   }
   
   static function checkTeamExists($displayname) {
@@ -349,16 +353,13 @@ class  CRM_Pcpteams_Utils {
     $beginHookFormElements = $template->get_template_vars();
     $loginURL              = $beginHookFormElements['loginURL'];
     if($loginURL) {
-      $code = $form->_code;
+      $code  = $form->_code ? $form->_code : "cpftq";
+      $query = '';
       if($form->_tpId){
         $query  = "&tpId={$form->_tpId}";
         $code   = "cpftn";
       }
-      if($code) {
-        $query .= "&code={$code}";
-      } else {
-        $query .= '&code=cpftq';
-      }
+      $query .= "&code={$code}";
       $form->assign('loginURL', $loginURL.  urlencode($query));
     }
   }

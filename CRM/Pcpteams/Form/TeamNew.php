@@ -7,17 +7,13 @@
  */
 class CRM_Pcpteams_Form_TeamNew {
 
-  function preProcess(&$form) {
-    CRM_Utils_System::setTitle(ts('Team Name'));
-    $form->_pcpId   = $form->controller->get('pcpId');
-    $form->_pageId  = $form->controller->get('component_page_id');
-    $userId = CRM_Pcpteams_Utils::getloggedInUserId();
-    if (!$form->_pcpId) {
-     $form->_pcpId =  CRM_Pcpteams_Utils::getPcpIdByUserId($userId);
+  static function preProcess(&$form) {
+    if (!$form->get('page_id')) {
+      CRM_Core_Error::fatal(ts("Can't determine pcp id."));
     }
   }
 
-  function buildQuickForm(&$form) {
+  static function buildQuickForm(&$form) {
     // add form elements
     $form->add('text', 'organization_name', ts('Team Name'), array(), TRUE);
     $form->add('text', 'email-primary', ts('Email'), CRM_Core_DAO::getAttribute('CRM_Core_DAO_Email', 'email'));
@@ -47,7 +43,7 @@ class CRM_Pcpteams_Form_TeamNew {
     return empty($errors) ? TRUE : $errors;
   }
 
-  function postProcess(&$form) {
+  static function postProcess(&$form) {
     $values   = $form->exportValues();
     $orgName  = $values['organization_name'];
     $email    = $values['email-primary'];
@@ -63,7 +59,7 @@ class CRM_Pcpteams_Form_TeamNew {
     $createTeam = civicrm_api3('Contact', 'create', $params);
 
     // Create Dummy Team PCP Page
-    $teamPcpId = CRM_Pcpteams_Utils::createDummyPcp($createTeam['id'], $form->_pageId);
+    $teamPcpId = CRM_Pcpteams_Utils::createDefaultPcp($createTeam['id'], $form->get('component_page_id'));
     // Create/Update custom record with team pcp id and create relationship with user as Team Admin
     if($teamPcpId) {
       $userId = CRM_Pcpteams_Utils::getloggedInUserId();
@@ -71,7 +67,7 @@ class CRM_Pcpteams_Form_TeamNew {
       $teamPcpCfId = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
         $params = array(
           'version'   => 3,
-          'entity_id' => $form->_pcpId,
+          'entity_id' => $form->get('page_id'),
           "custom_{$teamPcpCfId}" =>$teamPcpId,
         );
       $result = civicrm_api3('CustomValue', 'create', $params);

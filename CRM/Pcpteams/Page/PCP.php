@@ -4,25 +4,6 @@ require_once 'CRM/Core/Page.php';
 
 class CRM_Pcpteams_Page_PCP extends CRM_Core_Page {
   
-  static function getPcpIdbyContactId( $pcpContactId ){
-    if(empty($pcpContactId)){
-      return NULL;
-    }
-    $result = civicrm_api('Pcpteams', 
-        'getcontactpcp', 
-        array(
-          'contact_id' => $pcpContactId,
-          'version'    => 3,
-        )
-    );
-    
-    if (!empty($result['id'])) {
-      return $result['id'];
-    }
-    
-    return NULL;
-  }
-  
   static function getPcpDetails($pcpId){
     if(empty($pcpId)){
       return NULL;

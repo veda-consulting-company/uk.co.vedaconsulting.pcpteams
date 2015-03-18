@@ -12,16 +12,11 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
     $this->assign('teamTitle', $this->get('teamName'));
     CRM_Utils_System::setTitle(ts('Team Name Available'));
 
-    $this->_pcpId = $this->controller->get('pcpId');
-    //$this->_pcpId = CRM_Utils_Request::retrieve('id', 'Positive');
-    $userId = CRM_Pcpteams_Utils::getloggedInUserId();
-    if (!$this->_pcpId) {
-     $this->_pcpId =  CRM_Pcpteams_Utils::getPcpIdByUserId($userId);
+    if (!$this->get('page_id')) {
+      CRM_Core_Error::fatal(ts("Can't determine pcp id."));
     }
-    parent::preProcess();
   }
   function buildQuickForm() {
-
     $this->add('textarea', 'description', ts('Email Addresses') , '');
     $this->addButtons(array(
       array(
@@ -33,7 +28,6 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
 
     // export form elements
     $this->assign('elementNames', $this->getRenderableElementNames());
-    parent::buildQuickForm();
   }
 
   function postProcess() {
@@ -50,8 +44,6 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
     
     // Create Team Invite activity
     CRM_Pcpteams_Utils::createPcpActivity($userId, CRM_Pcpteams_Constant::C_CF_TEAM_INVITE, 'Invited to '.$this->teamTitle, 'PCP Team Invite');
-    
-    parent::postProcess();
   }
 
   /**

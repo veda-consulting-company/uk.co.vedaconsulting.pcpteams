@@ -54,8 +54,10 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
     $session = CRM_Core_Session::singleton();
     $session->set('singleForm', FALSE);
 
-    if ('event' == $controller->get('component')) {
-      $eventId = $controller->get('pageId');
+    $pageId    = CRM_Utils_Request::retrieve('pageId', 'Positive', $controller);
+    $component = CRM_Utils_Request::retrieve('component', 'String', $controller);
+    if ('event' == $controller->get('component') && $pageId) {
+      $eventId = $pageId;
     }
     $teamPcpId    = CRM_Utils_Request::retrieve('tpId', 'Positive', $controller);
     $workflowTeam = $controller->get('workflowTeam');
@@ -67,7 +69,6 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
     $step  = CRM_Utils_Request::retrieve('code', 'String', $controller);
     $pages = array(
       'cpfpa'  => 'CRM_Pcpteams_Form_PCPAccount',
-      'cpfp'   => 'CRM_Pcpteams_Form_PCP',
       'cpfed'  => 'CRM_Pcpteams_Form_EventDetails',
       'cpfec'  => 'CRM_Pcpteams_Form_EventConfirm',
       'cpftq'  => 'CRM_Pcpteams_Form_TeamQuery',

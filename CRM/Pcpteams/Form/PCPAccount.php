@@ -64,7 +64,6 @@ class CRM_Pcpteams_Form_PCPAccount extends CRM_Core_Form {
    */
   protected $_defaults;
 
-
   public function preProcess() {
     $session          = CRM_Core_Session::singleton();
     $config           = CRM_Core_Config::singleton();
@@ -101,6 +100,10 @@ class CRM_Pcpteams_Form_PCPAccount extends CRM_Core_Form {
 
     if (!$this->_single) {
       $this->_single = $session->get('singleForm');
+    }
+
+    if (!$this->_id && $this->_pageId && $this->_component) {
+      $this->_id = CRM_Pcpteams_Utils::getPcpId($this->_pageId, $this->_component, TRUE);
     }
 
     $this->set('action', $this->_action);

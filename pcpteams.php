@@ -219,7 +219,7 @@ function pcpteams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
     $eventID  = $objectRef->event_id;
     $contactID  =  $objectRef->contact_id;
     // Create PCP for this newly created contact
-    CRM_Pcpteams_Utils::createDummyPcp($contactID, $eventID);
+    CRM_Pcpteams_Utils::createDefaultPcp($contactID, $eventID);
   }
 }
 

@@ -12,17 +12,13 @@ class CRM_Pcpteams_Form_TeamThankYou extends CRM_Core_Form {
     $this->assign('teamTitle', $this->get('teamName'));
     CRM_Utils_System::setTitle(ts('Team setup succesful'));
 
-    $this->_pcpId = $this->controller->get('pcpId');
-    //$this->_pcpId = CRM_Utils_Request::retrieve('id', 'Positive');
-    $userId = CRM_Pcpteams_Utils::getloggedInUserId();
-    if (!$this->_pcpId) {
-     $this->_pcpId =  CRM_Pcpteams_Utils::getPcpIdByUserId($userId);
+    if (!$this->get('page_id')) {
+      CRM_Core_Error::fatal(ts("Can't determine pcp id."));
     }
-    parent::preProcess();
   }
-  function buildQuickForm() {
 
-      $this->addButtons(array(
+  function buildQuickForm() {
+    $this->addButtons(array(
       array(
         'type' => 'next',
         'name' => ts('Continue'),
@@ -32,14 +28,8 @@ class CRM_Pcpteams_Form_TeamThankYou extends CRM_Core_Form {
 
     // export form elements
     $this->assign('elementNames', $this->getRenderableElementNames());
-    parent::buildQuickForm();
   }
 
-  function postProcess() {
-    return TRUE;
-    parent::postProcess();
-  }
-  
   /**
    * Get the fields/elements defined in this form.
    *

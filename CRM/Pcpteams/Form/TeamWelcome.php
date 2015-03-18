@@ -12,13 +12,9 @@ class CRM_Pcpteams_Form_TeamWelcome extends CRM_Core_Form {
     $this->assign('teamTitle', $this->get('teamName'));
     CRM_Utils_System::setTitle(ts('Team Welcome'));
 
-    $this->_pcpId = $this->controller->get('pcpId');
-    //$this->_pcpId = CRM_Utils_Request::retrieve('id', 'Positive');
-    $userId = CRM_Pcpteams_Utils::getloggedInUserId();
-    if (!$this->_pcpId) {
-     $this->_pcpId =  CRM_Pcpteams_Utils::getPcpIdByUserId($userId);
+    if (!$this->get('page_id')) {
+      CRM_Core_Error::fatal(ts("Can't determine pcp id."));
     }
-    parent::preProcess();
   }
   function buildQuickForm() {
 

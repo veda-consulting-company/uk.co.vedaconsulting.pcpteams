@@ -7,14 +7,9 @@
  */
 class CRM_Pcpteams_Form_TeamJoin {
 
-  static function preProcess(&$form){
-    CRM_Utils_System::setTitle(ts('Join a Team'));
-
-    $form->_pcpId = $form->controller->get('pcpId');
-    //$form->_pcpId = CRM_Utils_Request::retrieve('id', 'Positive');
-    $userId = CRM_Pcpteams_Utils::getloggedInUserId();
-    if (!$form->_pcpId) {
-     $form->_pcpId =  CRM_Pcpteams_Utils::getPcpIdByUserId($userId);
+  static function preProcess(&$form) {
+    if (!$form->get('page_id')) {
+      CRM_Core_Error::fatal(ts("Can't determine pcp id."));
     }
   }
 
@@ -68,7 +63,7 @@ class CRM_Pcpteams_Form_TeamJoin {
       $teamPcpCfId = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
       $params = array(
         'version'   => 3,
-        'entity_id' => $form->_pcpId,
+        'entity_id' => $form->get('page_id'),
         "custom_{$teamPcpCfId}" => $teamPcpId,
       );
       $result = civicrm_api3('CustomValue', 'create', $params);

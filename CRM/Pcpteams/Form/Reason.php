@@ -8,17 +8,13 @@ require_once 'CRM/Core/Form.php';
  */
 class CRM_Pcpteams_Form_Reason extends CRM_Core_Form {
   function preProcess() {
-    $this->_pcpId = $this->controller->get('pcpId');
-    $userId = CRM_Pcpteams_Utils::getloggedInUserId();
-    if (!$this->_pcpId) {
-     $this->_pcpId =  CRM_Pcpteams_Utils::getPcpIdByUserId($userId);
-    }
-
     //Fixme: validate the contact id, and check permission can view / edit this pcp.
 
     //Fixme: check the Pcp Custom Set values, In memory / In celebration
 
-    parent::preProcess();
+    if (!$form->get('page_id')) {
+      CRM_Core_Error::fatal(ts("Can't determine pcp id."));
+    }
   }
 
   function buildQuickForm() {
