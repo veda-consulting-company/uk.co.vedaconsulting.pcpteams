@@ -215,11 +215,11 @@ function pcpteams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
       $newSoft->save();
     }
   }
+
   if($op == 'create' && $objectName == 'Participant') {
-    $eventID  = $objectRef->event_id;
-    $contactID  =  $objectRef->contact_id;
-    // Create PCP for this newly created contact
-    CRM_Pcpteams_Utils::createDefaultPcp($contactID, $eventID);
+    //FIXME: only if this event has PCP setup
+    // Auto create default PCP
+    CRM_Pcpteams_Utils::createDefaultPcp($objectRef->contact_id, $objectRef->event_id, 'event');
   }
 }
 
@@ -229,7 +229,7 @@ function pcpteams_civicrm_buildForm($formName, &$form) {
     $beginHookFormElements = $template->get_template_vars();
     if($beginHookFormElements['pcpLink']) {
       $pageId = $form->getVar('_eventId');
-      $supportURL  = CRM_Utils_System::url('civicrm/pcp/support', 'reset=1&pageId='.$pageId.'&component=event');
+      $supportURL  = CRM_Utils_System::url('civicrm/pcp/support', "reset=1&pageId={$pageId}&component=event&code=cpftq");
       $form->assign('pcpLink', $supportURL);
     }
   }

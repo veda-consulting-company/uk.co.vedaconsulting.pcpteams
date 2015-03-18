@@ -353,7 +353,7 @@ class  CRM_Pcpteams_Utils {
     $beginHookFormElements = $template->get_template_vars();
     $loginURL              = $beginHookFormElements['loginURL'];
     if($loginURL) {
-      $code  = $form->_code ? $form->_code : "cpftq";
+      $code  = $form->_code;
       $query = '';
       if($form->_tpId){
         $query  = "&tpId={$form->_tpId}";
