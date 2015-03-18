@@ -31,9 +31,7 @@ class  CRM_Pcpteams_Utils {
       else if ($isCreatePCP) {
         return self::createDefaultPCP($cid, $componentPageId, $component);
       }
-    } else {
-      CRM_Core_Error::fatal(ts("Can't find find PCP for unknown user."));
-    }
+    } 
     return NULL;
   }
   
@@ -283,16 +281,17 @@ class  CRM_Pcpteams_Utils {
     if (empty($pcpContactId) || empty($componentPageId)) {
       return FALSE;
     }
+    $eventDetails  = CRM_Pcpteams_Utils::getEventDetailsbyEventId($componentPageId);
+    $contactDisplayName = CRM_Contact_BAO_Contact::displayName($pcpContactId);
     $pcpResult = civicrm_api('Pcpteams', 
       'create', 
       array(
         'version'         => 3,
-        'pcp_title'       => "Dummy PCP Title",
-        'pcp_intro_text'  => "Dummy Introduction",
+        'pcp_title'       => $contactDisplayName.' : '.$eventDetails['title'],
+        'pcp_intro_text'  => "Welcome to ".$contactDisplayName.'\'s PCP',
         'pcp_contact_id'  => $pcpContactId,
         'page_id'         => $componentPageId,
         'page_type'       => $component,
-        'intro_text'      => 'This is introduction test',
       )
     );
     if(!civicrm_error($pcpResult) && $pcpResult['id']) {
@@ -359,7 +358,9 @@ class  CRM_Pcpteams_Utils {
         $query  = "&tpId={$form->_tpId}";
         $code   = "cpftn";
       }
-      $query .= "&code={$code}";
+      if($code) {
+        $query .= "&code={$code}";
+      }
       $form->assign('loginURL', $loginURL.  urlencode($query));
     }
   }
@@ -416,5 +417,17 @@ class  CRM_Pcpteams_Utils {
       // Comment below line abort sending email
       $sent = CRM_Utils_Mail::send( $params );
     }
+  }
+  
+  static function isPcpExists($eventId, $component = 'event') {
+     if(empty($eventId)){
+      return null;
+    }
+    $entity_table = CRM_PCP_BAO_PCP::getPcpEntityTable($component);
+    $pcpBlock = new CRM_PCP_DAO_PCPBlock();
+    $pcpBlock->entity_table = $entity_table;
+    $pcpBlock->entity_id    = $eventId;
+    $pcpBlock->find(TRUE);
+    return $pcpBlock->id;
   }
 }
