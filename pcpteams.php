@@ -217,9 +217,11 @@ function pcpteams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
   }
 
   if($op == 'create' && $objectName == 'Participant') {
-    //FIXME: only if this event has PCP setup
-    // Auto create default PCP
-    CRM_Pcpteams_Utils::createDefaultPcp($objectRef->contact_id, $objectRef->event_id, 'event');
+    $pcpBlockId = CRM_Pcpteams_Utils::isPcpExists($objectRef->event_id);
+    if($pcpBlockId) {
+      // Auto create default PCP
+      CRM_Pcpteams_Utils::createDefaultPcp($objectRef->contact_id, $objectRef->event_id, 'event');
+    }
   }
 }
 
