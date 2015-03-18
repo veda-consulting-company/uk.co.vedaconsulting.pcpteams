@@ -347,17 +347,19 @@ class  CRM_Pcpteams_Utils {
   static function overrideLoginUrl(&$form) {
     $template              = CRM_Core_Smarty::singleton( );
     $beginHookFormElements = $template->get_template_vars();
-    if($beginHookFormElements['loginURL']) {
-      if($form->_tpId && $form->_code) {
-        $loginURL = $beginHookFormElements['loginURL'].urlencode("&tpId={$form->_tpId}&code={$form->_code}");
-      }else if($form->_tpId){
-        $loginURL = $beginHookFormElements['loginURL'].urlencode("&tpId={$form->_tpId}");
-      } else if($form->_code) {
-        $loginURL = $beginHookFormElements['loginURL'].urlencode("&code={$form->_code}");
-      } else {
-        $loginURL = $beginHookFormElements['loginURL'];
+    $loginURL              = $beginHookFormElements['loginURL'];
+    if($loginURL) {
+      $code = $form->_code;
+      if($form->_tpId){
+        $query  = "&tpId={$form->_tpId}";
+        $code   = "cpftn";
       }
-      $form->assign('loginURL', $loginURL);
+      if($code) {
+        $query .= "&code={$code}";
+      } else {
+        $query .= '&code=cpftq';
+      }
+      $form->assign('loginURL', $loginURL.  urlencode($query));
     }
   }
   
