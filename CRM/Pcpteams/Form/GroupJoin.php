@@ -9,9 +9,11 @@ require_once 'CRM/Core/Form.php';
  */
 class CRM_Pcpteams_Form_GroupJoin extends CRM_Core_Form {
   function preProcess(){
+    if (!$this->get('page_id')) {
+      CRM_Core_Error::fatal(ts("Can't determine pcp id."));
+    }
     CRM_Utils_System::setTitle(ts('Join Group'));
     
-    $this->_pcpId = $this->controller->get('pcpId');
     $selectedValue = $this->get('workflowGroup');
     if( $selectedValue == 1){
       $this->_contactSubType  = CRM_Pcpteams_Constant::C_CONTACTTYPE_PARTNER; 
@@ -25,8 +27,8 @@ class CRM_Pcpteams_Form_GroupJoin extends CRM_Core_Form {
   
   function setDefaultValues() {
     $defaults = array();
-    if ($this->_pcpId) {
-      $result = civicrm_api('Pcpteams', 'get', array('version' => 3, 'sequential' => 1, 'pcp_id' => $this->_pcpId));
+    if ($this->get('page_id')) {
+      $result = civicrm_api('Pcpteams', 'get', array('version' => 3, 'sequential' => 1, 'pcp_id' => $this->get('page_id')));
       $branchCfId = CRM_Pcpteams_Utils::getBranchorPartnerCustomFieldId();
       if(isset($result['values'][0]["custom_{$branchCfId}"])){
         $defaults['pcp_branch_contact'] = $result['values'][0]["custom_{$branchCfId}_id"];
@@ -61,11 +63,11 @@ class CRM_Pcpteams_Form_GroupJoin extends CRM_Core_Form {
     $values   = $this->exportValues();
     $branchId = $values['pcp_branch_contact'];
 
-    if ($branchId && $this->_pcpId) {
+    if ($branchId && $this->get('page_id')) {
       $branchCfId = CRM_Pcpteams_Utils::getBranchorPartnerCustomFieldId();
       $params     = array(
         'version'   => 3,
-        'entity_id' => $this->_pcpId,
+        'entity_id' => $this->get('page_id'),
         "custom_{$branchCfId}" => $branchId,
       );
       $result = civicrm_api3('CustomValue', 'create', $params);

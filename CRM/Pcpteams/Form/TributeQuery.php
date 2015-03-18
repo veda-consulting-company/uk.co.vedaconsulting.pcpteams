@@ -10,7 +10,6 @@ require_once 'CRM/Core/Form.php';
 class CRM_Pcpteams_Form_TributeQuery extends CRM_Core_Form {
   function preProcess(){
     CRM_Utils_System::setTitle(ts('Reason'));
-    parent::preProcess();  
   }
   
   function buildQuickForm() {
@@ -32,7 +31,6 @@ class CRM_Pcpteams_Form_TributeQuery extends CRM_Core_Form {
     $this->addFormRule(array('CRM_Pcpteams_Form_TributeQuery', 'formRule'), $this);
     // export form elements
     $this->assign('elementNames', $this->getRenderableElementNames());
-    parent::buildQuickForm();
   }
   
   static function formRule($fields){
