@@ -1,6 +1,7 @@
 <?php
 
 require_once 'pcpteams.civix.php';
+require_once 'CRM/Pcpteams/Constant.php';
 
 /**
  * Implementation of hook_civicrm_config
@@ -32,13 +33,11 @@ function pcpteams_civicrm_install() {
   // Create OptionGroup, OptionValues, RelationshipType, CustomGroup and CustomFields
   $extensionDir = dirname( __FILE__ ) . DIRECTORY_SEPARATOR;
   $customDataXMLFile = $extensionDir  . '/xml/CustomGroupData.xml';
-  require_once 'CRM/Utils/Migrate/Import.php';
   $import = new CRM_Utils_Migrate_Import( );
   $import->run( $customDataXMLFile );
   
   //Create Contact Subtype
   $params = array('parent_id' => 3, 'is_active' => 1, 'is_reserved' => 0);
-  require_once 'CRM/Contact/BAO/ContactType.php';
   foreach (array(
     CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE
     , CRM_Pcpteams_Constant::C_CONTACTTYPE_IN_MEM
@@ -59,9 +58,7 @@ function pcpteams_civicrm_install() {
   ADD CONSTRAINT `FK_civicrm_value_pcp_custom_set_team_pcp_id` FOREIGN KEY (`team_pcp_id`) REFERENCES `civicrm_pcp` (`id`) ON DELETE SET NULL";
   CRM_Core_DAO::executeQuery($sql);
   
-  $config           = CRM_Core_Config::singleton();
-  $extenDr          = $config->extensionsDir;
-  $messageHtmlSampleTeamInviteFile  = $extenDr . DIRECTORY_SEPARATOR .'uk.co.vedaconsulting.pcpteams'. DIRECTORY_SEPARATOR.'sample_team_invite.html';
+  $messageHtmlSampleTeamInviteFile  = $extensionDir . '/sample_team_invite.html';
   $messageHtml      = file_get_contents($messageHtmlSampleTeamInviteFile);
   $message_params = array(
     'sequential'  => 1,
