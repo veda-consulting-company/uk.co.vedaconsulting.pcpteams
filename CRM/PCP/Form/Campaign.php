@@ -61,11 +61,13 @@ class CRM_PCP_Form_Campaign extends CRM_Core_Form {
     }
 
     CRM_Utils_System::setTitle($title);
-	//MV: to get the Custom Data preProcess
-	$this->_cdType = 'PCP';
-	$this->_customValueCount = 1;
-	CRM_Custom_Form_CustomData::preProcess($this, NULL, NULL,  1, $this->_cdType, $this->_pageId, NULL );
-	//END
+    //MV: to get the Custom Data preProcess
+    if(CRM_Core_Permission::check('Administer CiviCRM')){
+    	$this->_cdType = 'PCP';
+    	$this->_customValueCount = 1;
+    	CRM_Custom_Form_CustomData::preProcess($this, NULL, NULL,  1, $this->_cdType, $this->_pageId, NULL );
+    }
+    //END
     parent::preProcess();
   }
 
@@ -96,10 +98,12 @@ class CRM_PCP_Form_Campaign extends CRM_Core_Form {
     $this->_contactID = CRM_Utils_Array::value('contact_id', $defaults);
     $this->_contriPageId = CRM_Utils_Array::value('page_id', $defaults);
 
-	//MV: to set customData default values;
-	$customDataDefaults = CRM_Custom_Form_CustomData::setDefaultValues($this);
-    $defaults += $customDataDefaults;
-	//END
+    //MV: to set customData default values;
+    if(CRM_Core_Permission::check('Administer CiviCRM')){
+      $customDataDefaults = CRM_Custom_Form_CustomData::setDefaultValues($this);
+      $defaults += $customDataDefaults;
+    }
+    //END
 
     return $defaults;
   }
@@ -135,9 +139,11 @@ class CRM_PCP_Form_Campaign extends CRM_Core_Form {
 
     $maxAttachments = 1;
     CRM_Core_BAO_File::buildAttachment($this, 'civicrm_pcp', $this->_pageId, $maxAttachments);
-	//MV: added the custom fields in PCP form
-    CRM_Custom_Form_CustomData::buildQuickForm($this);
-	//end
+    //MV: added the custom fields in PCP form
+    if(CRM_Core_Permission::check('Administer CiviCRM')){
+      CRM_Custom_Form_CustomData::buildQuickForm($this);
+    }
+    //end
 
     $this->addElement('checkbox', 'is_thermometer', ts('Progress Bar'));
     $this->addElement('checkbox', 'is_honor_roll', ts('Honor Roll'), NULL);
@@ -249,8 +255,8 @@ class CRM_PCP_Form_Campaign extends CRM_Core_Form {
       'civicrm_pcp',
       $pcp->id
     );
-	//MV: update Custom Values 
-	if (!empty($params['hidden_custom']) ) {
+    //MV: update Custom Values 
+    if (!empty($params['hidden_custom']) && CRM_Core_Permission::check('Administer CiviCRM')) {
       $customFields = CRM_Core_BAO_CustomField::getFields('PCP');
       $customFields = CRM_Utils_Array::crmArrayMerge($customFields,
         CRM_Core_BAO_CustomField::getFields('PCP')
@@ -260,21 +266,21 @@ class CRM_PCP_Form_Campaign extends CRM_Core_Form {
         $pcpBlock->entity_id,
         'PCP'
       );
-	  //API to Update Custom Values;
-		$customApiParams = array(
-			'version' => 3,
-			'entity_id' => $params['id'],
-		);
-		foreach ($params['custom'] as $elementId => $elementValues) {
-			$elementValue = array_values($elementValues);
-			$customApiParams['custom_'.$elementId] = $elementValue[0]['value'];
-			if($elementValue['id']){
-				$customApiParams['id'] = $elementValue[0]['id'];
-			}
-		}
-		$temp = civicrm_api3('CustomValue', 'create', $customApiParams);	
-	  //END
+      //API to Update Custom Values;
+      $customApiParams = array(
+        'version' => 3,
+        'entity_id' => $params['id'],
+      );
+      foreach ($params['custom'] as $elementId => $elementValues) {
+        $elementValue = array_values($elementValues);
+        $customApiParams['custom_'.$elementId] = $elementValue[0]['value'];
+        if($elementValue['id']){
+          $customApiParams['id'] = $elementValue[0]['id'];
+        }
+      }
+      $temp = civicrm_api3('CustomValue', 'create', $customApiParams);	
     }
+    //END
 
     $pageStatus = isset($this->_pageId) ? ts('updated') : ts('created');
     $statusId = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcp->id, 'status_id');
