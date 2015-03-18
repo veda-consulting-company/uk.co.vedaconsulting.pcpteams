@@ -115,6 +115,7 @@ class CRM_Pcpteams_Form_PCPAccount extends CRM_Core_Form {
     if ($this->_single) {
       CRM_Utils_System::setTitle(ts('Update Contact Information'));
     }
+    $session->pushUserContext(CRM_Utils_System::url('civicrm/pcp/dashboard', 'reset=1'));
   }
 
   /**

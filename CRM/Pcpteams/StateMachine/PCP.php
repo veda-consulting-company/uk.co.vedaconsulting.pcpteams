@@ -74,8 +74,13 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
     $pageId    = CRM_Utils_Request::retrieve('pageId', 'Positive', $controller);
     $component = CRM_Utils_Request::retrieve('component', 'String', $controller);
     $teamPcpId = CRM_Utils_Request::retrieve('tpId', 'Positive', $controller);
-    $workflowTeam  = $controller->get('workflowTeam');
-    $workflowGroup = $controller->get('workflowGroup');
+    $workflowTeam    = $controller->get('workflowTeam');
+
+    // DS: for now we skipping branch and tribute screens. We might enable them back later.
+    $controller->set('workflowGroup', 'skip'); // remove me later
+    $controller->set('workflowTribute', 'skip'); // remove me later
+
+    $workflowGroup   = $controller->get('workflowGroup');
     $workflowTribute = $controller->get('workflowTribute');
 
     // check if contact is already registered
@@ -133,7 +138,6 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
     if ($teamPcpId && !$workflowTeam) {
       $controller->set('workflowTeam', 'invite');
     }
-    CRM_Core_Error::debug_var('$controller->get(workflowTeam)', $controller->get('workflowTeam'));
 
     // unset pages per workflow
     if ('invite' == $controller->get('workflowTeam')) { // team invite
