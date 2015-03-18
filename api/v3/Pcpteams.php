@@ -73,7 +73,11 @@ function civicrm_api3_pcpteams_get($params) {
   $dao = new CRM_PCP_DAO_PCP();
   // FIXME: need to enforce type check
   $dao->id = $params['pcp_id']; // type check done by getfields
-  $result = _civicrm_api3_dao_to_array($dao);
+  
+  //'@' this suppress the notice message, because
+  // _civicrm_api_get_entity_name_from_dao returns the entity as 'p_c_p_id' which is undefined in PCP DAO fields
+  //ref:  _civicrm_api_get_entity_name_from_dao($bao); in api/v3/utils.php (801)
+  $result = @_civicrm_api3_dao_to_array($dao);
 
   // Append custom info
   // Note: This should ideally be done in _civicrm_api3_dao_to_array, but since PCP is not one of 
@@ -112,7 +116,11 @@ function civicrm_api3_pcpteams_getcontactpcp($params) {
   $dao = new CRM_PCP_DAO_PCP();
   // FIXME: need to enforce type check
   $dao->contact_id = $params['contact_id']; // type check done by getfields
-  $result = _civicrm_api3_dao_to_array($dao);
+  
+  //'@' this suppress the notice message, because
+  // _civicrm_api_get_entity_name_from_dao returns the entity as 'p_c_p_id' which is undefined in PCP DAO fields
+  //ref:  _civicrm_api_get_entity_name_from_dao($bao); in api/v3/utils.php (801)
+  $result = @_civicrm_api3_dao_to_array($dao);
 
   // Append custom info
   // Note: This should ideally be done in _civicrm_api3_dao_to_array, but since PCP is not one of 
@@ -130,7 +138,11 @@ function civicrm_api3_pcpteams_getstate($params) {
   $dao = new CRM_PCP_DAO_PCP();
   // FIXME: need to enforce type check
   $dao->contact_id = $params['contact_id']; // type check done by getfields
-  $result = _civicrm_api3_dao_to_array($dao);
+  
+  //'@' this suppress the notice message, because
+  // _civicrm_api_get_entity_name_from_dao returns the entity as 'p_c_p_id' which is undefined in PCP DAO fields
+  //ref:  _civicrm_api_get_entity_name_from_dao($bao); in api/v3/utils.php (801)
+  $result = @_civicrm_api3_dao_to_array($dao);
   _civicrm_api3_pcpteams_custom_get($result);
   _civicrm_api3_pcpteams_getstate_output($result);
   return civicrm_api3_create_success($result, $params);
@@ -181,7 +193,11 @@ function _civicrm_api3_pcpteams_getpcpblock_spec(&$params) {
 function civicrm_api3_pcpteams_getallpagesbyevent($params) {
   $dao = new CRM_PCP_DAO_PCP();
   $dao->page_id = $params['page_id'];
-  $result       = _civicrm_api3_dao_to_array($dao);
+  
+  //'@' this suppress the notice message, because
+  // _civicrm_api_get_entity_name_from_dao returns the entity as 'p_c_p_id' which is undefined in PCP DAO fields
+  //ref:  _civicrm_api_get_entity_name_from_dao($bao); in api/v3/utils.php (801)
+  $result = @_civicrm_api3_dao_to_array($dao);
   return civicrm_api3_create_success($result, $params);
 }
 function _civicrm_api3_pcpteams_getallpagesbyevent_spec(&$params) {
