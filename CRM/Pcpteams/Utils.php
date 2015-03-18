@@ -348,7 +348,15 @@ class  CRM_Pcpteams_Utils {
     $template              = CRM_Core_Smarty::singleton( );
     $beginHookFormElements = $template->get_template_vars();
     if($beginHookFormElements['loginURL']) {
-      $loginURL = $beginHookFormElements['loginURL'].urlencode("&tpId={$form->_tpId}&code={$form->_code}");
+      if($form->_tpId && $form->_code) {
+        $loginURL = $beginHookFormElements['loginURL'].urlencode("&tpId={$form->_tpId}&code={$form->_code}");
+      }else if($form->_tpId){
+        $loginURL = $beginHookFormElements['loginURL'].urlencode("&tpId={$form->_tpId}");
+      } else if($form->_code) {
+        $loginURL = $beginHookFormElements['loginURL'].urlencode("&code={$form->_code}");
+      } else {
+        $loginURL = $beginHookFormElements['loginURL'];
+      }
       $form->assign('loginURL', $loginURL);
     }
   }
