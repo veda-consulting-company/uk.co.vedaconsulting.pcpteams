@@ -46,6 +46,9 @@ class CRM_Pcpteams_Form_GroupQuery extends CRM_Core_Form {
     if ($values['teamOption'] == 0) { 
       CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/support', "code=cpftrq&qfKey={$this->controller->_key}"));
     }
+    else {
+      $this->set("workflowGroup", $values['teamOption']);
+    }
   }
 
   /**

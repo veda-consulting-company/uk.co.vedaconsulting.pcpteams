@@ -22,7 +22,6 @@ class CRM_Pcpteams_Form_GroupJoin extends CRM_Core_Form {
     }
     $this->assign('branchOrPartner', str_replace('_', ' ', $this->_contactSubType));
     $this->assign('contactSubType',  $this->_contactSubType);
-    parent::preProcess();  
   }
   
   function setDefaultValues() {
