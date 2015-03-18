@@ -7,17 +7,19 @@
       <table class="selector">
         <tr class="columnheader">
           <th>{ts}Contact Name{/ts}</th>
+          <th>{ts}Type{/ts}</th>
           <th>{ts}E-Mail{/ts}</th>
           <th>{ts}Phone{/ts}</th>
-          <th></th>
+          <!-- <th></th> -->
         </tr>
 
         {foreach from=$relatedContact item=row}
         <tr class="{cycle values='odd-row,even-row'}">
               <td class="bold">{$row.name}</td>
+              <td>{$row.type}</td>
               <td>{$row.email}</td>
               <td>{$row.phone}</td>
-              <td></td>
+              <!-- <td>{$row.action}</td> -->
         </tr>
         {/foreach}
       </table>

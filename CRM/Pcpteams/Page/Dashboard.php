@@ -49,8 +49,33 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
     CRM_Utils_System::setTitle(ts('Dashboard - %1', array(1 => $displayName)));
 
     $this->assign('recentlyViewed', FALSE);
+    
+    $session = CRM_Core_Session::singleton();
+    $session->pushUserContext(CRM_Utils_System::url('civicrm/pcp/dashboard', 'reset=1'));
   }
-
+  
+  static function relatedContactInfo($contactId){
+    $return = array();
+    if(empty($contactId)){
+      return $return;
+    }
+    
+    $phone          = CRM_Core_BAO_Phone::allPhones($contactId, FALSE, NULL, array('is_primary' => 1));
+    $contactSubType = CRM_Contact_BAO_Contact::getContactSubType($contactId);
+    $contactType    = CRM_Contact_BAO_ContactType::getLabel($contactSubType[0]);
+    $gid            = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_UFGroup', 'PCP_Supporter_Profile', 'id', 'name');
+    // $updateURL      = CRM_Utils_System::url('civicrm/profile/edit', "reset=1&gid=$gid&cid=$contactId");
+    $return         = array(
+      'name'  => CRM_Contact_BAO_Contact::displayName($contactId), 
+      'type'  => $contactType, 
+      'email' => CRM_Contact_BAO_Contact::getPrimaryEmail($contactId),
+      'phone' => !empty($phone) && isset($phone['phone']) ? $phone['phone'] : NULL,
+      // 'action'=> "<a href=$updateURL>Update Contact Information</a>",
+    );
+    
+    return $return;
+  }
+  
   /**
    * Function to build user dashboard
    *
@@ -70,54 +95,30 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
     if (!empty($this->_userOptions['PCP'])) {
       $dashboardElements[] = array(
         'class' => 'crm-dashboard-pcp',
-        'templatePath' => 'CRM/Pcpteams/Page/Dashboard/PcpUserDashboard.tpl',
+        'templatePath' => 'CRM/Pcpteams/Page/Dashboard/List.tpl',
         'sectionTitle' => ts('Personal Campaign Pages'),
         'weight' => 40,
       );
-      list($pcpBlock, $pcpInfo) = CRM_PCP_BAO_PCP::getPcpDashboardInfo($this->_contactId);
       
-      //check this user has team pcp
-      $relatedContact = array(); 
-      $teamPcpCfId = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
-      foreach ($pcpInfo as $pcpDetails) {
-        $result     = civicrm_api('pcpteams', 'get', array('version' => 3, 'pcp_id' => $pcpDetails['pcpId']));
-        $teamPcpIds  = array();
-        if(isset($result['values'][$pcpDetails['pcpId']]["custom_{$teamPcpCfId}"])){
-          $teamPcpIds[]  = $result['values'][$pcpDetails['pcpId']]["custom_{$teamPcpCfId}"];
-        }
-      }
+      $result = civicrm_api( 'pcpteams', 'getPcpDashboardInfo', array(
+          'version'   => 3, 
+          'contact_id'=> $this->_contactId,
+        )
+      );
       
-      if(!empty($teamPcpIds)){
-        foreach ($teamPcpIds as $teamPcpId) {
-          $result     = civicrm_api('pcpteams', 'get', array('version' => 3, 'pcp_id' => $teamPcpId));
-          $pageURl    = CRM_Utils_System::url('civicrm/pcp/info', "reset=1&id={$teamPcpId}&component=event");
-          $action     = <<<ACTION
-            <span>
-              <a title="URL for this Page" class="action-item crm-hover-button" href="{$pageURl}">URL for this Page</a>
-            </span>
-ACTION;
-         
-          $teamPcpInfo  = array(
-            'pageTitle' => CRM_Pcpteams_Utils::getPcpEventTitle($teamPcpId),
-            'pcpId'     => $teamPcpId,
-            'pcpTitle'  => $result['values'][$teamPcpId]['title'],
-            'pcpStatus' => CRM_Core_OptionGroup::getLabel( 'pcp_status', $result['values'][$teamPcpId]['status_id']),
-            'class'     => 'disabled',
-            'action'    => $action,
-          );
-          
-          $teamId = CRM_Pcpteams_Utils::getcontactIdbyPcpId($teamPcpId);
-          $phone  = CRM_Core_BAO_Phone::allPhones($teamId, FALSE, NULL, array('is_primary' => 1));
-          $teamContact = array(
-            'name'   => CRM_Contact_BAO_Contact::displayName($teamId),
-            'email'  => CRM_Contact_BAO_Contact::getPrimaryEmail($teamId),
-            'phone'  => !empty($phone) ? $phone['phone'] : NULL,
-          );
-          array_push($relatedContact, $teamContact);
-          array_push($pcpInfo, $teamPcpInfo);
-        }
+      $pcpInfo = $relatedContact = array();
+      if(!civicrm_error($result)){
+        $pcpInfo = $result['values'];
       }
-      // $this->assign('pcpBlock', $pcpBlock);
+      foreach ($pcpInfo as $pcpId => $pcpDetails) {
+        $teamId     = $pcpDetails['teamPcpid']  ? CRM_Pcpteams_Utils::getcontactIdbyPcpId($pcpDetails['teamPcpid']) : NULL;
+        $orgId      = $pcpDetails['org_id']     ? $pcpDetails['org_id']     : NULL;
+        $tribute_id = $pcpDetails['tribute_id'] ? $pcpDetails['tribute_id'] : NULL;
+        $relatedContact[$teamId]                   = self::relatedContactInfo($teamId);
+        $relatedContact[$pcpDetails['org_id']]     = self::relatedContactInfo($orgId);
+        $relatedContact[$pcpDetails['tribute_id']] = self::relatedContactInfo($tribute_id);
+      }
+
       $this->assign('pcpInfo', $pcpInfo);
       
       //Contacts / Organization
@@ -128,7 +129,7 @@ ACTION;
         'weight' => 40,
       );
 
-      $this->assign('relatedContact', $relatedContact);
+      $this->assign('relatedContact', array_filter($relatedContact));
     }
     
     // usort($dashboardElements, array('CRM_Utils_Sort', 'cmpFunc'));
