@@ -12,9 +12,7 @@ class  CRM_Pcpteams_Utils {
    * to get the logged in User Id
    */
   static function getloggedInUserId(){
-    $session    = CRM_Core_Session::singleton( );
-    $contactID  = $session->get('userID'        );
-    return $contactID;
+    return CRM_Core_Session::singleton()->get('userID');
   }
 
   // FIXME: convert this to API

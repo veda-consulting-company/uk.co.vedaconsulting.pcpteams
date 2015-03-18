@@ -102,10 +102,6 @@ class CRM_Pcpteams_Form_PCPAccount extends CRM_Core_Form {
       $this->_single = $session->get('singleForm');
     }
 
-    if (!$this->_id && $this->_pageId && $this->_component) {
-      $this->_id = CRM_Pcpteams_Utils::getPcpId($this->_pageId, $this->_component, TRUE);
-    }
-
     $this->set('action', $this->_action);
     $this->set('page_id', $this->_id);
     $this->set('component_page_id', $this->_pageId);

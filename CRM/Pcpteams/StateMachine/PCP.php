@@ -54,19 +54,6 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
     $session = CRM_Core_Session::singleton();
     $session->set('singleForm', FALSE);
 
-    $pageId    = CRM_Utils_Request::retrieve('pageId', 'Positive', $controller);
-    $component = CRM_Utils_Request::retrieve('component', 'String', $controller);
-    if ('event' == $controller->get('component') && $pageId) {
-      $eventId = $pageId;
-    }
-    $teamPcpId    = CRM_Utils_Request::retrieve('tpId', 'Positive', $controller);
-    $workflowTeam = $controller->get('workflowTeam');
-
-    if ($teamPcpId && !$workflowTeam) {
-      $controller->set('workflowTeam', 'invite');
-    }
-
-    $step  = CRM_Utils_Request::retrieve('code', 'String', $controller);
     $pages = array(
       'cpfpa'  => 'CRM_Pcpteams_Form_PCPAccount',
       'cpfed'  => 'CRM_Pcpteams_Form_EventDetails',
@@ -81,13 +68,88 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
       'cpftrq' => 'CRM_Pcpteams_Form_TributeQuery',
       'cpftrj' => 'CRM_Pcpteams_Form_TributeJoin',
     );
-    if ($workflowTeam == 'invite') { // team invite
+
+    $step      = CRM_Utils_Request::retrieve('code', 'String', $controller);
+    $pcpId     = CRM_Utils_Request::retrieve('id', 'Positive', $controller);
+    $pageId    = CRM_Utils_Request::retrieve('pageId', 'Positive', $controller);
+    $component = CRM_Utils_Request::retrieve('component', 'String', $controller);
+    $teamPcpId = CRM_Utils_Request::retrieve('tpId', 'Positive', $controller);
+    $workflowTeam  = $controller->get('workflowTeam');
+    $workflowGroup = $controller->get('workflowGroup');
+    $workflowTribute = $controller->get('workflowTribute');
+
+    // check if contact is already registered
+    // get pcp id
+    if ('event' == $controller->get('component') && $pageId) {
+      $eventId = $pageId;
+      if (is_null($controller->get('participantId'))) {
+        $participantId = CRM_Pcpteams_Utils::isaParticipantFor($eventId);
+        // store in session so we not checking everytime
+        $controller->set('participantId', $participantId);
+      }
+      if (!$pcpId) {
+        $pcpId = CRM_Pcpteams_Utils::getPcpId($pageId, $component, TRUE);
+        $controller->set('id', $pcpId); // in PCPAccount.php this gets retrieved & set as page_id
+        $controller->set('page_id', $pcpId); // set it anyway
+      }
+    }
+
+    // if team pages need skipping
+    // FIXME: we 'll need to keep pcp info laoded ad stored in static cache? 
+    // so we not making this check everytime
+    if ($controller->get('page_id') && 
+      (empty($workflowTeam) || empty($workflowGroup) || empty($workflowTribute))) 
+    {
+      $result = civicrm_api(
+        'Pcpteams', 
+        'get', 
+        array(
+          'version'    => 3, 
+          'sequential' => 1, 
+          'pcp_id'     => $controller->get('page_id')
+        )
+      );
+      if (empty($workflowTeam)) {
+        $cfid = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
+        if (!empty($result['values'][0]["custom_{$cfid}"])) {
+          $controller->set('workflowTeam', 'skip');
+        }
+      }
+      if (empty($workflowGroup)) {
+        $cfid = CRM_Pcpteams_Utils::getBranchorPartnerCustomFieldId();
+        if (!empty($result['values'][0]["custom_{$cfid}"])) {
+          $controller->set('workflowGroup', 'skip');
+        }
+      }
+      if (empty($workflowTribute)) {
+        $cfid = CRM_Pcpteams_Utils::getPcpTypeContactCustomFieldId();
+        if (!empty($result['values'][0]["custom_{$cfid}"])) {
+          $controller->set('workflowTribute', 'skip');
+        }
+      }
+    }
+
+    // if need jumping to invite page
+    if ($teamPcpId && !$workflowTeam) {
+      $controller->set('workflowTeam', 'invite');
+    }
+    CRM_Core_Error::debug_var('$controller->get(workflowTeam)', $controller->get('workflowTeam'));
+
+    // unset pages per workflow
+    if ('invite' == $controller->get('workflowTeam')) { // team invite
       unset($pages['cpftq']); // unset team query
     }
-    if ($eventId && is_null($controller->get('participantId'))) {
-      $participantId = CRM_Pcpteams_Utils::isaParticipantFor($eventId);
-      // store in session so we not checking everytime
-      $controller->set('participantId', $participantId);
+    if ('skip' == $controller->get('workflowTeam')) {
+      // unset all team pages
+      unset($pages['cpftq'],$pages['cpftn'],$pages['cpftc'],$pages['cpftt'],$pages['cpftw']);
+    }
+    if ('skip' == $controller->get('workflowGroup')) {
+      // unset all group pages
+      unset($pages['cpfgq'],$pages['cpfgj']);
+    }
+    if ('skip' == $controller->get('workflowTribute')) {
+      // unset all group pages
+      unset($pages['cpftrq'],$pages['cpftrj']);
     }
 
     // if no event or already registered, skip event pages
@@ -116,6 +178,9 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
       }
     }
 
+    if (empty($this->_pages)) {
+      CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/dashboard', 'reset=1'));
+    }
     $this->addSequentialPages($this->_pages, $action);
   }
 }
