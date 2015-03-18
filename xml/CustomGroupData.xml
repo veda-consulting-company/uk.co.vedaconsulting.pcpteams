@@ -170,7 +170,6 @@
     </OptionValue>
     <OptionValue>
       <label>PCP Team Create</label>
-      <value>pcp_team_create</value>
       <name>PCP Team Create</name>
       <filter>0</filter>
       <is_default>0</is_default>
@@ -182,7 +181,6 @@
     </OptionValue>
     <OptionValue>
       <label>PCP Team Join</label>
-      <value>pcp_team_join</value>
       <name>PCP Team Join</name>
       <filter>0</filter>
       <is_default>0</is_default>
@@ -194,7 +192,6 @@
     </OptionValue>
     <OptionValue>
       <label>PCP Team Invite</label>
-      <value>pcp_team_invite</value>
       <name>PCP Team Invite</name>
       <filter>0</filter>
       <is_default>0</is_default>
@@ -206,7 +203,6 @@
     </OptionValue>
     <OptionValue>
       <label>PCP Group Join</label>
-      <value>pcp_group_join</value>
       <name>PCP Group Join</name>
       <filter>0</filter>
       <is_default>0</is_default>
@@ -218,7 +214,6 @@
     </OptionValue>
     <OptionValue>
       <label>PCP Tribute Join</label>
-      <value>pcp_tribute_join</value>
       <name>PCP Tribute Join</name>
       <filter>0</filter>
       <is_default>0</is_default>
