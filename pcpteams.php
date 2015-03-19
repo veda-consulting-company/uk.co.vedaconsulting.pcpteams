@@ -58,7 +58,7 @@ function pcpteams_civicrm_install() {
   ADD CONSTRAINT `FK_civicrm_value_pcp_custom_set_team_pcp_id` FOREIGN KEY (`team_pcp_id`) REFERENCES `civicrm_pcp` (`id`) ON DELETE SET NULL";
   CRM_Core_DAO::executeQuery($sql);
   
-  $messageHtmlSampleTeamInviteFile  = $extensionDir . '/sample_team_invite.html';
+  $messageHtmlSampleTeamInviteFile  = $extensionDir . '/message_templates/sample_team_invite.html';
   $messageHtml      = file_get_contents($messageHtmlSampleTeamInviteFile);
   $message_params = array(
     'sequential'  => 1,
@@ -67,6 +67,7 @@ function pcpteams_civicrm_install() {
     'msg_subject' => "Sample Team Invite",
     'is_default'  => 1,
     'msg_html'    => $messageHtml,
+    'msg_text'    => 'sample team invite text',
   );
   $result = civicrm_api3('MessageTemplate', 'create', $message_params);
 

@@ -43,7 +43,7 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
     }
     
     // Create Team Invite activity
-    CRM_Pcpteams_Utils::createPcpActivity($userId, CRM_Pcpteams_Constant::C_CF_TEAM_INVITE, 'Invited to '.$this->teamTitle, 'PCP Team Invite');
+    CRM_Pcpteams_Utils::createPcpActivity(array('source' => $userId, 'target' => $this->get('teamContactID')), CRM_Pcpteams_Constant::C_CF_TEAM_INVITE, 'Invited to '.$this->get('teamName'), 'PCP Team Invite');
   }
 
   /**

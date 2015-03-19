@@ -74,8 +74,9 @@ class CRM_Pcpteams_Form_TeamJoin {
       CRM_Pcpteams_Utils::checkORCreateTeamRelationship($userId, $teamContactID, TRUE);
       $form->_teamName  = CRM_Contact_BAO_Contact::displayName($teamContactID);
       $form->set('teamName', $form->_teamName);
+      $form->set('teamContactID', $teamContactID);
       // Team Join: create activity
-      CRM_Pcpteams_Utils::createPcpActivity(array($userId,$teamContactID), CRM_Pcpteams_Constant::C_CF_TEAM_JOIN, 'Joined to team'.$form->_teamName, 'PCP Team Join');
+      CRM_Pcpteams_Utils::createPcpActivity(array('source' => $userId, 'target' => $teamContactID), CRM_Pcpteams_Constant::C_CF_TEAM_JOIN, 'Joined to team'.$form->_teamName, 'PCP Team Join');
     } else {
       // FIXME: this check should be at validation step / form-rule
       CRM_Core_Error::fatal("The team (ID: $teamId) doesn't have a pcp.");
