@@ -60,17 +60,18 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
       return $return;
     }
     
-    $phone          = CRM_Core_BAO_Phone::allPhones($contactId, FALSE, NULL, array('is_primary' => 1));
+    $phone          = CRM_Core_BAO_Phone::allPhones($contactId, TRUE, NULL, array('is_primary' => 1));
     $contactSubType = CRM_Contact_BAO_Contact::getContactSubType($contactId);
     $contactType    = CRM_Contact_BAO_ContactType::getLabel($contactSubType[0]);
     $gid            = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_UFGroup', 'PCP_Supporter_Profile', 'id', 'name');
-    // $updateURL      = CRM_Utils_System::url('civicrm/profile/edit', "reset=1&gid=$gid&cid=$contactId");
+    $updateURL      = CRM_Utils_System::url('civicrm/profile/edit', "reset=1&gid=$gid&cid=$contactId");
+    // $updateURL      =CRM_Utils_System::url('civicrm/pcp/support', "action=browse&component=event&id={$params['pcpId']}");
     $return         = array(
       'name'  => CRM_Contact_BAO_Contact::displayName($contactId), 
       'type'  => $contactType, 
       'email' => CRM_Contact_BAO_Contact::getPrimaryEmail($contactId),
-      'phone' => !empty($phone) && isset($phone['phone']) ? $phone['phone'] : NULL,
-      // 'action'=> "<a href=$updateURL>Update Contact Information</a>",
+      'phone' => !empty($phone) && isset($phone[1]['phone']) ? $phone[1]['phone'] : NULL,
+      'action'=> "<a href=$updateURL>Update Contact Information</a>",
     );
     
     return $return;

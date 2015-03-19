@@ -265,6 +265,7 @@ function civicrm_api3_pcpteams_getPcpDashboardInfo($params) {
   
   //query to get all pcp info including contact team if exists
   $contactID = $params['contact_id'];
+  $aUserTeamPerm = _check_user_isTeamAdmin($contactID);
   $query = "
     SELECT  ce.title    as page_title 
     , ce.id             as page_id
@@ -316,14 +317,13 @@ function civicrm_api3_pcpteams_getPcpDashboardInfo($params) {
       'pcpStatus' => $dao->pcp_status,
       'goalAmount'=> CRM_Utils_Money::format($dao->pcp_goal_amount),
       'isActive'  => $dao->pcp_is_active ? "<font color='green'>Active</font>" : "<font color='red'>Inactive</font>",
-      // 'action'    => _get_actionLink($dao->pcp_id, $dao->pcp_contact_id, $dao->page_id, $dao->pcp_is_active ),
-      // 'class'     => 'disabled',
       'teamPcpid' => $dao->pcp_team_pcp_id,
       'org_id'    => $dao->pcp_org_id,
       'tribute'   => $dao->pcp_tribute,
       'tribute_id'=> $dao->pcp_tribute_contact_id,
+      'can_update'=> ($dao->pcp_contact_id != $contactID) ? $aUserTeamPerm[$dao->pcp_contact_id]: 1,
     );
-    $result[$dao->pcp_id]['action'] = _get_actionLink($result[$dao->pcp_id], $dao->pcp_is_active);
+    $result[$dao->pcp_id]['action'] = _get_actionLink($result[$dao->pcp_id], $contactID, $dao->pcp_is_active);
   }
   return civicrm_api3_create_success($result, $params);
 }
@@ -332,8 +332,28 @@ function _civicrm_api3_pcpteams_getPcpDashboardInfo_spec(&$params) {
   $params['contact_id']['api.required'] = 1;
 }
 
-function _get_actionLink($params, $isActive){
+function _check_user_isTeamAdmin($userId){
+  $relPermission = array();
+  if(empty($userId)){
+    return $relPermission;
+  }
+  
+  $aRel      = CRM_Contact_BAO_Relationship::getRelationship( $userId, CRM_Contact_BAO_Relationship::CURRENT);
+  $relType   = CRM_Pcpteams_Constant::C_TEAM_RELATIONSHIP_TYPE;
+  $relTypeId = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', $relType, 'id', 'name_a_b');
+  foreach ($aRel as $relId => $aRelValue) {
+    if( $aRelValue['relationship_type_id'] == $relTypeId
+      ){
+      $relPermission[$aRelValue['contact_id_b']] = $aRelValue['is_permission_a_b'];
+    }
+  }
+  return $relPermission;
+}
+
+function _get_actionLink($params, $userId, $isActive){
   $active     = $isActive ? 'disable' : 'enable';
+  
+  //action URLs
   $editURL    = CRM_Utils_System::url('civicrm/pcp/info', "action=update&component=event&id={$params['pcpId']}"); 
   $pageURL    = CRM_Utils_System::url('civicrm/pcp/page', "reset=1&component=event&id={$params['pcpId']}"); 
   $updateURL  = CRM_Utils_System::url('civicrm/pcp/info', "action=browse&component=event&id={$params['pcpId']}"); 
@@ -341,45 +361,58 @@ function _get_actionLink($params, $isActive){
   $deleteURL  = CRM_Utils_System::url('civicrm/pcp'     , "action=delete&reset=1&component=event&id={$params['pcpId']}");
   $active     = ucwords($active);
   
+  //create and join team URLs
   $joinTeamURl    = CRM_Utils_System::url('civicrm/pcp/support', "reset=1&pageId={$params['pageId']}&component=event&code=cpftn");
   $createTeamURl  = CRM_Utils_System::url('civicrm/pcp/support', "reset=1&pageId={$params['pageId']}&component=event&code=cpftn&option=1");
   
   //FIXME : check User permission and return action based on permission
-  $action     = "
-    <span>
-      <a href=\"{$editURL}\" class=\"action-item crm-hover-button\" title='Configure' >Edit Your Page</a>
-      <a href=\"{$pageURL}\" class=\"action-item crm-hover-button\" title='URL for this Page' >URL for this Page</a>
-    </span>
-    <span class='btn-slide crm-hover-button'>more
-      <ul class='panel'>
-        <li>
-          <a href=\"{$updateURL}\" class=\"action-item crm-hover-button\" title='Update Contact Information' >Update Contact Information</a>
-        </li>        
-  ";
+  //Check the Individual can update the Team contact Information
   $contactSubType = CRM_Contact_BAO_Contact::getContactSubType($params['contactId']);
+  $isTeamPcp = TRUE;
   if(array_search(CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE, $contactSubType) === FALSE){
-    if(empty($params['teamPcpid'])){
-      $action   .= "  
-        <li>
-          <a href=\"{$createTeamURl}\" class=\"action-item crm-hover-button\" title='Create Team' >Create Team</a>
-        </li>
-     
-        <li>
-          <a href=\"{$joinTeamURl}\" class=\"action-item crm-hover-button\" title='Join Team' >Join Team</a>
-        </li>
-      ";
-    }
+    $isTeamPcp = FALSE;
   }
-  $action     .= "
-        <li>
-          <a href=\"{$disableURL}\" class=\"action-item crm-hover-button\" title=\"$active\" >{$active}</a>
-        </li>
-        <li>
-          <a href=\"{$deleteURL}\" class=\"action-item crm-hover-button small-popup\" title='Delete' onclick = \"return confirm('Are you sure you want to delete this Personal Campaign Page?\nThis action cannot be undone.');\">Delete</a>
-        </li>
-      </ul>
-    </span>
-  ";
+  if($params['can_update']){
+    
+    $action     = "
+      <span>
+        <a href=\"{$editURL}\" class=\"action-item crm-hover-button\" title='Configure' >Edit Your Page</a>
+        <a href=\"{$pageURL}\" class=\"action-item crm-hover-button\" title='URL for this Page' >URL for this Page</a>
+      </span>
+      <span class='btn-slide crm-hover-button'>more
+        <ul class='panel'>
+          <li>
+            <a href=\"{$updateURL}\" class=\"action-item crm-hover-button\" title='Update Contact Information' >Update Contact Information</a>
+          </li>        
+    ";
+    if(empty($params['teamPcpid']) && !$isTeamPcp){
+        $action   .= "  
+          <li>
+            <a href=\"{$createTeamURl}\" class=\"action-item crm-hover-button\" title='Create Team' >Create Team</a>
+          </li>
+       
+          <li>
+            <a href=\"{$joinTeamURl}\" class=\"action-item crm-hover-button\" title='Join Team' >Join Team</a>
+          </li>
+        ";
+    }
+    $action     .= "
+          <li>
+            <a href=\"{$disableURL}\" class=\"action-item crm-hover-button\" title=\"$active\" >{$active}</a>
+          </li>
+          <li>
+            <a href=\"{$deleteURL}\" class=\"action-item crm-hover-button small-popup\" title='Delete' onclick = \"return confirm('Are you sure you want to delete this Personal Campaign Page?\nThis action cannot be undone.');\">Delete</a>
+          </li>
+        </ul>
+      </span>
+    ";
 
+  }else{
+    $action     = "
+      <span>
+        <a href=\"{$pageURL}\" class=\"action-item crm-hover-button\" title='URL for this Page' >URL for this Page</a>
+      </span>
+    ";
+  }
   return $action;
 }

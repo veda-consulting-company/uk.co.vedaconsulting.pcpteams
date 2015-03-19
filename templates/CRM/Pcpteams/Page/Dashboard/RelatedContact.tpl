@@ -10,7 +10,7 @@
           <th>{ts}Type{/ts}</th>
           <th>{ts}E-Mail{/ts}</th>
           <th>{ts}Phone{/ts}</th>
-          <!-- <th></th> -->
+          <th></th>
         </tr>
 
         {foreach from=$relatedContact item=row}
@@ -19,7 +19,7 @@
               <td>{$row.type}</td>
               <td>{$row.email}</td>
               <td>{$row.phone}</td>
-              <!-- <td>{$row.action}</td> -->
+              <td>{$row.action}</td>
         </tr>
         {/foreach}
       </table>
