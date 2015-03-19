@@ -103,7 +103,7 @@ class  CRM_Pcpteams_Utils {
       $aParams = array(
         'version'               => '3',
         'is_active'             => '1',
-        'relationship_type_id'  => $relTypeId,
+        'relationship_type_id'  => $relTypeId.'_a_b',
       );
       $bDuplicateFound = CRM_Contact_BAO_Relationship::checkDuplicateRelationship($aParams, $iContactIdA, $iContactIdB);
 

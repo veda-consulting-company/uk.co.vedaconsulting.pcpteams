@@ -44,7 +44,12 @@ class CRM_Pcpteams_Form_TributeQuery extends CRM_Core_Form {
   
   function postProcess() {
     $values = $this->exportValues();
-    $this->set("workflowTribute", $values['teamOption']);
+    if ($values['teamOption'] == 0) { 
+      CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/dashboard', "reset=1"));
+    }
+    else {
+      $this->set("workflowTribute", $values['teamOption']);
+    }
   }
 
   /**
