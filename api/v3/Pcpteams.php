@@ -57,7 +57,13 @@ function civicrm_api3_pcpteams_create($params) {
   $pcpBlock->find(TRUE);
   $params['pcp_block_id'] = $pcpBlock->id;
   $params['goal_amount']  = CRM_Utils_Rule::cleanMoney($params['goal_amount']);
-  $params['status_id'] = 1;
+
+  // 1 -> waiting review
+  // 2 -> active / approved (default for now)
+  $params['status_id'] = CRM_Utils_Array::value('status_id', $params, 2);
+
+  // active by default for now
+  $params['is_active'] = CRM_Utils_Array::value('is_active', $params, 1);
 
   $pcp = CRM_PCP_BAO_PCP::add($params, FALSE);
   $values = array();
