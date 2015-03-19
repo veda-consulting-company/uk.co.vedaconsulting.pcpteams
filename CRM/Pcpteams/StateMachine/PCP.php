@@ -77,8 +77,8 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
     $workflowTeam    = $controller->get('workflowTeam');
 
     // DS: for now we skipping branch and tribute screens. We might enable them back later.
-    //$controller->set('workflowGroup', 'skip'); // remove me later
-    //$controller->set('workflowTribute', 'skip'); // remove me later
+    $controller->set('workflowGroup', 'skip'); // remove me later
+    $controller->set('workflowTribute', 'skip'); // remove me later
 
     $workflowGroup   = $controller->get('workflowGroup');
     $workflowTribute = $controller->get('workflowTribute');
