@@ -267,7 +267,9 @@ function civicrm_api3_pcpteams_getPcpDashboardInfo($params) {
   $contactID = $params['contact_id'];
   $query = "
     SELECT  ce.title    as page_title 
+    , ce.id             as page_id
     , cp.id             as pcp_id  
+    , cp.contact_id     as pcp_contact_id  
     , cp.title          as pcp_title  
     , cp.goal_amount    as pcp_goal_amount  
     , cp.is_active      as pcp_is_active  
@@ -284,7 +286,9 @@ function civicrm_api3_pcpteams_getPcpDashboardInfo($params) {
     WHERE cp.contact_id = %1 AND cp.page_type = 'event'
     UNION
     SELECT  ce.title    as page_title 
+    , ce.id             as page_id  
     , cp.id             as pcp_id  
+    , cp.contact_id     as pcp_contact_id  
     , cp.title          as pcp_title  
     , cp.goal_amount    as pcp_goal_amount  
     , cp.is_active      as pcp_is_active  
@@ -304,21 +308,22 @@ function civicrm_api3_pcpteams_getPcpDashboardInfo($params) {
   $dao = CRM_Core_DAO::executeQuery($query, array( 1 => array($contactID, 'Integer')));
   while($dao->fetch()){
     $result[$dao->pcp_id] = array(
+      'pageId'    => $dao->page_id,
       'pageTitle' => $dao->page_title,
       'pcpId'     => $dao->pcp_id,
+      'contactId' => $dao->pcp_contact_id,
       'pcpTitle'  => $dao->pcp_title,
       'pcpStatus' => $dao->pcp_status,
       'goalAmount'=> CRM_Utils_Money::format($dao->pcp_goal_amount),
       'isActive'  => $dao->pcp_is_active ? "<font color='green'>Active</font>" : "<font color='red'>Inactive</font>",
-      'action'    => _get_actionLink($dao->pcp_id, $dao->pcp_is_active ),
-      'class'     => 'disabled',
+      // 'action'    => _get_actionLink($dao->pcp_id, $dao->pcp_contact_id, $dao->page_id, $dao->pcp_is_active ),
+      // 'class'     => 'disabled',
       'teamPcpid' => $dao->pcp_team_pcp_id,
       'org_id'    => $dao->pcp_org_id,
       'tribute'   => $dao->pcp_tribute,
       'tribute_id'=> $dao->pcp_tribute_contact_id,
     );
-    
-    $relatedContacts[] = array();
+    $result[$dao->pcp_id]['action'] = _get_actionLink($result[$dao->pcp_id], $dao->pcp_is_active);
   }
   return civicrm_api3_create_success($result, $params);
 }
@@ -327,34 +332,54 @@ function _civicrm_api3_pcpteams_getPcpDashboardInfo_spec(&$params) {
   $params['contact_id']['api.required'] = 1;
 }
 
-function _get_actionLink($pcpId, $isActive){
+function _get_actionLink($params, $isActive){
   $active     = $isActive ? 'disable' : 'enable';
-  $editURL    = CRM_Utils_System::url('civicrm/pcp/info', "action=update&component=event&id=$pcpId"); 
-  $pageURL    = CRM_Utils_System::url('civicrm/pcp/page', "reset=1&component=event&id=$pcpId"); 
-  $updateURL  = CRM_Utils_System::url('civicrm/pcp/info', "action=browse&component=event&id=$pcpId"); 
-  $disableURL = CRM_Utils_System::url('civicrm/pcp'     , "action={$active}&reset=1&component=event&id=$pcpId"); 
-  $deleteURL  = CRM_Utils_System::url('civicrm/pcp'     , "action=delete&reset=1&component=event&id=$pcpId");
+  $editURL    = CRM_Utils_System::url('civicrm/pcp/info', "action=update&component=event&id={$params['pcpId']}"); 
+  $pageURL    = CRM_Utils_System::url('civicrm/pcp/page', "reset=1&component=event&id={$params['pcpId']}"); 
+  $updateURL  = CRM_Utils_System::url('civicrm/pcp/info', "action=browse&component=event&id={$params['pcpId']}"); 
+  $disableURL = CRM_Utils_System::url('civicrm/pcp'     , "action={$active}&reset=1&component=event&id={$params['pcpId']}"); 
+  $deleteURL  = CRM_Utils_System::url('civicrm/pcp'     , "action=delete&reset=1&component=event&id={$params['pcpId']}");
   $active     = ucwords($active);
+  
+  $joinTeamURl    = CRM_Utils_System::url('civicrm/pcp/support', "reset=1&pageId={$params['pageId']}&component=event&code=cpftn");
+  $createTeamURl  = CRM_Utils_System::url('civicrm/pcp/support', "reset=1&pageId={$params['pageId']}&component=event&code=cpftn&option=1");
+  
   //FIXME : check User permission and return action based on permission
-  $action     = <<< ACTION
+  $action     = "
     <span>
-      <a href="{$editURL}" class="action-item crm-hover-button" title='Configure' >Edit Your Page</a>
-      <a href="{$pageURL}" class="action-item crm-hover-button" title='URL for this Page' >URL for this Page</a>
+      <a href=\"{$editURL}\" class=\"action-item crm-hover-button\" title='Configure' >Edit Your Page</a>
+      <a href=\"{$pageURL}\" class=\"action-item crm-hover-button\" title='URL for this Page' >URL for this Page</a>
     </span>
     <span class='btn-slide crm-hover-button'>more
       <ul class='panel'>
         <li>
-          <a href="{$updateURL}" class="action-item crm-hover-button" title='Update Contact Information' >Update Contact Information</a>
+          <a href=\"{$updateURL}\" class=\"action-item crm-hover-button\" title='Update Contact Information' >Update Contact Information</a>
+        </li>        
+  ";
+  $contactSubType = CRM_Contact_BAO_Contact::getContactSubType($params['contactId']);
+  if(array_search(CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE, $contactSubType) === FALSE){
+    if(empty($params['teamPcpid'])){
+      $action   .= "  
+        <li>
+          <a href=\"{$createTeamURl}\" class=\"action-item crm-hover-button\" title='Create Team' >Create Team</a>
+        </li>
+     
+        <li>
+          <a href=\"{$joinTeamURl}\" class=\"action-item crm-hover-button\" title='Join Team' >Join Team</a>
+        </li>
+      ";
+    }
+  }
+  $action     .= "
+        <li>
+          <a href=\"{$disableURL}\" class=\"action-item crm-hover-button\" title=\"$active\" >{$active}</a>
         </li>
         <li>
-          <a href="{$disableURL}" class="action-item crm-hover-button" title="$active" >{$active}</a>
-        </li>
-        <li>
-          <a href="{$deleteURL}" class="action-item crm-hover-button small-popup" title='Delete' onclick = "return confirm('Are you sure you want to delete this Personal Campaign Page?\nThis action cannot be undone.');">Delete</a>
+          <a href=\"{$deleteURL}\" class=\"action-item crm-hover-button small-popup\" title='Delete' onclick = \"return confirm('Are you sure you want to delete this Personal Campaign Page?\nThis action cannot be undone.');\">Delete</a>
         </li>
       </ul>
     </span>
-ACTION;
+  ";
 
   return $action;
 }
