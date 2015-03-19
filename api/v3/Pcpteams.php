@@ -357,9 +357,7 @@ function _get_actionLink($params, $isActive){
         <li>
           <a href=\"{$createTeamURl}\" class=\"action-item crm-hover-button\" title='Create Team' >Create Team</a>
         </li>
-      ";
-    }else{
-      $action   .= "  
+     
         <li>
           <a href=\"{$joinTeamURl}\" class=\"action-item crm-hover-button\" title='Join Team' >Join Team</a>
         </li>
