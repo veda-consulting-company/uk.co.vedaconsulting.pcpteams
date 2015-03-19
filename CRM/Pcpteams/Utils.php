@@ -16,8 +16,13 @@ class  CRM_Pcpteams_Utils {
   }
 
   // FIXME: convert this to API
-  static function getPcpId($componentPageId, $component, $isCreatePCP = FALSE) {
-    $cid = CRM_Pcpteams_Utils::getloggedInUserId();
+  static function getPcpId($componentPageId, $component, $isCreatePCP = FALSE, $contactId = FALSE) {
+    if(empty($contactId)) {
+      $cid = CRM_Pcpteams_Utils::getloggedInUserId();
+    } else {
+      $cid = $contactId;
+    }
+    
     if ($cid) {
       $dao = new CRM_PCP_DAO_PCP();
       $dao->contact_id = $cid;

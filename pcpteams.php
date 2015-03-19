@@ -217,7 +217,7 @@ function pcpteams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
     $pcpBlockId = CRM_Pcpteams_Utils::getPcpBlockId($objectRef->event_id);
     if($pcpBlockId) {
       // Auto create default PCP
-      CRM_Pcpteams_Utils::createDefaultPcp($objectRef->contact_id, $objectRef->event_id, 'event');
+      CRM_Pcpteams_Utils::getPcpId($objectRef->event_id, 'event', TRUE, $objectRef->contact_id );
     }
   }
 }
