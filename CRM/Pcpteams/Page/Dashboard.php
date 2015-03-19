@@ -96,8 +96,8 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
     if (!empty($this->_userOptions['PCP'])) {
       $dashboardElements[] = array(
         'class' => 'crm-dashboard-pcp',
-        'templatePath' => 'CRM/Pcpteams/Page/Dashboard/List.tpl',
-        'sectionTitle' => ts('Personal Campaign Pages'),
+        'templatePath' => 'CRM/Pcpteams/Page/Dashboard/Pages.tpl',
+        'sectionTitle' => ts('My Personal Campaign Pages'),
         'weight' => 40,
       );
       
@@ -122,11 +122,43 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
 
       $this->assign('pcpInfo', $pcpInfo);
       
-      //Contacts / Organization
+      //My Teams
       $dashboardElements[] = array(
         'class' => 'crm-dashboard-permissionedOrgs',
-        'templatePath' => 'CRM/Pcpteams/Page/Dashboard/RelatedContact.tpl',
-        'sectionTitle' => ts('Your Contacts / Organizations'),
+        'templatePath' => 'CRM/Pcpteams/Page/Dashboard/Teams.tpl',
+        'sectionTitle' => ts('My Teams'),
+        'weight' => 40,
+      );
+      
+      //My Pending Team Requests
+      $dashboardElements[] = array(
+        'class' => 'crm-dashboard-permissionedteamreq',
+        'templatePath' => 'CRM/Pcpteams/Page/Dashboard/TeamRequests.tpl',
+        'sectionTitle' => ts('My Pending Team Requests'),
+        'weight' => 40,
+      );
+      
+      //New Team Member Requests
+      $dashboardElements[] = array(
+        'class' => 'crm-dashboard-permissionednewteamreq',
+        'templatePath' => 'CRM/Pcpteams/Page/Dashboard/TeamMemberRequests.tpl',
+        'sectionTitle' => ts('New Team Member Requests'),
+        'weight' => 40,
+      );
+      
+      //In Active Pages
+      $dashboardElements[] = array(
+        'class' => 'crm-dashboard-permissionedinactive',
+        'templatePath' => 'CRM/Pcpteams/Page/Dashboard/PagesDisabled.tpl',
+        'sectionTitle' => ts('In Active Pages'),
+        'weight' => 40,
+      );
+      
+      //Team Members
+      $dashboardElements[] = array(
+        'class' => 'crm-dashboard-permissionedteammembers',
+        'templatePath' => 'CRM/Pcpteams/Page/Dashboard/TeamMembers.tpl',
+        'sectionTitle' => ts('Team Members'),
         'weight' => 40,
       );
 

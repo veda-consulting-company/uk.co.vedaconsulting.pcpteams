@@ -6,20 +6,20 @@
 
       <table class="selector">
         <tr class="columnheader">
-          <th>{ts}Contact Name{/ts}</th>
-          <th>{ts}Type{/ts}</th>
-          <th>{ts}E-Mail{/ts}</th>
-          <th>{ts}Phone{/ts}</th>
-          <th></th>
+          <th>{ts}Pcp Title{/ts}</th>
+          <th>{ts}Support of{/ts}</th>
+          <th>{ts}Goal{/ts}</th>
+          <th>{ts}Amount Raised{/ts}</th>
+          <th>{ts}Action{/ts}</th>
         </tr>
 
         {foreach from=$relatedContact item=row}
         <tr class="{cycle values='odd-row,even-row'}">
               <td class="bold">{$row.name}</td>
-              <td>{$row.type}</td>
-              <td>{$row.email}</td>
-              <td>{$row.phone}</td>
-              <td>{$row.action}</td>
+              <td>{ts}FIXME{/ts}</td>
+              <td>{ts}FIXME{/ts}</td>
+              <td>{ts}FIXME{/ts}</td>
+              <td>{ts}FIXME{/ts}</td>
         </tr>
         {/foreach}
       </table>

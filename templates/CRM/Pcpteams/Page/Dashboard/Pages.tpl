@@ -6,12 +6,11 @@
 
       <table class="selector">
         <tr class="columnheader">
-          <th>{ts}Your Page{/ts}</th>
-          <th>{ts}In Support of{/ts}</th>
-          <th>{ts}Goal Amount{/ts}</th>
-          <th>{ts}Campaign Ends{/ts}</th>
-          <th>{ts}Status{/ts}</th>
-          <th>{ts}Is Active{/ts}</th>
+          <th>{ts}Pcp Title{/ts}</th>
+          <th>{ts}Support of{/ts}</th>
+          <th>{ts}Goal{/ts}</th>
+          <th>{ts}Amount Raised{/ts}</th>
+          <th>{ts}Action{/ts}</th>
           <th></th>
         </tr>
 
@@ -20,9 +19,7 @@
               <td class="bold"><a href="{crmURL p='civicrm/pcp/info' q="reset=1&id=`$row.pcpId`" a=1}" title="{ts}Preview your Personal Campaign Page{/ts}">{$row.pcpTitle}</a></td>
               <td>{$row.pageTitle}</td>
               <td>{$row.goalAmount}</td>
-              <td>{if $row.end_date}{$row.end_date|truncate:10:''|crmDate}{else}({ts}ongoing{/ts}){/if}</td>
-              <td>{$row.pcpStatus}</td>
-              <td>{$row.isActive}</td>
+              <td>{ts}FIXME{/ts}</td>
               <td>{$row.action|replace:'xx':$row.pcpId}</td>
         </tr>
         {/foreach}
