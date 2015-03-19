@@ -93,7 +93,7 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
         $controller->set('participantId', $participantId);
       }
       if (!$pcpId) {
-        $pcpId = CRM_Pcpteams_Utils::getPcpId($pageId, $component, TRUE, FALSE);
+        $pcpId = CRM_Pcpteams_Utils::getPcpId($pageId, $component, TRUE);
         $controller->set('id', $pcpId); // in PCPAccount.php this gets retrieved & set as page_id
         $controller->set('page_id', $pcpId); // set it anyway
       }
