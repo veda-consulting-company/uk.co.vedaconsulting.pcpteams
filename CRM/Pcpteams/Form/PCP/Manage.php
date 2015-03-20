@@ -138,6 +138,12 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     
     //get contact Id by pcp Id
     $pcpDetails  = self::getPcpDetails($pcpId);
+    $amountRaised= CRM_PCP_BAO_PCP::thermoMeter($pcpId);
+    if($amountRaised){
+      $pcpDetails['amount_raised'] =  CRM_Utils_Money::format($amountRaised);
+    }else{
+      $pcpDetails['amount_raised'] =  CRM_Utils_Money::format('0.00');
+    }
     $this->assign('pcpinfo', $pcpDetails);
     if(!isset($pcpDetails['contact_id'])){
       $pcpDetails['contact_id']   = CRM_Pcpteams_Utils::getcontactIdbyPcpId($pcpId);
