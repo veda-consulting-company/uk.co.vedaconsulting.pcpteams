@@ -56,8 +56,6 @@ function civicrm_api3_pcpteams_create($params) {
   $pcpBlock->entity_id = $params['page_id'];
   $pcpBlock->find(TRUE);
   $params['pcp_block_id'] = $pcpBlock->id;
-  $params['goal_amount']  = CRM_Utils_Array::value('goal_amount', $params, 1000);
-  
   $params['goal_amount']  = CRM_Utils_Rule::cleanMoney($params['goal_amount']);
 
   // 1 -> waiting review
@@ -81,7 +79,6 @@ function civicrm_api3_pcpteams_get($params) {
   $dao = new CRM_PCP_DAO_PCP();
   // FIXME: need to enforce type check
   $dao->id = $params['pcp_id']; // type check done by getfields
-  
   //'@' this suppress the notice message, because
   // _civicrm_api_get_entity_name_from_dao returns the entity as 'p_c_p_id' which is undefined in PCP DAO fields
   //ref:  _civicrm_api_get_entity_name_from_dao($bao); in api/v3/utils.php (801)
@@ -264,69 +261,22 @@ function civicrm_api3_pcpteams_getContactList($params) {
 }
 
 function civicrm_api3_pcpteams_getPcpDashboardInfo($params) {
+  $dao = new CRM_PCP_DAO_PCP();
+  $dao->contact_id = $params['contact_id']; 
+  $result = @_civicrm_api3_dao_to_array($dao);
+  _civicrm_api3_pcpteams_custom_get($result);
   
-  //query to get all pcp info including contact team if exists
-  $contactID = $params['contact_id'];
-  $aUserTeamPerm = _check_user_isTeamAdmin($contactID);
-  $query = "
-    SELECT  ce.title    as page_title 
-    , ce.id             as page_id
-    , cp.id             as pcp_id  
-    , cp.contact_id     as pcp_contact_id  
-    , cp.title          as pcp_title  
-    , cp.goal_amount    as pcp_goal_amount  
-    , cp.is_active      as pcp_is_active  
-    , cov.label         as pcp_status
-    , cpcs.team_pcp_id  as pcp_team_pcp_id  
-    , cpcs.org_id       as pcp_org_id  
-    , cpcs.tribute      as pcp_tribute  
-    , cpcs.tribute_contact_id as pcp_tribute_contact_id   
-    FROM civicrm_pcp cp 
-    LEFT JOIN civicrm_event ce ON ce.id = cp.page_id
-    LEFT JOIN civicrm_option_group cog ON cog.name = 'pcp_status'
-    LEFT JOIN civicrm_option_value cov ON ( cov.option_group_id = cog.id AND cov.value = cp.status_id )
-    LEFT JOIN civicrm_value_pcp_custom_set cpcs ON ( cpcs.entity_id = cp.id )
-    WHERE cp.contact_id = %1 AND cp.page_type = 'event'
-    UNION
-    SELECT  ce.title    as page_title 
-    , ce.id             as page_id  
-    , cp.id             as pcp_id  
-    , cp.contact_id     as pcp_contact_id  
-    , cp.title          as pcp_title  
-    , cp.goal_amount    as pcp_goal_amount  
-    , cp.is_active      as pcp_is_active  
-    , cov.label         as pcp_status
-    , NULL              as pcp_team_pcp_id  
-    , NULL              as pcp_org_id  
-    , NULL              as pcp_tribute  
-    , NULL              as pcp_tribute_contact_id    
-    FROM civicrm_pcp cp
-    LEFT JOIN civicrm_event ce ON ce.id = cp.page_id
-    LEFT JOIN civicrm_option_group cog ON cog.name = 'pcp_status'
-    LEFT JOIN civicrm_option_value cov ON ( cov.option_group_id = cog.id AND cov.value = cp.status_id )
-    WHERE cp.page_type = 'event' AND cp.id IN ( 
-      select team_pcp_id from civicrm_value_pcp_custom_set where entity_id IN ( select id from civicrm_pcp where contact_id = %1 )
-    )
-  ";
-  $dao = CRM_Core_DAO::executeQuery($query, array( 1 => array($contactID, 'Integer')));
-  while($dao->fetch()){
-    $result[$dao->pcp_id] = array(
-      'pageId'    => $dao->page_id,
-      'pageTitle' => $dao->page_title,
-      'pcpId'     => $dao->pcp_id,
-      'contactId' => $dao->pcp_contact_id,
-      'pcpTitle'  => $dao->pcp_title,
-      'pcpStatus' => $dao->pcp_status,
-      'goalAmount'=> CRM_Utils_Money::format($dao->pcp_goal_amount),
-      'isActive'  => $dao->pcp_is_active ? "<font color='green'>Active</font>" : "<font color='red'>Inactive</font>",
-      'teamPcpid' => $dao->pcp_team_pcp_id,
-      'org_id'    => $dao->pcp_org_id,
-      'tribute'   => $dao->pcp_tribute,
-      'tribute_id'=> $dao->pcp_tribute_contact_id,
-      'can_update'=> ($dao->pcp_contact_id != $contactID) ? $aUserTeamPerm[$dao->pcp_contact_id]: 1,
-    );
-    $result[$dao->pcp_id]['action'] = _get_actionLink($result[$dao->pcp_id], $contactID, $dao->pcp_is_active);
+  $cfTeamPcpId = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
+  $pcpDashboardValues = array();
+  foreach ($result as $pcpId => $value) {
+    $isTeamExist                     = isset($value['custom_'.$cfTeamPcpId]) ? $value['custom_'.$cfTeamPcpId] : 0;
+    $result[$pcpId]['amount_raised'] = CRM_Utils_Money::format(CRM_PCP_BAO_PCP::thermoMeter($pcpId));
+    $result[$pcpId]['goal_amount']   = CRM_Utils_Money::format($value['goal_amount']);
+    $result[$pcpId]['page_title']    = CRM_Core_DAO::getFieldValue('CRM_Event_DAO_Event', $value['page_id'], 'title');
+    $result[$pcpId]['isTeamExist']   = $value['isTeamExist'] = $isTeamExist;
+    $result[$pcpId]['action']        = _getPcpDashboardActionLink($value);
   }
+
   return civicrm_api3_create_success($result, $params);
 }
 
@@ -334,87 +284,129 @@ function _civicrm_api3_pcpteams_getPcpDashboardInfo_spec(&$params) {
   $params['contact_id']['api.required'] = 1;
 }
 
-function _check_user_isTeamAdmin($userId){
-  $relPermission = array();
-  if(empty($userId)){
-    return $relPermission;
-  }
-  
-  $aRel      = CRM_Contact_BAO_Relationship::getRelationship( $userId, CRM_Contact_BAO_Relationship::CURRENT);
-  $relType   = CRM_Pcpteams_Constant::C_TEAM_RELATIONSHIP_TYPE;
-  $relTypeId = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', $relType, 'id', 'name_a_b');
-  foreach ($aRel as $relId => $aRelValue) {
-    if( $aRelValue['relationship_type_id'] == $relTypeId
-      ){
-      $relPermission[$aRelValue['contact_id_b']] = $aRelValue['is_permission_a_b'];
-    }
-  }
-  return $relPermission;
-}
-
-function _get_actionLink($params, $userId, $isActive){
-  $active     = $isActive ? 'disable' : 'enable';
+function _getPcpDashboardActionLink($params){
+  $active     = $params['is_active'] ? 'disable' : 'enable';
+  $updateLabel= $params['isTeamExist'] ? 'Change' : 'Join';
   
   //action URLs
-  $editURL    = CRM_Utils_System::url('civicrm/pcp/info', "action=update&component=event&id={$params['pcpId']}"); 
-  $pageURL    = CRM_Utils_System::url('civicrm/pcp/page', "reset=1&component=event&id={$params['pcpId']}"); 
-  $updateURL  = CRM_Utils_System::url('civicrm/pcp/info', "action=browse&component=event&id={$params['pcpId']}"); 
-  $disableURL = CRM_Utils_System::url('civicrm/pcp'     , "action={$active}&reset=1&component=event&id={$params['pcpId']}"); 
-  $deleteURL  = CRM_Utils_System::url('civicrm/pcp'     , "action=delete&reset=1&component=event&id={$params['pcpId']}");
+  $editURL    = CRM_Utils_System::url('civicrm/pcp/info', "action=update&component=event&id={$params['id']}"); 
+  $pageURL    = CRM_Utils_System::url('civicrm/pcp/page', "reset=1&component=event&id={$params['id']}"); 
+  $updateURL  = CRM_Utils_System::url('civicrm/pcp/info', "action=browse&component=event&id={$params['id']}"); 
+  $disableURL = CRM_Utils_System::url('civicrm/pcp'     , "action={$active}&reset=1&component=event&id={$params['id']}"); 
+  $deleteURL  = CRM_Utils_System::url('civicrm/pcp'     , "action=delete&reset=1&component=event&id={$params['id']}");
   $active     = ucwords($active);
   
   //create and join team URLs
-  $joinTeamURl    = CRM_Utils_System::url('civicrm/pcp/support', "reset=1&pageId={$params['pageId']}&component=event&code=cpftn");
-  $createTeamURl  = CRM_Utils_System::url('civicrm/pcp/support', "reset=1&pageId={$params['pageId']}&component=event&code=cpftn&option=1");
+  $joinTeamURl    = CRM_Utils_System::url('civicrm/pcp/support', "reset=1&pageId={$params['page_id']}&component=event&code=cpftn");
+  $createTeamURl  = CRM_Utils_System::url('civicrm/pcp/support', "reset=1&pageId={$params['page_id']}&component=event&code=cpftn&option=1");
   
   //FIXME : check User permission and return action based on permission
-  //Check the Individual can update the Team contact Information
-  $contactSubType = CRM_Contact_BAO_Contact::getContactSubType($params['contactId']);
-  $isTeamPcp = TRUE;
-  if(array_search(CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE, $contactSubType) === FALSE){
-    $isTeamPcp = FALSE;
-  }
-  if($params['can_update']){
-    
-    $action     = "
-      <span>
-        <a href=\"{$editURL}\" class=\"action-item crm-hover-button\" title='Configure' >Edit Your Page</a>
-        <a href=\"{$pageURL}\" class=\"action-item crm-hover-button\" title='URL for this Page' >URL for this Page</a>
-      </span>
-      <span class='btn-slide crm-hover-button'>more
-        <ul class='panel'>
-          <li>
-            <a href=\"{$updateURL}\" class=\"action-item crm-hover-button\" title='Update Contact Information' >Update Contact Information</a>
-          </li>        
-    ";
-    if(empty($params['teamPcpid']) && !$isTeamPcp){
-        $action   .= "  
-          <li>
-            <a href=\"{$createTeamURl}\" class=\"action-item crm-hover-button\" title='Create Team' >Create Team</a>
-          </li>
-       
-          <li>
-            <a href=\"{$joinTeamURl}\" class=\"action-item crm-hover-button\" title='Join Team' >Join Team</a>
-          </li>
-        ";
-    }
-    $action     .= "
-          <li>
-            <a href=\"{$disableURL}\" class=\"action-item crm-hover-button\" title=\"$active\" >{$active}</a>
-          </li>
-          <li>
-            <a href=\"{$deleteURL}\" class=\"action-item crm-hover-button small-popup\" title='Delete' onclick = \"return confirm('Are you sure you want to delete this Personal Campaign Page?\nThis action cannot be undone.');\">Delete</a>
-          </li>
-        </ul>
-      </span>
-    ";
+  $action     = "
+    <span>
+      <a href=\"{$editURL}\" class=\"action-item crm-hover-button\" title='Configure' >Edit Page</a>
+      <a href=\"{$pageURL}\" class=\"action-item crm-hover-button\" title='URL for this Page' >View Page</a>
+    </span>
+    <span class='btn-slide crm-hover-button'>more
+      <ul class='panel'>
+        <li>
+          <a href=\"{$joinTeamURl}\" class=\"action-item crm-hover-button\" title='Join Team' >{$updateLabel} Team</a>
+        </li>        
 
-  }else{
-    $action     = "
-      <span>
-        <a href=\"{$pageURL}\" class=\"action-item crm-hover-button\" title='URL for this Page' >URL for this Page</a>
-      </span>
-    ";
+        <li>
+          <a href=\"{$createTeamURl}\" class=\"action-item crm-hover-button\" title='Create Team' >Create a New Team</a>
+        </li>
+     
+        <li>
+          <a href=\"{$updateURL}\" class=\"action-item crm-hover-button\" title='Update Contact Information' >Update Contact Information</a>
+        </li>
+
+        <li>
+          <a href=\"{$disableURL}\" class=\"action-item crm-hover-button\" title=\"$active\" >{$active}</a>
+        </li>
+        <li>
+          <a href=\"{$deleteURL}\" class=\"action-item crm-hover-button small-popup\" title='Delete' onclick = \"return confirm('Are you sure you want to delete this Personal Campaign Page?\nThis action cannot be undone.');\">Delete</a>
+        </li>
+      </ul>
+    </span>
+  ";
+
+  return $action;
+}
+
+function civicrm_api3_pcpteams_getMyTeamInfo($params) {
+  $dao = new CRM_PCP_DAO_PCP();
+  $dao->contact_id = $params['contact_id']; 
+  $result = @_civicrm_api3_dao_to_array($dao);
+  _civicrm_api3_pcpteams_custom_get($result);
+  
+  $cfTeamPcpId = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
+  $pcpDashboardValues = $teamIds = array();
+  foreach ($result as $pcpId => $value) {
+    if(isset($value['custom_'.$cfTeamPcpId])){
+      $teamIds[$pcpId] = $value['custom_'.$cfTeamPcpId];
+    } 
   }
+  if(empty($teamIds)){
+    return civicrm_api3_create_success(CRM_Core_DAO::$_nullObject, $params);
+  }
+    
+  $sTeamIds = implode(', ', array_filter($teamIds));
+  $query = "
+    SELECT  ce.title    as page_title 
+    , cp.id             as pcp_id  
+    , cp.contact_id     as pcp_contact_id  
+    , cc.display_name   as team_name  
+    , cp.title          as pcp_title  
+    , cp.goal_amount    as pcp_goal_amount  
+    FROM civicrm_pcp cp 
+    LEFT JOIN civicrm_event ce ON ce.id = cp.page_id
+    LEFT JOIN civicrm_contact cc ON ( cc.id = cp.contact_id )
+    LEFT JOIN civicrm_value_pcp_custom_set cpcs ON ( cpcs.entity_id = cp.id )
+    WHERE cp.id IN ( $sTeamIds )
+  ";
+  $dao = CRM_Core_DAO::executeQuery($query);
+  while($dao->fetch()){
+    $myPcpId = array_search($dao->pcp_id, $teamIds); 
+    $teamResult[$myPcpId] = array(
+      'teamName'      => $dao->team_name,
+      'my_pcp_id'     => $myPcpId,
+      'my_pcp_title'  => CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $myPcpId, 'title'),
+      'teamPcpTitle'  => $dao->pcp_title,
+      'pageTitle'     => $dao->page_title,
+      'teamgoalAmount'=> CRM_Utils_Money::format($dao->pcp_goal_amount),
+      'amount_raised' => CRM_Utils_Money::format(CRM_PCP_BAO_PCP::thermoMeter($dao->pcp_id)),
+      'teamPcpId'     => $dao->pcp_id,
+      'contactId'     => $dao->pcp_contact_id,
+      'action'        => _getTeamInfoActionLink($myPcpId, $dao->pcp_id, $cfTeamPcpId),
+    );
+  }
+  $result = $teamResult;
+  
+  return civicrm_api3_create_success($result, $params);
+}
+
+function _civicrm_api3_pcpteams_getMyTeamInfo_spec(&$params) {
+  $params['contact_id']['api.required'] = 1;
+}
+
+function _getTeamInfoActionLink($entityId, $teamPcpId, $cfTeamPcpId){
+  
+  //action URLs
+  $pageURL    = CRM_Utils_System::url('civicrm/pcp/page', "reset=1&component=event&id={$teamPcpId}"); 
+  
+  //FIXME : check User permission and return action based on permission
+  $action     = "
+    <span>
+      <a href=\"{$pageURL}\" class=\"action-item crm-hover-button\" title='URL for this Page' >View Page</a>
+    </span>
+    <span class='btn-slide crm-hover-button'>more
+      <ul class='panel'>
+        <li>
+          <a href='javascript:void(0)' class=\"action-item crm-hover-button\" title='Join Team' onclick='unsubscribeTeam({$entityId});'>Unscbscribe from this Team</a>
+        </li>        
+      </ul>
+    </span>
+  ";
+
   return $action;
 }

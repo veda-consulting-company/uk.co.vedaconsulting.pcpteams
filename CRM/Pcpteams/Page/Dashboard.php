@@ -94,6 +94,7 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
     $this->assign('contactId', $this->_contactId);
 
     if (!empty($this->_userOptions['PCP'])) {
+      //My Personal campaign pages
       $dashboardElements[] = array(
         'class' => 'crm-dashboard-pcp',
         'templatePath' => 'CRM/Pcpteams/Page/Dashboard/Pages.tpl',
@@ -101,26 +102,12 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
         'weight' => 40,
       );
       
-      $result = civicrm_api( 'pcpteams', 'getPcpDashboardInfo', array(
+      $pcpInfo = civicrm_api( 'pcpteams', 'getPcpDashboardInfo', array(
           'version'   => 3, 
           'contact_id'=> $this->_contactId,
         )
       );
-      
-      $pcpInfo = $relatedContact = array();
-      if(!civicrm_error($result)){
-        $pcpInfo = $result['values'];
-      }
-      foreach ($pcpInfo as $pcpId => $pcpDetails) {
-        $teamId     = $pcpDetails['teamPcpid']  ? CRM_Pcpteams_Utils::getcontactIdbyPcpId($pcpDetails['teamPcpid']) : NULL;
-        $orgId      = $pcpDetails['org_id']     ? $pcpDetails['org_id']     : NULL;
-        $tribute_id = $pcpDetails['tribute_id'] ? $pcpDetails['tribute_id'] : NULL;
-        $relatedContact[$teamId]                   = self::relatedContactInfo($teamId);
-        $relatedContact[$pcpDetails['org_id']]     = self::relatedContactInfo($orgId);
-        $relatedContact[$pcpDetails['tribute_id']] = self::relatedContactInfo($tribute_id);
-      }
-
-      $this->assign('pcpInfo', $pcpInfo);
+      $this->assign('pcpInfo', isset($pcpInfo['values']) ? $pcpInfo['values'] : NULL);
       
       //My Teams
       $dashboardElements[] = array(
@@ -129,13 +116,19 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
         'sectionTitle' => ts('My Teams'),
         'weight' => 40,
       );
+      $teamInfo = civicrm_api( 'pcpteams', 'getMyTeamInfo', array(
+          'version'   => 3, 
+          'contact_id'=> $this->_contactId,
+        )
+      );
+      $this->assign('teamInfo', isset($teamInfo['values']) ? $teamInfo['values'] : NULL);
       
       //My Pending Team Requests
       $dashboardElements[] = array(
         'class' => 'crm-dashboard-permissionedteamreq',
         'templatePath' => 'CRM/Pcpteams/Page/Dashboard/TeamRequests.tpl',
         'sectionTitle' => ts('My Pending Team Requests'),
-        'weight' => 40,
+        'weight' => 41,
       );
       
       //New Team Member Requests
@@ -143,7 +136,7 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
         'class' => 'crm-dashboard-permissionednewteamreq',
         'templatePath' => 'CRM/Pcpteams/Page/Dashboard/TeamMemberRequests.tpl',
         'sectionTitle' => ts('New Team Member Requests'),
-        'weight' => 40,
+        'weight' => 42,
       );
       
       //In Active Pages
@@ -151,7 +144,7 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
         'class' => 'crm-dashboard-permissionedinactive',
         'templatePath' => 'CRM/Pcpteams/Page/Dashboard/PagesDisabled.tpl',
         'sectionTitle' => ts('In Active Pages'),
-        'weight' => 40,
+        'weight' => 43,
       );
       
       //Team Members
@@ -159,10 +152,9 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
         'class' => 'crm-dashboard-permissionedteammembers',
         'templatePath' => 'CRM/Pcpteams/Page/Dashboard/TeamMembers.tpl',
         'sectionTitle' => ts('Team Members'),
-        'weight' => 40,
+        'weight' => 44,
       );
 
-      $this->assign('relatedContact', array_filter($relatedContact));
     }
     
     // usort($dashboardElements, array('CRM_Utils_Sort', 'cmpFunc'));
