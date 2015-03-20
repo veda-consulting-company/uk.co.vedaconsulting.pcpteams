@@ -86,12 +86,12 @@ function civicrm_api3_pcpteams_get($params) {
   // _civicrm_api_get_entity_name_from_dao returns the entity as 'p_c_p_id' which is undefined in PCP DAO fields
   //ref:  _civicrm_api_get_entity_name_from_dao($bao); in api/v3/utils.php (801)
   $result = @_civicrm_api3_dao_to_array($dao);
-
+  
   // Append custom info
   // Note: This should ideally be done in _civicrm_api3_dao_to_array, but since PCP is not one of 
   // recongnized entity in core, we can append it seprately for now.
   _civicrm_api3_pcpteams_custom_get($result);
-
+  
   return civicrm_api3_create_success($result, $params);
 }
 function _civicrm_api3_pcpteams_get_spec(&$params) {
@@ -181,6 +181,37 @@ function _civicrm_api3_pcpteams_getstate_output(&$result){
 
 function _civicrm_api3_pcpteams_custom_get(&$params) {
   foreach ($params as $rid => $rval) {
+    $customGroupParams = array(
+        'version'     => 3,
+        'sequential'  => 1,
+        'name'        => CRM_Pcpteams_Constant::C_PCP_CUSTOM_GROUP_NAME,
+    );
+    $custom_group_ret = civicrm_api('CustomGroup', 'GET', $customGroupParams);
+    if (!civicrm_error($custom_group_ret) && isset($custom_group_ret['id'])) {
+      $customGroupTableName = $custom_group_ret['values'][0]['table_name'];
+      // Now try and find a record with the reference passed
+      $customGroupParams = array(
+          'version'         => 3,
+          'sequential'      => 1,
+          'custom_group_id' => $custom_group_ret['id'],
+      );
+      $custom_field_ret = civicrm_api ('CustomField','GET',$customGroupParams);
+      foreach($custom_field_ret['values'] as $k => $field){
+        $field_attributes[$field['name']] = $field;
+      }
+
+      $teamPcpIdColumn  = $field_attributes[CRM_Pcpteams_Constant::C_CF_TEAMPCPID]['column_name'];
+      $tribute          = $field_attributes[CRM_Pcpteams_Constant::C_CF_PCP_TYPE]['column_name'];
+      $tributeContactId = $field_attributes[CRM_Pcpteams_Constant::C_CF_PCP_TYPE_CONTACT]['column_name'];
+      $orgId            = $field_attributes[CRM_Pcpteams_Constant::C_CF_BRANCH_PARTNER]['column_name'];
+      $query            = "SELECT $teamPcpIdColumn , $tribute, $tributeContactId, $orgId FROM $customGroupTableName WHERE entity_id = {$rid}";
+      $customDao        = CRM_Core_DAO::executeQuery($query);
+      $customDao->fetch(TRUE);
+      foreach (array($teamPcpIdColumn, $tribute, $tributeContactId, $orgId ) as $column) {
+        $customFields[$column] = $customDao->$column;
+      } 
+      $params[$rid] = array_merge($rval, $customFields);
+    }
     _civicrm_api3_custom_data_get($params[$rid], 'PCP', $rid);
     // FIXME: we should at some point replace "custom_xy_" with column-names
   }
