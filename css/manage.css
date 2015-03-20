@@ -1,0 +1,59 @@
+.crm-container .crm-pcp-manage .pcp-panel {
+  min-height: 140px;
+  background-color: rgba(241, 243, 242, 1);
+  background-image: none;
+  background-repeat: repeat;
+  background-attachment: scroll;
+  background-position: 0% 0%;
+  background-clip: border-box;
+  background-origin: padding-box;
+  background-size: auto auto;
+  margin-bottom: 20px;
+  border-radius: 20px;
+}
+.crm-container .crm-pcp-manage .pcp-panel .profile-avatar {
+  display: inline;
+  float: left;
+  margin-left: 20px;
+  margin-top: 20px;
+  width: 20%;
+}
+
+.crm-container .crm-pcp-manage .pcp-panel .title {
+  display: inline;
+  float: left;
+  margin-top: 94px;
+}
+
+.crm-container .crm-pcp-manage .pcp-panel .stats {
+  display: inline;
+  float: right;
+  margin-top: 30px;
+  margin-right: 20px;
+}
+
+.crm-container .crm-pcp-manage .pcp-panel .stats .raised-total {
+  display: block;
+  margin-bottom: 20px;
+}
+
+.crm-container .crm-pcp-manage .pcp-panel .stats .target {
+  display: block;
+}
+
+.crm-container .crm-pcp-manage {
+  font-size: 16px !important;
+  font-stretch: normal !important;
+  color: rgb(98,100,101) !important;
+}
+.crm-container .crm-pcp-manage .pcp-panel .stats .amount {
+  font-family: "Bliss Pro Heavy",Impact,sans-serif;
+}
+.crm-container .crm-pcp-manage .pcp-panel .stats .raised-total .amount {
+  font-size: 40px;
+}
+.crm-container .crm-pcp-manage .pcp-panel .stats .target .amount {
+  font-size: 20px;
+}
+
+
