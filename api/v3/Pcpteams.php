@@ -36,11 +36,6 @@
 
 
 function civicrm_api3_pcpteams_create($params) {
-  // $params['title']      = $params['pcp_title'];
-  // $params['intro_text'] = $params['pcp_intro_text'];
-  // $params['contact_id'] = $params['pcp_contact_id'];
-  // $params['page_id']    = $params['page_id'];
-  // $params['page_type']  = $params['page_type'];
 
   // since we are allowing html input from the user
   // we also need to purify it, so lets clean it up
@@ -79,15 +74,26 @@ function civicrm_api3_pcpteams_get($params) {
   $dao = new CRM_PCP_DAO_PCP();
   // FIXME: need to enforce type check
   $dao->id = $params['pcp_id']; // type check done by getfields
+  $dao->pcp_id = $dao->id;
+
   //'@' this suppress the notice message, because
   // _civicrm_api_get_entity_name_from_dao returns the entity as 'p_c_p_id' which is undefined in PCP DAO fields
   //ref:  _civicrm_api_get_entity_name_from_dao($bao); in api/v3/utils.php (801)
   $result = @_civicrm_api3_dao_to_array($dao);
-
+  
+  //this dao_to_array suppressing the contact_id because 
+  //the field_name check fails 'pcp_contact_id' == 'contact_id' in _civicrm_api3_dao_to_array()
+  $result[$dao->id]['contact_id']    = $dao->contact_id;
+   
+  $result[$dao->id]['amount_raised'] = CRM_PCP_BAO_PCP::thermoMeter($params['pcp_id']);
+  
   // Append custom info
   // Note: This should ideally be done in _civicrm_api3_dao_to_array, but since PCP is not one of 
   // recongnized entity in core, we can append it seprately for now.
   _civicrm_api3_pcpteams_custom_get($result);
+  
+  //custom data with customfield names, to avoid reusing the custom field id everytime
+  _civicrm_api3_pcpteams_getCustomData($result);
 
   return civicrm_api3_create_success($result, $params);
 }
@@ -521,4 +527,31 @@ function _getTeamRequestActionLink($activityId, $pcpId ){
     </span>
     ";
   return $action;
+}
+
+function _civicrm_api3_pcpteams_getCustomData(&$params) {
+  $result = array();
+  foreach ($params as $pcpId => $pcpValues) {
+    foreach ($pcpValues as $fieldName => $values) {
+      $explodeFieldName = explode('_', $fieldName);
+      if($explodeFieldName[0] == 'custom'){
+        $column_name = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', $explodeFieldName[1], 'column_name');
+        $params[$pcpId][$column_name] = $values;
+        if($column_name == 'team_pcp_id'){
+          $params[$pcpId]['team_pcp_name'] = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $values, 'title' );
+        }elseif (isset($explodeFieldName[2]) && $explodeFieldName[2] == 'id') {
+          $column_name = str_replace('id', 'name', $column_name);
+          $params[$pcpId][$column_name] = $pcpValues['custom_'.$explodeFieldName[1]];
+        }else{
+          $column_name .= '_label';
+          $ogId  = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', $explodeFieldName[1], 'option_group_id');
+          $ovDao = new CRM_Core_DAO_OptionValue;
+          $ovDao->option_group_id = $ogId;
+          $ovDao->value = $values;
+          $ovDao->find(TRUE);
+          $params[$pcpId][$column_name] = $ovDao->label;
+        }
+      }
+    }
+  }
 }
