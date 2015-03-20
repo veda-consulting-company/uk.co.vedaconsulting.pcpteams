@@ -12,6 +12,7 @@ class CRM_Pcpteams_Form_TeamReact extends CRM_Core_Form {
       $this->_reactToFile = $this->getTeamReactFile($workflowTeam);
     } else {
       $option = CRM_Utils_Request::retrieve('option', 'String', CRM_Core_DAO::$_nullObject);
+      $this->set("workflowTeam", $option);
       $this->_reactToFile = $this->getTeamReactFile($option);
     }
     $className = 'CRM_Pcpteams_Form_' . $this->_reactToFile;
