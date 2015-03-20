@@ -52,5 +52,23 @@ class CRM_Pcpteams_Page_AJAX {
     }
 
     return $result;
+  }
+  
+  static function unsubscribeTeam(){
+    $entity_id    = $_POST['entity_id'];
+    $teamPcpCfId  = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId(); 
+    $params = array(
+      'version'   => 3,
+      'entity_id' => $entity_id,
+      "custom_{$teamPcpCfId}" => NULL, 
+    );
+    $updatedResult = civicrm_api3('CustomValue', 'create', $params);
+    if(!civicrm_error($updatedResult)){
+      echo 'updated';
+    }else{
+      echo $updatedResult['error_message'];
+    }
+    
+    CRM_Utils_System::civiExit();
   }  
 }
