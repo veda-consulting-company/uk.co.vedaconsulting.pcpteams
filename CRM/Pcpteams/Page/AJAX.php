@@ -70,5 +70,22 @@ class CRM_Pcpteams_Page_AJAX {
     }
     
     CRM_Utils_System::civiExit();
-  }  
-}
+  }
+  
+  static function inlineEditorAjax(){
+    $editedField = $_POST['id'];
+    //explode id
+    $explodedVal = explode('-', $editedField);
+    $columnfield = str_replace('pcp_', '', $explodedVal[0]);
+    $pcpId       = $explodedVal[1];
+    $editedValue = $_POST['value'];
+    $params      = array(
+      'version' => 3,
+      'id'      => $pcpId,
+      $columnfield => trim($editedValue)
+    );
+    $result = civicrm_api('pcpteams', 'create', $params);
+    echo $editedValue;
+    CRM_Utils_System::civiExit();
+  }
+}//end class
