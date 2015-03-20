@@ -44,43 +44,15 @@ class CRM_Pcpteams_Form_TeamJoin {
   static function postProcess(&$form) {
     $values = $form->exportValues();
     $teamId = $values['pcp_team_contact'];
-
-    // get PCP-ID for team 
-    if ($teamId) {
-      $result = civicrm_api('Pcpteams', 
-        'getcontactpcp', 
-        array(
-          'contact_id' => $teamId,
-          'version'    => 3
-        )
-      );
-      if (!empty($result['id'])) {
-        $teamPcpId = $result['id'];
-      }
-    }
-
-    if ($teamPcpId) {
-      $teamPcpCfId = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
-      $params = array(
-        'version'   => 3,
-        'entity_id' => $form->get('page_id'),
-        "custom_{$teamPcpCfId}" => $teamPcpId,
-      );
-      $result = civicrm_api3('CustomValue', 'create', $params);
-       // Get team contact ID
-      $teamContactID    = CRM_Pcpteams_Utils::getcontactIdbyPcpId($teamPcpId);
-      $userId           = CRM_Pcpteams_Utils::getloggedInUserId();
-      // Create Team Member of relation to this Team
-      CRM_Pcpteams_Utils::checkORCreateTeamRelationship($userId, $teamContactID, TRUE);
-      $form->_teamName  = CRM_Contact_BAO_Contact::displayName($teamContactID);
-      $form->set('teamName', $form->_teamName);
-      $form->set('teamContactID', $teamContactID);
-      // Team Join: create activity
-      CRM_Pcpteams_Utils::createPcpActivity(array('source' => $userId, 'target' => $teamContactID), CRM_Pcpteams_Constant::C_CF_TEAM_JOIN, 'Joined to team'.$form->_teamName, 'PCP Team Join');
-    } else {
-      // FIXME: this check should be at validation step / form-rule
-      CRM_Core_Error::fatal("The team (ID: $teamId) doesn't have a pcp.");
-    }
+    $userId           = CRM_Pcpteams_Utils::getloggedInUserId();
+    // Create Team Member of relation to this Team
+    CRM_Pcpteams_Utils::checkORCreateTeamRelationship($userId, $teamId, TRUE);
+    $form->_teamName  = CRM_Contact_BAO_Contact::displayName($teamId);
+    $form->set('teamName', $form->_teamName);
+    $form->set('teamContactID', $teamId);
+    // Team Join: create activity
+    CRM_Pcpteams_Utils::createPcpActivity(array('source' => $userId, 'target' => $teamId), CRM_Pcpteams_Constant::C_CF_TEAM_JOIN, 'Joined to team'.$form->_teamName, 'PCP Team Join');
+   
   }
 
 }

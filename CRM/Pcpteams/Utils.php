@@ -111,6 +111,7 @@ class  CRM_Pcpteams_Utils {
         $aParams['contact_id_a'] = $iContactIdA;
         $aParams['contact_id_b'] = $iContactIdB;
         $aParams['relationship_type_id'] = $relTypeId;
+        $aParams['is_active'] = $action == 'create' ? 1 : 0 ;
         $createRelationship = civicrm_api3('Relationship', 'create', $aParams);
         if(!civicrm_error($createRelationship)){
           $teamName = self::getContactWithHyperlink($iContactIdB);

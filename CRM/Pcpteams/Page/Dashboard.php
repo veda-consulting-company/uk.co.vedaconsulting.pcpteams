@@ -130,7 +130,12 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
         'sectionTitle' => ts('My Pending Team Requests'),
         'weight' => 41,
       );
-      
+      $teamPendingInfo = civicrm_api( 'pcpteams', 'getMyPendingTeam', array(
+          'version'   => 3, 
+          'contact_id'=> $this->_contactId,
+        )
+      );
+      $this->assign('teamPendingInfo', isset($teamPendingInfo['values']) ? $teamPendingInfo['values'] : NULL);
       //New Team Member Requests
       $dashboardElements[] = array(
         'class' => 'crm-dashboard-permissionednewteamreq',
@@ -138,6 +143,12 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
         'sectionTitle' => ts('New Team Member Requests'),
         'weight' => 42,
       );
+      $teamRequestInfo = civicrm_api( 'pcpteams', 'getTeamRequest', array(
+          'version'   => 3, 
+          'contact_id'=> $this->_contactId,
+        )
+      );
+      $this->assign('teamRequestInfo', isset($teamRequestInfo['values']) ? $teamRequestInfo['values'] : NULL);
       
       //In Active Pages
       $dashboardElements[] = array(

@@ -1,6 +1,6 @@
 <div class="view-content">
 
-  {if $relatedContact}
+  {if $teamPendingInfo}
     <div id="ltype">
       {strip}
 
@@ -12,12 +12,14 @@
           <th>{ts}Status{/ts}</th>
         </tr>
 
-        {foreach from=$relatedContact item=row}
+        {foreach from=$teamPendingInfo item=row}
         <tr class="{cycle values='odd-row,even-row'}">
-              <td class="bold">{$row.name}</td>
-              <td>{ts}FIXME{/ts}</td>
-              <td>{ts}FIXME{/ts}</td>
-              <td>{ts}FIXME{/ts}</td>
+              <td class="bold">{$row.teamName}</td>
+              <td>
+              {$row.teamPcpTitle}
+              </td>
+              <td>{$row.pageTitle}</td>
+              <td></td>
         </tr>
         {/foreach}
       </table>

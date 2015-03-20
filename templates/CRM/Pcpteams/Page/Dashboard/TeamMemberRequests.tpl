@@ -1,6 +1,6 @@
 <div class="view-content">
 
-  {if $relatedContact}
+  {if $teamRequestInfo}
     <div id="ltype">
       {strip}
 
@@ -15,15 +15,15 @@
           <th>{ts}Action{/ts}</th>
         </tr>
 
-        {foreach from=$relatedContact item=row}
-        <tr class="{cycle values='odd-row,even-row'}">
-              <td class="bold">{ts}FIXME{/ts}</td>
-              <td>{ts}FIXME{/ts}</td>
-              <td>{ts}FIXME{/ts}</td>
-              <td>{ts}FIXME{/ts}</td>
-              <td>{ts}FIXME{/ts}</td>
-              <td>{ts}FIXME{/ts}</td>
-              <td>{ts}FIXME{/ts}</td>
+        {foreach from=$teamRequestInfo item=row key=entityId}
+        <tr class="{cycle values='odd-row,even-row'}"  id="{$entityId}">
+              <td class="bold">{$row.member_pcp_title}</td>
+              <td>{$row.member_display_name}</td>
+              <td>{$row.member_email}</td>
+              <td>{$row.member_city}</td>
+              <td>{$row.member_state_province_id}</td>
+              <td>{$row.member_country}</td>
+              <td>{$row.action}</td>
         </tr>
         {/foreach}
       </table>
@@ -37,3 +37,34 @@
   {/if}
 
 </div>
+
+  {literal}
+<script type="text/javascript">
+  function approveTeamMember(entityId, pcpId){
+             var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=approveTeamMember' }"{literal};
+             cj.ajax({ 
+                url     : dataUrl,
+                type    : 'post',
+                data    : {entity_id : entityId, pcp_id : pcpId },
+                success : function( data ) {
+                    cj(document).ajaxStop(function() { location.reload(true); });
+                }
+             });
+            
+   
+  }
+  function declineTeamMember(entityId){
+             var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=declineTeamMember' }"{literal};
+             cj.ajax({ 
+                url     : dataUrl,
+                type    : 'post',
+                data    : {entity_id : entityId},
+                success : function( data ) {
+                    cj(document).ajaxStop(function() { location.reload(true); });
+                }
+             });
+            
+   
+  }
+</script>
+{/literal}
