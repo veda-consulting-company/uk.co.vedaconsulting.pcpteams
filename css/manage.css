@@ -1,6 +1,11 @@
+/*
+.crm-container .crm-pcp-manage div {
+  border: 1px solid black;
+}
+*/
 .crm-container .crm-pcp-manage .pcp-panel {
   min-height: 140px;
-  background-color: rgba(241, 243, 242, 1);
+  background-color: #F7F6F6;
   background-image: none;
   background-repeat: repeat;
   background-attachment: scroll;
@@ -11,6 +16,7 @@
   margin-bottom: 20px;
   border-radius: 20px;
 }
+/* divs inside panel */
 .crm-container .crm-pcp-manage .pcp-panel .profile-avatar {
   display: inline;
   float: left;
@@ -18,29 +24,25 @@
   margin-top: 20px;
   width: 20%;
 }
-
 .crm-container .crm-pcp-manage .pcp-panel .title {
   display: inline;
   float: left;
   margin-top: 94px;
 }
-
 .crm-container .crm-pcp-manage .pcp-panel .stats {
   display: inline;
   float: right;
   margin-top: 30px;
   margin-right: 20px;
 }
-
 .crm-container .crm-pcp-manage .pcp-panel .stats .raised-total {
   display: block;
   margin-bottom: 20px;
 }
-
 .crm-container .crm-pcp-manage .pcp-panel .stats .target {
   display: block;
 }
-
+/* font fixes */
 .crm-container .crm-pcp-manage {
   font-size: 16px !important;
   font-stretch: normal !important;
@@ -55,5 +57,35 @@
 .crm-container .crm-pcp-manage .pcp-panel .stats .target .amount {
   font-size: 20px;
 }
+/* divs below the panel */
+.crm-container .crm-pcp-manage .pcp-body .totaliser {
+  display: inline;
+  float: left;
+  width: 68%;
+}
+.crm-container .crm-pcp-manage .pcp-body .givetoname {
+  display: inline;
+  float: right;
+  width: 30%;
+}
+.crm-container .crm-pcp-manage .btn-donate {
+  font-family: "Bliss Pro Heavy", Impact, sans-serif;
+  text-transform: uppercase;
+  font-size: 24px;
+  line-height: 47px;
+  background-color: #e0001a;
+  border-bottom: 3px solid #b52e28;
+  color: white;
+  text-align: center;
+  width: 260px;
+  height: 46px;
 
-
+  /*
+  display: block;
+  position: absolute;
+  bottom: 6px;
+  right: 10px;
+  padding: 0;
+  margin: 0;
+  */
+}

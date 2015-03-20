@@ -5,15 +5,14 @@ require_once 'CRM/Core/Page.php';
 class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
   
   function preProcess(){
-    //CRM_Core_Resources::singleton()->addScriptFile('civicrm', 'templates/CRM/Contact/Page/View/Summary.js', 2, 'html-header');
     CRM_Core_Resources::singleton()
       ->addStyleFile('uk.co.vedaconsulting.pcpteams', 'css/manage.css');
   }
+
   static function getPcpDetails($pcpId){
     if(empty($pcpId)){
       return NULL;
     }
-        
     $result = civicrm_api('Pcpteams', 
         'get', 
         array(
@@ -25,7 +24,6 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     if(civicrm_error($result)){
       return NULL;
     }
-    
     return $result['values'][0];
   }
   
@@ -42,76 +40,6 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
       return $imageUrl;
     }
     return NULL;
-  }
-  
-  /**
-   * To get all Params needed to Display the Individual Pcp
-   */
-  static function getIndividualPcpParams($pcpDetails){
-    $return = array();
-    if(empty($pcpDetails['id'])){
-      return $return;
-    }
-    
-    //Step 1: Intially set the page state is New Page., ie., No Team, No In Memory and No Donations
-    $return['page_state'] = 'new';
-    
-    //Step 2:check this Page has some Donations
-    $pcpBlockDetails = civicrm_api('Pcpteams', 'getpcpblock', array('entity_id' => $pcpDetails['page_id'], 'version' => 3, 'sequential' => 1));
-    $donationExist   = FALSE;
-    if(!civicrm_error($pcpBlockDetails)){
-      $targetEntityId = $return['target_entity_id'] = $pcpBlockDetails['values'][0]['target_entity_id'];
-      $contriAPI      = CRM_Pcpteams_Utils::getContributionDetailsByContributionPageId($targetEntityId);
-      if($contriAPI['count'] > 0){
-        $return['donation_details'] = array();
-        $return['page_state'] = 'donations';
-        $donationExist        = TRUE;
-        $return['amount_raised'] = 0;
-        foreach ($contriAPI['values'] as $value) {
-          $return['donation_details'][] = array('donar' => $value['display_name'], 'amount' => $total_amount);
-          $return['amount_raised'] += $value['total_amount'];
-        }
-      }
-    }
-    
-    //Step 3:check this Page has Team pcp id ., (check in custom set)
-    $teamPcpCfId = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
-    $teamExist   = FALSE;
-    if(isset($pcpDetails['custom_'.$teamPcpCfId])){
-      $return['page_state'] = 'team';
-      $return['team_pcp_id'] = $pcpDetails['custom_'.$teamPcpCfId];
-      $return['team_image_url'] = self::getPcpImageURl($return['team_pcp_id']);
-      $teampcpDetails  = self::getPcpDetails($return['team_pcp_id']);
-      $return['team_title'] = $teampcpDetails['title'];
-      $teamExist = TRUE;
-    }
-    
-    //Step 4:check this Page has tribute in Memory ( check in custom set)
-    $pcpTypeCfId = CRM_Pcpteams_Utils::getPcpTypeCustomFieldId();
-    $pcpTypeCf   = civicrm_api3('CustomField', 'getsingle', array('version' => 3, 'id' => $pcpTypeCfId));
-    $ovInMem     = civicrm_api3('OptionValue', 'getsingle', array('version' => 3, 'option_group_id' => $pcpTypeCf['option_group_id'], 'name' => CRM_Pcpteams_Constant::C_CF_IN_MEMORY));
-    $inMemExist  = FALSE;
-    if(isset($pcpDetails['custom_'.$pcpTypeCfId]) && $pcpDetails['custom_'.$pcpTypeCfId] == $ovInMem['value']){
-      $return['page_state'] = 'in_mem';
-      $pcpTypeContactCfId = CRM_Pcpteams_Utils::getPcpTypeContactCustomFieldId();
-      $inMemContactID = $pcpDetails['custom_'.$pcpTypeContactCfId.'_id'];
-      $return['pcp_type_contact_id'] = $inMemContactID;
-      $contactResult  = civicrm_api3('Contact', 'get', array('sequential' => 1, 'id' => $inMemContactID,));
-      if(!civicrm_error($contactResult)) {
-        $imageUrl     = $contactResult['values'][0]['image_URL'] ;
-        $displayName  = $contactResult['values'][0]['display_name'] ;
-        $return['in_mem_image_url'] = $imageUrl;
-        $return['in_mem_display_name'] = $displayName;
-      }
-      $inMemExist  = TRUE;
-    }
-    
-    //Step 5:check this Page has Team and tribute in Memory ( check in custom set )
-    if($teamExist && $inMemExist){
-      $return['page_state'] = 'both';
-    }
-    
-    return $return;
   }
   
   /**

@@ -24,13 +24,35 @@
   </div>
   <!-- End header-->
   
-  <div class="column-left">
-    <div id="pcp_intro_text-{$pcpinfo.id}" class="crm-pcp-manage crm-pcp-inline-edit" data-edit-params='{ldelim}"cid": "{$contactId}", "class_name": "CRM_Contact_Form_Inline_ContactInfo"{rdelim}'>
-      <p>{$pcpinfo.intro_text}</p>
+  <div class="pcp-body clearfix">
+    <div class="totaliser clearfix">
+      <div class="colheader">
+        <h2>Totaliser</h2>
+      </div>
+      <div id="pcp_intro_text-{$pcpinfo.id}" class="crm-pcp-manage crm-pcp-inline-edit" data-edit-params='{ldelim}"cid": "{$contactId}", "class_name": "CRM_Contact_Form_Inline_ContactInfo"{rdelim}'>
+        <p>{$pcpinfo.intro_text}</p>
+      </div>
+    
+      <div id="pcp_page_text-{$pcpinfo.id}" class="crm-pcp-manage crm-pcp-inline-edit">
+        <p>{$pcpinfo.page_text}</p>
+      </div>
     </div>
-  
-    <div id="pcp_page_text-{$pcpinfo.id}" class="crm-pcp-manage crm-pcp-inline-edit">
-      <p>{$pcpinfo.page_text}</p>
+    <div class="givetoname">
+      <div class="colheader">
+        <a href="/dfp/donate/59772/nojs" class="btn-donate">Donate</a>
+      </div>
+      <div class="rank">
+        Name is #37 out of the 107 fundraisers taking part in event.
+      </div>
+      <div class="top-donations">
+        Name has doanted £950
+      </div>
+      <div class="top-donations">
+        Name has doanted £100
+      </div>
+      <div class="top-donations">
+        Name has doanted £50
+      </div>
     </div>
   </div>
 
@@ -48,7 +70,7 @@ CRM.$(function($) {
          cssclass  : 'crm-form-textarea',
          cancel    : 'Cancel',
          submit    : 'OK',
-         height    : '100',
+         //height    : '100',
          indicator : '<img src="http://www.appelsiini.net/projects/jeditable/img/indicator.gif">',
          "callback"  : function( editedValue ){
             var editedId = cj(this).attr('id');
@@ -57,10 +79,10 @@ CRM.$(function($) {
           }
     });
     $('.crm-pcp-inline-edit').mouseover(function(){
-      $(this).css("background", "grey");
+      $(this).css("background", "#E5DEDE");
     });
     $('.crm-pcp-inline-edit').mouseout(function(){
-      $(this).css("background", "white");
+      $(this).css("background", "#F7F6F6");
     });
  });
 });
