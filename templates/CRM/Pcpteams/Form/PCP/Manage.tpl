@@ -13,7 +13,7 @@
     </div>
     <div class="stats">
       <div class="raised-total">
-        <span class="amount">556</span>
+        <span class="amount">{$pcpinfo.amount_raised}</span>
         <div class="raised"><span class="text">Raised so far</span></div>
       </div> 
       <div class="target">
