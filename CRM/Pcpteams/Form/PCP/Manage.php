@@ -6,6 +6,8 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
   
   function preProcess(){
     //CRM_Core_Resources::singleton()->addScriptFile('civicrm', 'templates/CRM/Contact/Page/View/Summary.js', 2, 'html-header');
+    CRM_Core_Resources::singleton()
+      ->addStyleFile('uk.co.vedaconsulting.pcpteams', 'css/manage.css');
   }
   static function getPcpDetails($pcpId){
     if(empty($pcpId)){
