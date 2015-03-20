@@ -154,7 +154,7 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     if( $isIndividualPcp ){
       $state = 'Individual';
       $pageTitle = "My Personal Campaign Page : ". $pcpDetails['title'];
-      $tplParams = self::getIndividualPcpParams($pcpDetails);
+      // $tplParams = self::getIndividualPcpParams($pcpDetails);
     }    
     //End Individual
     
@@ -200,7 +200,7 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     $tplParams['amount_raised'] = $amountRaised;
     
     //donate to URL 
-    $tplParams['donate_to_url'] = CRM_Utils_System::url('civicrm/contribute/transact', "reset=1&id={$tplParams['target_entity_id']}&pcpId={$pcpId}");
+    // $tplParams['donate_to_url'] = CRM_Utils_System::url('civicrm/contribute/transact', "reset=1&id={$tplParams['target_entity_id']}&pcpId={$pcpId}");
     
     //Biography
     

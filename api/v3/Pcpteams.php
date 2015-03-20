@@ -36,11 +36,11 @@
 
 
 function civicrm_api3_pcpteams_create($params) {
-  $params['title']      = $params['pcp_title'];
-  $params['intro_text'] = $params['pcp_intro_text'];
-  $params['contact_id'] = $params['pcp_contact_id'];
-  $params['page_id']    = $params['page_id'];
-  $params['page_type']  = $params['page_type'];
+  // $params['title']      = $params['pcp_title'];
+  // $params['intro_text'] = $params['pcp_intro_text'];
+  // $params['contact_id'] = $params['pcp_contact_id'];
+  // $params['page_id']    = $params['page_id'];
+  // $params['page_type']  = $params['page_type'];
 
   // since we are allowing html input from the user
   // we also need to purify it, so lets clean it up

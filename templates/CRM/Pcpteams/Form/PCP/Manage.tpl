@@ -1,46 +1,26 @@
-<!-- header -->
-<div class="pcp-manage-header">
-  <!-- profile Image -->
-  <div class="pcp-manage-header-profile-pic inline-display">
-    <table >
-        {if $profilePicUrl}
-            <tr>
-                <td>
-                    <div id="crm-contact-thumbnail" style="float:left">
-                        <div class="crm-contact_image crm-contact_image-block">
-                            <a class="crm-image-popup" href="{$profilePicUrl}">
-                                <img width="100" height="97" src="{$profilePicUrl}">
-                            </a>
-                        </div>
-                    </div>
-                    {if $tplParams.event_title}
-                      </div><br /><br /><br />&nbsp;&nbsp;&nbsp;&nbsp;{ts}<h1>{$tplParams.title_of_page}</h1>{/ts}
-                    {/if}
-                </td>
-            </tr>
-        {/if}
-        {if $updateProfPic}
-        <tr>
-            <td>
-                <input type="button" name="profilepic" value="Upload Profile Pic" id="profilepic" onclick="parent.location='{$profilePicURl}'" />
-            </td>
-        </tr>
-        {/if}
-    </table>
-  </div>
-
+ <!-- ( PCP Title ) -->
+<div id="pcp_title-{$pcpinfo.id}" class="crm-pcp-inline-edit" data-edit-params='{ldelim}"cid": "{$contactId}", "class_name": "CRM_Contact_Form_Inline_ContactInfo"{rdelim}'>
+  {$pcpinfo.title}
 </div>
-<!-- End header-->
+<div class="clearfix"></div> 
 
-<div class="clearfix"></div>
-
-<div id="pcp_intro_text" class="crm-pcp-inline-edit" data-edit-params='{ldelim}"cid": "{$contactId}", "class_name": "CRM_Contact_Form_Inline_ContactInfo"{rdelim}'>
+<!-- ( Intro Text ) -->
+<div id="pcp_intro_text-{$pcpinfo.id}" class="crm-pcp-inline-edit" data-edit-params='{ldelim}"cid": "{$contactId}", "class_name": "CRM_Contact_Form_Inline_ContactInfo"{rdelim}'>
   {$pcpinfo.intro_text}
 </div>
 <div class="clearfix"></div>
-<div id="pcp_page_text" class="crm-pcp-inline-edit">
+ 
+ <!-- ( Page Text ) -->
+<div id="pcp_page_text-{$pcpinfo.id}" class="crm-pcp-inline-edit">
   {$pcpinfo.page_text}
 </div>
+<div class="clearfix"></div>
+
+<!-- ( Goal Amount ) -->
+<div id="pcp_goal_amount-{$pcpinfo.id}" class="crm-pcp-inline-edit" data-edit-params='{ldelim}"cid": "{$contactId}", "class_name": "CRM_Contact_Form_Inline_ContactInfo"{rdelim}'>
+  {$pcpinfo.goal_amount}
+</div>
+<div class="clearfix"></div>
 
 
 <!-- Congratulations block -->
@@ -75,14 +55,20 @@
 <script type="text/javascript">
 CRM.$(function($) {
  $(document).ready(function() {
-    $('.crm-pcp-inline-edit').editable('http://www.example.com/save.php', {
+    var apiUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='className=CRM_Pcpteams_Page_AJAX&fnName=inlineEditorAjax&snippet=6&json=1'}";{literal}
+    $('.crm-pcp-inline-edit').editable(apiUrl, {
          //loadurl   : "http://cms45.loc/civicrm/ajax/inline?cid=202&class_name=CRM_Contact_Form_Inline_ContactInfo&snippet=6&reset=1",
          type      : 'textarea',
          cssclass  : 'crm-form-textarea',
          cancel    : 'Cancel',
          submit    : 'OK',
+         height    : '100',
          indicator : '<img src="http://www.appelsiini.net/projects/jeditable/img/indicator.gif">',
-         tooltip   : 'Click to edit...',
+         "callback"  : function( editedValue ){
+            var editedId = cj(this).attr('id');
+            cj(this).html(editedValue);
+            // console.log( );
+          }
     });
     $('.crm-pcp-inline-edit').mouseover(function(){
       $(this).css("background", "grey");
