@@ -22,33 +22,15 @@
     <access_arguments>access CiviCRM</access_arguments>
   </item>
   <item>
-    <path>civicrm/pcp/team/create</path>
-    <page_callback>CRM_Pcpteams_Form_NewTeam</page_callback>
-    <title>New Team</title>
-    <access_arguments>access CiviCRM</access_arguments>
-  </item>
-  <item>
-    <path>civicrm/pcp/team</path>
-    <page_callback>CRM_Pcpteams_Form_Team</page_callback>
-    <title>Join a Team</title>
-    <access_arguments>access CiviCRM</access_arguments>
-  </item>
-  <item>
-    <path>civicrm/pcp/reason</path>
-    <page_callback>CRM_Pcpteams_Form_Reason</page_callback>
-    <title>In Memory / Celebration Of</title>
-    <access_arguments>access CiviCRM</access_arguments>
-  </item>
-  <item>
-    <path>civicrm/pcp/branchorpartner</path>
-    <page_callback>CRM_Pcpteams_Form_BranchorPartner</page_callback>
-    <title>Branch Or Partner</title>
-    <access_arguments>access CiviCRM</access_arguments>
-  </item>
-  <item>
     <path>civicrm/pcp/profile</path>
     <page_callback>CRM_Pcpteams_Form_ProfilePic</page_callback>
     <title>Profile Pic</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/pcp/manage</path>
+    <page_callback>CRM_Pcpteams_Form_PCP_Manage</page_callback>
+    <title>Update Personal Campaign Page</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
 </menu>
