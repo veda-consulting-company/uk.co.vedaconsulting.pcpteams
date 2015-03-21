@@ -7,6 +7,12 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
   function preProcess(){
     CRM_Core_Resources::singleton()
       ->addStyleFile('uk.co.vedaconsulting.pcpteams', 'css/manage.css');
+
+    $session = CRM_Core_Session::singleton();
+    $userID = $session->get('userID');
+    if (!$userID) {
+      CRM_Core_Error::fatal(ts('You must be logged in to view this page.'));
+    }    
   }
 
   static function getPcpDetails($pcpId){
@@ -39,7 +45,7 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
       $imageUrl = CRM_Utils_System::url('civicrm/file',"reset=1&id=$fileId&eid={$pcpId}"); 
       return $imageUrl;
     }
-    return NULL;
+    return CRM_Pcpteams_Constant::C_DEFAULT_PROFILE_PIC;
   }
   
   /**
