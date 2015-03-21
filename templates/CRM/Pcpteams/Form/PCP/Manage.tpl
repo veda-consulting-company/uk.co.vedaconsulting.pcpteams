@@ -5,12 +5,10 @@
     <!-- profile Image -->
     <div class="profile-avatar">
       {if $profilePicUrl}
-        <img width="100" height="97" src="{$profilePicUrl}">
+        <img width="150" height="150" src="{$profilePicUrl}">
       {/if}
     </div>
-    <div id="pcp_title-{$pcpinfo.id}" class="title crm-pcp-inline-edit">
-      <h1>{$pcpinfo.title}</h1>
-    </div>
+    <div id="pcp_title-{$pcpinfo.id}" class="title crm-pcp-inline-edit">{$pcpinfo.title}</div>
     <div class="stats">
       <div class="raised-total">
         <span class="amount">{$pcpinfo.amount_raised}</span>
@@ -24,22 +22,20 @@
   </div>
   <!-- End header-->
   
-  <div class="pcp-body clearfix">
-    <div class="totaliser clearfix">
+  <div class="pcp-body">
+    <div class="totaliser">
       <div class="colheader">
         <h2>Totaliser</h2>
       </div>
-      <div id="pcp_intro_text-{$pcpinfo.id}" class="crm-pcp-manage crm-pcp-inline-edit" data-edit-params='{ldelim}"cid": "{$contactId}", "class_name": "CRM_Contact_Form_Inline_ContactInfo"{rdelim}'>
-        <p>{$pcpinfo.intro_text}</p>
-      </div>
+      <div id="pcp_intro_text-{$pcpinfo.id}" class="intro-text crm-pcp-inline-edit" data-edit-params='{ldelim}"cid": "{$contactId}", "class_name": "CRM_Contact_Form_Inline_ContactInfo"{rdelim}'>{$pcpinfo.intro_text}</div>
     
-      <div id="pcp_page_text-{$pcpinfo.id}" class="crm-pcp-manage crm-pcp-inline-edit">
-        <p>{$pcpinfo.page_text}</p>
-      </div>
+      <div id="pcp_page_text-{$pcpinfo.id}" class="page-text crm-pcp-inline-edit">{$pcpinfo.page_text}</div>
     </div>
     <div class="givetoname">
       <div class="colheader">
-        <a href="/dfp/donate/59772/nojs" class="btn-donate">Donate</a>
+        <div class="btn-donate">
+          <a href="/dfp/donate/59772/nojs">Donate</a>
+        </div>
       </div>
       <div class="rank">
         Name is #37 out of the 107 fundraisers taking part in event.
@@ -54,6 +50,8 @@
         Name has doanted £50
       </div>
     </div>
+    <div class="clear">
+    </div>
   </div>
 
 </div>
@@ -62,29 +60,27 @@
 {literal}
 <script type="text/javascript">
 CRM.$(function($) {
- $(document).ready(function() {
     var apiUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='className=CRM_Pcpteams_Page_AJAX&fnName=inlineEditorAjax&snippet=6&json=1'}";{literal}
     $('.crm-pcp-inline-edit').editable(apiUrl, {
-         //loadurl   : "http://cms45.loc/civicrm/ajax/inline?cid=202&class_name=CRM_Contact_Form_Inline_ContactInfo&snippet=6&reset=1",
-         type      : 'textarea',
+         type      : 'text',
          cssclass  : 'crm-form-textarea',
          cancel    : 'Cancel',
          submit    : 'OK',
-         //height    : '100',
          indicator : '<img src="http://www.appelsiini.net/projects/jeditable/img/indicator.gif">',
          "callback"  : function( editedValue ){
             var editedId = cj(this).attr('id');
             cj(this).html(editedValue);
-            // console.log( );
           }
     });
     $('.crm-pcp-inline-edit').mouseover(function(){
       $(this).css("background", "#E5DEDE");
+      $(this).css("border", "2px dashed #c4c4c4");
+      $(this).css("border-radius", "10px");
     });
     $('.crm-pcp-inline-edit').mouseout(function(){
       $(this).css("background", "#F7F6F6");
+      $(this).css("border", "none");
     });
- });
 });
 </script>
 {/literal}

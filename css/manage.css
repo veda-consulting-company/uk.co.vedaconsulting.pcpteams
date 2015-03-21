@@ -2,9 +2,9 @@
 .crm-container .crm-pcp-manage div {
   border: 1px solid black;
 }
-*/
+ */
 .crm-container .crm-pcp-manage .pcp-panel {
-  min-height: 140px;
+  min-height: 191px;
   background-color: #F7F6F6;
   background-image: none;
   background-repeat: repeat;
@@ -18,22 +18,30 @@
 }
 /* divs inside panel */
 .crm-container .crm-pcp-manage .pcp-panel .profile-avatar {
-  display: inline;
+  display: inline-block;
   float: left;
   margin-left: 20px;
   margin-top: 20px;
   width: 20%;
 }
 .crm-container .crm-pcp-manage .pcp-panel .title {
-  display: inline;
+  display: inline-block;
   float: left;
-  margin-top: 94px;
+  margin-top: 114px;
+  width: 50%;
+  padding: 5px;
+  font-size: 22px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: #424242;
+  font-family: "Bliss Pro Heavy",Impact,sans-serif;
 }
 .crm-container .crm-pcp-manage .pcp-panel .stats {
-  display: inline;
+  display: inline-block;
   float: right;
-  margin-top: 30px;
+  margin-top: 45px;
   margin-right: 20px;
+  width: 20%;
 }
 .crm-container .crm-pcp-manage .pcp-panel .stats .raised-total {
   display: block;
@@ -53,6 +61,7 @@
 }
 .crm-container .crm-pcp-manage .pcp-panel .stats .raised-total .amount {
   font-size: 40px;
+  color: rgb(224, 0, 26);
 }
 .crm-container .crm-pcp-manage .pcp-panel .stats .target .amount {
   font-size: 20px;
@@ -68,6 +77,18 @@
   float: right;
   width: 30%;
 }
+.crm-container .crm-pcp-manage .pcp-body .colheader,
+.crm-container .crm-pcp-manage .pcp-body .rank,
+.crm-container .crm-pcp-manage .pcp-body .top-donations
+{
+  margin-bottom: 10px;
+}
+.crm-container .crm-pcp-manage .pcp-body .intro-text,
+.crm-container .crm-pcp-manage .pcp-body .page-text {
+  background-color: #F7F6F6;
+  margin-bottom: 10px;
+  padding: 10px;
+}
 .crm-container .crm-pcp-manage .btn-donate {
   font-family: "Bliss Pro Heavy", Impact, sans-serif;
   text-transform: uppercase;
@@ -77,15 +98,11 @@
   border-bottom: 3px solid #b52e28;
   color: white;
   text-align: center;
-  width: 260px;
+  width: 222px;
   height: 46px;
-
-  /*
   display: block;
-  position: absolute;
-  bottom: 6px;
-  right: 10px;
-  padding: 0;
-  margin: 0;
-  */
+  border-radius: 12px;
+}
+.crm-container .crm-pcp-manage .btn-donate > a {
+  color: #ffffff;
 }
