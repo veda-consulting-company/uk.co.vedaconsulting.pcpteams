@@ -8,7 +8,7 @@
         <img width="150" height="150" src="{$profilePicUrl}">
       {/if}
     </div>
-    <div id="pcp_title-{$pcpinfo.id}" class="title crm-pcp-inline-edit">{$pcpinfo.title}</div>
+    <div id="pcp_title" class="title crm-pcp-inline-edit">{$pcpinfo.title}</div>
     <div class="stats">
       <div class="raised-total">
         <span class="amount">{$pcpinfo.amount_raised}</span>
@@ -16,7 +16,7 @@
       </div> 
       <div class="target">
         <span class="text">Of target</span>
-        <div id="pcp_goal_amount-{$pcpinfo.id}" class="amount crm-pcp-inline-edit">{$pcpinfo.goal_amount}</span></div>
+        <div id="pcp_goal_amount" class="amount crm-pcp-inline-edit">{$pcpinfo.goal_amount}</span></div>
       </div> 
     </div>
   </div>
@@ -27,14 +27,14 @@
       <div class="colheader">
         <h2>Totaliser</h2>
       </div>
-      <div id="pcp_intro_text-{$pcpinfo.id}" class="intro-text crm-pcp-inline-edit" data-edit-params='{ldelim}"cid": "{$contactId}", "class_name": "CRM_Contact_Form_Inline_ContactInfo"{rdelim}'>{$pcpinfo.intro_text}</div>
+      <div id="pcp_intro_text" class="intro-text crm-pcp-inline-edit" data-edit-params='{ldelim}"cid": "{$contactId}", "class_name": "CRM_Contact_Form_Inline_ContactInfo"{rdelim}'>{$pcpinfo.intro_text}</div>
     
-      <div id="pcp_page_text-{$pcpinfo.id}" class="page-text crm-pcp-inline-edit">{$pcpinfo.page_text}</div>
+      <div id="pcp_page_text" class="page-text crm-pcp-inline-edit">{$pcpinfo.page_text}</div>
     </div>
     <div class="givetoname">
       <div class="colheader">
         <div class="btn-donate">
-          <a href="/dfp/donate/59772/nojs"><span id="donate_link_text-{$pcpinfo.id}" class="crm-pcp-inline-btn-edit">Donate</span></a>
+          <a href="/dfp/donate/59772/nojs"><span id="donate_link_text" class="crm-pcp-inline-btn-edit">Donate</span></a>
         </div>
       </div>
       <div class="rank">
@@ -67,6 +67,7 @@ CRM.$(function($) {
     //style     : 'inherit',
     cancel    : 'Cancel',
     submit    : 'OK',
+    submitdata: {pcp_id: {/literal}{$pcpinfo.id}{literal}},
     tooltip   : 'Click to edit..',
     indicator : 'Saving..',//'<img src="http://www.appelsiini.net/projects/jeditable/img/indicator.gif">',
     callback  : function( editedValue ){
@@ -85,23 +86,6 @@ CRM.$(function($) {
     $(this).css("border", "none");
   }
   $('.crm-pcp-inline-btn-edit').editable(apiUrl, editparams);
-    /*
-  $('.crm-pcp-inline-edit').editable(apiUrl, {
-    type      : 'text',
-    //cssclass  : 'crm-form-textarea',
-    //style     : 'inherit',
-    cancel    : 'Cancel',
-    submit    : 'OK',
-    tooltip   : 'Click to edit..',
-    indicator : 'Saving..',//'<img src="http://www.appelsiini.net/projects/jeditable/img/indicator.gif">',
-    "callback"  : function( editedValue ){
-       var editedId = cj(this).attr('id');
-       $(this).html(editedValue);
-       $(this).css("background", "#F7F6F6");
-       $(this).css("border", "none");
-     }
-  });
-  */
   $('.crm-pcp-inline-edit').mouseover(function(){
     $(this).css("background", "#E5DEDE");
     $(this).css("border", "2px dashed #c4c4c4");

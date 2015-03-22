@@ -73,12 +73,11 @@ class CRM_Pcpteams_Page_AJAX {
   }
   
   static function inlineEditorAjax(){
-    $editedField = $_POST['id'];
-    //explode id
-    $explodedVal = explode('-', $editedField);
-    $columnfield = str_replace('pcp_', '', $explodedVal[0]);
-    $pcpId       = $explodedVal[1];
-    $editedValue = $_POST['value'];
+    $eleId       = CRM_Utils_Type::escape($_POST['id'], 'String');
+    $pcpId       = CRM_Utils_Type::escape($_POST['pcp_id'], 'Integer');
+    $editedValue = CRM_Utils_Type::escape($_POST['value'], 'String');
+    $columnfield = str_replace('pcp_', '', $eleId);
+
     $params      = array(
       'version' => 3,
       'id'      => $pcpId,
