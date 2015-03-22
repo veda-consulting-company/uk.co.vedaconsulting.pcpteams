@@ -34,7 +34,7 @@
     <div class="givetoname">
       <div class="colheader">
         <div class="btn-donate">
-          <a href="/dfp/donate/59772/nojs">Donate</a>
+          <a href="/dfp/donate/59772/nojs"><span id="donate_link_text-{$pcpinfo.id}" class="crm-pcp-inline-btn-edit">Donate</span></a>
         </div>
       </div>
       <div class="rank">
@@ -60,27 +60,66 @@
 {literal}
 <script type="text/javascript">
 CRM.$(function($) {
-    var apiUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='className=CRM_Pcpteams_Page_AJAX&fnName=inlineEditorAjax&snippet=6&json=1'}";{literal}
-    $('.crm-pcp-inline-edit').editable(apiUrl, {
-         type      : 'text',
-         cssclass  : 'crm-form-textarea',
-         cancel    : 'Cancel',
-         submit    : 'OK',
-         indicator : '<img src="http://www.appelsiini.net/projects/jeditable/img/indicator.gif">',
-         "callback"  : function( editedValue ){
-            var editedId = cj(this).attr('id');
-            cj(this).html(editedValue);
-          }
-    });
-    $('.crm-pcp-inline-edit').mouseover(function(){
-      $(this).css("background", "#E5DEDE");
-      $(this).css("border", "2px dashed #c4c4c4");
-      $(this).css("border-radius", "10px");
-    });
-    $('.crm-pcp-inline-edit').mouseout(function(){
-      $(this).css("background", "#F7F6F6");
-      $(this).css("border", "none");
-    });
+  var apiUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='className=CRM_Pcpteams_Page_AJAX&fnName=inlineEditorAjax&snippet=6&json=1'}";{literal}
+  var editparams = {
+    type      : 'text',
+    //cssclass  : 'crm-form-textarea',
+    //style     : 'inherit',
+    cancel    : 'Cancel',
+    submit    : 'OK',
+    tooltip   : 'Click to edit..',
+    indicator : 'Saving..',//'<img src="http://www.appelsiini.net/projects/jeditable/img/indicator.gif">',
+    callback  : function( editedValue ){
+       var editedId = cj(this).attr('id');
+       $(this).html(editedValue);
+       $(this).css("background", "#F7F6F6");
+       $(this).css("border", "none");
+     }
+  }
+  $('.crm-pcp-inline-edit').editable(apiUrl, editparams);
+
+  editparams['callback'] = function( editedValue ){
+    var editedId = cj(this).attr('id');
+    $(this).html(editedValue);
+    $(this).css("background", "#e0001a");
+    $(this).css("border", "none");
+  }
+  $('.crm-pcp-inline-btn-edit').editable(apiUrl, editparams);
+    /*
+  $('.crm-pcp-inline-edit').editable(apiUrl, {
+    type      : 'text',
+    //cssclass  : 'crm-form-textarea',
+    //style     : 'inherit',
+    cancel    : 'Cancel',
+    submit    : 'OK',
+    tooltip   : 'Click to edit..',
+    indicator : 'Saving..',//'<img src="http://www.appelsiini.net/projects/jeditable/img/indicator.gif">',
+    "callback"  : function( editedValue ){
+       var editedId = cj(this).attr('id');
+       $(this).html(editedValue);
+       $(this).css("background", "#F7F6F6");
+       $(this).css("border", "none");
+     }
+  });
+  */
+  $('.crm-pcp-inline-edit').mouseover(function(){
+    $(this).css("background", "#E5DEDE");
+    $(this).css("border", "2px dashed #c4c4c4");
+    $(this).css("border-radius", "10px");
+  });
+  $('.crm-pcp-inline-edit').mouseout(function(){
+    $(this).css("background", "#F7F6F6");
+    $(this).css("border", "none");
+  });
+  $('.crm-pcp-inline-btn-edit').mouseover(function(){
+    $(this).css("background", "rgb(19, 18, 18)");
+    $(this).css("border", "2px dashed #c4c4c4");
+    $(this).css("border-radius", "10px");
+  });
+  $('.crm-pcp-inline-btn-edit').mouseout(function(){
+    $(this).css("background", "#e0001a");
+    $(this).css("border", "none");
+  });
 });
 </script>
 {/literal}

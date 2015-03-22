@@ -105,4 +105,7 @@
 }
 .crm-container .crm-pcp-manage .btn-donate > a {
   color: #ffffff;
+  /* to make whole button clickable, not just the text*/
+  display: inline-block;
+  width: 100%;
 }
