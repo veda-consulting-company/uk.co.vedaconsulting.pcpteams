@@ -7,21 +7,25 @@ require_once 'CRM/Core/Form.php';
  * Civi 4.5
  * Extends Core Form Controller.
  */
-class CRM_Pcpteams_Form_EventSearch extends CRM_Core_Form {
+class CRM_Pcpteams_Form_EventJoin {
 
-  function preProcess() {
+  function preProcess(&$form) {
     CRM_Utils_System::setTitle(ts('Event Search'));
   }
+  
+  static function setDefaultValues(&$form) {
+   
+  }
 
-  function buildQuickForm() {
-    $this->_pageId = $this->controller->get('pageId');
-    $eventId = $this->addEntityRef('event_id', ts('Event Name'), array(
+  function buildQuickForm(&$form) {
+    $form->_pageId = $form->controller->get('pageId');
+    $eventId = $form->addEntityRef('event_id', ts('Event Name'), array(
        'entity' => 'event',
        'placeholder' => ts('- any -'),
        'select' => array('minimumInputLength' => 0),
      ));
     
-    $this->addButtons(array(
+    $form->addButtons(array(
       array(
         'type' => 'next',
         'name' => ts('Continue'),
@@ -30,14 +34,13 @@ class CRM_Pcpteams_Form_EventSearch extends CRM_Core_Form {
     ));
 
     // export form elements
-    $this->assign('elementNames', $this->getRenderableElementNames());
-    parent::buildQuickForm();
+    $form->assign('elementNames', $this->getRenderableElementNames());
   }
 
-  function postProcess() {
-    $values  = $this->exportValues();
+  function postProcess(&$form) {
+    $values  = $form->exportValues();
     $eventId = $values['event_id'];
-    $this->set('pageId', $eventId);
+    $form->set('pageId', $eventId);
   }
 
   /**
@@ -45,7 +48,7 @@ class CRM_Pcpteams_Form_EventSearch extends CRM_Core_Form {
    *
    * @return array (string)
    */
-  function getRenderableElementNames() {
+  function getRenderableElementNames(&$form) {
     $elementNames = array();
     foreach ($this->_elements as $element) {
       /** @var HTML_QuickForm_Element $element */
