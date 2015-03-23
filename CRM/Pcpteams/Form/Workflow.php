@@ -10,12 +10,33 @@ require_once 'CRM/Core/Form.php';
 class CRM_Pcpteams_Form_Workflow extends CRM_Core_Form {
 
   function preProcess() {
+    if (!CRM_Utils_Array::value('pageId', $_GET)) {
+      // already initialized
+      return TRUE;
+    }
     $session          = CRM_Core_Session::singleton();
     $config           = CRM_Core_Config::singleton();
-    $this->_action    = CRM_Utils_Request::retrieve('action', 'String', $this, FALSE);
-    $this->_pageId    = CRM_Utils_Request::retrieve('pageId', 'Positive', $this);
     $this->_tpId      = CRM_Utils_Request::retrieve('tpId', 'Positive', $this);
     $this->_code      = CRM_Utils_Request::retrieve('code', 'String', $this);
+
+    if (!$session->get('userID')) {
+      $code  = $this->_code;
+      $query = '?pageId=16&component=event';
+      if($this->_tpId){
+        $query  = "&tpId={$this->_tpId}";
+        $code   = "cpftn";
+      }
+      if($code) {
+        $query .= "&code={$code}";
+      }
+      // FIXME: only valid for drupal
+      $url  = CRM_Utils_System::url('user', 'destination=civicrm/pcp/support');
+      $url .= urlencode($query);
+      CRM_Utils_System::redirect($url);
+    }
+
+    $this->_action    = CRM_Utils_Request::retrieve('action', 'String', $this, FALSE);
+    $this->_pageId    = CRM_Utils_Request::retrieve('pageId', 'Positive', $this);
     $this->_component = CRM_Utils_Request::retrieve('component', 'String', $this);
     $this->_id        = CRM_Utils_Request::retrieve('id', 'Positive', $this);
 
@@ -57,30 +78,6 @@ class CRM_Pcpteams_Form_Workflow extends CRM_Core_Form {
 
     $this->assign('pcpComponent', $this->_component);
 
-    if ($this->_single) {
-      CRM_Utils_System::setTitle(ts('Update Contact Information'));
-    }
-
-    if (!$session->get('userID')) {
-      $code  = $this->_code;
-      $query = '?pageId=16&component=event';
-      if($this->_tpId){
-        $query  = "&tpId={$this->_tpId}";
-        $code   = "cpftn";
-      }
-      if($code) {
-        $query .= "&code={$code}";
-      }
-      // FIXME: only valid for drupal
-      $url  = CRM_Utils_System::url('user', 'destination=civicrm/pcp/support');
-      $url .= urlencode($query);
-      CRM_Utils_System::redirect($url);
-    }
-
-    // push context only for the first time, when url has params
-    if (CRM_Utils_Request::retrieve('pageId', 'Positive', CRM_Core_DAO::$_nullArray) || 
-      CRM_Utils_Request::retrieve('tpId', 'Positive', CRM_Core_DAO::$_nullArray)) {
-      $session->pushUserContext(CRM_Utils_System::url('civicrm/pcp/dashboard', 'reset=1'));
-    }
+    $session->pushUserContext(CRM_Utils_System::url('civicrm/pcp/dashboard', 'reset=1'));
   }
 }
