@@ -45,17 +45,13 @@
         </div>
       </div>
       <div class="rank">
-        Name is #37 out of the 107 fundraisers taking part in event.
+        This Page is <strong>{$rankInfo.rank}<small>{$rankInfo.suffix}</small></strong> out of the <strong>{$rankInfo.pageCount}</strong> fundraisers taking part in event.
       </div>
-      <div class="top-donations">
-        Name has doanted £950
-      </div>
-      <div class="top-donations">
-        Name has doanted £100
-      </div>
-      <div class="top-donations">
-        Name has doanted £50
-      </div>
+      {foreach from=$donationInfo item=donations}
+        <div class="top-donations">
+          {$donations.display_name} has donated <strong> {$donations.total_amount|crmMoney} </strong>
+        </div>
+      {/foreach}
     </div>
     <div class="clear">
     </div>
