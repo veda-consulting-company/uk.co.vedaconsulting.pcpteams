@@ -1,6 +1,6 @@
 <div class="view-content">
 
-  {if $relatedContact}
+  {if $teamMemberInfo}
     <div id="ltype">
       {strip}
 
@@ -12,12 +12,12 @@
           <th>{ts}Action{/ts}</th>
         </tr>
 
-        {foreach from=$relatedContact item=row}
+        {foreach from=$teamMemberInfo item=row}
         <tr class="{cycle values='odd-row,even-row'}">
-              <td class="bold">{$row.name}</td>
-              <td>{ts}FIXME{/ts}</td>
-              <td>{ts}FIXME{/ts}</td>
-              <td>{ts}FIXME{/ts}</td>
+              <td class="bold">{$row.teamName}</td>
+              <td class="bold">{$row.memberName}</td>
+              <td class="bold">{$row.type}</td>
+              <td class="bold">{$row.action}</td>
         </tr>
         {/foreach}
       </table>
@@ -31,3 +31,29 @@
   {/if}
 
 </div>
+{literal}
+<script type="text/javascript">
+    function removeTeamMember(entityId, pcpId, teampcpId){
+        var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=removeTeamMember' }"{literal};
+        cj.ajax({ 
+            url     : dataUrl,
+            type    : 'post',
+            data    : {entity_id : entityId, pcp_id : pcpId, team_pcp_id : teampcpId },
+            success : function( data ) {
+                cj(document).ajaxStop(function() { location.reload(true); });
+            }
+        });
+    }
+    function deactivateTeamMember(entityId, pcpId, teampcpId){
+        var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=deactivateTeamMember' }"{literal};
+        cj.ajax({ 
+           url     : dataUrl,
+           type    : 'post',
+           data    : {entity_id : entityId, pcp_id : pcpId, team_pcp_id : teampcpId },
+           success : function( data ) {
+              cj(document).ajaxStop(function() { location.reload(true); });
+           }
+        });
+    }
+</script>
+{/literal}

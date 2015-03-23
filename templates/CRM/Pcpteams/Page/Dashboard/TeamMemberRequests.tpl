@@ -40,31 +40,27 @@
 
   {literal}
 <script type="text/javascript">
-  function approveTeamMember(entityId, pcpId){
-             var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=approveTeamMember' }"{literal};
-             cj.ajax({ 
-                url     : dataUrl,
-                type    : 'post',
-                data    : {entity_id : entityId, pcp_id : pcpId },
-                success : function( data ) {
-                    cj(document).ajaxStop(function() { location.reload(true); });
-                }
-             });
-            
-   
-  }
-  function declineTeamMember(entityId){
-             var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=declineTeamMember' }"{literal};
-             cj.ajax({ 
-                url     : dataUrl,
-                type    : 'post',
-                data    : {entity_id : entityId},
-                success : function( data ) {
-                    cj(document).ajaxStop(function() { location.reload(true); });
-                }
-             });
-            
-   
-  }
+    function approveTeamMember(entityId, pcpId){
+        var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=approveTeamMember' }"{literal};
+        cj.ajax({ 
+           url     : dataUrl,
+           type    : 'post',
+           data    : {entity_id : entityId, pcp_id : pcpId },
+           success : function( data ) {
+               cj(document).ajaxStop(function() { location.reload(true); });
+           }
+        });
+    }
+    function declineTeamMember(entityId){
+        var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=declineTeamMember' }"{literal};
+        cj.ajax({ 
+           url     : dataUrl,
+           type    : 'post',
+           data    : {entity_id : entityId},
+           success : function( data ) {
+               cj(document).ajaxStop(function() { location.reload(true); });
+           }
+        });
+    }
 </script>
 {/literal}
