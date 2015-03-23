@@ -452,7 +452,9 @@ function civicrm_api3_pcpteams_getMyPendingTeam($params) {
     $teamContactIds[] = $teamDao->team_contact_id;
   }
   $sTeamIds = implode(', ', array_filter($teamContactIds));
-  
+  if(empty($sTeamIds)) {
+    return;
+  }
   $query = "
     SELECT  ce.title    as page_title 
     , cp.id             as pcp_id  
@@ -505,6 +507,9 @@ function civicrm_api3_pcpteams_getTeamRequest($params) {
       $teamMemberContactIds[$teamMemberQueryDao->activity_id] = $teamMemberQueryDao->team_member_contact_id;
     }
     $steamMemberContactIds = implode(', ', array_filter($teamMemberContactIds));
+    if(empty($steamMemberContactIds)) {
+      return;
+    }
     $query = "
       SELECT  ce.title    as page_title 
       , cp.id             as pcp_id  
