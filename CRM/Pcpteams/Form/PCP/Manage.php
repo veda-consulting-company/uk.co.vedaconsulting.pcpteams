@@ -45,7 +45,8 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
       $imageUrl = CRM_Utils_System::url('civicrm/file',"reset=1&id=$fileId&eid={$pcpId}"); 
       return $imageUrl;
     }
-    return CRM_Pcpteams_Constant::C_DEFAULT_PROFILE_PIC;
+    $config = CRM_Core_Config::singleton();
+    return $config->extensionsURL.'/'.CRM_Pcpteams_Constant::C_DEFAULT_PROFILE_PIC;
   }
   
   /**

@@ -23,6 +23,6 @@
           C_CF_GROUP_JOIN         = 'PCP Group Join',             //  Optionvalue - Group Join
           C_CF_TRIBUTE_JOIN       = 'PCP Tribute Join',           //  Optionvalue - Tribute Join
           C_CONTACT_SUB_TYPE      = 'Team',                     //  Contact Sub Type - Team
-          C_DEFAULT_PROFILE_PIC   = 'http://vedaconsulting_llr_v1.llrdev.org.uk/custom_civicrm/extensions/uk.co.vedaconsulting.pcpteams/img/avatar.jpeg';
+          C_DEFAULT_PROFILE_PIC   = 'uk.co.vedaconsulting.pcpteams/img/avatar.jpeg';
  }
 ?>

@@ -16,7 +16,7 @@
       </div> 
       <div class="target">
         <span class="text">Of target</span>
-        <div id="pcp_goal_amount" class="amount crm-pcp-inline-edit">{$pcpinfo.goal_amount}</span></div>
+        <div id="pcp_goal_amount" class="amount crm-pcp-inline-edit">{$pcpinfo.goal_amount|crmMoney}</div>
       </div> 
     </div>
   </div>
