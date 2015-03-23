@@ -18,10 +18,11 @@ class CRM_Pcpteams_Form_Workflow extends CRM_Core_Form {
     $config           = CRM_Core_Config::singleton();
     $this->_tpId      = CRM_Utils_Request::retrieve('tpId', 'Positive', $this);
     $this->_code      = CRM_Utils_Request::retrieve('code', 'String', $this);
+    $this->_pageId    = CRM_Utils_Request::retrieve('pageId', 'Positive', $this);
 
     if (!$session->get('userID')) {
       $code  = $this->_code;
-      $query = '?pageId=16&component=event';
+      $query = "?pageId={$this->_pageId}&component=event";
       if($this->_tpId){
         $query  = "&tpId={$this->_tpId}";
         $code   = "cpftn";
@@ -36,7 +37,6 @@ class CRM_Pcpteams_Form_Workflow extends CRM_Core_Form {
     }
 
     $this->_action    = CRM_Utils_Request::retrieve('action', 'String', $this, FALSE);
-    $this->_pageId    = CRM_Utils_Request::retrieve('pageId', 'Positive', $this);
     $this->_component = CRM_Utils_Request::retrieve('component', 'String', $this);
     $this->_id        = CRM_Utils_Request::retrieve('id', 'Positive', $this);
 

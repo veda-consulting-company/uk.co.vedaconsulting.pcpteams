@@ -96,7 +96,6 @@ class CRM_Pcpteams_Page_AJAX {
       'id'         => $entity_id,
       'is_active'  => 1,
       ));
-      CRM_Core_Error::debug_var('$updatedResult', $updatedResult);
     if(!civicrm_error($updatedResult)){
       $result = civicrm_api('Pcpteams', 
         'getcontactpcp', 
