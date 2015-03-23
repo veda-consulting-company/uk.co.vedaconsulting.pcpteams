@@ -46,7 +46,7 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
       return $imageUrl;
     }
     $config = CRM_Core_Config::singleton();
-    return $config->extensionsURL.'/'.CRM_Pcpteams_Constant::C_DEFAULT_PROFILE_PIC;
+    return CRM_Pcpteams_Constant::C_DEFAULT_PROFILE_PIC;
   }
   
   /**

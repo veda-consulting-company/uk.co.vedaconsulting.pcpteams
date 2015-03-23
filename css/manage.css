@@ -2,7 +2,7 @@
 .crm-container .crm-pcp-manage div {
   border: 1px solid black;
 }
- */
+*/
 .crm-container .crm-pcp-manage .pcp-panel {
   min-height: 191px;
   background-color: #F7F6F6;
@@ -84,10 +84,17 @@
   margin-bottom: 10px;
 }
 .crm-container .crm-pcp-manage .pcp-body .intro-text,
-.crm-container .crm-pcp-manage .pcp-body .page-text {
+.crm-container .crm-pcp-manage .pcp-body .page-text,
+.crm-container .crm-pcp-manage .pcp-body .team-section {
   background-color: #F7F6F6;
   margin-bottom: 10px;
   padding: 10px;
+}
+.crm-container .crm-pcp-manage .pcp-body .team-section .text {
+  display: block;
+}
+.crm-container .crm-pcp-manage .pcp-body .team-section .crm-submit-buttons {
+  margin-top: 15px;
 }
 .crm-container .crm-pcp-manage .btn-donate {
   font-family: "Bliss Pro Heavy", Impact, sans-serif;
