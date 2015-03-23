@@ -28,6 +28,10 @@ class CRM_Pcpteams_Form_EventQuery extends CRM_Pcpteams_Form_Workflow {
     $this->assign('elementNames', $this->getRenderableElementNames());
   }
 
+  function postProcess() {
+    $values = $this->exportValues();
+    $this->set("workflowTeam", $values['teamOption']);
+ }
   /**
    * Get the fields/elements defined in this form.
    *
