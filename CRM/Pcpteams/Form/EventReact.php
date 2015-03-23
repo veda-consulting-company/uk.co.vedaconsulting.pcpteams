@@ -10,7 +10,7 @@ class CRM_Pcpteams_Form_EventReact extends CRM_Pcpteams_Form_Workflow {
   function preProcess() {
     parent::preProcess();
     $workflowEvent   = $this->get("workflowEvent");
-    if ($workflowEvent) {
+    if (isset($workflowEvent)) {
       $this->_reactToFile = $this->getEventReactFile($workflowEvent);
     } else {
       $option = CRM_Utils_Request::retrieve('option', 'String', CRM_Core_DAO::$_nullObject);
@@ -59,7 +59,7 @@ class CRM_Pcpteams_Form_EventReact extends CRM_Pcpteams_Form_Workflow {
   
   function getEventReactFile($workflowEvent){
    switch ($workflowEvent) {
-      case '1':
+      case '0':
         return 'EventCreate';
         break;
       
