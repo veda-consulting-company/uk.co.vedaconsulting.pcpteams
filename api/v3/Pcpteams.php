@@ -702,3 +702,89 @@ function civicrm_api3_pcpteams_getEventList($params) {
   return civicrm_api3_create_success($result, $params, 'pcpteams');
 
 }
+
+
+function civicrm_api3_pcpteams_getRank($params) {
+  $dao = new CRM_PCP_DAO_PCP();
+  $dao->page_id = $params['page_id'];
+  
+  //dao result
+  $result = @_civicrm_api3_dao_to_array($dao);
+  $pcpAmounts = array();
+  foreach ($result as $pcps) {
+    $pcpAmounts[$pcps['id']] = CRM_PCP_BAO_PCP::thermoMeter($pcps['id']);
+  }
+  
+  //remove pcps doesn't have donations
+  arsort($pcpAmounts);
+  
+  //get count the pages has donations 
+  $hasDonations = count(array_filter($pcpAmounts));
+  
+  //check this pcp has some donations
+  if ($pcpAmounts[$params['pcp_id']] == null) {
+    $rank = $hasDonations + 1;
+  }else{
+    $rank = array_search($params['pcp_id'], array_keys($pcpAmounts)) + 1;
+  }
+  
+  switch ($rank % 10) {
+    // Handle 1st, 2nd, 3rd
+    case 1:  $suffix = 'st'; break;
+    case 2:  $suffix = 'nd'; break;
+    case 3:  $suffix = 'rd'; break;
+    default: $suffix = 'th'; break;
+  }
+  
+  $rankResult[$params['page_id']]['rank']         = $rank;
+  $rankResult[$params['page_id']]['suffix']       = $suffix;
+  $rankResult[$params['page_id']]['pcp_id']       = $params['pcp_id'];
+  $rankResult[$params['page_id']]['rankHolder']   = $result[$params['pcp_id']]['title'];
+  $rankResult[$params['page_id']]['pageCount']    = count($result);
+  $rankResult[$params['page_id']]['hasDonations'] = $hasDonations;
+  $rankResult[$params['page_id']]['noDonations']  = count($result) - $hasDonations ;
+      
+  $result = $rankResult;
+  return civicrm_api3_create_success($result, $params);
+}
+
+function _civicrm_api3_pcpteams_getRank_spec(&$params) {
+  $params['page_id']['api.required'] = 1;
+  $params['pcp_id']['api.required'] = 1;
+}
+
+function civicrm_api3_pcpteams_getTopDonations($params) {
+  if($params['limit']){
+    $limit = "LIMIT 0, {$params['limit']}";
+  }else{
+    $limit = "LIMIT 0, 5";
+  }
+  $query = "
+    SELECT cpb.target_entity_id 
+    , cct.id            as contribution_id
+    , cct.contact_id    as contact_id
+    , cct.total_amount  as total_amount
+    , cc.display_name   as display_name
+    FROM civicrm_pcp_block cpb
+    LEFT JOIN civicrm_contribution cct on (cct.contribution_page_id = cpb.target_entity_id )
+    LEFT JOIN civicrm_contact cc on (cc.id = cct.contact_id)
+    WHERE cpb.entity_id = %1 AND cct.id IN ( SELECT contribution_id FROM civicrm_contribution_soft WHERE pcp_id = %2)
+    ORDER BY cct.total_amount DESC
+    {$limit}
+  ";
+  $queryParams = array(
+    1 => array($params['page_id'], 'Integer'),
+    2 => array($params['pcp_id'], 'Integer'),
+  );
+  $dao = CRM_Core_DAO::executeQuery($query, $queryParams);
+  while ($dao->fetch()) {
+    $result[$dao->contribution_id] = $dao->toArray();
+  }
+
+  return civicrm_api3_create_success($result, $params);
+}
+
+function _civicrm_api3_pcpteams_getTopDonations_spec(&$params) {
+  $params['page_id']['api.required'] = 1;
+  $params['pcp_id']['api.required'] = 1;
+}

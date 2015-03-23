@@ -88,6 +88,29 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
       CRM_Core_Error::fatal(ts('Unable to Find Contact Record for this PCP. Please check the pcp id is valid...'));
     }
     
+    //Fundraising Rank    
+    //pcpId and Event (page) Id is required Field
+    $aRankResult = civicrm_api('pcpteams', 'getRank', array(
+      'version' => 3
+      , 'sequential'  => 1
+      , 'pcp_id'      => $pcpId
+      , 'page_id'     => $pcpDetails['page_id']
+      )
+    );
+    $this->assign('rankInfo', $aRankResult['values'][0]);
+
+    //Top Donations    
+    //pcpId and Event (page) Id is required Field
+    $aDonationResult = civicrm_api('pcpteams', 'getTopDonations', array(
+      'version' => 3
+      , 'sequential'  => 1
+      , 'pcp_id'      => $pcpId
+      , 'page_id'     => $pcpDetails['page_id']
+      , 'limit'       => 10
+      )
+    );
+    $this->assign('donationInfo', $aDonationResult['values']);
+    
     // check the contact Type
     $aContactTypes   = CRM_Contact_BAO_Contact::getContactTypes( $pcpDetails['contact_id'] );
     $isIndividualPcp = in_array('Individual', $aContactTypes) ? TRUE : FALSE;
