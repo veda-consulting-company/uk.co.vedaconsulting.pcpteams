@@ -88,11 +88,11 @@
   </CustomFields>
   <RelationshipTypes>
     <RelationshipType>
-      <name_a_b>Team Member of</name_a_b>
-      <label_a_b>Team Member of</label_a_b>
-      <name_b_a>Team Member is</name_b_a>
-      <label_b_a>Team Member is</label_b_a>
-      <description>Team Member Relationship</description>
+      <name_a_b>PCP Team Member of</name_a_b>
+      <label_a_b>PCP Team Member of</label_a_b>
+      <name_b_a>PCP Team Member is</name_b_a>
+      <label_b_a>PCP Team Member is</label_b_a>
+      <description>PCP Team Member Relationship</description>
       <contact_type_a>Individual</contact_type_a>
       <contact_type_b>Organization</contact_type_b>
       <contact_sub_type_a>NULL</contact_sub_type_a>
@@ -100,11 +100,11 @@
       <is_active>1</is_active>
     </RelationshipType>    
     <RelationshipType>
-      <name_a_b>Team Admin of</name_a_b>
-      <label_a_b>Team Admin of</label_a_b>
-      <name_b_a>Team Admin is</name_b_a>
-      <label_b_a>Team Admin is</label_b_a>
-      <description>Team Admin Relationship</description>
+      <name_a_b>PCP Team Admin of</name_a_b>
+      <label_a_b>PCP Team Admin of</label_a_b>
+      <name_b_a>PCP Team Admin is</name_b_a>
+      <label_b_a>PCP Team Admin is</label_b_a>
+      <description>PCP Team Admin Relationship</description>
       <contact_type_a>Individual</contact_type_a>
       <contact_type_b>Organization</contact_type_b>
       <contact_sub_type_a>NULL</contact_sub_type_a>

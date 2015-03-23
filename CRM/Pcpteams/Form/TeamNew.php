@@ -11,6 +11,18 @@ class CRM_Pcpteams_Form_TeamNew {
     if (!$form->get('page_id')) {
       CRM_Core_Error::fatal(ts("Can't determine pcp id."));
     }
+    
+    //Find the component_page_id from URL
+    if(!$form->get('component_page_id')){
+      $componentPageId = CRM_Utils_Request::retrieve('pageId', 'Positive', CRM_Core_DAO::$_nullArray, TRUE);
+      $form->set('component_page_id', $componentPageId);
+    }
+    
+    //If not found by URL then find component Page id from DB using PCP id
+    if(!$form->get('component_page_id')){
+      $componentPageId = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $form->get('page_id'), 'page_id');
+      $form->set('component_page_id', $componentPageId);
+    }
   }
 
   static function buildQuickForm(&$form) {
@@ -57,9 +69,9 @@ class CRM_Pcpteams_Form_TeamNew {
                 'api.Email.create' => $email,
                 );
     $createTeam = civicrm_api3('Contact', 'create', $params);
-
     // Create Dummy Team PCP Page
     $teamPcpId = CRM_Pcpteams_Utils::createDefaultPcp($createTeam['id'], $form->get('component_page_id'));
+
     // Create/Update custom record with team pcp id and create relationship with user as Team Admin
     if($teamPcpId) {
       $userId = CRM_Pcpteams_Utils::getloggedInUserId();

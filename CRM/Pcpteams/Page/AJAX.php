@@ -55,7 +55,7 @@ class CRM_Pcpteams_Page_AJAX {
   }
   
   static function unsubscribeTeam(){
-    $entity_id    = $_POST['entity_id'];
+    $entity_id    = CRM_Utils_Type::escape($_POST['entity_id'], 'Integer');
     $teamPcpCfId  = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId(); 
     $params = array(
       'version'   => 3,
@@ -89,8 +89,8 @@ class CRM_Pcpteams_Page_AJAX {
   }
     
   static function approveTeamMember(){
-    $entity_id = CRM_Utils_Request::retrieve('entity_id', 'Positive', CRM_Core_DAO::$_nullObject, TRUE);
-    $pcp_id    = CRM_Utils_Request::retrieve('pcp_id', 'Positive', CRM_Core_DAO::$_nullObject, TRUE);
+    $entity_id      = CRM_Utils_Type::escape($_POST['entity_id'], 'Integer');
+    $pcp_id         = CRM_Utils_Type::escape($_POST['pcp_id'], 'Integer');
     $updatedResult  = civicrm_api3('Relationship', 'create', array(
       'sequential' => 1,
       'id'         => $entity_id,
@@ -123,7 +123,7 @@ class CRM_Pcpteams_Page_AJAX {
   }  
   
   static function declineTeamMember(){
-    $entity_id      = $_POST['entity_id'];
+    $entity_id      = CRM_Utils_Type::escape($_POST['entity_id'], 'Integer');
     $updatedResult  = civicrm_api3('Relationship', 'delete', array(
       'sequential' => 1,
       'id'         => $entity_id,

@@ -39,6 +39,8 @@ function civicrm_api3_pcpteams_create($params) {
 
   // since we are allowing html input from the user
   // we also need to purify it, so lets clean it up
+  // $params['pcp_title']      = $pcp['title'];
+  // $params['pcp_contact_id'] = $pcp['contact_id'];
   $htmlFields = array( 'intro_text', 'page_text', 'title' );
   foreach ( $htmlFields as $field ) {
     if ( ! empty($params[$field]) ) {
@@ -66,8 +68,8 @@ function civicrm_api3_pcpteams_create($params) {
   return civicrm_api3_create_success($values, $params, 'Pcpteams', 'create');
 }
 function _civicrm_api3_pcpteams_create_spec(&$params) {
-  $params['pcp_title']['api.required'] = 1;
-  $params['pcp_contact_id']['api.required'] = 1;
+  $params['title']['api.required'] = 1;
+  $params['contact_id']['api.required'] = 1;
 }
 
 function civicrm_api3_pcpteams_get($params) {
