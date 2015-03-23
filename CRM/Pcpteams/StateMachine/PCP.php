@@ -55,8 +55,10 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
     $session->set('singleForm', FALSE);
 
     $pages = array(
-      'cpfpa'  => 'CRM_Pcpteams_Form_PCPAccount',
-      'cpfed'  => 'CRM_Pcpteams_Form_EventDetails',
+      // Note: we might want PCPAccount if other users of extension want the extension to care of user accounting
+      //'cpfpa'  => 'CRM_Pcpteams_Form_PCPAccount', 
+      'cpfeq'  => 'CRM_Pcpteams_Form_EventQuery',
+      'cpfer'  => 'CRM_Pcpteams_Form_EventReact',
       'cpfec'  => 'CRM_Pcpteams_Form_EventConfirm',
       'cpftq'  => 'CRM_Pcpteams_Form_TeamQuery',
       'cpftn'  => 'CRM_Pcpteams_Form_TeamReact',
@@ -158,7 +160,10 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
 
     // if no event or already registered, skip event pages
     if (!$eventId || $controller->get('participantId')) {
-      unset($pages['cpfed'], $pages['cpfec']);
+      unset($pages['cpfec']);
+    }
+    if ('cpfeq' != $step) {
+      unset($pages['cpfeq'], $pages['cpfer']);
     }
 
     if (!$step) {

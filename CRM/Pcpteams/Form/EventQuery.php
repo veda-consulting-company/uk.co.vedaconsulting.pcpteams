@@ -1,27 +1,23 @@
 <?php
 
-require_once 'CRM/Core/Form.php';
-
 /**
  * Search Pcp Team Class
  * Civi 4.5
  * Extends Core Form Controller.
  */
-class CRM_Pcpteams_Form_EventDetails extends CRM_Core_Form {
+class CRM_Pcpteams_Form_EventQuery extends CRM_Pcpteams_Form_Workflow {
 
   function preProcess() {
-    CRM_Utils_System::setTitle(ts('Event Details'));
-
-    $obj = new CRM_Event_Page_EventInfo();
-    $obj->set('id', $this->get('pageId'));
-
-    ob_start();
-    $op = $obj->run();
-    $tvar = $obj->get_template_vars();
-    ob_end_clean();
+    parent::preProcess();
+    CRM_Utils_System::setTitle(ts('Specify Event'));
   }
 
   function buildQuickForm() {
+    $teamOptions = array(
+        ts(' Doing my own event'),
+        ts(' Join an existing event')
+      );
+    $this->addRadio('teamOption', '', $teamOptions, NULL, '<br/><br/>');
     $this->addButtons(array(
       array(
         'type' => 'next',
@@ -29,12 +25,7 @@ class CRM_Pcpteams_Form_EventDetails extends CRM_Core_Form {
         'isDefault' => TRUE,
       ),
     ));
-
-    // export form elements
     $this->assign('elementNames', $this->getRenderableElementNames());
-  }
-
-  function postProcess() {
   }
 
   /**

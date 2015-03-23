@@ -5,17 +5,17 @@
  *
  * @see http://wiki.civicrm.org/confluence/display/CRMDOC43/QuickForm+Reference
  */
-class CRM_Pcpteams_Form_TeamReact extends CRM_Pcpteams_Form_Workflow {
+class CRM_Pcpteams_Form_EventReact extends CRM_Pcpteams_Form_Workflow {
 
   function preProcess() {
     parent::preProcess();
-    $workflowTeam   = $this->get("workflowTeam");
-    if ($workflowTeam) {
-      $this->_reactToFile = $this->getTeamReactFile($workflowTeam);
+    $workflowEvent   = $this->get("workflowEvent");
+    if ($workflowEvent) {
+      $this->_reactToFile = $this->getEventReactFile($workflowEvent);
     } else {
       $option = CRM_Utils_Request::retrieve('option', 'String', CRM_Core_DAO::$_nullObject);
-      $this->set("workflowTeam", $option);
-      $this->_reactToFile = $this->getTeamReactFile($option);
+      $this->set("workflowEvent", $option);
+      $this->_reactToFile = $this->getEventReactFile($option);
     }
     $className = 'CRM_Pcpteams_Form_' . $this->_reactToFile;
     $className::preProcess($this);
@@ -23,7 +23,7 @@ class CRM_Pcpteams_Form_TeamReact extends CRM_Pcpteams_Form_Workflow {
   }
 
   function setDefaultValues() {
-    if($this->_reactToFile == 'TeamJoin'){
+    if($this->_reactToFile == 'EventJoin'){
       $className = 'CRM_Pcpteams_Form_' . $this->_reactToFile;
       $className::setDefaultValues($this);
     }
@@ -57,17 +57,14 @@ class CRM_Pcpteams_Form_TeamReact extends CRM_Pcpteams_Form_Workflow {
     return $elementNames;
   }
   
-  function getTeamReactFile($workflowTeam){
-   switch ($workflowTeam) {
-      case 'invite':
-        return 'TeamInvite';
-        break;      
+  function getEventReactFile($workflowEvent){
+   switch ($workflowEvent) {
       case '1':
-        return 'TeamNew';
+        return 'EventCreate';
         break;
       
       default:
-        return 'TeamJoin';
+        return 'EventJoin';
         break;
     } 
   }  

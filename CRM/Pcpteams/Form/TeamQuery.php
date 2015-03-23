@@ -2,14 +2,14 @@
 
 require_once 'CRM/Core/Form.php';
 
-class CRM_Pcpteams_Form_TeamQuery extends CRM_Core_Form {
+class CRM_Pcpteams_Form_TeamQuery extends CRM_Pcpteams_Form_Workflow {
 
   function preProcess() {
+    parent::preProcess();
     CRM_Utils_System::setTitle(ts('Team Question'));
   }
 
   function buildQuickForm() {
-    $teamOptions = array();
     $teamOptions = array(
         ts(' No, I am doing this event on my own'),
         ts(' Yes, I would like to create my own team'),

@@ -1,15 +1,14 @@
 <?php
 
-require_once 'CRM/Core/Form.php';
-
 /**
  * Search Pcp Team Class
  * Civi 4.5
  * Extends Core Form Controller.
  */
-class CRM_Pcpteams_Form_EventConfirm extends CRM_Core_Form {
+class CRM_Pcpteams_Form_EventConfirm extends CRM_Pcpteams_Form_Workflow {
 
   function preProcess() {
+    parent::preProcess();
     CRM_Utils_System::setTitle(ts('Confirm If you have a place'));
   }
 
