@@ -499,6 +499,9 @@ function civicrm_api3_pcpteams_getTeamRequest($params) {
   
     // Get Team Member Contact Ids for these teams with is_active = 0
     $steamAdminContactIds = implode(', ', array_filter($teamAdminContactIds));
+    if (empty($steamAdminContactIds)) {
+      return array();
+    }
     $relTypeId            = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType',  CRM_Pcpteams_Constant::C_TEAM_RELATIONSHIP_TYPE, 'id', 'name_a_b');
     $teamMemberQuery      = "SELECT `contact_id_a` as team_member_contact_id, id as activity_id FROM `civicrm_relationship` WHERE `is_active` = 0 AND `relationship_type_id` = $relTypeId AND `contact_id_b` IN ( $steamAdminContactIds)";
     $teamMemberQueryDao   = CRM_Core_DAO::executeQuery($teamMemberQuery);
@@ -620,6 +623,9 @@ function civicrm_api3_pcpteams_getTeamMembers($params) {
     //die();
     $validTeamContactIds  = array_intersect($teamPcpContactIds, $teamAdminContactIds);
     $svalidTeamContactIds = implode(', ', $validTeamContactIds);
+    if (empty($validTeamContactIds)) {
+      return array();
+    }
     $findQuery = "SELECT cpcs.team_pcp_id as team_pcp_id, cp_a.id as my_pcp_id, cr.id as activity_id, cr.`contact_id_a` as member, cr.contact_id_b as team, cr.`relationship_type_id` as rel_type_id
                   FROM civicrm_pcp cp
                   LEFT JOIN civicrm_value_pcp_custom_set cpcs on (cpcs.team_pcp_id = cp.id)

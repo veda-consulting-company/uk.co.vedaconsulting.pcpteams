@@ -31,11 +31,12 @@
     
       <div id="pcp_page_text" class="page-text crm-pcp-inline-edit">{$pcpinfo.page_text}</div>
       <div class="team-section">
-        <span class="text">Fundraise more, fundraise as a team Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius. Vestibulum viverra mi dictum odio scelerisque semper. Morbi</span>
-        <div class="crm-submit-buttons">
+        <span class="no-team-text">Fundraise more, fundraise as a team Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius. Vestibulum viverra mi dictum odio scelerisque semper. Morbi</span>
+        <div class="no-team-buttons">
           <a class="button" href="{crmURL p='civicrm/pcp/team/create' q="reset=1&id=`$pcpinfo.id`"}">{ts}Create a Team{/ts}</a>
           <a class="button" href="{crmURL p='civicrm/pcp/team/join' q="reset=1&id=`$pcpinfo.id`"}">{ts}Join a Team{/ts}</a>
         </div>
+        <div class="clear"></div>
       </div>
     </div>
     <div class="givetoname">
@@ -53,8 +54,7 @@
         </div>
       {/foreach}
     </div>
-    <div class="clear">
-    </div>
+    <div class="clear"></div>
   </div>
 
 </div>

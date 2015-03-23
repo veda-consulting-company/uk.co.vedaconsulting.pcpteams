@@ -90,10 +90,10 @@
   margin-bottom: 10px;
   padding: 10px;
 }
-.crm-container .crm-pcp-manage .pcp-body .team-section .text {
+.crm-container .crm-pcp-manage .pcp-body .team-section .no-team-text {
   display: block;
 }
-.crm-container .crm-pcp-manage .pcp-body .team-section .crm-submit-buttons {
+.crm-container .crm-pcp-manage .pcp-body .team-section .no-team-buttons {
   margin-top: 15px;
 }
 .crm-container .crm-pcp-manage .btn-donate {
