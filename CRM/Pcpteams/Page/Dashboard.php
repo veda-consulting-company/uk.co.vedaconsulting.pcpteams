@@ -105,6 +105,7 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
       $pcpInfo = civicrm_api( 'pcpteams', 'getPcpDashboardInfo', array(
           'version'   => 3, 
           'contact_id'=> $this->_contactId,
+          'is_active' => 1,
         )
       );
       $this->assign('pcpInfo', isset($pcpInfo['values']) ? $pcpInfo['values'] : NULL);
@@ -157,6 +158,13 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
         'sectionTitle' => ts('In Active Pages'),
         'weight' => 43,
       );
+      $pcpInactiveInfo = civicrm_api( 'pcpteams', 'getPcpDashboardInfo', array(
+         'version'   => 3, 
+         'contact_id'=> $this->_contactId,
+         'is_active' => 0,
+       )
+     );
+     $this->assign('pcpInactiveInfo', isset($pcpInactiveInfo['values']) ? $pcpInactiveInfo['values'] : NULL);
       
       //Team Members
       $dashboardElements[] = array(
@@ -165,6 +173,12 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
         'sectionTitle' => ts('Team Members'),
         'weight' => 44,
       );
+      $teamMemberInfo = civicrm_api( 'pcpteams', 'getTeamMembers', array(
+          'version'   => 3, 
+          'contact_id'=> $this->_contactId,
+        )
+      );
+      $this->assign('teamMemberInfo', isset($teamMemberInfo['values']) ? $teamMemberInfo['values'] : NULL);
 
     }
     

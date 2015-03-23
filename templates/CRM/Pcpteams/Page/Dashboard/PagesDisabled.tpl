@@ -1,6 +1,6 @@
 <div class="view-content">
 
-  {if $relatedContact}
+  {if $pcpInactiveInfo}
     <div id="ltype">
       {strip}
 
@@ -13,13 +13,13 @@
           <th>{ts}Action{/ts}</th>
         </tr>
 
-        {foreach from=$relatedContact item=row}
-        <tr class="{cycle values='odd-row,even-row'}">
-              <td class="bold">{$row.name}</td>
-              <td>{ts}FIXME{/ts}</td>
-              <td>{ts}FIXME{/ts}</td>
-              <td>{ts}FIXME{/ts}</td>
-              <td>{ts}FIXME{/ts}</td>
+        {foreach from=$pcpInactiveInfo item=row}
+        <tr class="{cycle values="odd-row,even-row"} {$row.class}">
+              <td class="bold"><a href="{crmURL p='civicrm/pcp/info' q="reset=1&id=`$row.pcpId`" a=1}" title="{ts}Preview your Personal Campaign Page{/ts}">{$row.title}</a></td>
+              <td>{$row.page_title}</td>
+              <td align="right">{$row.goal_amount}</td>
+              <td align="right">{$row.amount_raised}</td>
+              <td>{$row.action|replace:'xx':$row.pcpId}</td>
         </tr>
         {/foreach}
       </table>
