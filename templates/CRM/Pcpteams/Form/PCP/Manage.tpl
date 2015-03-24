@@ -3,12 +3,15 @@
 
   <div class="pcp-panel">
     <!-- profile Image -->
-    <div class="profile-avatar">
-      {if $profilePicUrl}
-        <img width="150" height="150" src="{$profilePicUrl}">
-      {/if}
+    <div class="avatar-title-block">
+      <div class="avatar">
+        {if $profilePicUrl}
+          <img width="150" height="150" src="{$profilePicUrl}">
+        {/if}
+      </div>
+      <div id="pcp_title" class="title crm-pcp-inline-edit">{$pcpinfo.title}</div>
+      <div class="clear"></div>
     </div>
-    <div id="pcp_title" class="title crm-pcp-inline-edit">{$pcpinfo.title}</div>
     <div class="stats">
       <div class="raised-total">
         <span class="amount">{$pcpinfo.amount_raised}</span>
@@ -32,7 +35,7 @@
       <div id="pcp_page_text" class="page-text crm-pcp-inline-edit">{$pcpinfo.page_text}</div>
       <div class="team-section">
         {if $pcpinfo.team_pcp_id}
-          <div class="team-avatar">
+          <div class="avatar">
             {if $profilePicUrl}
               <img width="75" height="75" src="{$profilePicUrl}">
             {/if}
