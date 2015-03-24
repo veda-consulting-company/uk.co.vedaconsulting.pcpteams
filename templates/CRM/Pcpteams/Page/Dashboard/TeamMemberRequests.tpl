@@ -7,6 +7,8 @@
       <table class="selector">
         <tr class="columnheader">
           <th>{ts}PCP Page{/ts}</th>
+          <th>{ts}Team Name{/ts}</th>
+          <th>{ts}Team PCP Page{/ts}</th>
           <th>{ts}Contact Name{/ts}</th>
           <th>{ts}Contact Email{/ts}</th>
           <th>{ts}City{/ts}</th>
@@ -18,6 +20,8 @@
         {foreach from=$teamRequestInfo item=row key=entityId}
         <tr class="{cycle values='odd-row,even-row'}"  id="{$entityId}">
               <td class="bold">{$row.member_pcp_title}</td>
+              <td>{$row.team_display_name}</td>
+              <td>{$row.team_pcp_title}</td>
               <td>{$row.member_display_name}</td>
               <td>{$row.member_email}</td>
               <td>{$row.member_city}</td>
@@ -40,12 +44,12 @@
 
   {literal}
 <script type="text/javascript">
-    function approveTeamMember(entityId, pcpId){
+    function approveTeamMember(entityId, pcpId, teampcpId){
         var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=approveTeamMember' }"{literal};
         cj.ajax({ 
            url     : dataUrl,
            type    : 'post',
-           data    : {entity_id : entityId, pcp_id : pcpId },
+           data    : {entity_id : entityId, pcp_id : pcpId, team_pcp_id: teampcpId },
            success : function( data ) {
                cj(document).ajaxStop(function() { location.reload(true); });
            }

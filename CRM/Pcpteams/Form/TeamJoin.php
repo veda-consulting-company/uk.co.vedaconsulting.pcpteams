@@ -11,6 +11,10 @@ class CRM_Pcpteams_Form_TeamJoin {
     if (!$form->get('page_id')) {
       CRM_Core_Error::fatal(ts("Can't determine pcp id."));
     }
+    if(!$form->get('component_page_id')){
+     $componentPageId = CRM_Utils_Request::retrieve('pageId', 'Positive', CRM_Core_DAO::$_nullArray, TRUE);
+     $form->set('component_page_id', $componentPageId);
+    }
   }
 
   static function buildQuickForm(&$form) {
@@ -44,9 +48,16 @@ class CRM_Pcpteams_Form_TeamJoin {
   static function postProcess(&$form) {
     $values = $form->exportValues();
     $teamId = $values['pcp_team_contact'];
+    $teampcpId        = CRM_Pcpteams_Utils::getPcpIdByContactAndEvent($form->get('component_page_id'), $teamId);
     $userId           = CRM_Pcpteams_Utils::getloggedInUserId();
     // Create Team Member of relation to this Team
-    CRM_Pcpteams_Utils::checkORCreateTeamRelationship($userId, $teamId, TRUE);
+    $cfpcpab = CRM_Pcpteams_Utils::getPcpABCustomFieldId();
+    $cfpcpba = CRM_Pcpteams_Utils::getPcpBACustomFieldId();
+    $customParams = array(
+      "custom_{$cfpcpab}" => $form->get('page_id'),
+      "custom_{$cfpcpba}" => $teampcpId
+    );
+    CRM_Pcpteams_Utils::checkORCreateTeamRelationship($userId, $teamId, $customParams, TRUE);
     $form->_teamName  = CRM_Contact_BAO_Contact::displayName($teamId);
     $form->set('teamName', $form->_teamName);
     $form->set('teamContactID', $teamId);

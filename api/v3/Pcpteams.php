@@ -439,7 +439,7 @@ function _getTeamInfoActionLink($entityId, $teamPcpId, $cfTeamPcpId){
     <span class='btn-slide crm-hover-button'>more
       <ul class='panel'>
         <li>
-          <a href='javascript:void(0)' class=\"action-item crm-hover-button\" title='Join Team' onclick='unsubscribeTeam({$entityId});'>Unscbscribe from this Team</a>
+          <a href='javascript:void(0)' class=\"action-item crm-hover-button\" title='Join Team' onclick='unsubscribeTeam({$entityId}, {$teamPcpId});'>Unscbscribe from this Team</a>
         </li>        
       </ul>
     </span>
@@ -510,36 +510,41 @@ function civicrm_api3_pcpteams_getTeamRequest($params) {
       return array();
     }
     $relTypeId            = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType',  CRM_Pcpteams_Constant::C_TEAM_RELATIONSHIP_TYPE, 'id', 'name_a_b');
-    $teamMemberQuery      = "SELECT `contact_id_a` as team_member_contact_id, id as activity_id FROM `civicrm_relationship` WHERE `is_active` = 0 AND `relationship_type_id` = $relTypeId AND `contact_id_b` IN ( $steamAdminContactIds)";
+    $teamMemberQuery      = "SELECT `contact_id_a` as team_member_contact_id, id as relationship_id FROM `civicrm_relationship` WHERE `is_active` = 0 AND `relationship_type_id` = $relTypeId AND `contact_id_b` IN ( $steamAdminContactIds)";
     $teamMemberQueryDao   = CRM_Core_DAO::executeQuery($teamMemberQuery);
     $teamMemberContactIds = array();
     while($teamMemberQueryDao->fetch()) {
-      $teamMemberContactIds[$teamMemberQueryDao->activity_id] = $teamMemberQueryDao->team_member_contact_id;
+      $customRelationQuery = "SELECT pcp_a_b as source_pcp_id, pcp_b_a as destination_pcp_id FROM civicrm_value_pcp_relationship_set WHERE entity_id = {$teamMemberQueryDao->relationship_id}";
+      $customDao = CRM_Core_DAO::executeQuery($customRelationQuery);
+      $customDao->fetch();
+      $teamMemberDetails[] = array('source_pcp_id' => $customDao->source_pcp_id, 'destination_pcp_id' => $customDao->destination_pcp_id, 'relationship_id' => $teamMemberQueryDao->relationship_id);
     }
-    $steamMemberContactIds = implode(', ', array_filter($teamMemberContactIds));
-    if(empty($steamMemberContactIds)) {
-      return;
+    
+    if(empty($teamMemberDetails)) {
+      return array();
     }
-    $query = "
-      SELECT  ce.title    as page_title 
-      , cp.id             as pcp_id  
-      , cp.contact_id     as pcp_contact_id  
-      , cc.display_name   as display_name  
-      , cp.title          as pcp_title  
-      , cp.goal_amount    as pcp_goal_amount  
-      , cl.email          as email  
-      , ca.city           as city
-      , ca.state_province_id    as state  
-      , ca.country_id    as country 
-      FROM civicrm_pcp cp 
-      LEFT JOIN civicrm_event ce ON ce.id = cp.page_id
-      LEFT JOIN civicrm_contact cc ON ( cc.id = cp.contact_id )
-      LEFT JOIN civicrm_email cl ON ( cl.contact_id = cp.contact_id )
-      LEFT JOIN civicrm_address ca ON ( ca.contact_id = cp.contact_id )
-      WHERE cp.contact_id IN ( $steamMemberContactIds )
-    ";
-    $dao = CRM_Core_DAO::executeQuery($query);
-    while($dao->fetch()){
+    foreach($teamMemberDetails as $teamMember) {
+      $query = "
+        SELECT  ce.title    as page_title 
+        , cp.id             as pcp_id  
+        , cp.contact_id     as pcp_contact_id  
+        , cc.display_name   as display_name  
+        , cp.title          as pcp_title  
+        , cp.goal_amount    as pcp_goal_amount  
+        , cl.email          as email  
+        , ca.city           as city
+        , ca.state_province_id    as state  
+        , ca.country_id    as country 
+        FROM civicrm_pcp cp
+        LEFT JOIN civicrm_event ce ON ce.id = cp.page_id
+        LEFT JOIN civicrm_contact cc ON ( cc.id = cp.contact_id )
+        LEFT JOIN civicrm_email cl ON ( cl.contact_id = cp.contact_id )
+        LEFT JOIN civicrm_address ca ON ( ca.contact_id = cp.contact_id )
+        WHERE cp.id = {$teamMember['source_pcp_id']}
+      ";
+      $dao = CRM_Core_DAO::executeQuery($query);
+      $dao->fetch();
+      $teamPcpResult = civicrm_api('Pcpteams', 'get', array('version' => 3, 'sequential' => 1, 'pcp_id' => $teamMember['destination_pcp_id']));
       $teamRequest[$dao->pcp_id] = array(
         'member_display_name' => $dao->display_name,
         'member_email'        => $dao->email,
@@ -550,19 +555,25 @@ function civicrm_api3_pcpteams_getTeamRequest($params) {
         'member_pcp_title'          => $dao->pcp_title,
         'member_page_title'         => $dao->page_title,
         'contactId'                 => $dao->pcp_contact_id,
-        'action'                    => _getTeamRequestActionLink(array_search($dao->pcp_contact_id, $teamMemberContactIds), $dao->pcp_id),
+        'team_display_name'         => CRM_Contact_BAO_Contact::displayName($teamPcpResult['values'][0]['contact_id']),
+        'team_pcp_title'            => $teamPcpResult['values'][0]['title'],
+        'action'                    => _getTeamRequestActionLink($teamMember['relationship_id'], $dao->pcp_id, $teamPcpResult['id']),
       );
     }
+  if(empty($teamRequest)) {
+    return array();
+    
+  }
   $result = $teamRequest;
   return civicrm_api3_create_success($result, $params);
   
 }
 
-function _getTeamRequestActionLink($activityId, $pcpId ){
+function _getTeamRequestActionLink($relationshipId, $pcpId, $teampcpId ){
   $action     = "
     <span>
-      <a href='javascript:void(0)' class=\"action-item crm-hover-button\" title='Approve Team Member' onclick='approveTeamMember({$activityId},{$pcpId});'>Approve</a>
-      <a href='javascript:void(0)' class=\"action-item crm-hover-button\" title='Decline Team Member' onclick='declineTeamMember({$entityId});'>Decline</a>
+      <a href='javascript:void(0)' class=\"action-item crm-hover-button\" title='Approve Team Member' onclick='approveTeamMember({$relationshipId},{$pcpId},{$teampcpId});'>Approve</a>
+      <a href='javascript:void(0)' class=\"action-item crm-hover-button\" title='Decline Team Member' onclick='declineTeamMember({$relationshipId});'>Decline</a>
     </span>
     ";
   return $action;
@@ -626,8 +637,9 @@ function civicrm_api3_pcpteams_getTeamMembers($params) {
       $teamPcpContactIds[] = CRM_Pcpteams_Utils::getcontactIdbyPcpId($teamPcpIdsDao->team_pcp_id);
       $myPcp[$teamPcpIdsDao->entity_id]= $teamPcpIdsDao->team_pcp_id;
     }
-    //print_r($teamAdminContactIds);
-    //die();
+    if(empty($teamAdminContactIds)) {
+      return array();
+    }
     $validTeamContactIds  = array_intersect($teamPcpContactIds, $teamAdminContactIds);
     $svalidTeamContactIds = implode(', ', $validTeamContactIds);
     if (empty($validTeamContactIds)) {
@@ -655,6 +667,9 @@ function civicrm_api3_pcpteams_getTeamMembers($params) {
 
       );
     }
+  }
+  if (empty($memberDetails)) {
+    return array();
   }
   $result = $memberDetails;
   return civicrm_api3_create_success($result, $params);
