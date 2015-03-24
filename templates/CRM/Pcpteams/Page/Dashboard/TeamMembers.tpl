@@ -33,23 +33,23 @@
 </div>
 {literal}
 <script type="text/javascript">
-    function removeTeamMember(entityId, pcpId, teampcpId){
+    function removeTeamMember(pcpId, teampcpId){
         var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=removeTeamMember' }"{literal};
         cj.ajax({ 
             url     : dataUrl,
             type    : 'post',
-            data    : {entity_id : entityId, pcp_id : pcpId, team_pcp_id : teampcpId },
+            data    : {pcp_id : pcpId, team_pcp_id : teampcpId },
             success : function( data ) {
                 cj(document).ajaxStop(function() { location.reload(true); });
             }
         });
     }
-    function deactivateTeamMember(entityId, pcpId, teampcpId){
+    function deactivateTeamMember(pcpId, teampcpId){
         var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=deactivateTeamMember' }"{literal};
         cj.ajax({ 
            url     : dataUrl,
            type    : 'post',
-           data    : {entity_id : entityId, pcp_id : pcpId, team_pcp_id : teampcpId },
+           data    : {pcp_id : pcpId, team_pcp_id : teampcpId },
            success : function( data ) {
               cj(document).ajaxStop(function() { location.reload(true); });
            }

@@ -12,8 +12,8 @@
           C_CF_PCP_TYPE_CONTACT   = 'Tribute_Contact',          //  Custom Field - Tribute Contact
           C_CF_IN_MEMORY          = 'In Memory',                //  Optionvalue - In Memory
           C_CF_IN_CELEBRATION     = 'In Celebration',           //  Optionvalue - In Celebration
-          C_CF_IN_PCPAB           = 'PCP_A_B',                  //  Custom Field - PCP A B
-          C_CF_IN_PCPBA           = 'PCP_B_A',                  //  Custom Field - PCP B A
+          C_CF_PCPAB              = 'PCP_A_B',                  //  Custom Field - PCP A B
+          C_CF_PCPBA              = 'PCP_B_A',                  //  Custom Field - PCP B A
           C_CONTACTTYPE_BRANCH    = 'Branch',                   //  Contact Sub Type - Branch
           C_CONTACTTYPE_PARTNER   = 'Corporate_Partner',        //  Contact Sub Type - Corporate Partner
           C_CONTACTTYPE_IN_MEM    = 'In_Memory',                //  Contact Sub Type - In Memory

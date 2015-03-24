@@ -184,11 +184,11 @@ class  CRM_Pcpteams_Utils {
   }
   
   static function getPcpABCustomFieldId(){
-    return CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', CRM_Pcpteams_Constant::C_CF_IN_PCPAB, 'id', 'name');
+    return CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', CRM_Pcpteams_Constant::C_CF_PCPAB, 'id', 'name');
   }
   
   static function getPcpBACustomFieldId(){
-    return CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', CRM_Pcpteams_Constant::C_CF_IN_PCPBA, 'id', 'name');
+    return CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', CRM_Pcpteams_Constant::C_CF_PCPBA, 'id', 'name');
   }
      
   static function getEventDetailsbyEventId( $id ){
