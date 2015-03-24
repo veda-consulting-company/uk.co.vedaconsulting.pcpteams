@@ -76,6 +76,14 @@
 .crm-container .crm-pcp-manage .pcp-panel .stats .target .amount {
   font-size: 20px;
 }
+
+/* message block */
+.crm-container .crm-pcp-manage .pcp-message .msg-title {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
 /* divs below the panel */
 .crm-container .crm-pcp-manage .pcp-body .totaliser {
   display: inline;
@@ -87,12 +95,10 @@
   float: right;
   width: 30%;
 }
-.crm-container .crm-pcp-manage .pcp-body .colheader,
-.crm-container .crm-pcp-manage .pcp-body .rank,
-.crm-container .crm-pcp-manage .pcp-body .top-donations
-{
+.crm-container .crm-pcp-manage .pcp-body .colheader {
   margin-bottom: 10px;
 }
+.crm-container .crm-pcp-manage .pcp-message,
 .crm-container .crm-pcp-manage .pcp-body .rank,
 .crm-container .crm-pcp-manage .pcp-body .top-donations,
 .crm-container .crm-pcp-manage .pcp-body .intro-text,
@@ -108,8 +114,17 @@
 .crm-container .crm-pcp-manage .pcp-body .team-section .team-name {
   display: block;
 }
+.crm-container .crm-pcp-manage .pcp-body .team-section .invite-team-buttons 
 .crm-container .crm-pcp-manage .pcp-body .team-section .no-team-buttons {
   margin-top: 15px;
+}
+.crm-container .crm-pcp-manage .pcp-body .team-section .invite-team-buttons {
+  text-align: center;
+}
+.crm-container .crm-pcp-manage .team-section .invite-team-text {
+  margin-bottom: 20px;
+  font-weight: bold;
+  text-align: center;
 }
 .crm-container .crm-pcp-manage .pcp-body .team-section .avatar {
   display: inline-block;

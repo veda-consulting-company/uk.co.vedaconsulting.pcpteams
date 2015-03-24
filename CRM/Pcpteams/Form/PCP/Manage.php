@@ -9,8 +9,8 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
       ->addStyleFile('uk.co.vedaconsulting.pcpteams', 'css/manage.css');
 
     $session = CRM_Core_Session::singleton();
-    $userID = $session->get('userID');
-    if (!$userID) {
+    $this->_userID = $session->get('userID');
+    if (!$this->_userID) {
       CRM_Core_Error::fatal(ts('You must be logged in to view this page.'));
     }    
   }
@@ -55,6 +55,15 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     $state = NULL;
     $pcpId = CRM_Utils_Request::retrieve('id', 'Positive', CRM_Core_DAO::$_nullArray, TRUE); 
     $state = CRM_Utils_Request::retrieve('state', 'String');
+    $contactId = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcpId, 'contact_id');
+    
+    $aContactTypes   = CRM_Contact_BAO_Contact::getContactTypes( $contactId );
+    $isIndividualPcp = in_array('Individual', $aContactTypes) ? TRUE : FALSE;
+    $isTeamPcp       = in_array('Team'      , $aContactTypes) ? TRUE : FALSE;
+    
+    if ($this->_userID != $contactId) {
+      CRM_Core_Error::fatal(ts('You do not have permission to view this Page'));
+    }
     
     //Image URL
     $getPcpImgURl   = self::getPcpImageURl($pcpId);
