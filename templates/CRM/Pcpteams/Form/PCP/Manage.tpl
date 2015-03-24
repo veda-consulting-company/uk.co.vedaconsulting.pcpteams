@@ -1,8 +1,6 @@
 <!-- header -->
 <div class="crm-pcp-manage">
-
   <div class="pcp-panel">
-    <!-- profile Image -->
     <div class="avatar-title-block">
       <div class="avatar">
         {if $profilePicUrl}
@@ -23,8 +21,20 @@
       </div> 
     </div>
   </div>
-  <!-- End header-->
   
+  {*if $no-donations and $isa-team-page*}
+  <div class="pcp-message">
+    <span class="msg-title">Congratulations, you have now created a team taking part in ‘event name’</span>
+    <span class="msg-text">
+      We have created this page to help you with your fundraising.
+      Please take a few minutes to complete a couple of details below, you will need to add a fundraising
+      target to give you something to aim for (aim high!) and write a little bit about yourself to encourage
+      people to help you reach that target.
+      If you want to do this event as a team or in memory of a loved one you can set that up below as well.
+    </span>
+  </div>
+  {*/if*}
+
   <div class="pcp-body">
     <div class="totaliser">
       <div class="colheader">
@@ -35,13 +45,20 @@
       <div id="pcp_page_text" class="page-text crm-pcp-inline-edit">{$pcpinfo.page_text}</div>
       <div class="team-section">
         {if $pcpinfo.team_pcp_id}
-          <div class="avatar">
-            {if $profilePicUrl}
-              <img width="75" height="75" src="{$profilePicUrl}">
-            {/if}
-          </div>
-          <span class="team-name">Team Name</span>
-          <span class="team-text">Fundraise more, fundraise as a team Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius. Vestibulum viverra mi dictum odio scelerisque semper. Morbi</span>
+          {if $no-donations} {* if $no-donations *}
+            <div class="invite-team-text">Invite people to the team</div>
+            <div class="invite-team-buttons">
+              <a class="button crm-pcp-inline-edit-team" href="{$createTeamUrl}">{ts}Invite Team Members{/ts}</a>
+            </div>
+          {else} {* some donations *}
+            <div class="avatar">
+              {if $profilePicUrl}
+                <img width="75" height="75" src="{$profilePicUrl}">
+              {/if}
+            </div>
+            <span class="team-name">Team Name</span>
+            <span class="team-text">Fundraise more, fundraise as a team Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius. Vestibulum viverra mi dictum odio scelerisque semper. Morbi</span>
+          {/if}
         {else}
           <span class="no-team-text">Fundraise more, fundraise as a team Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius. Vestibulum viverra mi dictum odio scelerisque semper. Morbi</span>
           <div class="no-team-buttons">
