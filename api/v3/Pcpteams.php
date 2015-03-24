@@ -771,25 +771,27 @@ function _civicrm_api3_pcpteams_getRank_spec(&$params) {
   $params['pcp_id']['api.required'] = 1;
 }
 
-function civicrm_api3_pcpteams_getTopDonations($params) {
-  if($params['limit']){
+function civicrm_api3_pcpteams_getAllDonations($params) {
+  $limit = NULL;
+  if (isset($params['limit']) && CRM_Utils_Type::escape($params['limit'], 'Integer')) {
     $limit = "LIMIT 0, {$params['limit']}";
-  }else{
-    $limit = "LIMIT 0, 5";
   }
+  
   $query = "
     SELECT cpb.target_entity_id 
     , cct.id            as contribution_id
     , cct.contact_id    as contact_id
     , cct.total_amount  as total_amount
+    , cct.receive_date  as receive_date
     , cc.display_name   as display_name
     FROM civicrm_pcp_block cpb
     LEFT JOIN civicrm_contribution cct on (cct.contribution_page_id = cpb.target_entity_id )
     LEFT JOIN civicrm_contact cc on (cc.id = cct.contact_id)
     WHERE cpb.entity_id = %1 AND cct.id IN ( SELECT contribution_id FROM civicrm_contribution_soft WHERE pcp_id = %2)
-    ORDER BY cct.total_amount DESC
+    ORDER BY cct.receive_date DESC
     {$limit}
   ";
+  
   $queryParams = array(
     1 => array($params['page_id'], 'Integer'),
     2 => array($params['pcp_id'], 'Integer'),
@@ -802,7 +804,7 @@ function civicrm_api3_pcpteams_getTopDonations($params) {
   return civicrm_api3_create_success($result, $params);
 }
 
-function _civicrm_api3_pcpteams_getTopDonations_spec(&$params) {
+function _civicrm_api3_pcpteams_getAllDonations_spec(&$params) {
   $params['page_id']['api.required'] = 1;
   $params['pcp_id']['api.required'] = 1;
 }
