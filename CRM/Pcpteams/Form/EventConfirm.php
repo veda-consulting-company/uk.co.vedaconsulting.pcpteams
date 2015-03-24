@@ -32,8 +32,14 @@ class CRM_Pcpteams_Form_EventConfirm extends CRM_Pcpteams_Form_Workflow {
   }
 
   function postProcess() {
-    $eventId = $this->get('pageId');
-    CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/event/register', "reset=1&id=$eventId"));
+    $values = $this->exportValues();
+    if ($values['is_have_place'] == 1) {
+      CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/support', "code=cpftq&qfKey={$this->controller->_key}"));
+    } 
+    else {
+      $eventId = $this->get('component_page_id');
+      CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/event/register', "reset=1&id=$eventId"));
+    }
   }
 
   /**

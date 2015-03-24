@@ -39,8 +39,9 @@ class CRM_Pcpteams_Form_EventJoin {
 
   function postProcess(&$form) {
     $values  = $form->exportValues();
-    $eventId = $values['event_id'];
-    $form->set('pageId', $eventId);
+    if ($values['event_id']) {
+      $form->set('component_page_id', $values['event_id']);
+    }
   }
 
   /**
