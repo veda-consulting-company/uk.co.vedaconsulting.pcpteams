@@ -58,8 +58,17 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     $contactId = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcpId, 'contact_id');
     
     $aContactTypes   = CRM_Contact_BAO_Contact::getContactTypes( $contactId );
-    $isIndividualPcp = in_array('Individual', $aContactTypes) ? TRUE : FALSE;
-    $isTeamPcp       = in_array('Team'      , $aContactTypes) ? TRUE : FALSE;
+    if (in_array('Team', $aContactTypes)) {
+      $checkAdminParam= array(
+        'version'           => 3
+        , 'team_contact_id' => $contactId
+        , 'user_id'         => $this->_userID
+      );
+      $checkTeamAdmin = civicrm_api('pcpteams', 'checkTeamAdmin', $checkAdminParam);
+      if($checkTeamAdmin['is_team_admin']){
+        $contactId = $checkTeamAdmin['user_id'];
+      }
+    }
     
     if ($this->_userID != $contactId) {
       CRM_Core_Error::fatal(ts('You do not have permission to view this Page'));

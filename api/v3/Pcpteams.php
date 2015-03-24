@@ -773,6 +773,7 @@ function _civicrm_api3_pcpteams_getRank_spec(&$params) {
 
 function civicrm_api3_pcpteams_getAllDonations($params) {
   $limit = NULL;
+  $result= CRM_Core_DAO::$_nullArray;
   if (isset($params['limit']) && CRM_Utils_Type::escape($params['limit'], 'Integer')) {
     $limit = "LIMIT 0, {$params['limit']}";
   }
@@ -808,3 +809,65 @@ function _civicrm_api3_pcpteams_getAllDonations_spec(&$params) {
   $params['page_id']['api.required'] = 1;
   $params['pcp_id']['api.required'] = 1;
 }
+
+function civicrm_api3_pcpteams_getTopDonations($params) {
+  if($params['limit']){
+    $limit = "LIMIT 0, {$params['limit']}";
+  }else{
+    $limit = "LIMIT 0, 5";
+  }
+  
+  $query = "
+    SELECT cpb.target_entity_id
+    , cct.id as contribution_id
+    , cct.contact_id as contact_id
+    , cct.total_amount as total_amount
+    , cc.display_name as display_name
+    FROM civicrm_pcp_block cpb
+    LEFT JOIN civicrm_contribution cct on (cct.contribution_page_id = cpb.target_entity_id )
+    LEFT JOIN civicrm_contact cc on (cc.id = cct.contact_id)
+    WHERE cpb.entity_id = %1 AND cct.id IN ( SELECT contribution_id FROM civicrm_contribution_soft WHERE pcp_id = %2)
+    ORDER BY cct.total_amount DESC
+    {$limit}
+  ";
+  $queryParams = array(
+    1 => array($params['page_id'], 'Integer'),
+    2 => array($params['pcp_id'], 'Integer'),
+  );
+  $dao = CRM_Core_DAO::executeQuery($query, $queryParams);
+  while ($dao->fetch()) {
+    $result[$dao->contribution_id] = $dao->toArray();
+  }
+
+  return civicrm_api3_create_success($result, $params);
+}
+
+function _civicrm_api3_pcpteams_getTopDonations_spec(&$params) {
+  $params['page_id']['api.required'] = 1;
+  $params['pcp_id']['api.required'] = 1;
+}
+
+function civicrm_api3_pcpteams_checkTeamAdmin($params) {
+  $teamRelTypeName = CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE;
+  $relTypeId       = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', $teamRelTypeName, 'id', 'name_a_b');
+  $reltionships    = CRM_Contact_BAO_Relationship::getRelationship( $params['user_id'], CRM_Contact_BAO_Relationship::CURRENT);
+  $result['user_id']         = $params['user_id'];
+  $result['is_team_admin']   = 0;
+  $result['team_contact_id'] = $params['team_contact_id'];
+  foreach ($reltionships as $relId => $relValue) {
+    if ($relTypeId == $relValue['relationship_type_id'] 
+        && $params['team_contact_id'] == $relValue['contact_id_b']
+        && $relValue['is_active'] 
+        ) {
+      $result['relationship_id']  = $relValue['id'];
+      $result['is_team_admin']    = 1;
+    }
+  }
+  return $result;
+}
+
+function _civicrm_api3_pcpteams_checkTeamAdmin_spec(&$params) {
+  $params['user_id']['api.required'] = 1;
+  $params['team_contact_id']['api.required'] = 1;
+}
+
