@@ -102,6 +102,16 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     );
     $this->assign('donationInfo', $aDonationResult['values']);
     
+    // Team Info, If exists
+    $teamPcpInfo    = CRM_Core_DAO::$_nullArray;
+    $teamProfilePic = NULL;
+    if (isset($pcpDetails['team_pcp_id']) && !empty($pcpDetails['team_pcp_id'])) {
+      $teamPcpInfo    = self::getPcpDetails($pcpDetails['team_pcp_id']);
+      $teamProfilePic = self::getPcpImageURl($pcpDetails['team_pcp_id']);;
+    }
+    $this->assign('teamPcpInfo', $teamPcpInfo);
+    $this->assign('teamProfilePic', $teamProfilePic);
+      
     // check the contact Type
     $aContactTypes   = CRM_Contact_BAO_Contact::getContactTypes( $pcpDetails['contact_id'] );
     $isIndividualPcp = in_array('Individual', $aContactTypes) ? TRUE : FALSE;

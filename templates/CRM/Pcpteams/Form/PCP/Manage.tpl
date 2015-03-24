@@ -34,14 +34,14 @@
     
       <div id="pcp_page_text" class="page-text crm-pcp-inline-edit">{$pcpinfo.page_text}</div>
       <div class="team-section">
-        {if $pcpinfo.team_pcp_id}
+        {if $teamPcpInfo.id}
           <div class="avatar">
-            {if $profilePicUrl}
-              <img width="75" height="75" src="{$profilePicUrl}">
+            {if $teamProfilePic}
+              <img width="75" height="75" src="{$teamProfilePic}">
             {/if}
           </div>
-          <span class="team-name">Team Name</span>
-          <span class="team-text">Fundraise more, fundraise as a team Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius. Vestibulum viverra mi dictum odio scelerisque semper. Morbi</span>
+          <span class="team-name">{$teamPcpInfo.title}</span>
+          <span class="team-text">{$teamPcpInfo.intro_text}</span>
         {else}
           <span class="no-team-text">Fundraise more, fundraise as a team Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius. Vestibulum viverra mi dictum odio scelerisque semper. Morbi</span>
           <div class="no-team-buttons">
