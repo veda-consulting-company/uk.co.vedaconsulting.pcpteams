@@ -42,8 +42,8 @@
         {else}
           <span class="no-team-text">Fundraise more, fundraise as a team Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius. Vestibulum viverra mi dictum odio scelerisque semper. Morbi</span>
           <div class="no-team-buttons">
-            <a class="button" href="{crmURL p='civicrm/pcp/team/create' q="reset=1&id=`$pcpinfo.id`"}">{ts}Create a Team{/ts}</a>
-            <a class="button" href="{crmURL p='civicrm/pcp/team/join' q="reset=1&id=`$pcpinfo.id`"}">{ts}Join a Team{/ts}</a>
+            <a class="button crm-pcp-inline-edit-team" href="{$createTeamUrl}">{ts}Create a Team{/ts}</a>
+            <a class="button crm-pcp-inline-edit-team" href="{$joinTeamUrl}">{ts}Join a Team{/ts}</a>
           </div>
         {/if}
         <div class="clear"></div>
@@ -117,6 +117,17 @@ CRM.$(function($) {
     $(this).css("background", "#e0001a");
     $(this).css("border", "none");
   });
+  
+  //inline Create and Join Team 
+  cj('.crm-pcp-inline-edit-team').on('click', function(ev){
+    ev.preventDefault();
+    var url = cj(this).attr('href');
+    if(url){
+      CRM.loadForm(url, {dialog: {width: 500, height: 'auto'}
+                  }).on('crmFormSuccess', function(e, data) {});
+    }// end if 
+  });// end on click
+
 });
 </script>
 {/literal}
