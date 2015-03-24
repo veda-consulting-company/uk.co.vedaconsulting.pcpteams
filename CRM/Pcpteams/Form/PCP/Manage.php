@@ -92,7 +92,7 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
 
     //Top Donations    
     //pcpId and Event (page) Id is required Field
-    $aDonationResult = civicrm_api('pcpteams', 'getTopDonations', array(
+    $aDonationResult = civicrm_api('pcpteams', 'getAllDonations', array(
       'version' => 3
       , 'sequential'  => 1
       , 'pcp_id'      => $pcpId
