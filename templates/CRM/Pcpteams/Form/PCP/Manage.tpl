@@ -35,7 +35,6 @@
       <div id="pcp_page_text" class="page-text crm-pcp-inline-edit">{$pcpinfo.page_text}</div>
       <!-- BIO section ends -->
       <div class="team-section">
-        {assign var="isa_team_page" value='1'}{*delete me*}
         {if $pcpinfo.team_pcp_id}
           {if $no_donations} {* if $no-donations *}
             <div class="invite-team-text">Invite people to the team</div>

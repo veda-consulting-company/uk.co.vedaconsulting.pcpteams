@@ -307,6 +307,7 @@ class  CRM_Pcpteams_Utils {
         'contact_id'      => $pcpContactId,
         'page_id'         => $componentPageId,
         'page_type'       => $component,
+        'goal_amount'     => '0.00', //FIXME: Need to make sure the intial sample goal_amount, setting 0.00 now, user can update later on their manage page
       )
     );
     if(!civicrm_error($pcpResult) && $pcpResult['id']) {
