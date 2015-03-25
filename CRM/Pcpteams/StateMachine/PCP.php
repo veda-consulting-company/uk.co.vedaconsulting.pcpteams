@@ -172,10 +172,11 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
     } else {
       // otherwise set it to false, we consider all pages starting from the code
       $stepFound = false;
-      if (!$session->get('userID')) {
-        // if user not logged in, inject the account page anyway
-        $this->_pages[$pages['cpfpa']] = NULL;
-      }
+      // DS: we now using drupal's account page
+      //if (!$session->get('userID')) {
+      // if user not logged in, inject the account page anyway
+      //$this->_pages[$pages['cpfpa']] = NULL;
+      //}
     }
 
     foreach ($pages as $pCode => $page) {
