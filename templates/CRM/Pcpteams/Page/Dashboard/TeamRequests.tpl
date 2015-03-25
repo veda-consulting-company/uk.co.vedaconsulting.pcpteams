@@ -19,7 +19,7 @@
               {$row.teamPcpTitle}
               </td>
               <td>{$row.pageTitle}</td>
-              <td></td>
+              <td>{ts}Pending Approval{/ts}</td>
         </tr>
         {/foreach}
       </table>

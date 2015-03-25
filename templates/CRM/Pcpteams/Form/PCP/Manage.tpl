@@ -30,18 +30,38 @@
       <div class="colheader">
         <h2>Totaliser</h2>
       </div>
+      <!-- BIO section -->
       <div id="pcp_intro_text" class="intro-text crm-pcp-inline-edit" data-edit-params='{ldelim}"cid": "{$contactId}", "class_name": "CRM_Contact_Form_Inline_ContactInfo"{rdelim}'>{$pcpinfo.intro_text}</div>
-    
       <div id="pcp_page_text" class="page-text crm-pcp-inline-edit">{$pcpinfo.page_text}</div>
+      <!-- BIO section ends -->
       <div class="team-section">
-        {if $teamPcpInfo.id}
-          <div class="avatar">
-            {if $teamProfilePic}
-              <img width="75" height="75" src="{$teamProfilePic}">
-            {/if}
+        {assign var="isa_team_page" value='1'}{*delete me*}
+        {if $pcpinfo.team_pcp_id}
+          {if $no_donations} {* if $no-donations *}
+            <div class="invite-team-text">Invite people to the team</div>
+            <div class="invite-team-buttons">
+              <a class="button crm-pcp-inline-edit-team" href="{$createTeamUrl}">{ts}Invite Team Members{/ts}</a>
+            </div>
+          {else} {* some donations *}
+            <div class="avatar">
+              {if $teamProfilePic}
+                <img width="75" height="75" src="{$teamProfilePic}">
+              {/if}
+            </div>
+            <span class="team-name">{$teamPcpInfo.title}</span>
+            <span class="team-text">{$teamPcpInfo.intro_text}</span>
+          {/if}
+        {elseif $isa_team_page}
+          <span class="top-fund-text">Top team fundraisers.</span>
+          <div class="top-fund-raisers">
+            <span class="fname">Fundraiser 1</span>
+            <span class="fname">Fundraiser 2</span>
+            <span class="fname">Fundraiser 3</span>
           </div>
-          <span class="team-name">{$teamPcpInfo.title}</span>
-          <span class="team-text">{$teamPcpInfo.intro_text}</span>
+          <div class="top-fund-buttons">
+            <a class="button crm-pcp-inline-edit-team" href="{$createTeamUrl}">{ts}Invite to Team{/ts}</a>
+            <a class="button crm-pcp-inline-edit-team" href="{$joinTeamUrl}">{ts}See all Team{/ts}</a>
+          </div>
         {else}
           <span class="no-team-text">Fundraise more, fundraise as a team Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius. Vestibulum viverra mi dictum odio scelerisque semper. Morbi</span>
           <div class="no-team-buttons">
