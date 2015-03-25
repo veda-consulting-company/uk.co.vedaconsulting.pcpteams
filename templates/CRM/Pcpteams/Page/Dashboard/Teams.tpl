@@ -7,18 +7,17 @@
       <table class="selector" id="team_info">
         <tr class="columnheader">
           <th>{ts}Name{/ts}</th>
-          <th>{ts}My PCP Title{/ts}</th>
           <th>{ts}Team PCP Title{/ts}</th>
           <th>{ts}Support of{/ts}</th>
           <th>{ts}Goal{/ts}</th>
           <th>{ts}Amount Raised{/ts}</th>
+          <th>{ts}My Role{/ts}</th>
           <th>{ts}Action{/ts}</th>
         </tr>
 
         {foreach from=$teamInfo item=row key=entityId}
         <tr class="{cycle values='odd-row,even-row'}" id="{$entityId}">
               <td class="bold">{$row.teamName}</td>
-              <td>{$row.my_pcp_title}</td>
               <td>
               {$row.teamPcpTitle}
                 <div id="{$entityId}_alert" class='alert_message' style="display:none;">
@@ -28,6 +27,7 @@
               <td>{$row.pageTitle}</td>
               <td align="right">{$row.teamgoalAmount}</td>
               <td align="right">{$row.amount_raised}</td>
+              <td>{$row.role}</td>
               <td>{$row.action}</td>
         </tr>
         {/foreach}

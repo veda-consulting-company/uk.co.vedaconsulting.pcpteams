@@ -123,13 +123,26 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
         )
       );
       $this->assign('teamInfo', isset($teamInfo['values']) ? $teamInfo['values'] : NULL);
+      //Team Members
+      $dashboardElements[] = array(
+        'class' => 'crm-dashboard-permissionedteammembers',
+        'templatePath' => 'CRM/Pcpteams/Page/Dashboard/TeamMembers.tpl',
+        'sectionTitle' => ts('Team Members'),
+        'weight' => 41,
+      );
+      $teamMemberInfo = civicrm_api( 'pcpteams', 'getTeamMembers', array(
+          'version'   => 3, 
+          'contact_id'=> $this->_contactId,
+        )
+      );
+      $this->assign('teamMemberInfo', isset($teamMemberInfo['values']) ? $teamMemberInfo['values'] : NULL);
       
       //My Pending Team Requests
       $dashboardElements[] = array(
         'class' => 'crm-dashboard-permissionedteamreq',
         'templatePath' => 'CRM/Pcpteams/Page/Dashboard/TeamRequests.tpl',
         'sectionTitle' => ts('My Pending Team Requests'),
-        'weight' => 41,
+        'weight' => 42,
       );
       $teamPendingInfo = civicrm_api( 'pcpteams', 'getMyPendingTeam', array(
           'version'   => 3, 
@@ -142,7 +155,7 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
         'class' => 'crm-dashboard-permissionednewteamreq',
         'templatePath' => 'CRM/Pcpteams/Page/Dashboard/TeamMemberRequests.tpl',
         'sectionTitle' => ts('New Team Member Requests'),
-        'weight' => 42,
+        'weight' => 43,
       );
       $teamRequestInfo = civicrm_api( 'pcpteams', 'getTeamRequest', array(
           'version'   => 3, 
@@ -156,7 +169,7 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
         'class' => 'crm-dashboard-permissionedinactive',
         'templatePath' => 'CRM/Pcpteams/Page/Dashboard/PagesDisabled.tpl',
         'sectionTitle' => ts('In Active Pages'),
-        'weight' => 43,
+        'weight' => 44,
       );
       $pcpInactiveInfo = civicrm_api( 'pcpteams', 'getPcpDashboardInfo', array(
          'version'   => 3, 
@@ -165,20 +178,6 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
        )
      );
      $this->assign('pcpInactiveInfo', isset($pcpInactiveInfo['values']) ? $pcpInactiveInfo['values'] : NULL);
-      
-      //Team Members
-      $dashboardElements[] = array(
-        'class' => 'crm-dashboard-permissionedteammembers',
-        'templatePath' => 'CRM/Pcpteams/Page/Dashboard/TeamMembers.tpl',
-        'sectionTitle' => ts('Team Members'),
-        'weight' => 44,
-      );
-      $teamMemberInfo = civicrm_api( 'pcpteams', 'getTeamMembers', array(
-          'version'   => 3, 
-          'contact_id'=> $this->_contactId,
-        )
-      );
-      $this->assign('teamMemberInfo', isset($teamMemberInfo['values']) ? $teamMemberInfo['values'] : NULL);
 
     }
     

@@ -396,12 +396,23 @@ function civicrm_api3_pcpteams_getMyTeamInfo($params) {
       FROM civicrm_pcp cp 
       LEFT JOIN civicrm_event ce ON ce.id = cp.page_id
       LEFT JOIN civicrm_contact cc ON ( cc.id = cp.contact_id )
-      LEFT JOIN civicrm_value_pcp_custom_set cpcs ON ( cpcs.entity_id = cp.id )
+      LEFT JOIN civicrm_value_pcp_custom_set cpcs ON ( cpcs.team_pcp_id = cp.id )
       WHERE cp.id IN ( $sTeamIds )
     ";
     $dao = CRM_Core_DAO::executeQuery($query);
     while($dao->fetch()){
       $myPcpId = array_search($dao->pcp_id, $teamIds); 
+      $relTypeAdmin       = CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE;
+      $adminRelTypeId     = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', $relTypeAdmin, 'id', 'name_a_b');
+      $relationshipQuery  = "SELECT id FROM civicrm_relationship where contact_id_a = %1 AND contact_id_b = %2 AND relationship_type_id = %3";
+         
+      $queryParams = array(
+        1 => array($params['contact_id'], 'Integer'),
+        2 => array($dao->pcp_contact_id, 'Integer'),
+        3 => array($adminRelTypeId, 'Integer'),
+      );
+      $relationship =  CRM_Core_DAO::singleValueQuery($relationshipQuery, $queryParams);
+      
       $teamResult[$myPcpId] = array(
         'teamName'      => $dao->team_name,
         'my_pcp_id'     => $myPcpId,
@@ -413,6 +424,7 @@ function civicrm_api3_pcpteams_getMyTeamInfo($params) {
         'teamPcpId'     => $dao->pcp_id,
         'contactId'     => $dao->pcp_contact_id,
         'action'        => _getTeamInfoActionLink($myPcpId, $dao->pcp_id, $cfTeamPcpId),
+        'role'          => $relationship ? 'Admin' : 'Member',
       );
     }
     return civicrm_api3_create_success($teamResult, $params);
