@@ -158,13 +158,13 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     //Pcp layout button and URLs
     $joinTeamURl    = CRM_Utils_System::url('civicrm/pcp/inline/edit'     , "reset=1&id={$pcpId}&pageId={$pcpDetails['page_id']}&op=2&snippet=json");
     $createTeamURl  = CRM_Utils_System::url('civicrm/pcp/inline/edit'     , "reset=1&id={$pcpId}&pageId={$pcpDetails['page_id']}&op=1&snippet=json");
-    $updateProfPic  = CRM_Utils_System::url('civicrm/pcp/profile'         , 'reset=1&id='.$pcpId);
+    $updateProfPic  = CRM_Utils_System::url('civicrm/pcp/inline/profile'  , "reset=1&id={$pcpId}&pageId={$pcpDetails['page_id']}&snippet=json");
 
     //assign values to tpl
     $this->assign('pcpId'         , $pcpId);
     $this->assign('createTeamUrl' , $createTeamURl);
     $this->assign('joinTeamUrl'   , $joinTeamURl);
-    $this->assign('updateProfPic' , $canEditProfile ? $updateProfPic : NULL);
+    $this->assign('updateProfPic' , $updateProfPic);
 
     $honor = CRM_PCP_BAO_PCP::honorRoll($pcpId);
     $this->assign('honor', $honor);

@@ -9,7 +9,8 @@ require_once 'CRM/Core/Form.php';
  */
 class CRM_Pcpteams_Form_PCP_InlineProfilePic extends CRM_Core_Form {
   function prepProcess(){
-    $this->_pcpId = 76;
+    $this->_pcpId             = CRM_Utils_Request::retrieve('id', 'Positive');
+    $this->component_page_id  = CRM_Utils_Request::retrieve('pageId', 'Positive');
     parent::preProcess();
   }
   
