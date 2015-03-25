@@ -112,7 +112,11 @@ function _civicrm_api3_pcpteams_get_spec(&$params) {
 
 function civicrm_api3_pcpteams_delete($params) {
   $result = array();
+  CRM_PCP_BAO_PCP::deleteById($params['id']);
   return civicrm_api3_create_success($result, $params);
+}
+function _civicrm_api3_pcpteams_delete_spec(&$params) {
+  $params['id']['api.required'] = 1;
 }
 
 /*
@@ -452,6 +456,7 @@ function _getTeamInfoActionLink($entityId, $teamPcpId, $role){
       <a href=\"{$editURL}\" class=\"action-item crm-hover-button\" title='Configure' >Edit Page</a>
       <a href=\"{$manageURL}\" class=\"action-item crm-hover-button\" title='Manage' >Manage</a>
       <a href=\"{$pageURL}\" class=\"action-item crm-hover-button\" title='URL for this Page' >View Page</a>
+      <a href='javascript:void(0)' class=\"action-item crm-hover-button\" title='Delete' onclick = 'deleteTeamPcp({$entityId},{$teamPcpId});'>Delete</a>
     </span>";
   }
   

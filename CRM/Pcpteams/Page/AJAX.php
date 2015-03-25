@@ -205,5 +205,35 @@ class CRM_Pcpteams_Page_AJAX {
     }
     return $result;
   }
+  
+  static function deleteTeamPcp() {
+    $pcp_id         = CRM_Utils_Request::retrieve('pcp_id', 'Positive', CRM_Core_DAO::$_nullObject, TRUE);
+    $team_pcp_id    = CRM_Utils_Request::retrieve('team_pcp_id', 'Positive', CRM_Core_DAO::$_nullObject, TRUE);
+    $contactId      = CRM_Pcpteams_Utils::getcontactIdbyPcpId($pcp_id);
+    $teamContactId  = CRM_Pcpteams_Utils::getcontactIdbyPcpId($team_pcp_id);
+    
+    $relTypeAdmin       = CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE;
+    $adminRelTypeId     = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', $relTypeAdmin, 'id', 'name_a_b');
+    $relationshipQuery  = "SELECT id FROM civicrm_relationship where contact_id_a = %1 AND contact_id_b = %2 AND relationship_type_id = %3";
+
+    $queryParams = array(
+      1 => array($contactId, 'Integer'),
+      2 => array($teamContactId, 'Integer'),
+      3 => array($adminRelTypeId, 'Integer'),
+    );
+      
+    $relationship =  CRM_Core_DAO::singleValueQuery($relationshipQuery, $queryParams);
+    if(!empty($relationship)) {
+      $params = array(
+        'version' => 3,
+        'id'      => $team_pcp_id,
+      );
+      $result = civicrm_api('pcpteams', 'delete', $params);
+      echo 'Deleted';
+    } else {
+      echo 'Sorry!! You are not team Admin';
+    }
+    CRM_Utils_System::civiExit();
+  }
 }
 

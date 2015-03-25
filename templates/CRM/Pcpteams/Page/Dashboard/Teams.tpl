@@ -23,6 +23,9 @@
                 <div id="{$entityId}_alert" class='alert_message' style="display:none;">
                   <p> Are you sure want to unsubscribe from Team - {$row.teamPcpTitle} </p>
                 </div>
+                <div id="{$row.teamPcpId}_alert" class='alert_message' style="display:none;">
+                  <p> Are you sure want to delete the Team - {$row.teamPcpTitle} </p>
+                </div>
               </td>
               <td>{$row.pageTitle}</td>
               <td align="right">{$row.teamgoalAmount}</td>
@@ -79,5 +82,38 @@
     });
  
   }
+  
+  function deleteTeamPcp(pcpId, teampcpId){
+  cj("#"+teampcpId+"_alert").show();
+    cj("#"+teampcpId+"_alert").dialog({
+        title: "Delete Team PCP",
+        modal: true,
+        resizable: true,
+        bgiframe: true,
+        overlay: {
+          opacity: 0.5,
+          background: "black"
+        },
+        buttons: {
+          "Ok": function() {
+    var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=deleteTeamPcp' }"{literal};
+    cj.ajax({ 
+        url     : dataUrl,
+        type    : 'post',
+        data    : {pcp_id : pcpId, team_pcp_id : teampcpId },
+        success : function( data ) {
+            cj(document).ajaxStop(function() { location.reload(true); });
+        }
+    });
+        cj(this).dialog("destroy");
+            },
+          "Cancel" : function(){
+            cj(this).dialog("destroy");
+            cj("#"+teampcpId+"_alert").hide();
+            }
+
+          }
+    });
+    }
 </script>
 {/literal}
