@@ -9,8 +9,8 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
       ->addStyleFile('uk.co.vedaconsulting.pcpteams', 'css/manage.css');
 
     $session = CRM_Core_Session::singleton();
-    $userID = $session->get('userID');
-    if (!$userID) {
+    $this->_userID = $session->get('userID');
+    if (!$this->_userID) {
       CRM_Core_Error::fatal(ts('You must be logged in to view this page.'));
     }    
   }
@@ -55,6 +55,24 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     $state = NULL;
     $pcpId = CRM_Utils_Request::retrieve('id', 'Positive', CRM_Core_DAO::$_nullArray, TRUE); 
     $state = CRM_Utils_Request::retrieve('state', 'String');
+    $contactId = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcpId, 'contact_id');
+    
+    $aContactTypes   = CRM_Contact_BAO_Contact::getContactTypes( $contactId );
+    if (in_array('Team', $aContactTypes)) {
+      $checkAdminParam= array(
+        'version'           => 3
+        , 'team_contact_id' => $contactId
+        , 'user_id'         => $this->_userID
+      );
+      $checkTeamAdmin = civicrm_api('pcpteams', 'checkTeamAdmin', $checkAdminParam);
+      if($checkTeamAdmin['is_team_admin']){
+        $contactId = $checkTeamAdmin['user_id'];
+      }
+    }
+    
+    if ($this->_userID != $contactId) {
+      CRM_Core_Error::fatal(ts('You do not have permission to view this Page'));
+    }
     
     //Image URL
     $getPcpImgURl   = self::getPcpImageURl($pcpId);
@@ -102,6 +120,16 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     );
     $this->assign('donationInfo', $aDonationResult['values']);
     
+    // Team Info, If exists
+    $teamPcpInfo    = CRM_Core_DAO::$_nullArray;
+    $teamProfilePic = NULL;
+    if (isset($pcpDetails['team_pcp_id']) && !empty($pcpDetails['team_pcp_id'])) {
+      $teamPcpInfo    = self::getPcpDetails($pcpDetails['team_pcp_id']);
+      $teamProfilePic = self::getPcpImageURl($pcpDetails['team_pcp_id']);;
+    }
+    $this->assign('teamPcpInfo', $teamPcpInfo);
+    $this->assign('teamProfilePic', $teamProfilePic);
+      
     // check the contact Type
     $aContactTypes   = CRM_Contact_BAO_Contact::getContactTypes( $pcpDetails['contact_id'] );
     $isIndividualPcp = in_array('Individual', $aContactTypes) ? TRUE : FALSE;
