@@ -81,7 +81,7 @@ class  CRM_Pcpteams_Utils {
   /**
    * To check the valid relationship is exists., Create If not Found one.
    */
-  static function checkORCreateTeamRelationship($iContactIdA, $iContactIdB, $checkandCreate = FALSE, $action = 'join' ){
+  static function checkORCreateTeamRelationship($iContactIdA, $iContactIdB, $custom = array(), $checkandCreate = FALSE, $action = 'join' ){
     if(empty($iContactIdA) || empty($iContactIdB)){
       $status = empty($iContactIdB) ? 'Team Contact is Missing' : 'Team Member Contact Id is Missing';
       CRM_Core_Session::setStatus($status);
@@ -112,6 +112,9 @@ class  CRM_Pcpteams_Utils {
         $aParams['contact_id_b'] = $iContactIdB;
         $aParams['relationship_type_id'] = $relTypeId;
         $aParams['is_active'] = $action == 'create' ? 1 : 0 ;
+        if(!empty($custom)) {
+          $aParams  = array_merge($aParams, $custom);
+        }
         $createRelationship = civicrm_api3('Relationship', 'create', $aParams);
         if(!civicrm_error($createRelationship)){
           $teamName = self::getContactWithHyperlink($iContactIdB);
@@ -180,6 +183,14 @@ class  CRM_Pcpteams_Utils {
     return CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', CRM_Pcpteams_Constant::C_CF_PCP_TYPE_CONTACT, 'id', 'name');
   }
   
+  static function getPcpABCustomFieldId(){
+    return CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', CRM_Pcpteams_Constant::C_CF_PCPAB, 'id', 'name');
+  }
+  
+  static function getPcpBACustomFieldId(){
+    return CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', CRM_Pcpteams_Constant::C_CF_PCPBA, 'id', 'name');
+  }
+     
   static function getEventDetailsbyEventId( $id ){
     if(empty($id)){
       return NULL;
@@ -433,5 +444,17 @@ class  CRM_Pcpteams_Utils {
     $pcpBlock->entity_id    = $eventId;
     $pcpBlock->find(TRUE);
     return $pcpBlock->id;
+  }
+  
+  static function getPcpIdByContactAndEvent($eventId, $contactId, $component = 'event') {
+     if(empty($eventId) || empty($contactId)){
+      return null;
+    }
+    $dao = new CRM_PCP_DAO_PCP();
+    $dao->contact_id  = $contactId; 
+    $dao->page_id     = $eventId; 
+    $dao->page_type   = $component;
+    $dao->find(TRUE);
+    return $dao->id;
   }
 }

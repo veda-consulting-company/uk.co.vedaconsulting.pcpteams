@@ -45,7 +45,7 @@
 
 {literal}
 <script type="text/javascript">
-  function unsubscribeTeam(entityId){
+  function unsubscribeTeam(entityId, teampcpId){
     cj("#"+entityId+"_alert").show();
     cj("#"+entityId+"_alert").dialog({
         title: "Unsubscribe from Team",
@@ -62,8 +62,9 @@
              cj.ajax({ 
                 url     : dataUrl,
                 type    : 'post',
-                data    : {entity_id : entityId},
+                data    : {entity_id : entityId, team_pcp_id : teampcpId},
                 success : function( data ) {
+                    cj(document).ajaxStop(function() { location.reload(true); });
                     cj('#team_info').find('tr#'+entityId).remove();
                 }
              });
