@@ -112,7 +112,11 @@ function _civicrm_api3_pcpteams_get_spec(&$params) {
 
 function civicrm_api3_pcpteams_delete($params) {
   $result = array();
+  CRM_PCP_BAO_PCP::deleteById($params['id']);
   return civicrm_api3_create_success($result, $params);
+}
+function _civicrm_api3_pcpteams_delete_spec(&$params) {
+  $params['id']['api.required'] = 1;
 }
 
 /*
@@ -452,6 +456,7 @@ function _getTeamInfoActionLink($entityId, $teamPcpId, $role){
       <a href=\"{$editURL}\" class=\"action-item crm-hover-button\" title='Configure' >Edit Page</a>
       <a href=\"{$manageURL}\" class=\"action-item crm-hover-button\" title='Manage' >Manage</a>
       <a href=\"{$pageURL}\" class=\"action-item crm-hover-button\" title='URL for this Page' >View Page</a>
+      <a href='javascript:void(0)' class=\"action-item crm-hover-button\" title='Delete' onclick = 'deleteTeamPcp({$entityId},{$teamPcpId});'>Delete</a>
     </span>";
   }
   
@@ -881,5 +886,30 @@ function civicrm_api3_pcpteams_checkTeamAdmin($params) {
 function _civicrm_api3_pcpteams_checkTeamAdmin_spec(&$params) {
   $params['user_id']['api.required'] = 1;
   $params['team_contact_id']['api.required'] = 1;
+}
+
+
+function civicrm_api3_pcpteams_getRaisedSoFar($params) {
+  $query = "
+    SELECT 
+      sum(cct.total_amount) as total_amount
+      FROM civicrm_pcp_block cpb
+      LEFT JOIN civicrm_contribution cct on (cct.contribution_page_id = cpb.target_entity_id )
+      WHERE cpb.entity_id = %1 AND cct.id IN ( SELECT contribution_id FROM civicrm_contribution_soft WHERE pcp_id = %2)
+  ";
+  $queryParams = array(
+    1 => array($params['page_id'], 'Integer'),
+    2 => array($params['pcp_id'], 'Integer'),
+  );
+  $dao = CRM_Core_DAO::executeQuery($query, $queryParams);
+  while ($dao->fetch()) {
+    $result[$params['pcp_id']] = $dao->total_amount;
+  }
+  return civicrm_api3_create_success($result, $params);
+}
+
+function _civicrm_api3_pcpteams_getRaisedSoFar_spec(&$params) {
+  $params['page_id']['api.required'] = 1;
+  $params['pcp_id']['api.required'] = 1;
 }
 
