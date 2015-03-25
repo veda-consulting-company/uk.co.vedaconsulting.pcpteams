@@ -828,6 +828,7 @@ function _civicrm_api3_pcpteams_getAllDonations_spec(&$params) {
 }
 
 function civicrm_api3_pcpteams_getTopDonations($params) {
+  $result= CRM_Core_DAO::$_nullArray;
   if($params['limit']){
     $limit = "LIMIT 0, {$params['limit']}";
   }else{

@@ -23,8 +23,7 @@ class CRM_Pcpteams_Form_PCP_InlineEditTeam extends CRM_Core_Form {
     if($workflowTeam == 'invite'){
       $this->_contactID = CRM_Pcpteams_Utils::getloggedInUserId();
       //team contactName
-      $tpcpId = CRM_Utils_Request::retrieve('tpId', 'Positive');
-      $teamContactId = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $tpcpId, 'contact_id');
+      $teamContactId = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $page_id, 'contact_id');
       $teamName = CRM_Contact_BAO_Contact::displayName($teamContactId);
       $this->set('teamName', $teamName);
     } 

@@ -49,6 +49,18 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     return CRM_Pcpteams_Constant::C_DEFAULT_PROFILE_PIC;
   }
   
+  static function checkTeamAdmin($contactId, $userId){
+    if(empty($contactId) || empty($userId)){
+      return FALSE;  
+    }
+    $checkAdminParam= array(
+      'version'           => 3
+      , 'team_contact_id' => $contactId
+      , 'user_id'         => $userId
+    );
+    $checkTeamAdmin = civicrm_api('pcpteams', 'checkTeamAdmin', $checkAdminParam);
+    return $checkTeamAdmin['is_team_admin'];
+  }
   
   function buildQuickForm() {
     //get params from URL
@@ -58,16 +70,8 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     $contactId = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcpId, 'contact_id');
     
     $aContactTypes   = CRM_Contact_BAO_Contact::getContactTypes( $contactId );
-    if (in_array('Team', $aContactTypes)) {
-      $checkAdminParam= array(
-        'version'           => 3
-        , 'team_contact_id' => $contactId
-        , 'user_id'         => $this->_userID
-      );
-      $checkTeamAdmin = civicrm_api('pcpteams', 'checkTeamAdmin', $checkAdminParam);
-      if($checkTeamAdmin['is_team_admin']){
-        $contactId = $checkTeamAdmin['user_id'];
-      }
+    if (in_array('Team', $aContactTypes) && self::checkTeamAdmin($contactId,  $this->_userID)) {
+      $contactId = $this->_userID ;
     }
     
     if ($this->_userID != $contactId) {
@@ -98,6 +102,17 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     $this->assign('pcpinfo', $pcpDetails);
     if(!isset($pcpDetails['contact_id'])){
       $pcpDetails['contact_id']   = CRM_Pcpteams_Utils::getcontactIdbyPcpId($pcpId);
+    }
+    $isTeamAdmin = FALSE;
+    if(isset($pcpDetails['team_pcp_id'])){
+      $teamPcpcontactId = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcpDetails['team_pcp_id'], 'contact_id');
+      $isTeamAdmin      = self::checkTeamAdmin($teamPcpcontactId,  $this->_userID);
+    }
+    $this->assign('isTeamAdmin', $isTeamAdmin);
+    
+    $aContactTypes   = CRM_Contact_BAO_Contact::getContactTypes( $contactId );
+    if (in_array('Team', $aContactTypes) && self::checkTeamAdmin($contactId,  $this->_userID)) {
+      $contactId = $this->_userID ;
     }
     
     if (!$pcpDetails['contact_id']) {
@@ -178,13 +193,15 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     //Pcp layout button and URLs
     $joinTeamURl    = CRM_Utils_System::url('civicrm/pcp/inline/edit'     , "reset=1&id={$pcpId}&pageId={$pcpDetails['page_id']}&op=2&snippet=json");
     $createTeamURl  = CRM_Utils_System::url('civicrm/pcp/inline/edit'     , "reset=1&id={$pcpId}&pageId={$pcpDetails['page_id']}&op=1&snippet=json");
-    $inviteTeamURl  = CRM_Utils_System::url('civicrm/pcp/inline/edit'     , "reset=1&id={$pcpId}&pageId={$pcpDetails['page_id']}&tpId={$pcpDetails['team_pcp_id']}&op=invite&snippet=json");
     $updateProfPic  = CRM_Utils_System::url('civicrm/pcp/inline/profile'  , "reset=1&id={$pcpId}&pageId={$pcpDetails['page_id']}&snippet=json");
+    if($isTeamPcp){
+      $inviteTeamURl= CRM_Utils_System::url('civicrm/pcp/inline/edit'     , "reset=1&id={$pcpId}&pageId={$pcpDetails['page_id']}&op=invite&snippet=json");
+      $this->assign('inviteTeamURl' , $inviteTeamURl);
+    }
 
     //assign values to tpl
     $this->assign('pcpId'         , $pcpId);
     $this->assign('createTeamUrl' , $createTeamURl);
-    $this->assign('inviteTeamURl' , $inviteTeamURl);
     $this->assign('joinTeamUrl'   , $joinTeamURl);
     $this->assign('updateProfPic' , $updateProfPic);
 
