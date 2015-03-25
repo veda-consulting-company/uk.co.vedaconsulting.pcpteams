@@ -9,7 +9,7 @@ class CRM_Pcpteams_Form_PCP_InlineEditTeam extends CRM_Core_Form {
 
   function preProcess() {
     parent::preProcess();
-    $workflowTeam       = CRM_Utils_Request::retrieve('op', 'Positive');
+    $workflowTeam       = CRM_Utils_Request::retrieve('op', 'String');
     $page_id            = CRM_Utils_Request::retrieve('id', 'Positive');
     $component_page_id  = CRM_Utils_Request::retrieve('pageId', 'Positive');
     
@@ -18,6 +18,15 @@ class CRM_Pcpteams_Form_PCP_InlineEditTeam extends CRM_Core_Form {
     
     if ($workflowTeam) {
       $this->_reactToFile = $this->getTeamReactFile($workflowTeam);
+    }
+    
+    if($workflowTeam == 'invite'){
+      $this->_contactID = CRM_Pcpteams_Utils::getloggedInUserId();
+      //team contactName
+      $tpcpId = CRM_Utils_Request::retrieve('tpId', 'Positive');
+      $teamContactId = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $tpcpId, 'contact_id');
+      $teamName = CRM_Contact_BAO_Contact::displayName($teamContactId);
+      $this->set('teamName', $teamName);
     } 
 
     $className = 'CRM_Pcpteams_Form_' . $this->_reactToFile;
@@ -26,7 +35,7 @@ class CRM_Pcpteams_Form_PCP_InlineEditTeam extends CRM_Core_Form {
   }
 
   function setDefaultValues() {
-    if($this->_reactToFile == 'TeamJoin'){
+    if($this->_reactToFile == 'TeamJoin' || $this->_reactToFile == 'TeamConfirm'){
       $className = 'CRM_Pcpteams_Form_' . $this->_reactToFile;
       $className::setDefaultValues($this);
     }
@@ -63,7 +72,7 @@ class CRM_Pcpteams_Form_PCP_InlineEditTeam extends CRM_Core_Form {
   function getTeamReactFile($workflowTeam){
    switch ($workflowTeam) {
       case 'invite':
-        return 'TeamInvite';
+        return 'TeamConfirm';
         break;      
       case '1':
         return 'TeamNew';

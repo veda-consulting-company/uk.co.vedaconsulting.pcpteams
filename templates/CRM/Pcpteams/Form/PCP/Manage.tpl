@@ -39,7 +39,7 @@
           {if $no_donations} {* if $no-donations *}
             <div class="invite-team-text">Invite people to the team</div>
             <div class="invite-team-buttons">
-              <a class="button crm-pcp-inline-edit-team" href="{$createTeamUrl}">{ts}Invite Team Members{/ts}</a>
+              <a id="invite-team-btn" class="button crm-pcp-inline-edit-team" href="{$inviteTeamURl}">{ts}Invite Team Members{/ts}</a>
             </div>
           {else} {* some donations *}
             <div class="avatar">
@@ -51,11 +51,16 @@
             <span class="team-text">{$teamPcpInfo.intro_text}</span>
           {/if}
         {elseif $isa_team_page}
+        
           <span class="top-fund-text">Top team fundraisers.</span>
           <div class="top-fund-raisers">
-            <span class="fname">Fundraiser 1</span>
-            <span class="fname">Fundraiser 2</span>
-            <span class="fname">Fundraiser 3</span>
+            {if $topTeamDonationInfo}
+              {foreach from=$topTeamDonationInfo item=teamDonations}
+                <span class="fname">{$teamDonations.display_name}</span>
+              {/foreach}
+            {else}
+              <span class="fname">No Donations recorded yet..</span>
+            {/if}
           </div>
           <div class="top-fund-buttons">
             <a class="button crm-pcp-inline-edit-team" href="{$createTeamUrl}">{ts}Invite to Team{/ts}</a>
@@ -64,8 +69,8 @@
         {else}
           <span class="no-team-text">Fundraise more, fundraise as a team Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius. Vestibulum viverra mi dictum odio scelerisque semper. Morbi</span>
           <div class="no-team-buttons">
-            <a class="button crm-pcp-inline-edit-team" href="{$createTeamUrl}">{ts}Create a Team{/ts}</a>
-            <a class="button crm-pcp-inline-edit-team" href="{$joinTeamUrl}">{ts}Join a Team{/ts}</a>
+            <a id="create-team-btn" class="button crm-pcp-inline-edit-team" href="{$createTeamUrl}">{ts}Create a Team{/ts}</a>
+            <a id="join-team-btn" class="button crm-pcp-inline-edit-team" href="{$joinTeamUrl}">{ts}Join a Team{/ts}</a>
           </div>
         {/if}
         <div class="clear"></div>
@@ -144,8 +149,16 @@ CRM.$(function($) {
   cj('.crm-pcp-inline-edit-team').on('click', function(ev){
     ev.preventDefault();
     var url = cj(this).attr('href');
+    var id = cj(this).attr('id');
+    var title = 'Join Team';
+    if(id = 'create-team-btn'){
+      title = 'Create Team';
+    }
+    if(id = 'invite-team-btn'){
+      title = 'Invite Team';
+    }
     if(url){
-      CRM.loadForm(url, {dialog: {width: 500, height: 'auto'}
+      CRM.loadForm(url, {dialog: {width: 500, height: 'auto', title: title}
                   }).on('crmFormSuccess', function(e, data) {});
     }// end if 
   });// end on click

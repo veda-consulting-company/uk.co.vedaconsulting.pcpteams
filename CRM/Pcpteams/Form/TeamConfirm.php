@@ -22,6 +22,7 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
     list($fromName, $fromEmail) = CRM_Contact_BAO_Contact::getContactDetails($this->_contactID);
     $defaults['from_name'] = $fromName;
     $defaults['from_email'] = $fromEmail;
+    $this->setDefaults($defaults);
     return $defaults;
   }
   
