@@ -33,13 +33,13 @@
   float: left;
   margin-left: 20px;
   margin-top: 20px;
-  width: 20%;
+  width: 24%;
 }
 .crm-container .crm-pcp-manage .pcp-panel .title {
   display: inline-block;
   float: left;
   margin-top: 135px;
-  width: 75%;
+  width: 70%;
   padding: 5px;
   font-size: 22px;
   line-height: 1.2;
@@ -95,9 +95,12 @@
   float: right;
   width: 30%;
 }
+.crm-container .crm-pcp-manage .pcp-body .totaliser-giveto-block,
+.crm-container .crm-pcp-manage .pcp-body .member-block .mb-header,
 .crm-container .crm-pcp-manage .pcp-body .colheader {
   margin-bottom: 10px;
 }
+.crm-container .crm-pcp-manage .pcp-body .member-block .mb-body .row,
 .crm-container .crm-pcp-manage .pcp-message,
 .crm-container .crm-pcp-manage .pcp-body .rank,
 .crm-container .crm-pcp-manage .pcp-body .top-donations,
@@ -136,6 +139,11 @@
   float: left;
   width: 20%;
 }
+.crm-container .crm-pcp-manage .pcp-body .member-block .mb-body-row {
+  display: inline-block;
+  float: left;
+  width: 19%;
+}
 .crm-container .crm-pcp-manage .pcp-body .team-section .avatar img {
   float: right;
   padding-right: 30px;
@@ -145,6 +153,7 @@
   font-weight: bold;
 }
 
+.crm-container .crm-pcp-manage .pcp-body .member-block .mb-header,
 .crm-container .crm-pcp-manage .btn-donate,
 .crm-container .crm-pcp-manage .pcp-body .totaliser .colheader {
   font-size: 24px;
@@ -162,13 +171,16 @@
   width: 222px;
   height: 46px;
 }
+.crm-container .crm-pcp-manage .pcp-body .member-block .mb-header,
 .crm-container .crm-pcp-manage .pcp-body .totaliser .colheader {
   background-color: #70716B;
   height: 49px;
 }
-.crm-container .crm-pcp-manage .btn-donate > a {
+.crm-container .crm-pcp-manage .btn-donate > a,
+.crm-container .crm-pcp-manage .btn-donate > a:visited {
   color: #ffffff;
   /* to make whole button clickable, not just the text*/
   display: inline-block;
   width: 100%;
 }
+
