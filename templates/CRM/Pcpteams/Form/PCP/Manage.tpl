@@ -80,7 +80,9 @@
             </div>
           {/if}
         {else}
-          <span class="no-team-text">Fundraise more, fundraise as a team Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius. Vestibulum viverra mi dictum odio scelerisque semper. Morbi</span>
+          <span class="no-team-text">
+          <p><strong> Fundraise more, fundraise as a team </strong></p><br>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius. Vestibulum viverra mi dictum odio scelerisque semper. Morbi</span>
           <div class="no-team-buttons">
             <a id="create-team-btn" class="button crm-pcp-inline-edit-team" href="{$createTeamUrl}">{ts}Create a Team{/ts}</a>
             <a id="join-team-btn" class="button crm-pcp-inline-edit-team" href="{$joinTeamUrl}">{ts}Join a Team{/ts}</a>
@@ -170,7 +172,7 @@ CRM.$(function($) {
       title = 'Invite Team';
     }
     if(url){
-      CRM.loadForm(url, {dialog: {width: 500, height: 'auto', title: title}
+      CRM.loadForm(url, {dialog: {width: 650, height: 'auto', title: title}
                   }).on('crmFormSuccess', function(e, data) {});
     }// end if 
   });// end on click
