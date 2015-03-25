@@ -82,7 +82,14 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     
     //Pcp Details
     $pcpDetails  = self::getPcpDetails($pcpId);
-    $amountRaised= CRM_PCP_BAO_PCP::thermoMeter($pcpId);
+    $raisedSofar = civicrm_api('pcpteams', 'getRaisedSoFar', array(
+      'version' => 3
+      , 'sequential'  => 1
+      , 'pcp_id'      => $pcpId
+      , 'page_id'     => $pcpDetails['page_id']
+      )
+    );
+    $amountRaised= $raisedSofar['values'][0];
     if($amountRaised){
       $pcpDetails['amount_raised'] =  CRM_Utils_Money::format($amountRaised);
     }else{

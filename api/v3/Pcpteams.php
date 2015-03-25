@@ -888,3 +888,28 @@ function _civicrm_api3_pcpteams_checkTeamAdmin_spec(&$params) {
   $params['team_contact_id']['api.required'] = 1;
 }
 
+
+function civicrm_api3_pcpteams_getRaisedSoFar($params) {
+  $query = "
+    SELECT 
+      sum(cct.total_amount) as total_amount
+      FROM civicrm_pcp_block cpb
+      LEFT JOIN civicrm_contribution cct on (cct.contribution_page_id = cpb.target_entity_id )
+      WHERE cpb.entity_id = %1 AND cct.id IN ( SELECT contribution_id FROM civicrm_contribution_soft WHERE pcp_id = %2)
+  ";
+  $queryParams = array(
+    1 => array($params['page_id'], 'Integer'),
+    2 => array($params['pcp_id'], 'Integer'),
+  );
+  $dao = CRM_Core_DAO::executeQuery($query, $queryParams);
+  while ($dao->fetch()) {
+    $result[$params['pcp_id']] = $dao->total_amount;
+  }
+  return civicrm_api3_create_success($result, $params);
+}
+
+function _civicrm_api3_pcpteams_getRaisedSoFar_spec(&$params) {
+  $params['page_id']['api.required'] = 1;
+  $params['pcp_id']['api.required'] = 1;
+}
+
