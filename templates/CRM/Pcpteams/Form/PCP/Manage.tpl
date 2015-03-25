@@ -35,7 +35,8 @@
       <div id="pcp_page_text" class="page-text crm-pcp-inline-edit">{$pcpinfo.page_text}</div>
       <!-- BIO section ends -->
       <div class="team-section">
-        {if $pcpinfo.team_pcp_id}
+        {assign var="team_pcp_id" value=$pcpinfo.team_pcp_id}
+        {if $team_pcp_id}
           {if $no_donations} {* if $no-donations *}
             <div class="invite-team-text">Invite people to the team</div>
             <div class="invite-team-buttons">
@@ -47,7 +48,7 @@
                 <img width="75" height="75" src="{$teamProfilePic}">
               {/if}
             </div>
-            <span class="team-name">{$teamPcpInfo.title}</span>
+            <span class="team-name"><a href='{crmURL p="civicrm/pcp/manage" q="id=$team_pcp_id"}' >{$teamPcpInfo.title}</a></span>
             <span class="team-text">{$teamPcpInfo.intro_text}</span>
           {/if}
         {elseif $isa_team_page}
