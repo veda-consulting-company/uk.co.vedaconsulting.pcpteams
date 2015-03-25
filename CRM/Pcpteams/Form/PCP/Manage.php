@@ -119,6 +119,8 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
       )
     );
     $this->assign('donationInfo', $aDonationResult['values']);
+    $no_donations = empty($aDonationResult['values']) ? TRUE : FALSE;
+    $this->assign('no_donations', $no_donations);
     
     // Team Info, If exists
     $teamPcpInfo    = CRM_Core_DAO::$_nullArray;
@@ -134,7 +136,7 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     $aContactTypes   = CRM_Contact_BAO_Contact::getContactTypes( $pcpDetails['contact_id'] );
     $isIndividualPcp = in_array('Individual', $aContactTypes) ? TRUE : FALSE;
     $isTeamPcp       = in_array('Team'      , $aContactTypes) ? TRUE : FALSE;
-    
+    $this->assign('isa_team_page', $isTeamPcp);
     
     //set Page title
     if( $isIndividualPcp ){
