@@ -411,6 +411,7 @@ function civicrm_api3_pcpteams_getMyTeamInfo($params) {
         3 => array($adminRelTypeId, 'Integer'),
       );
       $relationship =  CRM_Core_DAO::singleValueQuery($relationshipQuery, $queryParams);
+      $role         = $relationship ? 'Admin' : 'Member';
       
       $teamResult[$myPcpId] = array(
         'teamName'      => $dao->team_name,
@@ -422,8 +423,8 @@ function civicrm_api3_pcpteams_getMyTeamInfo($params) {
         'amount_raised' => CRM_Utils_Money::format(CRM_PCP_BAO_PCP::thermoMeter($dao->pcp_id)),
         'teamPcpId'     => $dao->pcp_id,
         'contactId'     => $dao->pcp_contact_id,
-        'action'        => _getTeamInfoActionLink($myPcpId, $dao->pcp_id, $cfTeamPcpId),
-        'role'          => $relationship ? 'Admin' : 'Member',
+        'action'        => _getTeamInfoActionLink($myPcpId, $dao->pcp_id, $role),
+        'role'          => $role,
       );
     }
     return civicrm_api3_create_success($teamResult, $params);
@@ -435,16 +436,26 @@ function _civicrm_api3_pcpteams_getMyTeamInfo_spec(&$params) {
   $params['contact_id']['api.required'] = 1;
 }
 
-function _getTeamInfoActionLink($entityId, $teamPcpId, $cfTeamPcpId){
+function _getTeamInfoActionLink($entityId, $teamPcpId, $role){
   
   //action URLs
   $pageURL    = CRM_Utils_System::url('civicrm/pcp/page', "reset=1&component=event&id={$teamPcpId}"); 
-  
-  //FIXME : check User permission and return action based on permission
-  $action     = "
+  $span = "
     <span>
       <a href=\"{$pageURL}\" class=\"action-item crm-hover-button\" title='URL for this Page' >View Page</a>
-    </span>
+    </span>";
+  if($role == 'Admin') {
+    $editURL    = CRM_Utils_System::url('civicrm/pcp/info', "action=update&component=event&id={$teamPcpId}"); 
+    $manageURL  = CRM_Utils_System::url('civicrm/pcp/manage', "id={$teamPcpId}"); 
+    $span = " <span>
+      <a href=\"{$editURL}\" class=\"action-item crm-hover-button\" title='Configure' >Edit Page</a>
+      <a href=\"{$manageURL}\" class=\"action-item crm-hover-button\" title='Manage' >Manage</a>
+      <a href=\"{$pageURL}\" class=\"action-item crm-hover-button\" title='URL for this Page' >View Page</a>
+    </span>";
+  }
+  
+  //FIXME : check User permission and return action based on permission
+  $action     = $span."
     <span class='btn-slide crm-hover-button'>more
       <ul class='panel'>
         <li>
