@@ -285,9 +285,10 @@ function civicrm_api3_pcpteams_getPcpDashboardInfo($params) {
   $cfTeamPcpId = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
   $pcpDashboardValues = array();
   foreach ($result as $pcpId => $value) {
+    $result[$pcpId]['pcpId']         = $pcpId;
     $isTeamExist                     = isset($value['custom_'.$cfTeamPcpId]) ? $value['custom_'.$cfTeamPcpId] : 0;
     $result[$pcpId]['amount_raised'] = CRM_Utils_Money::format(CRM_PCP_BAO_PCP::thermoMeter($pcpId));
-    $result[$pcpId]['goal_amount']   = CRM_Utils_Money::format($value['goal_amount']);
+    $result[$pcpId]['goal_amount']   = isset($value['goal_amount']) ? CRM_Utils_Money::format($value['goal_amount']) : CRM_Utils_Money::format('0.00');
     $result[$pcpId]['page_title']    = CRM_Core_DAO::getFieldValue('CRM_Event_DAO_Event', $value['page_id'], 'title');
     $result[$pcpId]['isTeamExist']   = $value['isTeamExist'] = $isTeamExist;
     $result[$pcpId]['action']        = _getPcpDashboardActionLink($value);

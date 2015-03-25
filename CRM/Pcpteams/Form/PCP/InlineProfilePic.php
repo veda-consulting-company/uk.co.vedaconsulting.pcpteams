@@ -15,7 +15,7 @@ class CRM_Pcpteams_Form_PCP_InlineProfilePic extends CRM_Core_Form {
   }
   
   function buildQuickForm() {
-
+    $this->_pcpId = CRM_Utils_Request::retrieve('id', 'Positive', CRM_Core_DAO::$_nullArray, TRUE, NULL, 'GET');
     // add form elements
     $this->addElement('file', 'image_URL', ts('Browse/Upload Image'), 'size=30 maxlength=60');
     $this->addUploadElement('image_URL');
@@ -34,8 +34,29 @@ class CRM_Pcpteams_Form_PCP_InlineProfilePic extends CRM_Core_Form {
 
   function postProcess() {
     $params = $this->controller->exportValues($this->_name);
-    CRM_Core_BAO_File::formatAttachment($params, $params, 'civicrm_pcp', $this->_pcpId);
-    CRM_Core_BAO_File::processAttachment($params, 'civicrm_pcp', $this->_pcpId);
+    $config = CRM_Core_Config::singleton();
+    $customDir = $config->customFileUploadDir;
+    $uri = str_replace($customDir, '', $params['image_URL']['name']);
+
+    $apiParams = array(
+      'version' => 3,
+      'mime_type' => $params['image_URL']['type'],
+      'uri' => $uri,
+      'upload_date' => date('Y-m-d H:m:s'),
+    );
+    $file = civicrm_api3('File', 'create', $apiParams);
+    if($file['id'] && $this->_pcpId){
+      $sql = "
+       Insert Into civicrm_entity_file ( entity_table, entity_id, file_id )
+       Values( %1, %2, %3 )
+     ";
+      $sqlParams = array(
+        1 => array('civicrm_pcp', 'String'),
+        2 => array( $this->_pcpId, 'Integer'),
+        3 => array( $file['id'], 'Integer'),
+      );
+      CRM_Core_DAO::executeQuery($sql, $sqlParams);
+    }
     parent::postProcess();
   }
 
