@@ -39,4 +39,10 @@
     <title>Update Personal Campaign Page</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/pcp/inline/profile</path>
+    <page_callback>CRM_Pcpteams_Form_PCP_InlineProfilePic</page_callback>
+    <title>Update Profile Image</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
 </menu>
