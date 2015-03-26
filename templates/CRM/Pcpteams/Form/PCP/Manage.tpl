@@ -25,18 +25,17 @@
   </div>
   <!-- End header-->
  
-  <div class="pcp-message">
-    <span class="msg-title">
-      Congratulations, you are now signed up for {$tplParams.event_title}
-    </span>
-    <span class="msg-text">
-      We have created this page to help you with your fundraising.
+  {if $no_donations} {* if $no-donations *}
+  <div class="pcp-info pcp-message">
+    <h3>Congratulations, you are now signed up for 'FIXME: event title'</h3>
+    <p>We have created this page to help you with your fundraising.
       Please take a few minutes to complete a couple of details below, you will need to add a fundraising
       target to give you something to aim for (aim high!) and write a little bit about yourself to encourage
       people to help you reach that target.
       If you want to do this event as a team or in memory of a loved one you can set that up below as well.
-    </span>
+    </p>
   </div>
+  {/if}
 
   <div class="pcp-body">
     <div class="totaliser-giveto-block">
@@ -115,7 +114,7 @@
         Team Members
       </div>
       <div class="mb-body">
-        <div class="row">
+        <div class="mb-row">
           <div class="mb-body-row action">
             Remove link(admin)
           </div>
@@ -133,7 +132,7 @@
           </div>
           <div class="clear"></div>
         </div>
-        <div class="row">
+        <div class="mb-row">
           <div class="mb-body-row action">
             Remove link(admin)
           </div>
@@ -151,7 +150,7 @@
           </div>
           <div class="clear"></div>
         </div>
-        <div class="row">
+        <div class="mb-row">
           <div class="mb-body-row action">
             Remove link(admin)
           </div>

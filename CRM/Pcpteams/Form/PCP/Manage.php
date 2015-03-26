@@ -15,53 +15,6 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     }    
   }
 
-  static function getPcpDetails($pcpId){
-    if(empty($pcpId)){
-      return NULL;
-    }
-    $result = civicrm_api('Pcpteams', 
-        'get', 
-        array(
-          'pcp_id'     => $pcpId,
-          'version'    => 3,
-          'sequential' => 1,
-        )
-    );
-    if(civicrm_error($result)){
-      return NULL;
-    }
-    return $result['values'][0];
-  }
-  
-  static function getPcpImageURl($pcpId){
-    if(empty($pcpId)){
-      return NULL;
-    }
-    
-    $entityFile  = CRM_Core_BAO_File::getEntityFile('civicrm_pcp', $pcpId);
-    if($entityFile){
-      $fileInfo = reset($entityFile);
-      $fileId   = $fileInfo['fileID'];
-      $imageUrl = CRM_Utils_System::url('civicrm/file',"reset=1&id=$fileId&eid={$pcpId}"); 
-      return $imageUrl;
-    }
-    $config = CRM_Core_Config::singleton();
-    return CRM_Pcpteams_Constant::C_DEFAULT_PROFILE_PIC;
-  }
-  
-  static function checkTeamAdmin($contactId, $userId){
-    if(empty($contactId) || empty($userId)){
-      return FALSE;  
-    }
-    $checkAdminParam= array(
-      'version'           => 3
-      , 'team_contact_id' => $contactId
-      , 'user_id'         => $userId
-    );
-    $checkTeamAdmin = civicrm_api('pcpteams', 'checkTeamAdmin', $checkAdminParam);
-    return $checkTeamAdmin['is_team_admin'];
-  }
-  
   function buildQuickForm() {
     //get params from URL
     $state = NULL;
@@ -212,5 +165,52 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
       $state = 'Individual';
     }
     $this->assign('path', ucwords($state));
+  }
+
+  static function getPcpDetails($pcpId){
+    if(empty($pcpId)){
+      return NULL;
+    }
+    $result = civicrm_api('Pcpteams', 
+        'get', 
+        array(
+          'pcp_id'     => $pcpId,
+          'version'    => 3,
+          'sequential' => 1,
+        )
+    );
+    if(civicrm_error($result)){
+      return NULL;
+    }
+    return $result['values'][0];
+  }
+  
+  static function getPcpImageURl($pcpId){
+    if(empty($pcpId)){
+      return NULL;
+    }
+    
+    $entityFile  = CRM_Core_BAO_File::getEntityFile('civicrm_pcp', $pcpId);
+    if($entityFile){
+      $fileInfo = reset($entityFile);
+      $fileId   = $fileInfo['fileID'];
+      $imageUrl = CRM_Utils_System::url('civicrm/file',"reset=1&id=$fileId&eid={$pcpId}"); 
+      return $imageUrl;
+    }
+    $config = CRM_Core_Config::singleton();
+    return CRM_Pcpteams_Constant::C_DEFAULT_PROFILE_PIC;
+  }
+  
+  static function checkTeamAdmin($contactId, $userId){
+    if(empty($contactId) || empty($userId)){
+      return FALSE;  
+    }
+    $checkAdminParam= array(
+      'version'           => 3
+      , 'team_contact_id' => $contactId
+      , 'user_id'         => $userId
+    );
+    $checkTeamAdmin = civicrm_api('pcpteams', 'checkTeamAdmin', $checkAdminParam);
+    return $checkTeamAdmin['is_team_admin'];
   }
 }
