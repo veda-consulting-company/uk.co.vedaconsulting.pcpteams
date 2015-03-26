@@ -12,7 +12,13 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     $this->_userID = $session->get('userID');
     if (!$this->_userID) {
       CRM_Core_Error::fatal(ts('You must be logged in to view this page.'));
-    }    
+    } 
+    else {
+      $pcpId = CRM_Utils_Request::retrieve('id', 'Positive', CRM_Core_DAO::$_nullArray, TRUE); 
+      if(!CRM_Pcpteams_Utils::hasPermission($pcpId, $this->_userID)) {
+        CRM_Core_Error::fatal(ts('You do not have permission to edit this Page'));
+      }
+    }
   }
 
   function buildQuickForm() {
