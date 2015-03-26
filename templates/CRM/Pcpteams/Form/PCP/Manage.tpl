@@ -144,7 +144,7 @@
               Remove link(admin)
             </div> -->
             <div class="mem-body-row avatar">
-              <img width="35" height="35" src="{$profilePicUrl}">
+              <img width="35" height="35" src="{$memberInfo.image_url}">
             </div>
             <div class="mem-body-row name">
               {$memberInfo.member_contact_name} 
