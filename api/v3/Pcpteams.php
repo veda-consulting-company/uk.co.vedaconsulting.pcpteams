@@ -104,7 +104,7 @@ function civicrm_api3_pcpteams_get($params) {
   _civicrm_api3_pcpteams_getCustomData($result);
   
   //append custom data page_tile, amount_raised_sofar, is_teampage, image_url, donate_url
-  _civicrm_api3_pcpteams_appendCustomData($result);
+  _civicrm_api3_pcpteams_getMoreInfo($result);
   return civicrm_api3_create_success($result, $params);
 }
 function _civicrm_api3_pcpteams_get_spec(&$params) {
@@ -939,7 +939,7 @@ function _civicrm_api3_pcpteams_getRaisedSoFar_spec(&$params) {
   $params['pcp_id']['api.required'] = 1;
 }
 
-function _civicrm_api3_pcpteams_appendCustomData(&$params) {
+function _civicrm_api3_pcpteams_getMoreInfo(&$params) {
   foreach ($params as $pcpId => $pcpValues) {
     $raisedSofar = civicrm_api('pcpteams', 'getRaisedSoFar', array(
       'version' => 3
