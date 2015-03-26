@@ -128,10 +128,14 @@
               {/if}
             </div>
             <div class="mb-body-row progress">
-              FIXME count of Donations
+              34 Donations
             </div>
             <div class="mb-body-row raised">
+              {if $memberInfo.member_goal_amount}
               {$memberInfo.member_goal_amount|crmMoney}
+              {else}
+              $10000
+              {/if}
             </div>
             <div class="mb-body-row donate">
               <input type="button" name="donate" value="donate"/>
