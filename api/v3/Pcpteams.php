@@ -287,27 +287,20 @@ function civicrm_api3_pcpteams_getPcpDashboardInfo($params) {
   $result = @_civicrm_api3_dao_to_array($dao);
   _civicrm_api3_pcpteams_custom_get($result);
   
-  $cfTeamPcpId = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
   $pcpDashboardValues = array();
   foreach ($result as $pcpId => $value) {
-    $raisedSofar = civicrm_api('pcpteams', 'getRaisedSoFar', array(
-      'version' => 3
-      , 'sequential'  => 1
-      , 'pcp_id'      => $pcpId
-      , 'page_id'     => $value['page_id']
+    $pcpResult = civicrm_api('pcpteams', 'get', array(
+      'version'     => 3,
+      'sequential'  => 1,
+      'pcp_id'      => $pcpId
       )
     );
-    $amountRaised = $raisedSofar['values'][0];
-    if($amountRaised){
-      $result[$pcpId]['amount_raised']  =  CRM_Utils_Money::format($amountRaised);
-    }else{
-      $result[$pcpId]['amount_raised'] =  CRM_Utils_Money::format('0.00');
-    }
+
     $result[$pcpId]['pcpId']         = $pcpId;
-    $isTeamExist                     = isset($value['custom_'.$cfTeamPcpId]) ? $value['custom_'.$cfTeamPcpId] : 0;
-    $result[$pcpId]['goal_amount']   = isset($value['goal_amount']) ? CRM_Utils_Money::format($value['goal_amount']) : CRM_Utils_Money::format('0.00');
-    $result[$pcpId]['page_title']    = CRM_Core_DAO::getFieldValue('CRM_Event_DAO_Event', $value['page_id'], 'title');
-    $result[$pcpId]['isTeamExist']   = $value['isTeamExist'] = $isTeamExist;
+    $result[$pcpId]['goal_amount']   = $pcpResult['values'][0]['goal_amount'];
+    $result[$pcpId]['amount_raised'] = $pcpResult['values'][0]['amount_raised'];
+    $result[$pcpId]['page_title']    = $pcpResult['values'][0]['page_title'];
+    $result[$pcpId]['isTeamExist']   = $value['isTeamExist'] = $pcpResult['values'][0]['is_teampage'];
     $result[$pcpId]['action']        = _getPcpDashboardActionLink($value);
   }
 
@@ -432,28 +425,21 @@ function civicrm_api3_pcpteams_getMyTeamInfo($params) {
       $relationship =  CRM_Core_DAO::singleValueQuery($relationshipQuery, $queryParams);
       $role         = $relationship ? 'Admin' : 'Member';
       
-      $raisedSofar = civicrm_api('pcpteams', 'getRaisedSoFar', array(
+      $pcpResult = civicrm_api('pcpteams', 'get', array(
         'version' => 3
         , 'sequential'  => 1
         , 'pcp_id'      => $dao->pcp_id
-        , 'page_id'     => $dao->page_id
         )
       );
-      $amountRaised = $raisedSofar['values'][0];
-      if($amountRaised){
-        $amountRaised  =  CRM_Utils_Money::format($amountRaised);
-      }else{
-          $amountRaised =  CRM_Utils_Money::format('0.00');
-      }
-      
+     
       $teamResult[$myPcpId] = array(
         'teamName'      => $dao->team_name,
         'my_pcp_id'     => $myPcpId,
-        'my_pcp_title'  => CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $myPcpId, 'title'),
+        'my_pcp_title'  => $pcpResult['values'][0]['page_title'],
         'teamPcpTitle'  => $dao->pcp_title,
         'pageTitle'     => $dao->page_title,
-        'teamgoalAmount'=> CRM_Utils_Money::format($dao->pcp_goal_amount),
-        'amount_raised' => $amountRaised,
+        'teamgoalAmount'=> $dao->pcp_goal_amount,
+        'amount_raised' => $pcpResult['values'][0]['amount_raised'],
         'teamPcpId'     => $dao->pcp_id,
         'contactId'     => $dao->pcp_contact_id,
         'action'        => _getTeamInfoActionLink($myPcpId, $dao->pcp_id, $role),
@@ -525,17 +511,22 @@ function civicrm_api3_pcpteams_getMyPendingTeam($params) {
       FROM civicrm_pcp cp 
       INNER JOIN civicrm_event ce ON ce.id = cp.page_id
       INNER JOIN civicrm_contact cc ON ( cc.id = cp.contact_id )
-      INNER JOIN civicrm_value_pcp_custom_set cpcs ON ( cpcs.entity_id = cp.id )
       WHERE cp.contact_id IN ( $sTeamIds )
     ";
     $dao = CRM_Core_DAO::executeQuery($query);
+    $pcpResult = civicrm_api('pcpteams', 'get', array(
+        'version' => 3,
+        'sequential'  => 1,
+        'pcp_id'      => $dao->pcp_id
+      )
+    );
     while($dao->fetch()){
       $result[] = array(
         'teamName'      => $dao->team_name,
         'teamPcpTitle'  => $dao->pcp_title,
         'pageTitle'     => $dao->page_title,
-        'teamgoalAmount'=> CRM_Utils_Money::format($dao->pcp_goal_amount),
-        'amount_raised' => CRM_Utils_Money::format(CRM_PCP_BAO_PCP::thermoMeter($dao->pcp_id)),
+        'teamgoalAmount'=> $dao->pcp_goal_amount,
+        'amount_raised' => $pcpResult['values'][0]['amount_raised'],
         'teamPcpId'     => $dao->pcp_id,
         'contactId'     => $dao->pcp_contact_id,
       );

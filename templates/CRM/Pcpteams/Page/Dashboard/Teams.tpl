@@ -28,8 +28,8 @@
                 </div>
               </td>
               <td>{$row.pageTitle}</td>
-              <td align="right">{$row.teamgoalAmount}</td>
-              <td align="right">{$row.amount_raised}</td>
+              <td align="right">{$row.teamgoalAmount|crmMoney}</td>
+              <td align="right">{$row.amount_raised|crmMoney}</td>
               <td>{$row.role}</td>
               <td>{$row.action}</td>
         </tr>
