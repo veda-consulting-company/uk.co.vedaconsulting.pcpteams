@@ -65,11 +65,22 @@
               </div>
             {else}
               <span class="top-fund-text">Top team fundraisers.</span>
-              <div class="top-fund-raisers">
+              <div class="top-fund-raisers-block">
                 {if $topTeamDonationInfo}
                   {foreach from=$topTeamDonationInfo item=teamDonations}
-                    <span class="fname">{$teamDonations.display_name}</span>
+                    <div class="top-fund-raisers">
+                      <img width="50" height="50" src="{$profilePicUrl}">
+                      <span class="fname">{$teamDonations.display_name}</span>
+                    </div>
                   {/foreach}
+                    <div class="top-fund-raisers">
+                      <img width="50" height="50" src="{$profilePicUrl}">
+                      <span class="fname">display name 2</span>
+                    </div>
+                    <div class="top-fund-raisers">
+                      <img width="50" height="50" src="{$profilePicUrl}">
+                      <span class="fname">display name 3</span>
+                    </div>
                 {else}
                   <span class="fname">No Donations recorded yet..</span>
                 {/if}
@@ -94,7 +105,7 @@
       <div class="givetoname">
         <div class="colheader">
           <div class="btn-donate">
-            <a href="/dfp/donate/59772/nojs"><span id="donate_link_text" class="crm-pcp-inline-btn-edit">Donate</span></a>
+            <a href="{$pcpinfo.donate_url}"><span id="donate_link_text" class="crm-pcp-inline-btn-edit">Donate</span></a>
           </div>
         </div>
         <div class="rank">
@@ -117,8 +128,12 @@
         <div class="mb-body">
           {foreach from=$teamMemberInfo item=memberInfo}
           <div class="mb-row">
+            <!--
             <div class="mb-body-row action">
               Remove link(admin)
+            </div> -->
+            <div class="mb-body-row avatar">
+              <img width="35" height="35" src="{$profilePicUrl}">
             </div>
             <div class="mb-body-row name">
               {$memberInfo.member_contact_name} 
@@ -138,7 +153,7 @@
               {/if}
             </div>
             <div class="mb-body-row donate">
-              <input type="button" name="donate" value="donate"/>
+              <a class="button" href="">{ts}Donate{/ts}</a>
             </div>
             <div class="clear"></div>
           </div>
