@@ -169,7 +169,9 @@
           </div>
           <div class="clear"></div>
         </div>
-      </div>
+        <div class="clear"></div>
+      </div><!-- mb-body ends -->
+      <div class="clear"></div>
     </div>
   </div>
 

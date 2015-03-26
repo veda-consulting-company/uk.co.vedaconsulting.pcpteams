@@ -112,6 +112,9 @@
   padding: 10px;
   border-radius: 12px;
 }
+.crm-container .crm-pcp-manage .pcp-body .member-block .mb-body .row {
+  float: left;
+}
 .crm-container .crm-pcp-manage .pcp-body .team-section .top-fund-text, 
 .crm-container .crm-pcp-manage .pcp-body .team-section .no-team-text,
 .crm-container .crm-pcp-manage .pcp-body .team-section .team-text,
@@ -160,12 +163,12 @@
   line-height: 47px;
   color: white;
   display: block;
-  border-radius: 12px;
   text-align: center;
 }
 .crm-container .crm-pcp-manage .btn-donate {
   font-family: "Bliss Pro Heavy", Impact, sans-serif;
   text-transform: uppercase;
+  border-radius: 12px;
   background-color: #e0001a;
   border-bottom: 3px solid #b52e28;
   width: 222px;
@@ -175,6 +178,7 @@
 .crm-container .crm-pcp-manage .pcp-body .totaliser .colheader {
   background-color: #70716B;
   height: 49px;
+  border-radius: 3px;
 }
 .crm-container .crm-pcp-manage .btn-donate > a,
 .crm-container .crm-pcp-manage .btn-donate > a:visited {
