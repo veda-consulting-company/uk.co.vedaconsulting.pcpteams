@@ -473,7 +473,7 @@ class  CRM_Pcpteams_Utils {
       foreach ($reltionships as $relId => $relValue) {
         if ($relTypeId == $relValue['relationship_type_id'] 
             && $pcpOwnerContactId == $relValue['contact_id_b']
-            && $relValue['is_active'] 
+            && $relValue['is_active'] && in_array('Team', $aContactTypes)
             ) {
           $hasPermission = TRUE;
         }
