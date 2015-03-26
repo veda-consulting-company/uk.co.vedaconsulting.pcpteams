@@ -115,60 +115,30 @@
           Team Members
         </div>
         <div class="mb-body">
+          {foreach from=$teamMemberInfo item=memberInfo}
           <div class="mb-row">
             <div class="mb-body-row action">
               Remove link(admin)
             </div>
             <div class="mb-body-row name">
-              Name1 Last1
+              {$memberInfo.member_contact_name} 
+              {if $memberInfo.is_team_admin}
+                <br>
+                <small> ( Team Admin ) </small>
+              {/if}
             </div>
             <div class="mb-body-row progress">
-              34 Donations
+              FIXME count of Donations
             </div>
             <div class="mb-body-row raised">
-              £1,072.00
+              {$memberInfo.member_goal_amount|crmMoney}
             </div>
             <div class="mb-body-row donate">
               <input type="button" name="donate" value="donate"/>
             </div>
             <div class="clear"></div>
           </div>
-          <div class="mb-row">
-            <div class="mb-body-row action">
-              Remove link(admin)
-            </div>
-            <div class="mb-body-row name">
-              Name2 Last2
-            </div>
-            <div class="mb-body-row progress">
-              64 Donations
-            </div>
-            <div class="mb-body-row raised">
-              £2,072.00
-            </div>
-            <div class="mb-body-row donate">
-              <input type="button" name="donate" value="donate"/>
-            </div>
-            <div class="clear"></div>
-          </div>
-          <div class="mb-row">
-            <div class="mb-body-row action">
-              Remove link(admin)
-            </div>
-            <div class="mb-body-row name">
-              Name3 Last3
-            </div>
-            <div class="mb-body-row progress">
-              24 Donations
-            </div>
-            <div class="mb-body-row raised">
-              £1,072.00
-            </div>
-            <div class="mb-body-row donate">
-              <input type="button" name="donate" value="donate"/>
-            </div>
-            <div class="clear"></div>
-          </div>
+          {/foreach}
           <div class="clear"></div>
         </div><!-- mb-body ends -->
         <div class="clear"></div>

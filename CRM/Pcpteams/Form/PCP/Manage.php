@@ -40,6 +40,8 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     //Pcp Details
     $pcpDetails  = self::getPcpDetails($pcpId);
     $this->assign('pcpinfo', $pcpDetails);
+    
+    //check User is Team Admin
     if(!isset($pcpDetails['contact_id'])){
       $pcpDetails['contact_id']   = CRM_Pcpteams_Utils::getcontactIdbyPcpId($pcpId);
     }
@@ -111,6 +113,14 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
       $this->assign('topTeamDonationInfo', $aTopTeamDonations['values']);
     }
     
+    //team member info
+    $teamMemberInfo = civicrm_api( 'pcpteams', 'getTeamMembersInfo', array(
+        'version'     => 3, 
+        'team_pcp_id' => $pcpId,
+      )
+    );
+    $this->assign('teamMemberInfo', isset($teamMemberInfo['values']) ? $teamMemberInfo['values'] : NULL);
+      
     //set Page title
     if( $isIndividualPcp ){
       $state = 'Individual';
