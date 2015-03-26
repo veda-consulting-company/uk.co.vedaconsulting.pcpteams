@@ -473,16 +473,16 @@ class  CRM_Pcpteams_Utils {
     } // Else if he is the memeber of the pcp , then allow 'view' permission
     else if ($action == CRM_Core_Permission::VIEW) { 
       // Find PCPs for this contact 
-      $pcpQuery = "SELECT `entity_id` FROM `civicrm_value_pcp_custom_set` WHERE `team_pcp_id` = %1";
+      $pcpQuery = "
+        SELECT cps.id FROM civicrm_value_pcp_custom_set cps 
+        INNER JOIN civicrm_pcp cp ON (cp.id = cps.entity_id)
+        WHERE cps.team_pcp_id = %1 AND cp.contact_id = %2";
       $pcpQueryParams = array(
         1 => array($pcpId, 'Integer'),
+        2 => array($loggedContactId, 'Integer'),
       );
-      $dao = CRM_Core_DAO::executeQuery($pcpQuery, $pcpQueryParams);
-      while($dao->fetch()) {
-        if(CRM_Pcpteams_Utils::getcontactIdbyPcpId($dao->entity_id) == $loggedContactId) {
+      if(CRM_Core_DAO::singleValueQuery($pcpQuery, $pcpQueryParams)) {
           $hasPermission = TRUE;
-          break;
-        }
       }
     }
     else {
