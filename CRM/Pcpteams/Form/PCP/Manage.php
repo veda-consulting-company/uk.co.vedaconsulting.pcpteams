@@ -20,14 +20,14 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     $state = NULL;
     $pcpId = CRM_Utils_Request::retrieve('id', 'Positive', CRM_Core_DAO::$_nullArray, TRUE); 
     $state = CRM_Utils_Request::retrieve('state', 'String');
-    $contactId = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcpId, 'contact_id');
+    $pcpContactId = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcpId, 'contact_id');
     
-    $aContactTypes   = CRM_Contact_BAO_Contact::getContactTypes( $contactId );
-    if (in_array('Team', $aContactTypes) && self::checkTeamAdmin($contactId,  $this->_userID)) {
-      $contactId = $this->_userID ;
+    $aContactTypes   = CRM_Contact_BAO_Contact::getContactTypes( $pcpContactId );
+    if (in_array('Team', $aContactTypes) && self::checkTeamAdmin($pcpContactId,  $this->_userID)) {
+      $pcpContactId = $this->_userID ;
     }
     
-    if ($this->_userID != $contactId) {
+    if ($this->_userID != $pcpContactId) {
       CRM_Core_Error::fatal(ts('You do not have permission to view this Page'));
     }
     
@@ -39,19 +39,6 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     
     //Pcp Details
     $pcpDetails  = self::getPcpDetails($pcpId);
-    $raisedSofar = civicrm_api('pcpteams', 'getRaisedSoFar', array(
-      'version' => 3
-      , 'sequential'  => 1
-      , 'pcp_id'      => $pcpId
-      , 'page_id'     => $pcpDetails['page_id']
-      )
-    );
-    $amountRaised= $raisedSofar['values'][0];
-    if($amountRaised){
-      $pcpDetails['amount_raised'] =  CRM_Utils_Money::format($amountRaised);
-    }else{
-      $pcpDetails['amount_raised'] =  CRM_Utils_Money::format('0.00');
-    }
     $this->assign('pcpinfo', $pcpDetails);
     if(!isset($pcpDetails['contact_id'])){
       $pcpDetails['contact_id']   = CRM_Pcpteams_Utils::getcontactIdbyPcpId($pcpId);
@@ -63,9 +50,9 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     }
     $this->assign('isTeamAdmin', $isTeamAdmin);
     
-    $aContactTypes   = CRM_Contact_BAO_Contact::getContactTypes( $contactId );
-    if (in_array('Team', $aContactTypes) && self::checkTeamAdmin($contactId,  $this->_userID)) {
-      $contactId = $this->_userID ;
+    $aContactTypes   = CRM_Contact_BAO_Contact::getContactTypes( $pcpContactId );
+    if (in_array('Team', $aContactTypes) && self::checkTeamAdmin($pcpContactId,  $this->_userID)) {
+      $pcpContactId = $this->_userID ;
     }
     
     if (!$pcpDetails['contact_id']) {
@@ -201,13 +188,13 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     return CRM_Pcpteams_Constant::C_DEFAULT_PROFILE_PIC;
   }
   
-  static function checkTeamAdmin($contactId, $userId){
-    if(empty($contactId) || empty($userId)){
+  static function checkTeamAdmin($pcpContactId, $userId){
+    if(empty($pcpContactId) || empty($userId)){
       return FALSE;  
     }
     $checkAdminParam= array(
       'version'           => 3
-      , 'team_contact_id' => $contactId
+      , 'team_contact_id' => $pcpContactId
       , 'user_id'         => $userId
     );
     $checkTeamAdmin = civicrm_api('pcpteams', 'checkTeamAdmin', $checkAdminParam);

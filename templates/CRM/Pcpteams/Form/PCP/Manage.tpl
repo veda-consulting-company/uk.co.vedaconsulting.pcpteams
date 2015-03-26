@@ -14,12 +14,12 @@
     </div>
     <div class="stats">
       <div class="raised-total">
-        <span class="amount">{$pcpinfo.amount_raised}</span>
+        <span class="amount">{$pcpinfo.amount_raised|crmMoney:$pcpInfo.currency}</span>
         <div class="raised"><span class="text">Raised so far</span></div>
       </div> 
       <div class="target">
         <span class="text">Of target</span>
-        <div id="pcp_goal_amount" class="amount crm-pcp-inline-edit">{$pcpinfo.goal_amount|crmMoney}</div>
+        <div id="pcp_goal_amount" class="amount crm-pcp-inline-edit">{$pcpinfo.goal_amount|crmMoney:$pcpInfo.currency}</div>
       </div> 
     </div>
   </div>
@@ -27,7 +27,7 @@
  
   {if $no_donations} {* if $no-donations *}
   <div class="pcp-info pcp-message">
-    <h3>Congratulations, you are now signed up for 'FIXME: event title'</h3>
+    <h3>Congratulations, you are now signed up for '{$pcpinfo.page_title}'</h3>
     <p>We have created this page to help you with your fundraising.
       Please take a few minutes to complete a couple of details below, you will need to add a fundraising
       target to give you something to aim for (aim high!) and write a little bit about yourself to encourage
@@ -109,69 +109,71 @@
       <div class="clear"></div>
     </div>
 
-    <div class="member-block">
-      <div class="mb-header">
-        Team Members
-      </div>
-      <div class="mb-body">
-        <div class="mb-row">
-          <div class="mb-body-row action">
-            Remove link(admin)
+    {if $pcpinfo.is_teampage}
+      <div class="member-block">
+        <div class="mb-header">
+          Team Members
+        </div>
+        <div class="mb-body">
+          <div class="mb-row">
+            <div class="mb-body-row action">
+              Remove link(admin)
+            </div>
+            <div class="mb-body-row name">
+              Name1 Last1
+            </div>
+            <div class="mb-body-row progress">
+              34 Donations
+            </div>
+            <div class="mb-body-row raised">
+              £1,072.00
+            </div>
+            <div class="mb-body-row donate">
+              <input type="button" name="donate" value="donate"/>
+            </div>
+            <div class="clear"></div>
           </div>
-          <div class="mb-body-row name">
-            Name1 Last1
+          <div class="mb-row">
+            <div class="mb-body-row action">
+              Remove link(admin)
+            </div>
+            <div class="mb-body-row name">
+              Name2 Last2
+            </div>
+            <div class="mb-body-row progress">
+              64 Donations
+            </div>
+            <div class="mb-body-row raised">
+              £2,072.00
+            </div>
+            <div class="mb-body-row donate">
+              <input type="button" name="donate" value="donate"/>
+            </div>
+            <div class="clear"></div>
           </div>
-          <div class="mb-body-row progress">
-            34 Donations
-          </div>
-          <div class="mb-body-row raised">
-            £1,072.00
-          </div>
-          <div class="mb-body-row donate">
-            <input type="button" name="donate" value="donate"/>
+          <div class="mb-row">
+            <div class="mb-body-row action">
+              Remove link(admin)
+            </div>
+            <div class="mb-body-row name">
+              Name3 Last3
+            </div>
+            <div class="mb-body-row progress">
+              24 Donations
+            </div>
+            <div class="mb-body-row raised">
+              £1,072.00
+            </div>
+            <div class="mb-body-row donate">
+              <input type="button" name="donate" value="donate"/>
+            </div>
+            <div class="clear"></div>
           </div>
           <div class="clear"></div>
-        </div>
-        <div class="mb-row">
-          <div class="mb-body-row action">
-            Remove link(admin)
-          </div>
-          <div class="mb-body-row name">
-            Name2 Last2
-          </div>
-          <div class="mb-body-row progress">
-            64 Donations
-          </div>
-          <div class="mb-body-row raised">
-            £2,072.00
-          </div>
-          <div class="mb-body-row donate">
-            <input type="button" name="donate" value="donate"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        <div class="mb-row">
-          <div class="mb-body-row action">
-            Remove link(admin)
-          </div>
-          <div class="mb-body-row name">
-            Name3 Last3
-          </div>
-          <div class="mb-body-row progress">
-            24 Donations
-          </div>
-          <div class="mb-body-row raised">
-            £1,072.00
-          </div>
-          <div class="mb-body-row donate">
-            <input type="button" name="donate" value="donate"/>
-          </div>
-          <div class="clear"></div>
-        </div>
+        </div><!-- mb-body ends -->
         <div class="clear"></div>
-      </div><!-- mb-body ends -->
-      <div class="clear"></div>
-    </div>
+      </div><!-- member-block ends-->
+    {/if}
   </div>
 
   <div class="clear"></div>
