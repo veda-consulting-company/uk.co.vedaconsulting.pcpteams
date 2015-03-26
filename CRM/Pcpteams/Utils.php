@@ -457,4 +457,28 @@ class  CRM_Pcpteams_Utils {
     $dao->find(TRUE);
     return $dao->id;
   }
+  
+  static function hasPermission($pcpId, $loggedContactId, $action = CRM_Core_Permission::EDIT) {
+    $hasPermission      = FALSE;
+    $pcpOwnerContactId  = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcpId, 'contact_id');
+    // Check the pcp page which he is looking is the owner of pcp, then allow 'edit' permission 
+    if($pcpOwnerContactId == $loggedContactId) {
+      $hasPermission = TRUE;
+    } // Else if he is the admin of the pcp , then allow 'edit' permission
+    else {
+      $aContactTypes   = CRM_Contact_BAO_Contact::getContactTypes( $loggedContactId );
+      $teamRelTypeName = CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE;
+      $relTypeId       = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', $teamRelTypeName, 'id', 'name_a_b');
+      $reltionships    = CRM_Contact_BAO_Relationship::getRelationship( $loggedContactId, CRM_Contact_BAO_Relationship::CURRENT);
+      foreach ($reltionships as $relId => $relValue) {
+        if ($relTypeId == $relValue['relationship_type_id'] 
+            && $pcpOwnerContactId == $relValue['contact_id_b']
+            && $relValue['is_active'] 
+            ) {
+          $hasPermission = TRUE;
+        }
+      }
+    }
+    return $hasPermission;
+  }
 }
