@@ -773,6 +773,7 @@ function civicrm_api3_pcpteams_getTeamMembersInfo($params) {
   $query = "
     SELECT cp.id      as team_pcp_id
     , cp.contact_id   as team_contact_id
+    , cp.page_id      as page_id
     , cp.goal_amount  as team_goal_amount
     , CASE 
       WHEN cr.relationship_type_id = {$memberRelTypeId} THEN '0' 
@@ -794,7 +795,14 @@ function civicrm_api3_pcpteams_getTeamMembersInfo($params) {
   ";
   $dao = CRM_Core_DAO::executeQuery($query);
   while ($dao->fetch()) {
-    $result[] = $dao->toArray();
+    $members[] = $dao->toArray();
+  }
+  //amount raised and total donations count
+  foreach ($members as $values) {
+    $getAllDonations = civicrm_api3_pcpteams_getAllDonations(array('page_id' => $values['page_id'], 'pcp_id' => $values['member_pcp_id']));
+    $values ['amount_raised']   = $getAllDonations['total_amount'];
+    $values ['donations_count'] = $getAllDonations['count'];
+    $result[]  = $values;
   }
   return civicrm_api3_create_success($result, $params);
 }
@@ -937,11 +945,15 @@ function civicrm_api3_pcpteams_getAllDonations($params) {
     2 => array($params['pcp_id'], 'Integer'),
   );
   $dao = CRM_Core_DAO::executeQuery($query, $queryParams);
+  $totalAmount = 0;
   while ($dao->fetch()) {
     $result[$dao->contribution_id] = $dao->toArray();
+    $totalAmount += $dao->total_amount;
   }
 
-  return civicrm_api3_create_success($result, $params);
+  $apiResult = civicrm_api3_create_success($result, $params);
+  $apiResult['total_amount'] = $totalAmount ? $totalAmount : '0.00';
+  return $apiResult;
 }
 
 function _civicrm_api3_pcpteams_getAllDonations_spec(&$params) {
