@@ -58,38 +58,10 @@
             <span class="team-name"><a href='{crmURL p="civicrm/pcp/manage" q="id=$team_pcp_id"}'>{$teamPcpInfo.title}</a></span>
             <span class="team-text">{$teamPcpInfo.intro_text}</span>
           {elseif $isa_team_page}
-            {if $no_donations} {* if $no-donations *}
-              <div class="invite-team-text">Invite people to the team</div>
-              <div class="invite-team-buttons">
-                <a id="invite-team-btn" class="button crm-pcp-inline-edit-team" href="{$inviteTeamURl}">{ts}Invite Team Members{/ts}</a>
-              </div>
-            {else}
-              <span class="top-fund-text">Top team fundraisers.</span>
-              <div class="top-fund-raisers-block">
-                {if $topTeamDonationInfo}
-                  {foreach from=$topTeamDonationInfo item=teamDonations}
-                    <div class="top-fund-raisers">
-                      <img width="50" height="50" src="{$profilePicUrl}">
-                      <span class="fname">{$teamDonations.display_name}</span>
-                    </div>
-                  {/foreach}
-                    <div class="top-fund-raisers">
-                      <img width="50" height="50" src="{$profilePicUrl}">
-                      <span class="fname">display name 2</span>
-                    </div>
-                    <div class="top-fund-raisers">
-                      <img width="50" height="50" src="{$profilePicUrl}">
-                      <span class="fname">display name 3</span>
-                    </div>
-                {else}
-                  <span class="fname">No Donations recorded yet..</span>
-                {/if}
-              </div>
-              <div class="top-fund-buttons">
-                <a class="button crm-pcp-inline-edit-team" href="{$createTeamUrl}">{ts}Invite to Team{/ts}</a>
-                <a class="button crm-pcp-inline-edit-team" href="{$joinTeamUrl}">{ts}See all Team{/ts}</a>
-              </div>
-            {/if}
+            <div class="invite-team-text">Invite people to the team</div>
+            <div class="invite-team-buttons">
+              <a id="invite-team-btn" class="button crm-pcp-inline-edit-team" href="{$inviteTeamURl}">{ts}Invite Team Members{/ts}</a>
+            </div>
           {else}
             <span class="no-team-text">Fundraise more, fundraise as a team Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius. Vestibulum viverra mi dictum odio scelerisque semper. Morbi</span>
             <p><strong> Fundraise more, fundraise as a team </strong></p><br>
@@ -121,41 +93,80 @@
     </div>
 
     {if $pcpinfo.is_teampage}
-      <div class="member-block">
-        <div class="mb-header">
-          Team Members
+      <div class="member-req-block">
+        <div class="mem-header">
+          Team Member Requests
         </div>
-        <div class="mb-body">
+        <div class="mem-body">
           {foreach from=$teamMemberInfo item=memberInfo}
-          <div class="mb-row">
+          <div class="mem-row">
             <!--
-            <div class="mb-body-row action">
+            <div class="mem-body-row action">
               Remove link(admin)
             </div> -->
-            <div class="mb-body-row avatar">
+            <div class="mem-body-row avatar">
               <img width="35" height="35" src="{$profilePicUrl}">
             </div>
-            <div class="mb-body-row name">
+            <div class="mem-body-row name">
               {$memberInfo.member_contact_name} 
               {if $memberInfo.is_team_admin}
                 <br>
                 <small> ( Team Admin ) </small>
               {/if}
             </div>
-            <div class="mb-body-row progress">
+            <div class="mem-body-row progress">
               {$memberInfo.donations_count} Donations
             </div>
-            <div class="mb-body-row raised">
+            <div class="mem-body-row raised">
               {$memberInfo.amount_raised|crmMoney}
             </div>
-            <div class="mb-body-row donate">
-              <a class="button" href="">{ts}Donate{/ts}</a>
+            <div class="mem-body-row donate">
+              <a class="pcp-button pcp-btn-green" href="">{ts}Approve{/ts}</a>
+              <a class="pcp-button pcp-btn-red" href="">{ts}Decline{/ts}</a>
             </div>
             <div class="clear"></div>
           </div>
           {/foreach}
           <div class="clear"></div>
-        </div><!-- mb-body ends -->
+        </div><!-- mem-body ends -->
+        <div class="clear"></div>
+      </div><!-- member-request block ends-->
+
+      <div class="member-block">
+        <div class="mem-header">
+          Team Members
+        </div>
+        <div class="mem-body">
+          {foreach from=$teamMemberInfo item=memberInfo}
+          <div class="mem-row">
+            <!--
+            <div class="mem-body-row action">
+              Remove link(admin)
+            </div> -->
+            <div class="mem-body-row avatar">
+              <img width="35" height="35" src="{$profilePicUrl}">
+            </div>
+            <div class="mem-body-row name">
+              {$memberInfo.member_contact_name} 
+              {if $memberInfo.is_team_admin}
+                <br>
+                <small> ( Team Admin ) </small>
+              {/if}
+            </div>
+            <div class="mem-body-row progress">
+              {$memberInfo.donations_count} Donations
+            </div>
+            <div class="mem-body-row raised">
+              {$memberInfo.amount_raised|crmMoney}
+            </div>
+            <div class="mem-body-row donate">
+              <a class="btn-donate-small" href="">{ts}Donate{/ts}</a>
+            </div>
+            <div class="clear"></div>
+          </div>
+          {/foreach}
+          <div class="clear"></div>
+        </div><!-- mem-body ends -->
         <div class="clear"></div>
       </div><!-- member-block ends-->
     {/if}

@@ -89,11 +89,11 @@
   width: 30%;
 }
 .crm-container .crm-pcp-manage .pcp-body .totaliser-giveto-block,
-.crm-container .crm-pcp-manage .pcp-body .member-block .mb-header,
+.crm-container .crm-pcp-manage .pcp-body .mem-header,
 .crm-container .crm-pcp-manage .pcp-body .colheader {
   margin-bottom: 10px;
 }
-.crm-container .crm-pcp-manage .pcp-body .member-block .mb-body .mb-row,
+.crm-container .crm-pcp-manage .pcp-body .mem-body .mem-row,
 .crm-container .crm-pcp-manage .pcp-body .rank,
 .crm-container .crm-pcp-manage .pcp-body .top-donations,
 .crm-container .crm-pcp-manage .pcp-body .intro-text,
@@ -104,7 +104,7 @@
   padding: 10px;
   border-radius: 12px;
 }
-.crm-container .crm-pcp-manage .pcp-body .member-block .mb-body .mb-row {
+.crm-container .crm-pcp-manage .pcp-body .mem-body .mem-row {
   width: 98%;
 }
 .crm-container .crm-pcp-manage .pcp-body .team-section .top-fund-text, 
@@ -134,7 +134,7 @@
   float: left;
   width: 20%;
 }
-.crm-container .crm-pcp-manage .pcp-body .member-block .mb-body-row {
+.crm-container .crm-pcp-manage .pcp-body .mem-body-row {
   display: inline-block;
   float: left;
   width: 19%;
@@ -155,7 +155,7 @@
   font-weight: bold;
 }
 
-.crm-container .crm-pcp-manage .pcp-body .member-block .mb-header,
+.crm-container .crm-pcp-manage .pcp-body .mem-header,
 .crm-container .crm-pcp-manage .btn-donate,
 .crm-container .crm-pcp-manage .pcp-body .totaliser .colheader {
   font-size: 24px;
@@ -173,9 +173,9 @@
   width: 222px;
   height: 46px;
 }
-.crm-container .crm-pcp-manage .pcp-body .member-block .mb-header,
+.crm-container .crm-pcp-manage .pcp-body .mem-header,
 .crm-container .crm-pcp-manage .pcp-body .totaliser .colheader {
-  background-color: #70716B;
+  background-color: #999999;
   height: 49px;
   border-radius: 3px;
 }
@@ -185,6 +185,23 @@
   /* to make whole button clickable, not just the text*/
   display: inline-block;
   width: 100%;
+}
+.crm-container .crm-pcp-manage .btn-donate-small {
+  color: white;
+  padding: 4px 10px 4px 10px;
+  border-radius: 6px;
+}
+.crm-container .crm-pcp-manage .pcp-button {
+  color: white;
+  padding: 4px 10px 4px 10px;
+  border-radius: 6px;
+}
+.crm-container .crm-pcp-manage .pcp-btn-green {
+  background-color: #60b044;
+}
+.crm-container .crm-pcp-manage .btn-donate-small,
+.crm-container .crm-pcp-manage .pcp-btn-red {
+  background-color: #e0001a;
 }
 .crm-container .crm-pcp-manage .pcp-message {
   background-size: 40px 40px;
