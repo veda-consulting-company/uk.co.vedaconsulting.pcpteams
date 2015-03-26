@@ -690,99 +690,76 @@ function civicrm_api3_pcpteams_getTeamMembers($params) {
   }
   return civicrm_api3_create_success($result, $params);
 }
-function _civicrm_api3_pcpteams_getTeamPcpIdsByConatct($params){
-  //FIXME : get the column name from custom fields
-  if ($params['pcp_id']) {
-    $join  = NULL;
-    $where = "WHERE cpcs.entity_id = {$params['pcp_id']}";
-  }elseif ($params['contact_id']) {
-    $join  = "LEFT JOIN civicrm_pcp cp ON (cpcs.entity_id = cp.id)";
-    $where = "WHERE cp.contact_id = {$params['contact_id']}";
-  }
-  $result = CRM_Core_DAO::$_nullArray;
-  $query = "
-    SELECT cpcs.team_pcp_id
-    FROM civicrm_value_pcp_custom_set cpcs
-    {$join}{$where}
-  ";
-  $dao = CRM_Core_DAO::executeQuery($query);
-  while ($dao->fetch()) {
-    $result[] = $dao->team_pcp_id;
-  }
-  return $result;
-}
-function civicrm_api3_pcpteams_getTeamMembersInfo($params) {
-  //should have any one of this id
-  if(!isset($params['team_pcp_id']) && !isset($params['contact_id']) && !isset($params['pcp_id'])){
-      return array('error_message' => 'Mandatory Missing, team_pcp_id, pcp_id or contact_id. any one of these id required.');
-  }
+
+function _civicrm_api3_pcpteams_getTeamMemberPCPIds($params){
   
-  $teamPcpId = NULL;
-  if(isset($params['team_pcp_id'])){
-    if(empty($params['team_pcp_id'])){
+  if (isset($params['teams'])) {
+    $teamPcpId = implode(', ', $params['teams']);
+    $selectClause = "entity_id as pcp_id";
+    $whereClause  = "team_pcp_id IN ( {$teamPcpId} )";
+  } else {
+    
+    if(empty($params['pcp_id'])){
       return CRM_Core_DAO::$_nullArray;
     }
     
-    //check pcp id is team pcp_id 
-    $getTeamPcpContactID = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $params['team_pcp_id'], 'contact_id');
-    if(empty($getTeamPcpContactID)){
-       return array('error_message' => 'Invalid PCP id., Please check the team_pcp_id is valid');
+    $params['contact_id'] = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $params['pcp_id'], 'contact_id');
+    
+    $contactSubType = CRM_Contact_BAO_Contact::getContactTypes($params['contact_id']);
+    if (in_array(CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE, $contactSubType)) {
+      $teamPcpId = $params['pcp_id'];
+      $selectClause = "entity_id as pcp_id";
+      $whereClause  = "team_pcp_id IN ( {$teamPcpId} )";
+    } elseif (in_array('Individual', $contactSubType)) {
+      $selectClause = "team_pcp_id as pcp_id";
+      $whereClause  = "entity_id = {$params['pcp_id']}";
     }
     
-    $contactSubType = CRM_Contact_BAO_Contact::getContactTypes($getTeamPcpContactID);
-    if (!in_array(CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE, $contactSubType)) {
-      return array('error_message' => 'Is not a Team PCP, Please check the pcp Id using in this API');
-    }    
-    
-    $teamPcpId = $params['team_pcp_id'];  
-  }elseif (isset($params['contact_id']) || isset($params['pcp_id'])) {
-    if($params['pcp_id']){
-      //check pcp id is team pcp_id 
-      $getPcpContactID = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $params['pcp_id'], 'contact_id');
-      if(empty($getPcpContactID)){
-         return array('error_message' => 'Invalid PCP id., Please check the pcp_id is valid');
-      }
-      $contactSubType = CRM_Contact_BAO_Contact::getContactTypes($getPcpContactID);
-      if (!in_array('Individual', $contactSubType)) {
-        return array('error_message' => 'Is not a Individual PCP Id, Please check the pcp Id using in this API');
-      } 
-    }
-    
-    $teamContacts = _civicrm_api3_pcpteams_getTeamPcpIdsByConatct($params);
-    $teamPcpId = implode(', ', $teamContacts);
+  }
+
+  $query = "
+    SELECT {$selectClause} 
+    FROM civicrm_value_pcp_custom_set 
+    WHERE {$whereClause}
+  ";
+  $dao = CRM_Core_DAO::executeQuery($query);
+  $ids = array();
+  while ($dao->fetch()) {
+    $ids[] = $dao->pcp_id;
+  }
+  if (!isset($params['teams']) && in_array('Individual', $contactSubType)){
+    $params['teams'] = $ids;
+    $ids = _civicrm_api3_pcpteams_getTeamMemberPCPIds($params);
   }
   
-  if(empty($teamPcpId)){
+  return $ids;
+}
+
+function civicrm_api3_pcpteams_getTeamMembersInfo($params){
+  
+  $teamMemberPcpIds = _civicrm_api3_pcpteams_getTeamMemberPCPIds($params);
+  
+  if(empty($teamMemberPcpIds)){
      return CRM_Core_DAO::$_nullArray; 
   }
-  
+  $teamMemberPcpIds   = implode(', ', $teamMemberPcpIds);
   $relTypeAdmin       = CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE;
-  $relTypeMember      = CRM_Pcpteams_Constant::C_TEAM_RELATIONSHIP_TYPE;
   $adminRelTypeId     = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', $relTypeAdmin, 'id', 'name_a_b');
-  $memberRelTypeId    = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', $relTypeMember, 'id', 'name_a_b');
-      
+
   $query = "
-    SELECT cp.id      as team_pcp_id
-    , cp.contact_id   as team_contact_id
-    , cp.page_id      as page_id
-    , cp.goal_amount  as team_goal_amount
-    , CASE 
-      WHEN cr.relationship_type_id = {$memberRelTypeId} THEN '0' 
-      WHEN cr.relationship_type_id = {$adminRelTypeId} THEN '1'
-      END as is_team_admin
-    , cr.contact_id_a as member_contact_id
-    , cc.display_name as member_contact_name
-    , cr.relationship_type_id
-    , cp_a.id         as member_pcp_id
-    , cp_a.goal_amount as member_goal_amount
+    SELECT cp.id        as member_pcp_id
+      , cp.page_id      as page_id
+      , cp.contact_id   as member_contact_id
+      , cp.goal_amount  as member_goal_amount
+      , cc.display_name as member_contact_name
+      , CASE 
+        WHEN cr.relationship_type_id = {$adminRelTypeId} THEN '1' ELSE '0'
+        END             as is_team_admin
     FROM civicrm_pcp cp
-    LEFT JOIN civicrm_relationship cr ON ( cp.contact_id = cr.contact_id_b AND cr.relationship_type_id IN ({$adminRelTypeId}, {$memberRelTypeId}) )
-    LEFT JOIN civicrm_pcp cp_a ON ( cr.contact_id_a = cp_a.contact_id )
-    LEFT JOIN civicrm_contact cc ON ( cp_a.contact_id = cc.id )
-    LEFT JOIN civicrm_pcp_block cpb ON ( cpb.entity_id = cp.page_id )
-    WHERE cr.is_active = 1 
-      AND cp.page_id = cp_a.page_id
-      AND cp.id IN ( {$teamPcpId} )
+    LEFT JOIN civicrm_value_pcp_custom_set cpcs ON (cpcs.entity_id = cp.id)
+    LEFT JOIN civicrm_contact cc ON (cc.id = cp.contact_id)
+    LEFT JOIN civicrm_relationship cr ON (cr.contact_id_a = cp.contact_id AND cr.is_active)
+    where cp.id IN ( $teamMemberPcpIds )
   ";
   $dao = CRM_Core_DAO::executeQuery($query);
   while ($dao->fetch()) {
@@ -790,12 +767,16 @@ function civicrm_api3_pcpteams_getTeamMembersInfo($params) {
   }
   //amount raised and total donations count
   foreach ($members as $values) {
-    $values ['amount_raised']   = civicrm_api3_pcpteams_getPcpAmountRaised($values['member_pcp_id']);
+    $values ['amount_raised']   = civicrm_api3_pcpteams_getAmountRaised($values['member_pcp_id']);
     $getAllDonations            = civicrm_api3_pcpteams_getAllDonations(array('page_id' => $values['page_id'], 'pcp_id' => $values['member_pcp_id']));
     $values ['donations_count'] = $getAllDonations['count'];
     $result[]  = $values;
   }
   return civicrm_api3_create_success($result, $params);
+}
+
+function _civicrm_api3_pcpteams_getTeamMembersInfo_spec(&$params) {
+  $params['pcp_id']['api.required'] = 1;
 }
 
 function _getTeamMemberActionLink($activityId, $myPcpId, $teamPcpId){
@@ -1069,7 +1050,7 @@ function _civicrm_api3_pcpteams_getMoreInfo(&$params) {
   }
 }
 
-function civicrm_api3_pcpteams_getPcpAmountRaised($pcpId) {
+function civicrm_api3_pcpteams_getAmountRaised($pcpId) {
     $query = "
     SELECT SUM(cc.total_amount) as total
     FROM civicrm_pcp_block cpb

@@ -121,8 +121,8 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     
     //team member info
     $teamMemberInfo = civicrm_api( 'pcpteams', 'getTeamMembersInfo', array(
-        'version'     => 3, 
-        'team_pcp_id' => $pcpId,
+        'version'  => 3, 
+        'pcp_id'   => $pcpId,
       )
     );
     $this->assign('teamMemberInfo', isset($teamMemberInfo['values']) ? $teamMemberInfo['values'] : NULL);
