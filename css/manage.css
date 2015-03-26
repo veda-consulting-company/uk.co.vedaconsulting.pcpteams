@@ -114,14 +114,12 @@
   display: block;
 }
 .crm-container .crm-pcp-manage .pcp-body .team-section .top-fund-raisers-block, 
-.crm-container .crm-pcp-manage .pcp-body .team-section .invite-team-buttons, 
 .crm-container .crm-pcp-manage .pcp-body .team-section .top-fund-buttons, 
 .crm-container .crm-pcp-manage .pcp-body .team-section .no-team-buttons {
   margin-top: 15px;
 }
 .crm-container .crm-pcp-manage .pcp-body .team-section .top-fund-text, 
-.crm-container .crm-pcp-manage .pcp-body .team-section .top-fund-raisers-block, 
-.crm-container .crm-pcp-manage .pcp-body .team-section .invite-team-buttons {
+.crm-container .crm-pcp-manage .pcp-body .team-section .top-fund-raisers-block {
   text-align: center;
 }
 .crm-container .crm-pcp-manage .team-section .invite-team-text {
@@ -153,6 +151,10 @@
 .crm-container .crm-pcp-manage .pcp-body .team-section .team-name {
   margin-bottom: 10px;
   font-weight: bold;
+}
+.crm-container .crm-pcp-manage .pcp-body .team-section .invite-team-buttons {
+  width: 35%;
+  margin: 0 auto;
 }
 
 .crm-container .crm-pcp-manage .pcp-body .mem-header,

@@ -60,7 +60,7 @@
           {elseif $isa_team_page}
             <div class="invite-team-text">Invite people to the team</div>
             <div class="invite-team-buttons">
-              <a id="invite-team-btn" class="button crm-pcp-inline-edit-team" href="{$inviteTeamURl}">{ts}Invite Team Members{/ts}</a>
+              <a id="invite-team-btn" class="pcp-button pcp-btn-red crm-pcp-inline-edit-team" href="{$inviteTeamURl}">{ts}Invite Team Members{/ts}</a>
             </div>
           {else}
             <span class="no-team-text">Fundraise more, fundraise as a team Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius. Vestibulum viverra mi dictum odio scelerisque semper. Morbi</span>
