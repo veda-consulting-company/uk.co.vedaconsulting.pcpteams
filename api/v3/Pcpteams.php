@@ -94,7 +94,7 @@ function civicrm_api3_pcpteams_get($params) {
   //the field_name check fails 'pcp_contact_id' == 'contact_id' in _civicrm_api3_dao_to_array()
   $result[$dao->id]['contact_id']    = $dao->contact_id;
    
-  $result[$dao->id]['amount_raised'] = CRM_PCP_BAO_PCP::thermoMeter($params['pcp_id']);
+  //$result[$dao->id]['amount_raised'] = CRM_PCP_BAO_PCP::thermoMeter($params['pcp_id']);
   
   // Append custom info
   // Note: This should ideally be done in _civicrm_api3_dao_to_array, but since PCP is not one of 
@@ -103,7 +103,9 @@ function civicrm_api3_pcpteams_get($params) {
   
   //custom data with customfield names, to avoid reusing the custom field id everytime
   _civicrm_api3_pcpteams_getCustomData($result);
-
+  
+  //append custom data page_tile, amount_raised_sofar, is_teampage, image_url, donate_url
+  _civicrm_api3_pcpteams_appendCustomData($result);
   return civicrm_api3_create_success($result, $params);
 }
 function _civicrm_api3_pcpteams_get_spec(&$params) {
@@ -938,3 +940,34 @@ function _civicrm_api3_pcpteams_getRaisedSoFar_spec(&$params) {
   $params['pcp_id']['api.required'] = 1;
 }
 
+function _civicrm_api3_pcpteams_appendCustomData(&$params) {
+  foreach ($params as $pcpId => $pcpValues) {
+    $raisedSofar = civicrm_api('pcpteams', 'getRaisedSoFar', array(
+      'version' => 3
+      , 'sequential'  => 1
+      , 'pcp_id'      => $pcpId
+      , 'page_id'     => $pcpValues['page_id']
+      )
+    );
+    $amountRaised = $raisedSofar['values'][0];
+    
+    $entityFile   = CRM_Core_BAO_File::getEntityFile('civicrm_pcp', $pcpId);
+    $imageUrl = "";
+    if($entityFile){
+      $fileInfo = reset($entityFile);
+      $fileId   = $fileInfo['fileID'];
+      $imageUrl = CRM_Utils_System::url('civicrm/file',"reset=1&id=$fileId&eid={$pcpId}"); 
+    }
+    $pcpBlockId         = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcpId, 'pcp_block_id', 'id');
+    $contributionPageId = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCPBlock', $pcpBlockId, 'target_entity_id', 'id');
+    $donateUrl          = CRM_Utils_System::url('civicrm/contribute/transact', 'id='.$contributionPageId.'&pcpId='.$pcpId.'&reset=1');
+    
+    $aContactTypes   = CRM_Contact_BAO_Contact::getContactTypes( $pcpValues['contact_id'] );
+    $isTeamPcp       = in_array('Team'      , $aContactTypes) ? TRUE : FALSE;
+     $params[$pcpId]['page_title']       = CRM_Core_DAO::getFieldValue('CRM_Event_DAO_Event', $pcpValues['page_id'], 'title');
+     $params[$pcpId]['amount_raised']    = $amountRaised;
+     $params[$pcpId]['image_url']        = $imageUrl;
+     $params[$pcpId]['donate_url']       = $donateUrl;
+     $params[$pcpId]['is_teampage']      = $isTeamPcp;
+  }
+}
