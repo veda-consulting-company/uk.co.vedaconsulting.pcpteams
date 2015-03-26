@@ -160,7 +160,7 @@
               {$memberInfo.amount_raised|crmMoney}
             </div>
             <div class="mem-body-row donate">
-              <a class="btn-donate-small" href="">{ts}Donate{/ts}</a>
+              <a class="btn-donate-small" href="{$memberInfo.donate_url}">{ts}Donate{/ts}</a>
             </div>
             <div class="clear"></div>
           </div>

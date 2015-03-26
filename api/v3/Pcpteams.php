@@ -763,15 +763,18 @@ function civicrm_api3_pcpteams_getTeamMembersInfo($params){
   ";
   $dao = CRM_Core_DAO::executeQuery($query);
   while ($dao->fetch()) {
-    $members[] = $dao->toArray();
+    $members[$dao->member_pcp_id] = $dao->toArray();
   }
   //amount raised and total donations count
-  foreach ($members as $values) {
-    $values ['amount_raised']   = civicrm_api3_pcpteams_getAmountRaised($values['member_pcp_id']);
+  foreach ($members as $memberPcpId => $values) {
     $getAllDonations            = civicrm_api3_pcpteams_getAllDonations(array('page_id' => $values['page_id'], 'pcp_id' => $values['member_pcp_id']));
     $values ['donations_count'] = $getAllDonations['count'];
-    $result[]  = $values;
+    $values ['contact_id'] = $values['member_contact_id']; //to avoid notice message while call method getMoreInfo
+    $result[$memberPcpId]  = $values;
   }
+  //donation URL and more info
+  _civicrm_api3_pcpteams_getMoreInfo($result);
+  
   return civicrm_api3_create_success($result, $params);
 }
 
