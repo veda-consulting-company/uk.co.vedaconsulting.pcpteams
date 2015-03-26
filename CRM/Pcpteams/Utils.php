@@ -470,24 +470,39 @@ class  CRM_Pcpteams_Utils {
     // Check the pcp page which he is looking is the owner of pcp, then allow 'edit' permission 
     if($pcpOwnerContactId == $loggedContactId) {
       $hasPermission = TRUE;
-    } // Else if he is the admin of the pcp , then allow 'edit' permission
-    else {
-      $query = "
-        SELECT crt.name_a_b FROM civicrm_relationship cr
-        INNER JOIN civicrm_relationship_type crt ON (crt.id = cr.relationship_type_id)
-        INNER JOIN civicrm_contact cc ON (cc.id = cr.`contact_id_a`AND cc.contact_sub_type = 'Team')
-        WHERE cr.contact_id_a = %1 AND cr.contact_id_b = %2 AND cr.is_active = %3";
-      
-      $queryParams = array(
-        1 => array($loggedContactId, 'Integer'),
-        2 => array($pcpOwnerContactId, 'Integer'),
-        3 => array(1, 'Integer'),
+    } // Else if he is the memeber of the pcp , then allow 'view' permission
+    else if ($action == CRM_Core_Permission::VIEW) { 
+      // Find PCPs for this contact 
+      $pcpQuery = "SELECT `entity_id` FROM `civicrm_value_pcp_custom_set` WHERE `team_pcp_id` = %1";
+      $pcpQueryParams = array(
+        1 => array($pcpId, 'Integer'),
       );
-      
-      if(CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE == CRM_Core_DAO::singleValueQuery($query, $queryParams)) {
-        $hasPermission = TRUE;
+      $dao = CRM_Core_DAO::executeQuery($pcpQuery, $pcpQueryParams);
+      while($dao->fetch()) {
+        if(CRM_Pcpteams_Utils::getcontactIdbyPcpId($dao->entity_id) == $loggedContactId) {
+          $hasPermission = TRUE;
+          break;
+        }
       }
     }
+    else {
+        $query = "
+          SELECT cr.id FROM civicrm_relationship cr
+          INNER JOIN civicrm_relationship_type crt ON (crt.id = cr.relationship_type_id)
+          INNER JOIN civicrm_contact cc ON (cc.id = cr.`contact_id_a`AND cc.contact_sub_type = 'Team')
+          WHERE cr.contact_id_a = %1 AND cr.contact_id_b = %2 AND cr.is_active = %3 AND crt.name_a_b = %4";
+
+        $queryParams = array(
+          1 => array($loggedContactId, 'Integer'),
+          2 => array($pcpOwnerContactId, 'Integer'),
+          3 => array(1, 'Integer'),
+          4 => array(CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE, 'String'),
+        );
+
+        if(CRM_Core_DAO::singleValueQuery($query, $queryParams)) {
+          $hasPermission = TRUE;
+        }
+      }
     return $hasPermission;
   }
 }
