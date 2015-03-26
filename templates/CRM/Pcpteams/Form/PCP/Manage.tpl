@@ -143,14 +143,10 @@
               {/if}
             </div>
             <div class="mb-body-row progress">
-              34 Donations
+              {$memberInfo.donations_count} Donations
             </div>
             <div class="mb-body-row raised">
-              {if $memberInfo.member_goal_amount}
-              {$memberInfo.member_goal_amount|crmMoney}
-              {else}
-              $10000
-              {/if}
+              {$memberInfo.amount_raised|crmMoney}
             </div>
             <div class="mb-body-row donate">
               <a class="button" href="">{ts}Donate{/ts}</a>
