@@ -790,8 +790,8 @@ function civicrm_api3_pcpteams_getTeamMembersInfo($params) {
   }
   //amount raised and total donations count
   foreach ($members as $values) {
-    $getAllDonations = civicrm_api3_pcpteams_getAllDonations(array('page_id' => $values['page_id'], 'pcp_id' => $values['member_pcp_id']));
-    $values ['amount_raised']   = $getAllDonations['total_amount'];
+    $values ['amount_raised']   = civicrm_api3_pcpteams_getPcpAmountRaised($values['member_pcp_id']);
+    $getAllDonations            = civicrm_api3_pcpteams_getAllDonations(array('page_id' => $values['page_id'], 'pcp_id' => $values['member_pcp_id']));
     $values ['donations_count'] = $getAllDonations['count'];
     $result[]  = $values;
   }
@@ -936,15 +936,11 @@ function civicrm_api3_pcpteams_getAllDonations($params) {
     2 => array($params['pcp_id'], 'Integer'),
   );
   $dao = CRM_Core_DAO::executeQuery($query, $queryParams);
-  $totalAmount = 0;
   while ($dao->fetch()) {
     $result[$dao->contribution_id] = $dao->toArray();
-    $totalAmount += $dao->total_amount;
   }
 
-  $apiResult = civicrm_api3_create_success($result, $params);
-  $apiResult['total_amount'] = $totalAmount ? $totalAmount : '0.00';
-  return $apiResult;
+  return civicrm_api3_create_success($result, $params);
 }
 
 function _civicrm_api3_pcpteams_getAllDonations_spec(&$params) {
@@ -1071,4 +1067,17 @@ function _civicrm_api3_pcpteams_getMoreInfo(&$params) {
      $params[$pcpId]['donate_url']       = $donateUrl;
      $params[$pcpId]['is_teampage']      = $isTeamPcp;
   }
+}
+
+function civicrm_api3_pcpteams_getPcpAmountRaised($pcpId) {
+    $query = "
+    SELECT SUM(cc.total_amount) as total
+    FROM civicrm_pcp_block cpb
+    INNER JOIN civicrm_contribution cc on (cc.contribution_page_id = cpb.target_entity_id )
+    WHERE cc.id IN ( SELECT contribution_id FROM civicrm_contribution_soft WHERE pcp_id = %1)
+    AND cc.contribution_status_id =1 AND cc.is_test = 0";
+
+    $params = array(1 => array($pcpId, 'Integer'));
+    $amountRaised = CRM_Core_DAO::singleValueQuery($query, $params);
+    return $amountRaised ? $amountRaised : '0.00';
 }
