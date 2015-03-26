@@ -1020,15 +1020,6 @@ function _civicrm_api3_pcpteams_getRaisedSoFar_spec(&$params) {
 
 function _civicrm_api3_pcpteams_getMoreInfo(&$params) {
   foreach ($params as $pcpId => $pcpValues) {
-    $raisedSofar = civicrm_api('pcpteams', 'getRaisedSoFar', array(
-      'version' => 3
-      , 'sequential'  => 1
-      , 'pcp_id'      => $pcpId
-      , 'page_id'     => $pcpValues['page_id']
-      )
-    );
-    $amountRaised = $raisedSofar['values'][0];
-    
     $entityFile   = CRM_Core_BAO_File::getEntityFile('civicrm_pcp', $pcpId);
     $imageUrl = "";
     if($entityFile){
@@ -1043,7 +1034,7 @@ function _civicrm_api3_pcpteams_getMoreInfo(&$params) {
     $aContactTypes   = CRM_Contact_BAO_Contact::getContactTypes( $pcpValues['contact_id'] );
     $isTeamPcp       = in_array('Team'      , $aContactTypes) ? TRUE : FALSE;
      $params[$pcpId]['page_title']       = CRM_Core_DAO::getFieldValue('CRM_Event_DAO_Event', $pcpValues['page_id'], 'title');
-     $params[$pcpId]['amount_raised']    = $amountRaised;
+     $params[$pcpId]['amount_raised']    = civicrm_api3_pcpteams_getAmountRaised($pcpId);
      $params[$pcpId]['image_url']        = $imageUrl;
      $params[$pcpId]['donate_url']       = $donateUrl;
      $params[$pcpId]['is_teampage']      = $isTeamPcp;
