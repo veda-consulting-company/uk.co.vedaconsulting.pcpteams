@@ -4,17 +4,10 @@
   <div class="pcp-panel">
     <!-- profile Image -->
     <div class="avatar-title-block">
-      {if $is_edit_page}
         <div class="avatar">
-            <img id="{$pcpinfo.image_id}" class="crm-pcp-inline-edit-pic" href="{$updateProfPic}" width="150" height="150" src="{$pcpinfo.image_url}">
+          <img id="{$pcpinfo.image_id}" {if $is_edit_page} class="crm-pcp-inline-edit-pic" {/if} href="{$updateProfPic}" width="150" height="150" src="{$pcpinfo.image_url}">
         </div>
-        <div id="pcp_title" class="title crm-pcp-inline-edit">{$pcpinfo.title}</div>
-      {else}
-        <div class="avatar">
-          <img class="crm-pcp-profile-pic" width="150" height="150" src="{$pcpinfo.image_url}">
-        </div>
-        <div id="pcp_title" class="title">{$pcpinfo.title}</div>
-      {/if}
+        <div id="pcp_title" class="title {if $is_edit_page}crm-pcp-inline-edit{/if}">{$pcpinfo.title}</div>
       <div class="clear"></div>
     </div>
     <div class="stats">
@@ -24,11 +17,7 @@
       </div> 
       <div class="target">
         <span class="text">Of target</span>
-        {if $is_edit_page}
-          <div id="pcp_goal_amount" class="amount crm-pcp-inline-edit">{$pcpinfo.goal_amount|crmMoney:$pcpInfo.currency}</div>
-        {else}
-          <div id="pcp_goal_amount" class="amount">{$pcpinfo.goal_amount|crmMoney:$pcpInfo.currency}</div>
-        {/if}
+          <div id="pcp_goal_amount" class="amount {if $is_edit_page}crm-pcp-inline-edit{/if}">{$pcpinfo.goal_amount|crmMoney:$pcpInfo.currency}</div>
       </div> 
     </div>
   </div>
@@ -49,14 +38,9 @@
         <div class="colheader">
           Totaliser
         </div>
-        {if $is_edit_page}
         <!-- BIO section -->
-          <div id="pcp_intro_text" class="intro-text crm-pcp-inline-edit" data-edit-params='{ldelim}"cid": "{$contactId}", "class_name": "CRM_Contact_Form_Inline_ContactInfo"{rdelim}'>{$pcpinfo.intro_text}</div>
-          <div id="pcp_page_text" class="page-text crm-pcp-inline-edit">{$pcpinfo.page_text}</div>
-        {else}
-          <div id="pcp_intro_text" class="intro-text" >{$pcpinfo.intro_text}</div>
-          <div id="pcp_page_text" class="page-text">{$pcpinfo.page_text}</div>        
-        {/if}
+        <div id="pcp_intro_text" {if $is_edit_page}class="intro-text crm-pcp-inline-edit" data-edit-params='{ldelim}"cid": "{$contactId}", "class_name": "CRM_Contact_Form_Inline_ContactInfo"{rdelim}' {else} class="intro-text" {/if}>{$pcpinfo.intro_text}</div>
+        <div id="pcp_page_text" class="page-text {if $is_edit_page}crm-pcp-inline-edit{/if}">{$pcpinfo.page_text}</div>
         <!-- BIO section ends -->
         <div class="team-section">
           {if $pcpinfo.team_pcp_id}
@@ -100,11 +84,7 @@
       <div class="givetoname">
         <div class="colheader">
           <div class="btn-donate">
-            {if $is_edit_page}
-              <a href="{$pcpinfo.donate_url}"><span id="donate_link_text" class="crm-pcp-inline-btn-edit">Donate</span></a>
-            {else}
-              <a href="{$pcpinfo.donate_url}"><span id="donate_link_text">Donate</span></a>
-            {/if}
+            <a href="{$pcpinfo.donate_url}"><span id="donate_link_text" {if $is_edit_page}class="crm-pcp-inline-btn-edit"{/if}>Donate</span></a>
           </div>
         </div>
         <div class="rank">
