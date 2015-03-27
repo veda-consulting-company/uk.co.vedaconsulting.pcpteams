@@ -23,16 +23,13 @@
   </div>
   <!-- End header-->
  
-  {if empty($donationInfo)} {* if $no-donations *}
-  <div class="pcp-info pcp-message">
-    <h3>Congratulations, you are now signed up for '{$pcpinfo.page_title}'</h3>
-    <p>We have created this page to help you with your fundraising.
-      Please take a few minutes to complete a couple of details below, you will need to add a fundraising
-      target to give you something to aim for (aim high!) and write a little bit about yourself to encourage
-      people to help you reach that target.
-      If you want to do this event as a team or in memory of a loved one you can set that up below as well.
-    </p>
-  </div>
+  {if !empty($pcpStatus)}
+  {foreach from=$pcpStatus item=pstatus}
+    <div class="{$pstatus.type} pcp-message">
+      <h3>{$pstatus.title}</h3>
+      <p>{$pstatus.text}</p>
+    </div>
+  {/foreach}
   {/if}
 
   <div class="pcp-body">

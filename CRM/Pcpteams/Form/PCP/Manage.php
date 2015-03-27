@@ -57,6 +57,11 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
       )
     );
     $this->assign('donationInfo', $aDonationResult['values']);
+    if (empty($aDonationResult['values'])) {
+      $statusTitle = "Congratulations, you are now signed up for '{$pcpDetails['page_title']}'";
+      $statusText  = ts('We have created this page to help you with your fundraising. Please take a few minutes to complete a couple of details below, you will need to add a fundraising target to give you something to aim for (aim high!) and write a little bit about yourself to encourage people to help you reach that target. If you want to do this event as a team or in memory of a loved one you can set that up below as well.');
+      $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
+    }
       
     //team member info
     $teamMemberInfo = civicrm_api( 'pcpteams', 'getTeamMembersInfo', array(
@@ -112,5 +117,15 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
       return NULL;
     }
     return $result['values'][0];
+  }
+
+  function setPcpStatus($text, $title = '', $type = 'alert') {
+    static $status = array();
+    $status[] = array(
+      'text'  => $text,
+      'title' => $title,
+      'type'  => $type,
+    );
+    $this->assign('pcpStatus', $status);
   }
 }
