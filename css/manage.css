@@ -108,9 +108,7 @@
   width: 98%;
 }
 .crm-container .crm-pcp-manage .pcp-body .team-section .top-fund-text, 
-.crm-container .crm-pcp-manage .pcp-body .team-section .no-team-text,
-.crm-container .crm-pcp-manage .pcp-body .team-section .team-text,
-.crm-container .crm-pcp-manage .pcp-body .team-section .team-name {
+.crm-container .crm-pcp-manage .pcp-body .team-section .no-team-text {
   display: block;
 }
 .crm-container .crm-pcp-manage .pcp-body .team-section .top-fund-raisers-block, 
@@ -132,6 +130,20 @@
   float: left;
   width: 20%;
 }
+.crm-container .crm-pcp-manage .pcp-body .team-section .avatar img {
+  float: right;
+  padding-right: 30px;
+}
+.crm-container .crm-pcp-manage .pcp-body .team-section .team-info {
+  display: inline-block;
+  width: 50%;
+  float: left;
+}
+.crm-container .crm-pcp-manage .pcp-body .team-section .team-stats {
+  display: inline-block;
+  width: 25%;
+  float: right;
+}
 .crm-container .crm-pcp-manage .pcp-body .mem-body-row {
   display: inline-block;
   float: left;
@@ -143,14 +155,6 @@
 }
 .crm-container .crm-pcp-manage .pcp-body .team-section .top-fund-raisers img {
   display: block;
-}
-.crm-container .crm-pcp-manage .pcp-body .team-section .avatar img {
-  float: right;
-  padding-right: 30px;
-}
-.crm-container .crm-pcp-manage .pcp-body .team-section .team-name {
-  margin-bottom: 10px;
-  font-weight: bold;
 }
 .crm-container .crm-pcp-manage .pcp-body .team-section .invite-team-buttons {
   width: 35%;
