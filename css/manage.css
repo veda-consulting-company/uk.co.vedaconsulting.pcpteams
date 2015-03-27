@@ -120,11 +120,6 @@
 .crm-container .crm-pcp-manage .pcp-body .team-section .top-fund-raisers-block {
   text-align: center;
 }
-.crm-container .crm-pcp-manage .team-section .invite-team-text {
-  margin-bottom: 20px;
-  font-weight: bold;
-  text-align: center;
-}
 .crm-container .crm-pcp-manage .pcp-body .team-section .avatar {
   display: inline-block;
   float: left;
@@ -156,11 +151,6 @@
 .crm-container .crm-pcp-manage .pcp-body .team-section .top-fund-raisers img {
   display: block;
 }
-.crm-container .crm-pcp-manage .pcp-body .team-section .invite-team-buttons {
-  width: 35%;
-  margin: 0 auto;
-}
-
 .crm-container .crm-pcp-manage .pcp-body .mem-header,
 .crm-container .crm-pcp-manage .btn-donate,
 .crm-container .crm-pcp-manage .pcp-body .totaliser .colheader {

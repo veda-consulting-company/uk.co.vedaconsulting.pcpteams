@@ -63,10 +63,8 @@
             </div>
           {elseif $pcpinfo.is_teampage}
             <!-- <div class="invite-team-text">Invite people to the team</div> -->
-            <div class="invite-team-buttons">
+            <div class="team-buttons">
               <a id="invite-team-btn" class="pcp-button pcp-btn-red crm-pcp-inline-edit-team" href="{$inviteTeamURl}">{ts}Invite Team Members{/ts}</a>
-            </div>
-            <div class="leave-team-buttons">
               <a id="leave-team-btn" class="pcp-button  pcp-btn-red crm-pcp-inline-edit-team" href="{$inviteTeamURl}">{ts}Leave Team{/ts}</a>
             </div>
           {else}
