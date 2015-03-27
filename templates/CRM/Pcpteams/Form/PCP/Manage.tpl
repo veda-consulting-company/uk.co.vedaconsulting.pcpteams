@@ -100,7 +100,7 @@
     </div>
 
     {if $pcpinfo.is_teampage}
-      <div class="member-req-block">
+      <div id="member-req-block" class="member-req-block">
         <div class="mem-header">
           Team Member Requests
         </div>
@@ -231,6 +231,12 @@ CRM.$(function($) {
   $('.crm-pcp-inline-btn-edit').mouseout(function(){
     $(this).css("background", "#e0001a");
     $(this).css("border", "none");
+  });
+
+  $('.member-req-block').hide();
+  $('#showMemberRequests').on('click', function() {
+    $('.member-req-block').show('slow');
+    $(this).parent().parent().hide();
   });
   
   //inline Create and Join Team 

@@ -20,7 +20,9 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
       }
     }
     //set user can edit or view page.
-    $this->assign("is_edit_page", CRM_Pcpteams_Utils::hasPermission($pcpId, $this->_userID, CRM_Core_Permission::EDIT));
+    $isEdit = CRM_Pcpteams_Utils::hasPermission($pcpId, $this->_userID, CRM_Core_Permission::EDIT);
+    $this->assign("is_edit_page", $isEdit);
+    $this->_isEditPermission = $isEdit;
   }
 
   function buildQuickForm() {
@@ -73,13 +75,19 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     );
     $this->assign('teamMemberInfo', isset($teamMemberInfo['values']) ? $teamMemberInfo['values'] : NULL);
     
-     //team member request info
-    $teamMemberRequestInfo = civicrm_api( 'pcpteams', 'getTeamRequestInfo', array(
+    // team member request info for admins (edit permission)
+    if ($this->_isEditPermission) {
+      $teamMemberRequestInfo = civicrm_api( 'pcpteams', 'getTeamRequestInfo', array(
         'version'     => 3, 
         'team_pcp_id' => $pcpId,
-      )
-    );
-    $this->assign('teamMemberRequestInfo', isset($teamMemberRequestInfo['values']) ? $teamMemberRequestInfo['values'] : NULL);
+      ));
+      $this->assign('teamMemberRequestInfo', isset($teamMemberRequestInfo['values']) ? $teamMemberRequestInfo['values'] : NULL);
+      if (!empty($teamMemberRequestInfo['values']) && $this->_isEditPermission) {
+        $statusTitle = "New member request";
+        $statusText  = 'You have ' . count($teamMemberRequestInfo['values']) . ' new member request(s). Click <a id="showMemberRequests" class="pcp-button pcp-btn-red" href="#member-req-block">here</a> to manage them.';
+        $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
+      }
+    }
 
     //set Page title
     $pageTitle = "Individual Page : ". $pcpDetails['title'];

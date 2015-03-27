@@ -221,8 +221,7 @@
   border-radius: 3px;
   margin-bottom: 10px;
 }
-
 .crm-container .crm-pcp-manage .pcp-info {
-  background-color: #4ea5cd;
-  border-color: #3b8eb5;
+  background-color: #999999;
+  border-color: #55a12c;
 }
