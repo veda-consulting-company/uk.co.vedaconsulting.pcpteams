@@ -65,7 +65,7 @@
             <!-- <div class="invite-team-text">Invite people to the team</div> -->
             <div class="team-buttons">
               <a id="invite-team-btn" class="pcp-button pcp-btn-red crm-pcp-inline-edit-team" href="{$inviteTeamURl}">{ts}Invite Team Members{/ts}</a>
-              <a id="leave-team-btn" class="pcp-button  pcp-btn-red crm-pcp-inline-edit-team" href="{$inviteTeamURl}">{ts}Leave Team{/ts}</a>
+              <a id="leave-team-btn" class="pcp-button pcp-btn-red" href="javascript:void(0)" onclick="leaveTeam({$pcpinfo.id}, {$userId})">{ts}Leave Team{/ts}</a>
             </div>
           {else}
             <span class="no-team-text">Fundraise more, fundraise as a team Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius. Vestibulum viverra mi dictum odio scelerisque semper. Morbi</span>
@@ -183,7 +183,10 @@
 
   <div class="clear"></div>
 </div>
-
+{* FIXME style display none should take care of css*}
+<div class="crm-pcp-alert-leave-team" style="display:none;">
+  <p> Are you sure, want to leave from this team ?</p>
+</div>
 {literal}
 <script type="text/javascript">
 CRM.$(function($) {
@@ -242,36 +245,42 @@ CRM.$(function($) {
   });
   
   //inline Create and Join Team 
-  cj('.crm-pcp-inline-edit-team').on('click', function(ev){
+  $('.crm-pcp-inline-edit-team').on('click', function(ev){
     ev.preventDefault();
     var url = cj(this).attr('href');
     var id = cj(this).attr('id');
     var title = 'Join Team';
-    if(id = 'create-team-btn'){
+    if (id = 'create-team-btn') {
       title = 'Create Team';
     }
-    if(id = 'invite-team-btn'){
+    if (id = 'invite-team-btn') {
       title = 'Invite Team';
     }
-    if(url){
-      CRM.loadForm(url, {dialog: {width: 650, height: 'auto', title: title}
-                  }).on('crmFormSuccess', function(e, data) {
-                    cj(document).ajaxStop(function() { location.reload(true); });
-                  });
+    if (url) {
+      CRM.loadForm(url, {
+        dialog: {width: 650, height: 'auto', title: title}
+      }).on('crmFormSuccess', function(e, data) {
+        $(document).ajaxStop(function() { 
+          location.reload(true); 
+        });
+      });
     }// end if 
   });// end on click
   
   //inline Profile Image 
-  if(isEditPage){
-    cj('.crm-pcp-inline-edit-pic').on('click', function(ev){
-      var url = cj(this).attr('href');
-      var fileid = cj(this).attr('id');
+  if (isEditPage) {
+    $('.crm-pcp-inline-edit-pic').on('click', function(ev){
+      var url = $(this).attr('href');
+      var fileid = $(this).attr('id');
       url = url + '&fileid=' + fileid;
-      if(url){
-        CRM.loadForm(url, {dialog: {width: 500, height: 'auto'}
-                    }).on('crmFormSuccess', function(e, data) {
-                      cj(document).ajaxStop(function() { location.reload(true); });
-                    });
+      if (url) {
+        CRM.loadForm(url, {
+          dialog: {width: 500, height: 'auto'}
+        }).on('crmFormSuccess', function(e, data) {
+          $(document).ajaxStop(function() { 
+            location.reload(true); 
+          });
+        });
       }// end if 
     });// end on click
   }
@@ -308,6 +317,40 @@ function declineTeamMember(entityId){
            cj(document).ajaxStop(function() { location.reload(true); });
        }
     });
+}
+function leaveTeam(teampcpId, userId){
+    cj(".crm-pcp-alert-leave-team").show();
+    cj(".crm-pcp-alert-leave-team").dialog({
+        title: "Leave Team",
+        modal: true,
+        resizable: true,
+        bgiframe: true,
+        overlay: {
+          opacity: 0.5,
+          background: "black"
+        },
+        buttons: {
+          "Yes": function() {
+             var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=leaveTeam' }";{literal}
+             var redirectUrl = {/literal}"{crmURL p='civicrm/pcp/dashboard' h=0 q='reset=1'}";{literal}
+             cj.ajax({ 
+                url     : dataUrl,
+                type    : 'post',
+                data    : {user_id : userId, team_pcp_id : teampcpId},
+                success : function( data ) {
+                  cj(document).ajaxStop(function() { 
+                    location.href = redirectUrl; 
+                  });
+                }
+             });
+            cj(this).dialog("destroy");
+          },
+          "No" : function() {
+            cj(this).dialog("destroy");
+          }
+        }
+    });
+ 
 }
 </script>
 {/literal}
