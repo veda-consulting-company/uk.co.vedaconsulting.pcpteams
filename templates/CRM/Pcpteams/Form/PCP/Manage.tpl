@@ -55,8 +55,20 @@
                 <img width="75" height="75" src="{$teamProfilePic}">
               {/if}
             </div>
+            <div class="title">
             <span class="team-name"><a href='{crmURL p="civicrm/pcp/manage" q="id=$team_pcp_id"}'>{$teamPcpInfo.title}</a></span>
             <span class="team-text">{$teamPcpInfo.intro_text}</span>
+            </div>
+            <div class="stats">
+              <div class="raised-total">
+                <span class="amount">{$teamPcpInfo.amount_raised|crmMoney:$teamPcpInfo.currency}</span>
+                <div class="raised"><span class="text">Raised so far</span></div>
+              </div> 
+              <div class="target">
+                <span class="text">Of target</span>
+                <div id="pcp_goal_amount" class="amount">{$teamPcpInfo.goal_amount|crmMoney:$teamPcpInfo.currency}</div>
+              </div> 
+            </div>
           {elseif $isa_team_page}
             <div class="invite-team-text">Invite people to the team</div>
             <div class="invite-team-buttons">
