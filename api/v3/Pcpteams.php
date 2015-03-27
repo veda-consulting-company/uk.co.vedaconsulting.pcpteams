@@ -775,6 +775,9 @@ function civicrm_api3_pcpteams_getTeamMembersInfo($params){
   //donation URL and more info
   _civicrm_api3_pcpteams_getMoreInfo($result);
   
+  //Sort By Amount Raised
+  _civicrm_api3_pcpteams_sortby_amount_raised($result);
+  
   return civicrm_api3_create_success($result, $params);
 }
 
@@ -1088,4 +1091,16 @@ function civicrm_api3_pcpteams_getTeamRequestInfo($params) {
     );
   }
   return civicrm_api3_create_success($result, $params);
+}
+
+function _civicrm_api3_pcpteams_sortby_amount_raised(&$result){
+  //FIXME: to manage ASC, DESC by params. sort by Highest amount raiser by default now
+  //array sort by amount raised
+  $amountRaised = array();
+  foreach ($result as $key => $row)
+  {
+      $amountRaised[$key]  = $row['amount_raised'];
+      $donationCount[$key] = $row['donations_count'];
+  }
+  array_multisort($amountRaised, SORT_DESC, $donationCount, SORT_DESC, $result);
 }
