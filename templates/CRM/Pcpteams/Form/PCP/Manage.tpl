@@ -158,8 +158,12 @@
                 <small> ( Team Admin ) </small>
               {/if}
             </div>
-            <div class="mem-body-row progress">
-              {$memberInfo.donations_count} Donations
+            <div class="mem-body-row pcp-progress">
+              <span>{$memberInfo.donations_count} Donations</span>
+              <div class="pcp-bar">
+                <div class="pcp-bar-progress" style="width: 60%;">
+                </div>
+              </div>
             </div>
             <div class="mem-body-row raised">
               {$memberInfo.amount_raised|crmMoney}
