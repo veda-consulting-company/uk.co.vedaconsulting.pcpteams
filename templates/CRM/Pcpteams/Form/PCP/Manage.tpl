@@ -5,9 +5,7 @@
     <!-- profile Image -->
     <div class="avatar-title-block">
       <div class="avatar">
-        {if $profilePicUrl}
-          <img class="crm-pcp-inline-edit-pic" href="{$updateProfPic}"width="150" height="150" src="{$profilePicUrl}">
-        {/if}
+        <img class="crm-pcp-inline-edit-pic" href="{$updateProfPic}"width="150" height="150" src="{$pcpinfo.image_url}">
       </div>
       <div id="pcp_title" class="title crm-pcp-inline-edit">{$pcpinfo.title}</div>
       <div class="clear"></div>
@@ -25,7 +23,7 @@
   </div>
   <!-- End header-->
  
-  {if $no_donations} {* if $no-donations *}
+  {if empty($donationInfo)} {* if $no-donations *}
   <div class="pcp-info pcp-message">
     <h3>Congratulations, you are now signed up for '{$pcpinfo.page_title}'</h3>
     <p>We have created this page to help you with your fundraising.
@@ -48,16 +46,13 @@
         <div id="pcp_page_text" class="page-text crm-pcp-inline-edit">{$pcpinfo.page_text}</div>
         <!-- BIO section ends -->
         <div class="team-section">
-          {assign var="team_pcp_id" value=$pcpinfo.team_pcp_id}
           {if $pcpinfo.team_pcp_id}
             <div class="avatar">
-              {if $teamProfilePic}
-                <img width="75" height="75" src="{$teamProfilePic}">
-              {/if}
+              <img width="75" height="75" src="{$teamPcpInfo.image_url}">
             </div>
-            <span class="team-name"><a href='{crmURL p="civicrm/pcp/manage" q="id=$team_pcp_id"}'>{$teamPcpInfo.title}</a></span>
+            <span class="team-name"><a href="{crmURL p="civicrm/pcp/manage" q="id=`$pcpinfo.team_pcp_id`"}">{$teamPcpInfo.title}</a></span>
             <span class="team-text">{$teamPcpInfo.intro_text}</span>
-          {elseif $isa_team_page}
+          {elseif $pcpinfo.is_teampage}
             <div class="invite-team-text">Invite people to the team</div>
             <div class="invite-team-buttons">
               <a id="invite-team-btn" class="pcp-button pcp-btn-red crm-pcp-inline-edit-team" href="{$inviteTeamURl}">{ts}Invite Team Members{/ts}</a>
