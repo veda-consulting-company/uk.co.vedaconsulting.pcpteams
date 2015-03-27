@@ -17,12 +17,18 @@ class CRM_Pcpteams_Form_TeamJoin {
     // add form elements
     // $form->addEntityRef('pcp_team_contact', ts('Team name'), array('api' => array('params' => array('contact_type' => 'Organization', 'contact_sub_type' => 'Team')), 'create' => TRUE), TRUE);
     $form->add('text', 'pcp_team_contact', ts('Team Name'), array('size' => '40'), TRUE);
+    $redirectUrlCreate = CRM_Utils_System::url('civicrm/pcp/support', 'reset=1&pageId='.$form->get('component_page_id').'&component=event&code=cpftn&option=1', TRUE, NULL, FALSE);
     $form->addButtons(array(
       array(
         'type' => 'next',
         'name' => ts('Continue'),
         'isDefault' => TRUE,
       ),
+      array(
+        'type' => 'submit',
+        'js' => array('onclick' => "location.href='{$redirectUrlCreate}'; return false;"),
+        'name' => ts('Create New Team'),
+      )
     ));
 
     // export form elements
