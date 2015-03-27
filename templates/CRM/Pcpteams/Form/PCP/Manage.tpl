@@ -144,7 +144,7 @@
               Remove link(admin)
             </div> -->
             <div class="mem-body-row avatar">
-              <img width="35" height="35" src="{$profilePicUrl}">
+              <img width="35" height="35" src="{$memberInfo.image_url}">
             </div>
             <div class="mem-body-row name">
               {$memberInfo.member_contact_name} 
@@ -160,7 +160,7 @@
               {$memberInfo.amount_raised|crmMoney}
             </div>
             <div class="mem-body-row donate">
-              <a class="btn-donate-small" href="">{ts}Donate{/ts}</a>
+              <a class="btn-donate-small" href="{$memberInfo.donate_url}">{ts}Donate{/ts}</a>
             </div>
             <div class="clear"></div>
           </div>

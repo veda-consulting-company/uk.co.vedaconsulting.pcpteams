@@ -28,15 +28,6 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     $state = CRM_Utils_Request::retrieve('state', 'String');
     $pcpContactId = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcpId, 'contact_id');
     
-    $aContactTypes   = CRM_Contact_BAO_Contact::getContactTypes( $pcpContactId );
-    if (in_array('Team', $aContactTypes) && self::checkTeamAdmin($pcpContactId,  $this->_userID)) {
-      $pcpContactId = $this->_userID ;
-    }
-    
-    if ($this->_userID != $pcpContactId) {
-      CRM_Core_Error::fatal(ts('You do not have permission to view this Page'));
-    }
-    
     //Image URL
     $getPcpImgURl   = self::getPcpImageURl($pcpId);
     if(!empty($getPcpImgURl)) {
@@ -121,11 +112,19 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     
     //team member info
     $teamMemberInfo = civicrm_api( 'pcpteams', 'getTeamMembersInfo', array(
-        'version'     => 3, 
-        'team_pcp_id' => $pcpId,
+        'version'  => 3, 
+        'pcp_id'   => $pcpId,
       )
     );
     $this->assign('teamMemberInfo', isset($teamMemberInfo['values']) ? $teamMemberInfo['values'] : NULL);
+    
+    //team member request 
+    $teamRequestInfo = civicrm_api( 'pcpteams', 'getTeamRequest', array(
+        'version'   => 3, 
+        'contact_id'=> $pcpDetails['contact_id'],
+      )
+    );
+    $this->assign('teamRequestInfo', isset($teamRequestInfo['values']) ? $teamRequestInfo['values'] : NULL);
       
     //set Page title
     if( $isIndividualPcp ){
