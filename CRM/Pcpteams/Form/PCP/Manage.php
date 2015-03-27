@@ -15,7 +15,7 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     } 
     else {
       $pcpId = CRM_Utils_Request::retrieve('id', 'Positive', CRM_Core_DAO::$_nullArray, TRUE); 
-      if(!CRM_Pcpteams_Utils::hasPermission($pcpId, $this->_userID, CRM_Core_Permission::VIEW)) {
+      if (!CRM_Pcpteams_Utils::hasPermission($pcpId, $this->_userID, CRM_Core_Permission::VIEW)) {
         CRM_Core_Error::fatal(ts('You do not have permission to view this Page.'));
       }
     }
@@ -23,6 +23,7 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     $isEdit = CRM_Pcpteams_Utils::hasPermission($pcpId, $this->_userID, CRM_Core_Permission::EDIT);
     $this->assign("is_edit_page", $isEdit);
     $this->_isEditPermission = $isEdit;
+    $this->assign('userId', $this->_userID);
   }
 
   function buildQuickForm() {
@@ -101,7 +102,7 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     $joinTeamURl    = CRM_Utils_System::url('civicrm/pcp/inline/edit'     , "reset=1&id={$pcpId}&pageId={$pcpDetails['page_id']}&op=2&snippet=json");
     $createTeamURl  = CRM_Utils_System::url('civicrm/pcp/inline/edit'     , "reset=1&id={$pcpId}&pageId={$pcpDetails['page_id']}&op=1&snippet=json");
     $updateProfPic  = CRM_Utils_System::url('civicrm/pcp/inline/profile'  , "reset=1&id={$pcpId}&pageId={$pcpDetails['page_id']}&snippet=json");
-    if($pcpDetails['is_teampage']){
+    if ($pcpDetails['is_teampage']) {
       $inviteTeamURl= CRM_Utils_System::url('civicrm/pcp/inline/edit'     , "reset=1&id={$pcpId}&pageId={$pcpDetails['page_id']}&op=invite&snippet=json");
       $this->assign('inviteTeamURl' , $inviteTeamURl);
     }
@@ -112,7 +113,7 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
   }
 
   static function getPcpDetails($pcpId){
-    if(empty($pcpId)){
+    if (empty($pcpId)) {
       return NULL;
     }
     $result = civicrm_api('Pcpteams', 
@@ -123,7 +124,7 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
         'sequential' => 1,
       )
     );
-    if(civicrm_error($result)){
+    if (civicrm_error($result)) {
       return NULL;
     }
     return $result['values'][0];
