@@ -4,10 +4,17 @@
   <div class="pcp-panel">
     <!-- profile Image -->
     <div class="avatar-title-block">
-      <div class="avatar">
-        <img id="{$pcpinfo.image_id}" class="crm-pcp-inline-edit-pic" href="{$updateProfPic}"width="150" height="150" src="{$pcpinfo.image_url}">
-      </div>
-      <div id="pcp_title" class="title crm-pcp-inline-edit">{$pcpinfo.title}</div>
+      {if $is_edit_page}
+        <div class="avatar">
+            <img id="{$pcpinfo.image_id}" class="crm-pcp-inline-edit-pic" href="{$updateProfPic}" width="150" height="150" src="{$pcpinfo.image_url}">
+        </div>
+        <div id="pcp_title" class="title crm-pcp-inline-edit">{$pcpinfo.title}</div>
+      {else}
+        <div class="avatar">
+          <img class="crm-pcp-profile-pic" width="150" height="150" src="{$pcpinfo.image_url}">
+        </div>
+        <div id="pcp_title" class="title">{$pcpinfo.title}</div>
+      {/if}
       <div class="clear"></div>
     </div>
     <div class="stats">
@@ -17,7 +24,11 @@
       </div> 
       <div class="target">
         <span class="text">Of target</span>
-        <div id="pcp_goal_amount" class="amount crm-pcp-inline-edit">{$pcpinfo.goal_amount|crmMoney:$pcpInfo.currency}</div>
+        {if $is_edit_page}
+          <div id="pcp_goal_amount" class="amount crm-pcp-inline-edit">{$pcpinfo.goal_amount|crmMoney:$pcpInfo.currency}</div>
+        {else}
+          <div id="pcp_goal_amount" class="amount">{$pcpinfo.goal_amount|crmMoney:$pcpInfo.currency}</div>
+        {/if}
       </div> 
     </div>
   </div>
@@ -38,9 +49,14 @@
         <div class="colheader">
           Totaliser
         </div>
+        {if $is_edit_page}
         <!-- BIO section -->
-        <div id="pcp_intro_text" class="intro-text crm-pcp-inline-edit" data-edit-params='{ldelim}"cid": "{$contactId}", "class_name": "CRM_Contact_Form_Inline_ContactInfo"{rdelim}'>{$pcpinfo.intro_text}</div>
-        <div id="pcp_page_text" class="page-text crm-pcp-inline-edit">{$pcpinfo.page_text}</div>
+          <div id="pcp_intro_text" class="intro-text crm-pcp-inline-edit" data-edit-params='{ldelim}"cid": "{$contactId}", "class_name": "CRM_Contact_Form_Inline_ContactInfo"{rdelim}'>{$pcpinfo.intro_text}</div>
+          <div id="pcp_page_text" class="page-text crm-pcp-inline-edit">{$pcpinfo.page_text}</div>
+        {else}
+          <div id="pcp_intro_text" class="intro-text" >{$pcpinfo.intro_text}</div>
+          <div id="pcp_page_text" class="page-text">{$pcpinfo.page_text}</div>        
+        {/if}
         <!-- BIO section ends -->
         <div class="team-section">
           {if $pcpinfo.team_pcp_id}
@@ -62,9 +78,12 @@
               </div>
             </div>
           {elseif $pcpinfo.is_teampage}
-            <div class="invite-team-text">Invite people to the team</div>
+            <!-- <div class="invite-team-text">Invite people to the team</div> -->
             <div class="invite-team-buttons">
               <a id="invite-team-btn" class="pcp-button pcp-btn-red crm-pcp-inline-edit-team" href="{$inviteTeamURl}">{ts}Invite Team Members{/ts}</a>
+            </div>
+            <div class="leave-team-buttons">
+              <a id="leave-team-btn" class="pcp-button  pcp-btn-red crm-pcp-inline-edit-team" href="{$inviteTeamURl}">{ts}Leave Team{/ts}</a>
             </div>
           {else}
             <span class="no-team-text">Fundraise more, fundraise as a team Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius. Vestibulum viverra mi dictum odio scelerisque semper. Morbi</span>
@@ -81,7 +100,11 @@
       <div class="givetoname">
         <div class="colheader">
           <div class="btn-donate">
-            <a href="{$pcpinfo.donate_url}"><span id="donate_link_text" class="crm-pcp-inline-btn-edit">Donate</span></a>
+            {if $is_edit_page}
+              <a href="{$pcpinfo.donate_url}"><span id="donate_link_text" class="crm-pcp-inline-btn-edit">Donate</span></a>
+            {else}
+              <a href="{$pcpinfo.donate_url}"><span id="donate_link_text">Donate</span></a>
+            {/if}
           </div>
         </div>
         <div class="rank">
@@ -183,6 +206,7 @@
 <script type="text/javascript">
 CRM.$(function($) {
   var apiUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='className=CRM_Pcpteams_Page_AJAX&fnName=inlineEditorAjax&snippet=6&json=1'}";{literal}
+  var isEditPage = {/literal}"{$is_edit_page}";{literal}
   var editparams = {
     type      : 'text',
     //cssclass  : 'crm-form-textarea',
@@ -207,7 +231,9 @@ CRM.$(function($) {
     $(this).css("background", "#e0001a");
     $(this).css("border", "none");
   }
-  $('.crm-pcp-inline-btn-edit').editable(apiUrl, editparams);
+  if(isEditPage){
+    $('.crm-pcp-inline-btn-edit').editable(apiUrl, editparams);
+  }
   $('.crm-pcp-inline-edit').mouseover(function(){
     $(this).css("background", "#E5DEDE");
     $(this).css("border", "2px dashed #c4c4c4");
@@ -248,17 +274,19 @@ CRM.$(function($) {
   });// end on click
   
   //inline Profile Image 
-  cj('.crm-pcp-inline-edit-pic').on('click', function(ev){
-    var url = cj(this).attr('href');
-    var fileid = cj(this).attr('id');
-    url = url + '&fileid=' + fileid;
-    if(url){
-      CRM.loadForm(url, {dialog: {width: 500, height: 'auto'}
-                  }).on('crmFormSuccess', function(e, data) {
-                    cj(document).ajaxStop(function() { location.reload(true); });
-                  });
-    }// end if 
-  });// end on click
+  if(isEditPage){
+    cj('.crm-pcp-inline-edit-pic').on('click', function(ev){
+      var url = cj(this).attr('href');
+      var fileid = cj(this).attr('id');
+      url = url + '&fileid=' + fileid;
+      if(url){
+        CRM.loadForm(url, {dialog: {width: 500, height: 'auto'}
+                    }).on('crmFormSuccess', function(e, data) {
+                      cj(document).ajaxStop(function() { location.reload(true); });
+                    });
+      }// end if 
+    });// end on click
+  }
   $('.crm-pcp-inline-edit-pic').mouseover(function(){
     $(this).css("background", "#E5DEDE");
     $(this).css("border", "2px dashed #c4c4c4");

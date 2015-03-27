@@ -489,7 +489,6 @@ class  CRM_Pcpteams_Utils {
         $query = "
           SELECT cr.id FROM civicrm_relationship cr
           INNER JOIN civicrm_relationship_type crt ON (crt.id = cr.relationship_type_id)
-          INNER JOIN civicrm_contact cc ON (cc.id = cr.`contact_id_a`AND cc.contact_sub_type = 'Team')
           WHERE cr.contact_id_a = %1 AND cr.contact_id_b = %2 AND cr.is_active = %3 AND crt.name_a_b = %4";
 
         $queryParams = array(

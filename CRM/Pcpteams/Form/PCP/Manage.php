@@ -19,6 +19,9 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
         CRM_Core_Error::fatal(ts('You do not have permission to view this Page.'));
       }
     }
+    //set user can edit or view page.
+    var_dump(CRM_Pcpteams_Utils::hasPermission($pcpId, $this->_userID, CRM_Core_Permission::EDIT));
+    $this->assign("is_edit_page", CRM_Pcpteams_Utils::hasPermission($pcpId, $this->_userID, CRM_Core_Permission::EDIT));
   }
 
   function buildQuickForm() {
