@@ -6,7 +6,7 @@
     <div class="avatar-title-block">
       <div class="avatar">
         {if $profilePicUrl}
-          <img class="crm-pcp-inline-edit-pic" href="{$updateProfPic}"width="150" height="150" src="{$profilePicUrl}">
+          <img id="{$pcpinfo.image_id}" class="crm-pcp-inline-edit-pic" href="{$updateProfPic}"width="150" height="150" src="{$profilePicUrl}">
         {/if}
       </div>
       <div id="pcp_title" class="title crm-pcp-inline-edit">{$pcpinfo.title}</div>
@@ -249,16 +249,22 @@ CRM.$(function($) {
     }
     if(url){
       CRM.loadForm(url, {dialog: {width: 650, height: 'auto', title: title}
-                  }).on('crmFormSuccess', function(e, data) {});
+                  }).on('crmFormSuccess', function(e, data) { 
+                    cj(document).ajaxStop(function() { location.reload(true); }); 
+                  });
     }// end if 
   });// end on click
   
   //inline Profile Image 
   cj('.crm-pcp-inline-edit-pic').on('click', function(ev){
     var url = cj(this).attr('href');
+    var fileid = cj(this).attr('id');
+    url = url + '&fileid=' + fileid;
     if(url){
       CRM.loadForm(url, {dialog: {width: 500, height: 'auto'}
-                  }).on('crmFormSuccess', function(e, data) {});
+                  }).on('crmFormSuccess', function(e, data) { 
+                    cj(document).ajaxStop(function() { location.reload(true); }); 
+                  });
     }// end if 
   });// end on click
   $('.crm-pcp-inline-edit-pic').mouseover(function(){
