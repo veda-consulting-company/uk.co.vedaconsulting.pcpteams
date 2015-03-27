@@ -5,7 +5,7 @@
     <!-- profile Image -->
     <div class="avatar-title-block">
       <div class="avatar">
-        <img class="crm-pcp-inline-edit-pic" href="{$updateProfPic}"width="150" height="150" src="{$pcpinfo.image_url}">
+        <img id="{$pcpinfo.image_id}" class="crm-pcp-inline-edit-pic" href="{$updateProfPic}"width="150" height="150" src="{$pcpinfo.image_url}">
       </div>
       <div id="pcp_title" class="title crm-pcp-inline-edit">{$pcpinfo.title}</div>
       <div class="clear"></div>
@@ -50,8 +50,20 @@
             <div class="avatar">
               <img width="75" height="75" src="{$teamPcpInfo.image_url}">
             </div>
+            <div class="title">
             <span class="team-name"><a href="{crmURL p="civicrm/pcp/manage" q="id=`$pcpinfo.team_pcp_id`"}">{$teamPcpInfo.title}</a></span>
             <span class="team-text">{$teamPcpInfo.intro_text}</span>
+            </div>
+            <div class="stats">
+              <div class="raised-total">
+                <span class="amount">{$teamPcpInfo.amount_raised|crmMoney:$teamPcpInfo.currency}</span>
+                <div class="raised"><span class="text">Raised so far</span></div>
+              </div>
+              <div class="target">
+                <span class="text">Of target</span>
+                <div id="pcp_goal_amount" class="amount">{$teamPcpInfo.goal_amount|crmMoney:$teamPcpInfo.currency}</div>
+              </div>
+            </div>
           {elseif $pcpinfo.is_teampage}
             <div class="invite-team-text">Invite people to the team</div>
             <div class="invite-team-buttons">
@@ -232,16 +244,22 @@ CRM.$(function($) {
     }
     if(url){
       CRM.loadForm(url, {dialog: {width: 650, height: 'auto', title: title}
-                  }).on('crmFormSuccess', function(e, data) {});
+                  }).on('crmFormSuccess', function(e, data) {
+                    cj(document).ajaxStop(function() { location.reload(true); });
+                  });
     }// end if 
   });// end on click
   
   //inline Profile Image 
   cj('.crm-pcp-inline-edit-pic').on('click', function(ev){
     var url = cj(this).attr('href');
+    var fileid = cj(this).attr('id');
+    url = url + '&fileid=' + fileid;
     if(url){
       CRM.loadForm(url, {dialog: {width: 500, height: 'auto'}
-                  }).on('crmFormSuccess', function(e, data) {});
+                  }).on('crmFormSuccess', function(e, data) {
+                    cj(document).ajaxStop(function() { location.reload(true); });
+                  });
     }// end if 
   });// end on click
   $('.crm-pcp-inline-edit-pic').mouseover(function(){

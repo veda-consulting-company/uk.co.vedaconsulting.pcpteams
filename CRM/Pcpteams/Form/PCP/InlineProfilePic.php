@@ -16,6 +16,11 @@ class CRM_Pcpteams_Form_PCP_InlineProfilePic extends CRM_Core_Form {
   
   function buildQuickForm() {
     $this->_pcpId = CRM_Utils_Request::retrieve('id', 'Positive', CRM_Core_DAO::$_nullArray, TRUE, NULL, 'GET');
+    $this->_fileId = CRM_Utils_Request::retrieve('fileid', 'Positive', CRM_Core_DAO::$_nullArray, TRUE, NULL, 'GET');
+    if ($this->_fileId) {
+       $imageUrl = CRM_Utils_System::url('civicrm/file',"reset=1&id={$this->_fileId}&eid={$this->_pcpId}");
+       $this->assign('defaultImageUrl', $imageUrl);
+    }
     // add form elements
     $this->addElement('file', 'image_URL', ts('Browse/Upload Image'), 'size=30 maxlength=60');
     $this->addUploadElement('image_URL');
@@ -44,6 +49,9 @@ class CRM_Pcpteams_Form_PCP_InlineProfilePic extends CRM_Core_Form {
       'uri' => $uri,
       'upload_date' => date('Y-m-d H:m:s'),
     );
+    if($this->_fileId){
+      $apiParams['id'] = $this->_fileId;
+    }
     $file = civicrm_api3('File', 'create', $apiParams);
     if($file['id'] && $this->_pcpId){
       $sql = "
