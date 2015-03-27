@@ -98,17 +98,17 @@
           Team Member Requests
         </div>
         <div class="mem-body">
-          {foreach from=$teamMemberInfo item=memberInfo}
+          {foreach from=$teamMemberRequestInfo item=memberInfo}
           <div class="mem-row">
             <!--
             <div class="mem-body-row action">
               Remove link(admin)
             </div> -->
             <div class="mem-body-row avatar">
-              <img width="35" height="35" src="{$profilePicUrl}">
+              <img width="35" height="35" src="{$memberInfo.image_url}">
             </div>
             <div class="mem-body-row name">
-              {$memberInfo.member_contact_name} 
+              {$memberInfo.member_display_name} 
               {if $memberInfo.is_team_admin}
                 <br>
                 <small> ( Team Admin ) </small>
@@ -121,8 +121,8 @@
               {$memberInfo.amount_raised|crmMoney}
             </div>
             <div class="mem-body-row donate">
-              <a class="pcp-button pcp-btn-green" href="">{ts}Approve{/ts}</a>
-              <a class="pcp-button pcp-btn-red" href="">{ts}Decline{/ts}</a>
+              <a class="pcp-button pcp-btn-green" href="" onclick="approveTeamMember('{$memberInfo.relationship_id}','{$memberInfo.member_pcp_id}','{$memberInfo.team_pcp_id}');return false;">{ts}Approve{/ts}</a>
+              <a class="pcp-button pcp-btn-red" href="" onclick="declineTeamMember('{$memberInfo.relationship_id}');return false;">{ts}Decline{/ts}</a>
             </div>
             <div class="clear"></div>
           </div>
@@ -261,5 +261,27 @@ CRM.$(function($) {
   
   
 });
+function approveTeamMember(entityId, pcpId, teampcpId){
+    var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=approveTeamMember' }"{literal};
+    cj.ajax({ 
+       url     : dataUrl,
+       type    : 'post',
+       data    : {entity_id : entityId, pcp_id : pcpId, team_pcp_id: teampcpId },
+       success : function( data ) {
+           cj(document).ajaxStop(function() { location.reload(true); });
+       }
+    });
+}
+function declineTeamMember(entityId){
+    var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=declineTeamMember' }"{literal};
+    cj.ajax({ 
+       url     : dataUrl,
+       type    : 'post',
+       data    : {entity_id : entityId},
+       success : function( data ) {
+           cj(document).ajaxStop(function() { location.reload(true); });
+       }
+    });
+}
 </script>
 {/literal}

@@ -118,14 +118,14 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     );
     $this->assign('teamMemberInfo', isset($teamMemberInfo['values']) ? $teamMemberInfo['values'] : NULL);
     
-    //team member request 
-    $teamRequestInfo = civicrm_api( 'pcpteams', 'getTeamRequest', array(
-        'version'   => 3, 
-        'contact_id'=> $pcpDetails['contact_id'],
+     //team member request info
+    $teamMemberRequestInfo = civicrm_api( 'pcpteams', 'getTeamRequestInfo', array(
+        'version'     => 3, 
+        'team_pcp_id' => $pcpId,
       )
     );
-    $this->assign('teamRequestInfo', isset($teamRequestInfo['values']) ? $teamRequestInfo['values'] : NULL);
-      
+    $this->assign('teamMemberRequestInfo', isset($teamMemberRequestInfo['values']) ? $teamMemberRequestInfo['values'] : NULL);
+
     //set Page title
     if( $isIndividualPcp ){
       $state = 'Individual';

@@ -514,13 +514,13 @@ function civicrm_api3_pcpteams_getMyPendingTeam($params) {
       WHERE cp.contact_id IN ( $sTeamIds )
     ";
     $dao = CRM_Core_DAO::executeQuery($query);
-    $pcpResult = civicrm_api('pcpteams', 'get', array(
-        'version' => 3,
-        'sequential'  => 1,
-        'pcp_id'      => $dao->pcp_id
-      )
-    );
     while($dao->fetch()){
+      $pcpResult = civicrm_api('pcpteams', 'get', array(
+          'version' => 3,
+          'sequential'  => 1,
+          'pcp_id'      => $dao->pcp_id
+        )
+      );
       $result[] = array(
         'teamName'      => $dao->team_name,
         'teamPcpTitle'  => $dao->pcp_title,
@@ -1055,4 +1055,34 @@ function civicrm_api3_pcpteams_getAmountRaised($pcpId) {
     $params = array(1 => array($pcpId, 'Integer'));
     $amountRaised = CRM_Core_DAO::singleValueQuery($query, $params);
     return $amountRaised ? $amountRaised : '0.00';
+}
+
+function civicrm_api3_pcpteams_getTeamRequestInfo($params) {
+  $result= CRM_Core_DAO::$_nullArray;
+  $query = " 
+    SELECT crs.pcp_a_b, cc.display_name, cp.page_id, cr.id FROM civicrm_value_pcp_relationship_set crs
+    INNER JOIN civicrm_relationship cr ON (cr.id = crs.entity_id)
+    INNER JOIN civicrm_pcp cp ON (cp.id = crs.pcp_a_b)
+    INNER JOIN civicrm_contact cc ON (cr.contact_id_a = cc.id)
+    WHERE crs.pcp_b_a = %1";
+  
+  $queryParams = array(
+    1 => array($params['team_pcp_id'], 'Integer'),
+  );
+  
+  $dao = CRM_Core_Dao::executeQuery($query, $queryParams);
+  while($dao->fetch()) {
+    $memberPcpResult = civicrm_api('Pcpteams', 'get', array('version' => 3, 'sequential' => 1, 'pcp_id' => $dao->pcp_a_b));
+    $getAllDonations = civicrm_api3_pcpteams_getAllDonations(array('page_id' => $dao->page_id, 'pcp_id' => $dao->pcp_a_b));
+    $result[$dao->pcp_a_b] = array(
+      'member_display_name'       => $dao->display_name,
+      'member_pcp_id'             => $dao->pcp_a_b,
+      'amount_raised'             => $memberPcpResult['values'][0]['amount_raised'],
+      'donations_count'           => $getAllDonations['count'],
+      'image_url'                 => $memberPcpResult['values'][0]['image_url'],
+      'team_pcp_id'               => $params['team_pcp_id'],
+      'relationship_id'           => $dao->id
+    );
+  }
+  return civicrm_api3_create_success($result, $params);
 }
