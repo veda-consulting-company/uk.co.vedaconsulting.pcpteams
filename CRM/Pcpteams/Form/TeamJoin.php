@@ -24,13 +24,8 @@ class CRM_Pcpteams_Form_TeamJoin {
         'name' => ts('Continue'),
         'isDefault' => TRUE,
       ),
-      array(
-        'type' => 'submit',
-        'js' => array('onclick' => "location.href='{$redirectUrlCreate}'; return false;"),
-        'name' => ts('Create New Team'),
-      )
     ));
-
+    $form->assign('redirectUrlCreate', $redirectUrlCreate);   
     // export form elements
     $form->assign('elementNames', $form->getRenderableElementNames());
   }
