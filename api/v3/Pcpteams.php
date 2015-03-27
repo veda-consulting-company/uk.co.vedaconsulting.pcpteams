@@ -270,9 +270,11 @@ function civicrm_api3_pcpteams_getContactList($params) {
     //execute query
     $dao = CRM_Core_DAO::executeQuery($query);
     while($dao->fetch()){
+      $teamAdmin        = CRM_Pcpteams_Utils::getTeamAdminByTeamContactId($dao->id);
+      $teamAdminString  = $teamAdmin ? ' Admin is: '.$teamAdmin : ' Admin is: unknown';
       $result[$dao->id] = array(
         'id'    =>  $dao->id,
-        'label' =>  $dao->display_name,
+        'label' =>  $dao->display_name.$teamAdminString,
         'icon_class' =>  $dao->contact_type,
       );
     }
@@ -334,9 +336,6 @@ function _getPcpDashboardActionLink($params){
       <ul class='panel'>
         <li>
           <a href=\"{$disableURL}\" class=\"action-item crm-hover-button\" title=\"$active\" >{$active}</a>
-        </li>
-        <li>
-          <a href=\"{$deleteURL}\" class=\"action-item crm-hover-button small-popup\" title='Delete' onclick = \"return confirm('Are you sure you want to delete this Personal Campaign Page?\nThis action cannot be undone.');\">Delete</a>
         </li>
       </ul>
     </span>

@@ -11,6 +11,7 @@ class CRM_Pcpteams_Form_TeamJoin {
     if (!$form->get('page_id')) {
       CRM_Core_Error::fatal(ts("Can't determine pcp id."));
     }
+    $form->assign('component_page_id', $form->get('component_page_id'));
   }
 
   static function buildQuickForm(&$form) {
@@ -24,7 +25,6 @@ class CRM_Pcpteams_Form_TeamJoin {
         'isDefault' => TRUE,
       ),
     ));
-
     // export form elements
     $form->assign('elementNames', $form->getRenderableElementNames());
   }

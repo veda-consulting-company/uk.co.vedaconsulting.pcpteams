@@ -4,7 +4,7 @@
         <span class="bold">{ts}Start typing the name
             of the team you wish to join and then select the appropriate name from those provided.
             if you can't find the team you wish to join please contact the team captain of visit the
-            team page and join from there{/ts}</span>
+            team page and join from there or you could create your own team by clicking the <a class='crm-button' href='{crmURL p="civicrm/pcp/support" q="reset=1&pageId=$component_page_id&component=event&code=cpftn&option=1"}'>{ts}Create New Team{/ts}</a> button or you could email <a href="https://leukaemialymphomaresearch.org.uk/">{ts}LLR{/ts}</a>{/ts}</span>
 	{foreach from=$elementNames item=elementName}
 	  <div class="crm-section">
 	    <div class="label">{$form.$elementName.label}</div>

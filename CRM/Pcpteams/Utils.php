@@ -505,4 +505,24 @@ class  CRM_Pcpteams_Utils {
       }
     return $hasPermission;
   }
+  
+  static function getTeamAdminByTeamContactId($teamContactId) {
+    if(empty($teamContactId)) {
+      return NULL;
+    }
+    $query = "
+      SELECT cc.display_name FROM civicrm_relationship cr 
+      INNER JOIN civicrm_contact cc ON (cc.id = cr.contact_id_a)
+      INNER JOIN civicrm_relationship_type crt ON (crt.id = cr.relationship_type_id)
+      WHERE cr.contact_id_b = %1 AND crt.name_a_b = %2
+    ";
+    
+    $queryParams = array(
+       1 => array($teamContactId, 'Integer'),
+       2 => array(CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE, 'String'),
+    );
+    
+    return CRM_Core_DAO::singleValueQuery($query, $queryParams);
+  }
+    
 }
