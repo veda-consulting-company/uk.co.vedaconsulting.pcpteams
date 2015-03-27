@@ -11,13 +11,13 @@ class CRM_Pcpteams_Form_TeamJoin {
     if (!$form->get('page_id')) {
       CRM_Core_Error::fatal(ts("Can't determine pcp id."));
     }
+    $form->assign('component_page_id', $form->get('component_page_id'));
   }
 
   static function buildQuickForm(&$form) {
     // add form elements
     // $form->addEntityRef('pcp_team_contact', ts('Team name'), array('api' => array('params' => array('contact_type' => 'Organization', 'contact_sub_type' => 'Team')), 'create' => TRUE), TRUE);
     $form->add('text', 'pcp_team_contact', ts('Team Name'), array('size' => '40'), TRUE);
-    $redirectUrlCreate = CRM_Utils_System::url('civicrm/pcp/support', 'reset=1&pageId='.$form->get('component_page_id').'&component=event&code=cpftn&option=1', TRUE, NULL, FALSE);
     $form->addButtons(array(
       array(
         'type' => 'next',
@@ -25,7 +25,6 @@ class CRM_Pcpteams_Form_TeamJoin {
         'isDefault' => TRUE,
       ),
     ));
-    $form->assign('redirectUrlCreate', $redirectUrlCreate);   
     // export form elements
     $form->assign('elementNames', $form->getRenderableElementNames());
   }
