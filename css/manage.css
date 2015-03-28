@@ -78,12 +78,22 @@
   font-stretch: normal !important;
   color: rgb(98,100,101) !important;
 }
+.crm-container .crm-pcp-manage .pcp-body .team-stats .amount,
 .crm-container .crm-pcp-manage .pcp-panel .stats .amount {
   font-family: "Bliss Pro Heavy",Impact,sans-serif;
 }
+.crm-container .crm-pcp-manage .pcp-body .team-stats .raised-total .amount,
+.crm-container .crm-pcp-manage .pcp-panel .stats .raised-total .amount {
+  color: rgb(224, 0, 26);
+}
+.crm-container .crm-pcp-manage .pcp-body .team-stats .raised-total .amount {
+  font-size: 22px;
+}
+.crm-container .crm-pcp-manage .pcp-body .team-stats .raised-total {
+  margin-bottom: 10px;
+}
 .crm-container .crm-pcp-manage .pcp-panel .stats .raised-total .amount {
   font-size: 40px;
-  color: rgb(224, 0, 26);
 }
 .crm-container .crm-pcp-manage .pcp-panel .stats .target .amount {
   font-size: 20px;
