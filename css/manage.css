@@ -47,23 +47,23 @@
   color: #424242;
   font-family: "Bliss Pro Heavy",Impact,sans-serif;
 }
-.crm-container .crm-pcp-manage .pcp-panel .circle {
+.crm-container .crm-pcp-manage .pcp-panel .pcp-progress {
   display: inline-block;
   float: left;
-  margin-top: 20px;
-  width: 120px;
+  margin-top: 42px;
+  width: 15%;
 }
 .crm-container .crm-pcp-manage .pcp-panel .circle span {
   position: relative;
-  top: -69px;
-  left: 35px;
-  font-size: 20px;
+  top: -75px;
+  left: 42px;
+  font-size: 23px;
 }
 .crm-container .crm-pcp-manage .pcp-panel .stats {
   display: inline-block;
-  float: right;
+  float: left;
   margin-top: 61px;
-  width: 22%;
+  width: 20%;
 }
 .crm-container .crm-pcp-manage .pcp-panel .stats .raised-total {
   display: block;

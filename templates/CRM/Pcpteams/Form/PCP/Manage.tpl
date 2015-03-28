@@ -10,8 +10,10 @@
         <div id="pcp_title" class="title {if $is_edit_page}crm-pcp-inline-edit{/if}">{$pcpinfo.title}</div>
       <div class="clear"></div>
     </div>
-    <div class="circle">
-      <span class="stat-num"><strong>65<i>%</i></strong></span>
+    <div class="pcp-progress">
+      <div class="circle">
+        <span class="stat-num"><strong>65<i>%</i></strong></span>
+      </div>
     </div>
     <div class="stats">
       <div class="raised-total">
@@ -298,16 +300,17 @@ CRM.$(function($) {
     $(this).css("border", "none");
   });
 
+  var circleVar = 0.80;
   $('.circle').circleProgress({
-    value: 0.65,
-    size: 120,
+    value: circleVar,
+    size: 130,
     thickness: 15,
     lineCap: "round",
     fill: {
       gradient: ["#FF0000", "#e0001a"]
     },
   }).on('circle-animation-progress', function(event, progress) {
-    $(this).find('strong').html(parseInt(100 * progress) + '<i>%</i>');
+    $(this).find('strong').html(parseInt(100 * circleVar) + '<i>%</i>');
   });
 });
 function approveTeamMember(entityId, pcpId, teampcpId){
