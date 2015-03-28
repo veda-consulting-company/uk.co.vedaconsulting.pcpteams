@@ -26,7 +26,7 @@
 .crm-container .crm-pcp-manage .pcp-panel .avatar-title-block {
   display: inline-block;
   float: left;
-  width: 68%;
+  width: 62%;
 }
 .crm-container .crm-pcp-manage .pcp-panel .avatar {
   display: inline-block;
@@ -47,11 +47,23 @@
   color: #424242;
   font-family: "Bliss Pro Heavy",Impact,sans-serif;
 }
+.crm-container .crm-pcp-manage .pcp-panel .circle {
+  display: inline-block;
+  float: left;
+  margin-top: 20px;
+  width: 120px;
+}
+.crm-container .crm-pcp-manage .pcp-panel .circle span {
+  position: relative;
+  top: -69px;
+  left: 35px;
+  font-size: 20px;
+}
 .crm-container .crm-pcp-manage .pcp-panel .stats {
   display: inline-block;
   float: right;
-  margin-top: 45px;
-  width: 27%;
+  margin-top: 61px;
+  width: 22%;
 }
 .crm-container .crm-pcp-manage .pcp-panel .stats .raised-total {
   display: block;

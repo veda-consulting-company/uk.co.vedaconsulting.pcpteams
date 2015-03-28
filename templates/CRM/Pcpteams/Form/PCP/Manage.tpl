@@ -10,6 +10,9 @@
         <div id="pcp_title" class="title {if $is_edit_page}crm-pcp-inline-edit{/if}">{$pcpinfo.title}</div>
       <div class="clear"></div>
     </div>
+    <div class="circle">
+      <span class="stat-num"><strong>65<i>%</i></strong></span>
+    </div>
     <div class="stats">
       <div class="raised-total">
         <span class="amount">{$pcpinfo.amount_raised|crmMoney:$pcpInfo.currency}</span>
@@ -20,9 +23,10 @@
           <div id="pcp_goal_amount" class="amount {if $is_edit_page}crm-pcp-inline-edit{/if}">{$pcpinfo.goal_amount|crmMoney:$pcpInfo.currency}</div>
       </div> 
     </div>
+    <div class="clear"></div>
   </div>
   <!-- End header-->
- 
+
   {if !empty($pcpStatus)}
   {foreach from=$pcpStatus item=pstatus}
     <div class="{$pstatus.type} pcp-message">
@@ -293,8 +297,18 @@ CRM.$(function($) {
     $(this).css("background", "#F7F6F6");
     $(this).css("border", "none");
   });
-  
-  
+
+  $('.circle').circleProgress({
+    value: 0.65,
+    size: 120,
+    thickness: 15,
+    lineCap: "round",
+    fill: {
+      gradient: ["#FF0000", "#e0001a"]
+    },
+  }).on('circle-animation-progress', function(event, progress) {
+    $(this).find('strong').html(parseInt(100 * progress) + '<i>%</i>');
+  });
 });
 function approveTeamMember(entityId, pcpId, teampcpId){
     var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=approveTeamMember' }"{literal};

@@ -6,6 +6,7 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
   
   function preProcess(){
     CRM_Core_Resources::singleton()
+      ->addScriptFile('uk.co.vedaconsulting.pcpteams', 'packages/jquery-circle-progress/dist/circle-progress.js', CRM_Core_Resources::DEFAULT_WEIGHT, 'html-header')
       ->addStyleFile('uk.co.vedaconsulting.pcpteams', 'css/manage.css');
 
     $session = CRM_Core_Session::singleton();
