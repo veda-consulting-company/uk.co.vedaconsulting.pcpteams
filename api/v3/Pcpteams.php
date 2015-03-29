@@ -270,13 +270,17 @@ function civicrm_api3_pcpteams_getContactList($params) {
     //execute query
     $dao = CRM_Core_DAO::executeQuery($query);
     while($dao->fetch()){
-      $teamAdmin        = CRM_Pcpteams_Utils::getTeamAdminByTeamContactId($dao->id);
-      $teamAdminString  = $teamAdmin ? ' Admin is: '.$teamAdmin : ' Admin is: unknown';
       $result[$dao->id] = array(
         'id'    =>  $dao->id,
-        'label' =>  $dao->display_name.$teamAdminString,
+        'label' =>  $dao->display_name,
         'icon_class' =>  $dao->contact_type,
       );
+      // If contact_sub_type is 'Team', then add team_admin details to contact
+      if(isset($params['contact_sub_type']) && $params['contact_sub_type'] == 'Team') {
+        $teamAdmin        = CRM_Pcpteams_Utils::getTeamAdminByTeamContactId($dao->id);
+        $teamAdminString  = $teamAdmin ? ' Admin is: '.$teamAdmin : ' Admin is: unknown';
+        $result[$dao->id]['label'] .= $teamAdminString;
+      }
     }
 
   return civicrm_api3_create_success($result, $params, 'pcpteams');
