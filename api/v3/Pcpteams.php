@@ -322,7 +322,6 @@ function _getPcpDashboardActionLink($params){
   $updateLabel= $params['isTeamExist'] ? 'Change' : 'Join';
   
   //action URLs
-  $editURL    = CRM_Utils_System::url('civicrm/pcp/info', "action=update&component=event&id={$params['id']}"); 
   $manageURL  = CRM_Utils_System::url('civicrm/pcp/manage', "id={$params['id']}"); 
   $pageURL    = CRM_Utils_System::url('civicrm/pcp/page', "reset=1&component=event&id={$params['id']}"); 
   $updateURL  = CRM_Utils_System::url('civicrm/pcp/info', "action=browse&component=event&id={$params['id']}"); 
@@ -333,8 +332,8 @@ function _getPcpDashboardActionLink($params){
   if(empty($params['is_active'])) {
     $action     = "
     <span>
-      <a href=\"{$editURL}\" class=\"action-item crm-hover-button\" title='Configure' >Edit Page</a>
-      <a href=\"{$pageURL}\" class=\"action-item crm-hover-button\" title='URL for this Page' >View Page</a>
+      <a href=\"{$manageURL}\" class=\"action-item crm-hover-button\" title='Configure' >Manage</a>
+      <a href=\"{$manageURL}\" class=\"action-item crm-hover-button\" title='URL for this Page' >View Page</a>
     </span>
     <span class='btn-slide crm-hover-button'>more
       <ul class='panel'>
@@ -353,9 +352,8 @@ function _getPcpDashboardActionLink($params){
   //FIXME : check User permission and return action based on permission
   $action     = "
     <span>
-      <a href=\"{$editURL}\" class=\"action-item crm-hover-button\" title='Configure' >Edit Page</a>
       <a href=\"{$manageURL}\" class=\"action-item crm-hover-button\" title='Manage' >Manage</a>
-      <a href=\"{$pageURL}\" class=\"action-item crm-hover-button\" title='URL for this Page' >View Page</a>
+      <a href=\"{$manageURL}\" class=\"action-item crm-hover-button\" title='URL for this Page' >View Page</a>
     </span>
     <span class='btn-slide crm-hover-button'>more
       <ul class='panel'>
@@ -470,7 +468,6 @@ function _getTeamInfoActionLink($entityId, $teamPcpId, $role){
     $editURL    = CRM_Utils_System::url('civicrm/pcp/info', "action=update&component=event&id={$teamPcpId}"); 
     $manageURL  = CRM_Utils_System::url('civicrm/pcp/manage', "id={$teamPcpId}"); 
     $span = " <span>
-      <a href=\"{$editURL}\" class=\"action-item crm-hover-button\" title='Configure' >Edit Page</a>
       <a href=\"{$manageURL}\" class=\"action-item crm-hover-button\" title='Manage' >Manage</a>
       <a href=\"{$pageURL}\" class=\"action-item crm-hover-button\" title='URL for this Page' >View Page</a>
       <a href='javascript:void(0)' class=\"action-item crm-hover-button\" title='Delete' onclick = 'deleteTeamPcp({$entityId},{$teamPcpId});'>Delete</a>
