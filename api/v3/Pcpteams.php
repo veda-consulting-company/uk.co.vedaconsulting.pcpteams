@@ -746,11 +746,11 @@ function civicrm_api3_pcpteams_getTeamMembersInfo($params){
   $adminRelTypeId     = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', $relTypeAdmin, 'id', 'name_a_b');
 
   $query = "
-    SELECT cp.id        as member_pcp_id
+    SELECT cp.id        as pcp_id
       , cp.page_id      as page_id
-      , cp.contact_id   as member_contact_id
-      , cp.goal_amount  as member_goal_amount
-      , cc.display_name as member_contact_name
+      , cp.contact_id   as contact_id
+      , cp.goal_amount  as goal_amount
+      , cc.display_name as display_name
       , CASE 
         WHEN cr.relationship_type_id = {$adminRelTypeId} THEN '1' ELSE '0'
         END             as is_team_admin
@@ -762,13 +762,12 @@ function civicrm_api3_pcpteams_getTeamMembersInfo($params){
   ";
   $dao = CRM_Core_DAO::executeQuery($query);
   while ($dao->fetch()) {
-    $members[$dao->member_pcp_id] = $dao->toArray();
+    $members[$dao->pcp_id] = $dao->toArray();
   }
   //amount raised and total donations count
   foreach ($members as $memberPcpId => $values) {
-    $getAllDonations            = civicrm_api3_pcpteams_getAllDonations(array('page_id' => $values['page_id'], 'pcp_id' => $values['member_pcp_id']));
+    $getAllDonations            = civicrm_api3_pcpteams_getAllDonations(array('page_id' => $values['page_id'], 'pcp_id' => $values['pcp_id']));
     $values ['donations_count'] = $getAllDonations['count'];
-    $values ['contact_id'] = $values['member_contact_id']; //to avoid notice message while call method getMoreInfo
     $result[$memberPcpId]  = $values;
   }
   //donation URL and more info
@@ -1045,6 +1044,13 @@ function _civicrm_api3_pcpteams_getMoreInfo(&$params) {
      $params[$pcpId]['image_id']         = $fileId;
      $params[$pcpId]['donate_url']       = $donateUrl;
      $params[$pcpId]['is_teampage']      = $isTeamPcp;
+    
+    //calculate percentage
+    $percentage   = 0;
+    if(isset($pcpValues['goal_amount']) && number_format($pcpValues['goal_amount']) != '0'){
+      $percentage = number_format(($params[$pcpId]['amount_raised'] / $params[$pcpId]['goal_amount']) * 100).'%';
+    }
+    $params[$pcpId]['percentage']       = $percentage;
   }
 }
 
@@ -1079,14 +1085,14 @@ function civicrm_api3_pcpteams_getTeamRequestInfo($params) {
     $memberPcpResult = civicrm_api('Pcpteams', 'get', array('version' => 3, 'sequential' => 1, 'pcp_id' => $dao->pcp_a_b));
     $getAllDonations = civicrm_api3_pcpteams_getAllDonations(array('page_id' => $dao->page_id, 'pcp_id' => $dao->pcp_a_b));
     $result[$dao->pcp_a_b] = array(
-      'member_display_name'       => $dao->display_name,
-      'member_pcp_id'             => $dao->pcp_a_b,
-      'amount_raised'             => $memberPcpResult['values'][0]['amount_raised'],
-      'donations_count'           => $getAllDonations['count'],
-      'image_url'                 => $memberPcpResult['values'][0]['image_url'] ? $memberPcpResult['values'][0]['image_url'] : CRM_Pcpteams_Constant::C_DEFAULT_PROFILE_PIC,
-      'image_id'                  => $memberPcpResult['values'][0]['image_id'],
-      'team_pcp_id'               => $params['team_pcp_id'],
-      'relationship_id'           => $dao->id
+      'display_name'       => $dao->display_name,
+      'pcp_id'             => $dao->pcp_a_b,
+      'amount_raised'      => $memberPcpResult['values'][0]['amount_raised'],
+      'donations_count'    => $getAllDonations['count'],
+      'image_url'          => $memberPcpResult['values'][0]['image_url'] ? $memberPcpResult['values'][0]['image_url'] : CRM_Pcpteams_Constant::C_DEFAULT_PROFILE_PIC,
+      'image_id'           => $memberPcpResult['values'][0]['image_id'],
+      'team_pcp_id'        => $params['team_pcp_id'],
+      'relationship_id'    => $dao->id
     );
   }
   return civicrm_api3_create_success($result, $params);
@@ -1102,4 +1108,23 @@ function _civicrm_api3_pcpteams_sortby_amount_raised(&$result){
       $donationCount[$key] = $row['donations_count'];
   }
   array_multisort($amountRaised, SORT_DESC, $donationCount, SORT_DESC, $result);
+}
+
+function civicrm_api3_pcpteams_leaveTeam($params) {
+  $teamPcpCfId  = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
+  $team_pcp_id  = $params['team_pcp_id']; 
+  $user_id      = $params['user_id']; 
+  $query = "
+    Update civicrm_value_pcp_custom_set
+    Set team_pcp_id = NULL
+    Where team_pcp_id = {$team_pcp_id} AND entity_id IN ( SELECT id FROM civicrm_pcp WHERE contact_id = {$user_id} )
+  ";
+  $dao = CRM_Core_DAO::executeQuery($query);
+  $teamPcpTitle = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $team_pcp_id, 'title');
+  CRM_Core_Session::setStatus(ts("Unsubscribe from {$teamPcpTitle}"), NULL, 'success');
+  return TRUE;
+}
+function _civicrm_api3_pcpteams_leaveTeam_spec(&$params) {
+  $params['user_id']['api.required'] = 1;
+  $params['team_pcp_id']['api.required'] = 1;
 }
