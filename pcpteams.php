@@ -64,10 +64,9 @@ function pcpteams_civicrm_install() {
     'sequential'  => 1,
     'version'     => 3,
     'msg_title'   => "Sample Team Invite Template",
-    'msg_subject' => "Sample Team Invite",
+    'msg_subject' => "Team Invitation",
     'is_default'  => 1,
     'msg_html'    => $messageHtml,
-    'msg_text'    => 'sample team invite text',
   );
   $result = civicrm_api3('MessageTemplate', 'create', $message_params);
 

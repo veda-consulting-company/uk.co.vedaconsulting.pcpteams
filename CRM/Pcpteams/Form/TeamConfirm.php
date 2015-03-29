@@ -42,6 +42,7 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
       TRUE
     );
     $email->freeze();
+    $this->addWysiwyg('suggested_message', ts('Your Message'), CRM_Core_DAO::getAttribute('CRM_Friend_DAO_Friend', 'suggested_message'));
     $friend    = array();
     $mailLimit = CRM_Pcpteams_Constant::C_INVITE_MAIL_LIMIT;
    
@@ -69,7 +70,7 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
     $errors = array();
     $valid = FALSE;
     foreach ($fields['friend'] as $key => $val) {
-      if (trim($val['first_name']) || trim($val['last_name']) || trim($val['email'])) {
+      if (trim($val['email'])) {
         $valid = TRUE;
         if (!trim($val['first_name'])) {
           $errors["friend[{$key}][first_name]"] = ts('Please enter your friend\'s first name.');
@@ -77,30 +78,26 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
         if (!trim($val['last_name'])) {
           $errors["friend[{$key}][last_name]"] = ts('Please enter your friend\'s last name.');
         }
-        if (!trim($val['email'])) {
-          $errors["friend[{$key}][email]"] = ts('Please enter your friend\'s email address.');
-        }
+       
       }
     }
-    if (!$valid) {
-      $errors['friend[1][first_name]'] = ts("Please enter at least one friend's information");
-    }
+   
     return empty($errors) ? TRUE : $errors;
   }
 
   function postProcess() {
     //return TRUE;
     $values = $this->controller->exportValues($this->_name); 
-    $emailParams = $values['friend'];
     // Find the msg_tpl ID of sample invite template
     $result = civicrm_api3('MessageTemplate', 'get', array( 'sequential' => 1, 'version'=> 3, 'msg_title' => "Sample Team Invite Template",));
+    $teampcpId = CRM_Pcpteams_Utils::getPcpIdByContactAndEvent($this->get('component_page_id'), $this->get('teamContactID'));
     if(!civicrm_error($result) && $result['id']) {
       // Send Invitation emails
-      CRM_Pcpteams_Utils::sendInviteEmail($result['id'], $this->_contactID, $emailParams);
+      CRM_Pcpteams_Utils::sendInviteEmail($result['id'], $this->_contactID, $values, $teampcpId);
     }
-    
+    $contactDisplayName = CRM_Contact_BAO_Contact::displayName($this->_contactID);
     // Create Team Invite activity
-    CRM_Pcpteams_Utils::createPcpActivity(array('source' => $this->_contactID, 'target' => $this->get('teamContactID')), CRM_Pcpteams_Constant::C_CF_TEAM_INVITE, 'Invited to '.$this->get('teamName'), 'PCP Team Invite');
+    CRM_Pcpteams_Utils::createPcpActivity(array('source' => $this->_contactID, 'target' => $this->get('teamContactID')), CRM_Pcpteams_Constant::C_CF_TEAM_INVITE, 'Invited to Join Team '.$this->get('teamName'). 'by '.$contactDisplayName, 'PCP Team Invite');
   }
 
   /**
