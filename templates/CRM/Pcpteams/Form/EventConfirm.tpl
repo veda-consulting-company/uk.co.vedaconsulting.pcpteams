@@ -8,7 +8,7 @@
 	 
 	 <div>
 	 	<p>
-	 		Please Confirm  that you have already claimed plae in the event
+	 		Do you already have a place in this event?
 	 	</p>
 	 </div>
 	<!-- ( FIELD (AUTOMATIC LAYOUT) ) -->
