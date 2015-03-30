@@ -58,16 +58,23 @@ function pcpteams_civicrm_install() {
   ADD CONSTRAINT `FK_civicrm_value_pcp_custom_set_team_pcp_id` FOREIGN KEY (`team_pcp_id`) REFERENCES `civicrm_pcp` (`id`) ON DELETE SET NULL";
   CRM_Core_DAO::executeQuery($sql);
   
+  //set foreignkey for pcp_a_b and pcp_b_a on delete make null
+  $alterSql = "ALTER TABLE `civicrm_value_pcp_relationship_set`
+  MODIFY `pcp_a_b` int(10) unsigned DEFAULT NULL, MODIFY `pcp_b_a` int(10) unsigned DEFAULT NULL,
+  ADD CONSTRAINT `FK_civicrm_value_pcp_relationship_set_pcp_a_b` FOREIGN KEY (`pcp_a_b`) REFERENCES `civicrm_pcp` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `FK_civicrm_value_pcp_relationship_set_pcp_b_a` FOREIGN KEY (`pcp_b_a`) REFERENCES `civicrm_pcp` (`id`) ON DELETE SET NULL
+  ";
+  CRM_Core_DAO::executeQuery($alterSql);
+  
   $messageHtmlSampleTeamInviteFile  = $extensionDir . '/message_templates/sample_team_invite.html';
   $messageHtml      = file_get_contents($messageHtmlSampleTeamInviteFile);
   $message_params = array(
     'sequential'  => 1,
     'version'     => 3,
     'msg_title'   => "Sample Team Invite Template",
-    'msg_subject' => "Sample Team Invite",
+    'msg_subject' => "Team Invitation",
     'is_default'  => 1,
     'msg_html'    => $messageHtml,
-    'msg_text'    => 'sample team invite text',
   );
   $result = civicrm_api3('MessageTemplate', 'create', $message_params);
 
