@@ -11,8 +11,8 @@
       <div class="clear"></div>
     </div>
     <div class="pcp-progress">
+      <span class="stat-num"><strong>{$pcpinfo.percentage}<i>%</i></strong></span>
       <div class="circle">
-        <span class="stat-num"><strong>{$pcpinfo.percentage}</strong></span>
       </div>
     </div>
     <div class="stats">

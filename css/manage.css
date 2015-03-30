@@ -50,19 +50,22 @@
 .crm-container .crm-pcp-manage .pcp-panel .pcp-progress {
   display: inline-block;
   float: left;
-  margin-top: 42px;
-  width: 15%;
+  margin-top: 30px;
+  width: 132px;
 }
-.crm-container .crm-pcp-manage .pcp-panel .circle span {
+.crm-container .crm-pcp-manage .pcp-panel .pcp-progress span {
+  display: inline-block;
+  float: left;
   position: relative;
-  top: -75px;
-  left: 42px;
+  top: 70px;
+  left: 40px;
   font-size: 23px;
 }
 .crm-container .crm-pcp-manage .pcp-panel .stats {
   display: inline-block;
   float: left;
   margin-top: 61px;
+  margin-left: 20px;
   width: 20%;
 }
 .crm-container .crm-pcp-manage .pcp-panel .stats .raised-total {
