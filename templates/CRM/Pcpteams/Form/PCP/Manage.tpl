@@ -164,7 +164,7 @@
             <div class="mem-body-row pcp-progress">
               <span>{$memberInfo.donations_count} Donations</span>
               <div class="pcp-bar">
-                <div class="pcp-bar-progress" style="width: {$memberInfo.percentage};">
+                <div class="pcp-bar-progress" style="width: {$memberInfo.percentage}%;" title="{$memberInfo.percentage}%">
                 </div>
               </div>
             </div>
@@ -259,24 +259,24 @@ CRM.$(function($) {
     ev.preventDefault();
     var url = cj(this).attr('href');
     var id = cj(this).attr('id');
+    var redirectUrl = window.location.href; //FIXME: need to make sure with DS, can use this method
     var title = 'Join Team';
-    var status = 'Request sent to the team successfully'; //FIXME : need to set the proper status message
+    redirectUrl = redirectUrl + '&op=join';
     if (id == 'create-team-btn') {
       title = 'Create Team';
-      status = 'Successfully created team'; //FIXME : need to set the proper status message
+      redirectUrl = redirectUrl + '&op=create';
     }
     if (id == 'invite-team-btn') {
       title = 'Invite Team';
-      status = 'Successfully Invite to team'; //FIXME : need to set the proper status message
+      redirectUrl = redirectUrl + '&op=invite';
     }
-    console.log(title);
     if (url) {
       CRM.loadForm(url, {
         dialog: {width: 650, height: 'auto', title: title}
       }).on('crmFormSuccess', function(e, data) {
         CRM.status(status);
         $(document).ajaxStop(function() { 
-          location.reload(true); 
+          location.href = redirectUrl; 
         });
       });
     }// end if 
@@ -342,13 +342,14 @@ function approveTeamMember(entityId, pcpId, teampcpId){
         buttons: {
           "Yes": function() {
               var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=approveTeamMember' }"{literal};
+              var redirectUrl = window.location.href;
+              redirectUrl = redirectUrl + '&op=approve';
               cj.ajax({ 
                  url     : dataUrl,
                  type    : 'post',
                  data    : {entity_id : entityId, pcp_id : pcpId, team_pcp_id: teampcpId },
                  success : function( data ) {
-                  CRM.status(ts('Approved'));
-                  cj(document).ajaxStop(function() { location.reload(true); });
+                  location.href = redirectUrl;
                  }
               });
             cj(this).dialog("destroy");
@@ -373,13 +374,14 @@ function declineTeamMember(entityId){
         buttons: {
           "Yes": function() {
               var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=declineTeamMember' }"{literal};
+              var redirectUrl = window.location.href;
+              redirectUrl = redirectUrl + '&op=decline';
               cj.ajax({ 
                  url     : dataUrl,
                  type    : 'post',
                  data    : {entity_id : entityId},
                  success : function( data ) {
-                  CRM.status(ts('Declined'));
-                  cj(document).ajaxStop(function() { location.reload(true); });
+                  location.href = redirectUrl;
                  }
               });
             cj(this).dialog("destroy");

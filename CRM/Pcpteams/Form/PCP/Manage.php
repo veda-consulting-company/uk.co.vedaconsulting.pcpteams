@@ -33,6 +33,39 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     $pcpId = CRM_Utils_Request::retrieve('id', 'Positive', CRM_Core_DAO::$_nullArray, TRUE); 
     $state = CRM_Utils_Request::retrieve('state', 'String');
     $pcpContactId = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcpId, 'contact_id');
+    $opBtn = CRM_Utils_Request::retrieve('op', 'String', CRM_Core_DAO::$_nullArray, FALSE, NULL, 'GET');
+    
+    //to set the status
+    //FIXME: proper status message
+    switch ($opBtn) {
+      case 'join':
+        $statusTitle = "Join Team Request";
+        $statusText  = 'Request has been sent to team successfully...';
+        $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
+        break;
+      case 'create':
+        $statusTitle = "Create Team";
+        $statusText  = "That's Great., You have successfully created the Team";
+        $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
+        break;
+      case 'invite':
+        $statusTitle = "Invite Team";
+        $statusText  = "Invitation has sent successfully..";
+        $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
+        break;
+      case 'approve':
+        $statusTitle = "Approve Request";
+        $statusText  = "You have Approved the Team Request";
+        $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
+        break;
+      case 'decline':
+        $statusTitle = "Decline Request";
+        $statusText  = "You have Declined the Team Request";
+        $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
+        break;
+      default:
+        break;
+    }
     
     $pcpDetails  = self::getPcpDetails($pcpId);
     $this->assign('pcpinfo', $pcpDetails);
