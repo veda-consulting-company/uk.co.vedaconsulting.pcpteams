@@ -62,14 +62,7 @@ function civicrm_api3_pcpteams_create($params) {
   // active by default for now
   $params['is_active'] = CRM_Utils_Array::value('is_active', $params, 1);
 
-  $pcpID = CRM_Utils_Array::value('id', $params);
-  $pcp   = CRM_PCP_BAO_PCP::add($params, FALSE);
-
-  if (!$pcpID) {
-    // We 'll need to call create hook. Civi doesn't do it for PCP.  
-    CRM_Utils_Hook::post('create', 'PCP', $pcp->id, $pcp);
-  }
-
+  $pcp = CRM_Pcpteams_BAO_PCP::create($params, FALSE);
   $values = array();
    _civicrm_api3_object_to_array_unique_fields($pcp, $values[$pcp->id]);
   return civicrm_api3_create_success($values, $params, 'Pcpteams', 'create');
