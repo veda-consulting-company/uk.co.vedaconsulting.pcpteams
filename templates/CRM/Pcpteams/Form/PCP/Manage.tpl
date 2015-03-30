@@ -338,13 +338,14 @@ function approveTeamMember(entityId, pcpId, teampcpId){
         buttons: {
           "Yes": function() {
               var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=approveTeamMember' }"{literal};
+              var redirectUrl = window.location.href;
+              redirectUrl = redirectUrl + '&op=approve';
               cj.ajax({ 
                  url     : dataUrl,
                  type    : 'post',
                  data    : {entity_id : entityId, pcp_id : pcpId, team_pcp_id: teampcpId },
                  success : function( data ) {
-                  CRM.status(ts('Approved'));
-                  cj(document).ajaxStop(function() { location.reload(true); });
+                  location.href = redirectUrl;
                  }
               });
             cj(this).dialog("destroy");
@@ -369,13 +370,14 @@ function declineTeamMember(entityId){
         buttons: {
           "Yes": function() {
               var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=declineTeamMember' }"{literal};
+              var redirectUrl = window.location.href;
+              redirectUrl = redirectUrl + '&op=decline';
               cj.ajax({ 
                  url     : dataUrl,
                  type    : 'post',
                  data    : {entity_id : entityId},
                  success : function( data ) {
-                  CRM.status(ts('Declined'));
-                  cj(document).ajaxStop(function() { location.reload(true); });
+                  location.href = redirectUrl;
                  }
               });
             cj(this).dialog("destroy");

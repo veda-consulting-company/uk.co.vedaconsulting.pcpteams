@@ -9,8 +9,9 @@
       <div class="clear"></div>
     </div>
   {/foreach}
+  {if $snippet neq 'json'}
   <span class="bold"><a href="{$skipURL}">Skip team setup</a></span>
-
+  {/if}
   <!-- ( FOOTER ) -->
   <div class="crm-submit-buttons">
   {include file="CRM/common/formButtons.tpl" location="bottom"}

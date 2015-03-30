@@ -36,6 +36,7 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     $opBtn = CRM_Utils_Request::retrieve('op', 'String', CRM_Core_DAO::$_nullArray, FALSE, NULL, 'GET');
     
     //to set the status
+    //FIXME: proper status message
     switch ($opBtn) {
       case 'join':
         $statusTitle = "Join Team Request";
@@ -51,7 +52,17 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
         $statusTitle = "Invite Team";
         $statusText  = "Invitation has sent successfully..";
         $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
-        break;        
+        break;
+      case 'approve':
+        $statusTitle = "Approve Request";
+        $statusText  = "You have Approved the Team Request";
+        $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
+        break;
+      case 'decline':
+        $statusTitle = "Decline Request";
+        $statusText  = "You have Declined the Team Request";
+        $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
+        break;
       default:
         break;
     }

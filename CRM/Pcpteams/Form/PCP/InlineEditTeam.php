@@ -12,6 +12,7 @@ class CRM_Pcpteams_Form_PCP_InlineEditTeam extends CRM_Core_Form {
     $workflowTeam       = CRM_Utils_Request::retrieve('op', 'String');
     $page_id            = CRM_Utils_Request::retrieve('id', 'Positive');
     $component_page_id  = CRM_Utils_Request::retrieve('pageId', 'Positive');
+    $snippet            = CRM_Utils_Request::retrieve('snippet', 'String');
     
     $this->set('component_page_id', $component_page_id);
     $this->set('page_id', $page_id);
@@ -31,6 +32,7 @@ class CRM_Pcpteams_Form_PCP_InlineEditTeam extends CRM_Core_Form {
     $className = 'CRM_Pcpteams_Form_' . $this->_reactToFile;
     $className::preProcess($this);
     $this->assign('reactClass', $this->_reactToFile);
+    $this->assign('snippet', $snippet);
   }
 
   function setDefaultValues() {

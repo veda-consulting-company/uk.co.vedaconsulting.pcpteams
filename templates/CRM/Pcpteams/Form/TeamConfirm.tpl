@@ -1,5 +1,9 @@
 <div class="crm-form-block crm-search-form-block">
+        {if $snippet eq 'json'}
+        <h2>{ts}Invite others to join you{/ts}</h2><br />
+        {else}
         <h2>{ts}Thanks, {$teamTitle} is now setup, you can now invite others to join you{/ts}</h2><br />
+        {/if}
         <div class="crm-group tell_friend_form-group">
             <table class="form-layout-compressed">
 
