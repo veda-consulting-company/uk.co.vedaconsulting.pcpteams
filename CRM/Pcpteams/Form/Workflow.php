@@ -24,7 +24,7 @@ class CRM_Pcpteams_Form_Workflow extends CRM_Core_Form {
       $code  = $this->_code;
       $query = "?pageId={$this->_pageId}&component=event";
       if($this->_tpId){
-        $query  = "&tpId={$this->_tpId}";
+        $query .= "&tpId={$this->_tpId}";
         $code   = "cpftn";
       }
       if($code) {
