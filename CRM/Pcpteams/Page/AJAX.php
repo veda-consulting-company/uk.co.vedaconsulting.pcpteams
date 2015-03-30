@@ -64,9 +64,10 @@ class CRM_Pcpteams_Page_AJAX {
       "custom_{$teamPcpCfId}" => NULL, 
     );
     $updatedResult = civicrm_api3('CustomValue', 'create', $params);
-    if(!civicrm_error($updatedResult)){
+    if (!civicrm_error($updatedResult)) {
       echo 'updated';
-    }else{
+    }
+    else{
       echo $updatedResult['error_message'];
     }
     
@@ -76,14 +77,15 @@ class CRM_Pcpteams_Page_AJAX {
   static function leaveTeam(){
     $user_id      = CRM_Utils_Type::escape($_POST['user_id'], 'Integer');
     $team_pcp_id  = CRM_Utils_Type::escape($_POST['team_pcp_id'], 'Integer');
-    $teamPcpCfId  = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId(); 
-    $query = "
-      Update civicrm_value_pcp_custom_set
-      Set team_pcp_id = NULL
-      Where team_pcp_id = {$team_pcp_id} AND entity_id IN ( SELECT id FROM civicrm_pcp WHERE contact_id = {$user_id} )
-    ";
-    $dao = CRM_Core_DAO::executeQuery($query);
-    echo 'updated'; //FIXME : Need to display proper response
+    $params       = array(
+      'version'     => '3',
+      'user_id'     => $user_id,
+      'team_pcp_id' => $team_pcp_id,
+    );
+    $result = civicrm_api('pcpteams', 'leaveTeam', $params);
+    if($result){
+      echo 'updated'; //FIXME : Need to display proper response
+    }
     
     CRM_Utils_System::civiExit();
   }

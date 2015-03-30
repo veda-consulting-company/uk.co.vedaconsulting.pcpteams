@@ -116,7 +116,7 @@
               <img width="35" height="35" src="{$memberInfo.image_url}">
             </div>
             <div class="mem-body-row name">
-              {$memberInfo.member_display_name} 
+              {$memberInfo.display_name} 
               {if $memberInfo.is_team_admin}
                 <br>
                 <small> ( Team Admin ) </small>
@@ -129,7 +129,7 @@
               {$memberInfo.amount_raised|crmMoney}
             </div>
             <div class="mem-body-row donate">
-              <a class="pcp-button pcp-btn-green" href="" onclick="approveTeamMember('{$memberInfo.relationship_id}','{$memberInfo.member_pcp_id}','{$memberInfo.team_pcp_id}');return false;">{ts}Approve{/ts}</a>
+              <a class="pcp-button pcp-btn-green" href="javascript:void(0)" onclick="approveTeamMember('{$memberInfo.relationship_id}','{$memberInfo.pcp_id}','{$memberInfo.team_pcp_id}');return false;">{ts}Approve{/ts}</a>
               <a class="pcp-button pcp-btn-red" href="" onclick="declineTeamMember('{$memberInfo.relationship_id}');return false;">{ts}Decline{/ts}</a>
             </div>
             <div class="clear"></div>
@@ -155,7 +155,7 @@
               <img width="35" height="35" src="{$memberInfo.image_url}">
             </div>
             <div class="mem-body-row name">
-              {$memberInfo.member_contact_name} 
+              {$memberInfo.display_name} 
               {if $memberInfo.is_team_admin}
                 <br>
                 <small> ( Team Admin ) </small>
@@ -164,7 +164,7 @@
             <div class="mem-body-row pcp-progress">
               <span>{$memberInfo.donations_count} Donations</span>
               <div class="pcp-bar">
-                <div class="pcp-bar-progress" style="width: 60%;">
+                <div class="pcp-bar-progress" style="width: {$memberInfo.percentage};">
                 </div>
               </div>
             </div>
@@ -190,6 +190,13 @@
 <div class="crm-pcp-alert-leave-team" style="display:none;">
   <p> Are you sure, want to leave from this team ?</p>
 </div>
+<div class="crm-pcp-alert-approve-request" style="display:none;">
+  <p> Would you llike to Approve this request ?</p>
+</div>
+<div class="crm-pcp-alert-decline-request" style="display:none;">
+  <p> Are you sure, want to Decline this request ?</p>
+</div>
+
 {literal}
 <script type="text/javascript">
 CRM.$(function($) {
@@ -253,16 +260,21 @@ CRM.$(function($) {
     var url = cj(this).attr('href');
     var id = cj(this).attr('id');
     var title = 'Join Team';
-    if (id = 'create-team-btn') {
+    var status = 'Request sent to the team successfully'; //FIXME : need to set the proper status message
+    if (id == 'create-team-btn') {
       title = 'Create Team';
+      status = 'Successfully created team'; //FIXME : need to set the proper status message
     }
-    if (id = 'invite-team-btn') {
+    if (id == 'invite-team-btn') {
       title = 'Invite Team';
+      status = 'Successfully Invite to team'; //FIXME : need to set the proper status message
     }
+    console.log(title);
     if (url) {
       CRM.loadForm(url, {
         dialog: {width: 650, height: 'auto', title: title}
       }).on('crmFormSuccess', function(e, data) {
+        CRM.status(status);
         $(document).ajaxStop(function() { 
           location.reload(true); 
         });
@@ -275,7 +287,9 @@ CRM.$(function($) {
     $('.crm-pcp-inline-edit-pic').on('click', function(ev){
       var url = $(this).attr('href');
       var fileid = $(this).attr('id');
-      url = url + '&fileid=' + fileid;
+      if(fileid){
+        url = url + '&fileid=' + fileid;
+      }
       if (url) {
         CRM.loadForm(url, {
           dialog: {width: 500, height: 'auto'}
@@ -311,25 +325,65 @@ CRM.$(function($) {
   });
 });
 function approveTeamMember(entityId, pcpId, teampcpId){
-    var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=approveTeamMember' }"{literal};
-    cj.ajax({ 
-       url     : dataUrl,
-       type    : 'post',
-       data    : {entity_id : entityId, pcp_id : pcpId, team_pcp_id: teampcpId },
-       success : function( data ) {
-           cj(document).ajaxStop(function() { location.reload(true); });
-       }
+    cj(".crm-pcp-alert-approve-request").show();
+    cj(".crm-pcp-alert-approve-request").dialog({
+        title: "Approve Request",
+        modal: true,
+        resizable: true,
+        bgiframe: true,
+        overlay: {
+          opacity: 0.5,
+          background: "black"
+        },
+        buttons: {
+          "Yes": function() {
+              var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=approveTeamMember' }"{literal};
+              cj.ajax({ 
+                 url     : dataUrl,
+                 type    : 'post',
+                 data    : {entity_id : entityId, pcp_id : pcpId, team_pcp_id: teampcpId },
+                 success : function( data ) {
+                  CRM.status(ts('Approved'));
+                  cj(document).ajaxStop(function() { location.reload(true); });
+                 }
+              });
+            cj(this).dialog("destroy");
+          },
+          "No" : function() {
+            cj(this).dialog("destroy");
+          }
+        }
     });
 }
 function declineTeamMember(entityId){
-    var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=declineTeamMember' }"{literal};
-    cj.ajax({ 
-       url     : dataUrl,
-       type    : 'post',
-       data    : {entity_id : entityId},
-       success : function( data ) {
-           cj(document).ajaxStop(function() { location.reload(true); });
-       }
+    cj(".crm-pcp-alert-decline-request").show();
+    cj(".crm-pcp-alert-decline-request").dialog({
+        title: "Decline Request",
+        modal: true,
+        resizable: true,
+        bgiframe: true,
+        overlay: {
+          opacity: 0.5,
+          background: "black"
+        },
+        buttons: {
+          "Yes": function() {
+              var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=declineTeamMember' }"{literal};
+              cj.ajax({ 
+                 url     : dataUrl,
+                 type    : 'post',
+                 data    : {entity_id : entityId},
+                 success : function( data ) {
+                  CRM.status(ts('Declined'));
+                  cj(document).ajaxStop(function() { location.reload(true); });
+                 }
+              });
+            cj(this).dialog("destroy");
+          },
+          "No" : function() {
+            cj(this).dialog("destroy");
+          }
+        }
     });
 }
 function leaveTeam(teampcpId, userId){

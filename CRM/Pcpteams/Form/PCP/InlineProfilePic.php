@@ -16,7 +16,7 @@ class CRM_Pcpteams_Form_PCP_InlineProfilePic extends CRM_Core_Form {
   
   function buildQuickForm() {
     $this->_pcpId = CRM_Utils_Request::retrieve('id', 'Positive', CRM_Core_DAO::$_nullArray, TRUE, NULL, 'GET');
-    $this->_fileId = CRM_Utils_Request::retrieve('fileid', 'Positive', CRM_Core_DAO::$_nullArray, TRUE, NULL, 'GET');
+    $this->_fileId = CRM_Utils_Request::retrieve('fileid', 'Positive', CRM_Core_DAO::$_nullArray, FALSE, NULL, 'GET');
     if ($this->_fileId) {
        $imageUrl = CRM_Utils_System::url('civicrm/file',"reset=1&id={$this->_fileId}&eid={$this->_pcpId}");
        $this->assign('defaultImageUrl', $imageUrl);
