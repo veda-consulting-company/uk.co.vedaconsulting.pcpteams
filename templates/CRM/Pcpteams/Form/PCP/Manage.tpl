@@ -12,7 +12,7 @@
     </div>
     <div class="pcp-progress">
       <div class="circle">
-        <span class="stat-num"><strong>65<i>%</i></strong></span>
+        <span class="stat-num"><strong>{$pcpinfo.percentage}</strong></span>
       </div>
     </div>
     <div class="stats">
@@ -311,9 +311,9 @@ CRM.$(function($) {
     $(this).css("border", "none");
   });
 
-  var circleVar = 0.80;
+  var circleVar = {/literal}{$pcpinfo.percentage};{literal}
   $('.circle').circleProgress({
-    value: circleVar,
+    value: circleVar/100,
     size: 130,
     thickness: 15,
     lineCap: "round",
@@ -321,7 +321,7 @@ CRM.$(function($) {
       gradient: ["#FF0000", "#e0001a"]
     },
   }).on('circle-animation-progress', function(event, progress) {
-    $(this).find('strong').html(parseInt(100 * circleVar) + '<i>%</i>');
+    $(this).find('strong').html(parseInt(circleVar) + '<i>%</i>');
   });
 });
 function approveTeamMember(entityId, pcpId, teampcpId){

@@ -1052,7 +1052,7 @@ function _civicrm_api3_pcpteams_getMoreInfo(&$params) {
     //calculate percentage
     $percentage   = 0;
     if(isset($pcpValues['goal_amount']) && number_format($pcpValues['goal_amount']) != '0'){
-      $percentage = number_format(($params[$pcpId]['amount_raised'] / $params[$pcpId]['goal_amount']) * 100).'%';
+      $percentage = number_format(($params[$pcpId]['amount_raised'] / $params[$pcpId]['goal_amount']) * 100);
     }
     $params[$pcpId]['percentage']       = $percentage;
   }
