@@ -63,6 +63,30 @@ function civicrm_api3_pcpteams_create($params) {
   $params['is_active'] = CRM_Utils_Array::value('is_active', $params, 1);
 
   $pcp = CRM_Pcpteams_BAO_PCP::create($params, FALSE);
+  
+  //Custom Set
+  $customFields = CRM_Core_BAO_CustomField::getFields('PCP', FALSE, FALSE,
+    NULL, NULL, TRUE
+  );
+  $isCustomValueSet = FALSE;
+  foreach ($customFields as $fieldID => $fieldValue) {
+    list($tableName, $columnName, $cgId) = CRM_Core_BAO_CustomField::getTableColumnGroup($fieldID);
+    if (!empty($params[$columnName]) || !empty($params["custom_{$fieldID}"])) {
+      $isCustomValueSet = TRUE;
+      //FIXME: to find out the custom value exists, set -1 as default now
+      $params["custom_{$fieldID}_-1"] = !empty($params[$columnName]) ? $params[$columnName] : $params["custom_{$fieldID}"];
+    }
+  }
+  if ($isCustomValueSet) {
+    $params['custom'] = CRM_Core_BAO_CustomField::postProcess($params,
+      $customFields,
+      $pcp->id,
+      'PCP'
+    );
+    CRM_Core_BAO_CustomValueTable::store($params['custom'], 'civicrm_pcp', $pcp->id);
+  }
+  //end custom set
+
   $values = array();
    _civicrm_api3_object_to_array_unique_fields($pcp, $values[$pcp->id]);
   return civicrm_api3_create_success($values, $params, 'Pcpteams', 'create');
