@@ -741,7 +741,10 @@ function civicrm_api3_pcpteams_getTeamMembersInfo($params){
   $teamMemberPcpIds   = implode(', ', $teamMemberPcpIds);
   $relTypeAdmin       = CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE;
   $adminRelTypeId     = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', $relTypeAdmin, 'id', 'name_a_b');
-
+  $where              = NULL;
+  if (isset($params['contact_id'])) {
+    $where = " AND cp.contact_id = {$params['contact_id']}";
+  }
   $query = "
     SELECT cp.id        as pcp_id
       , cp.page_id      as page_id
@@ -755,7 +758,7 @@ function civicrm_api3_pcpteams_getTeamMembersInfo($params){
     LEFT JOIN civicrm_value_pcp_custom_set cpcs ON (cpcs.entity_id = cp.id)
     LEFT JOIN civicrm_contact cc ON (cc.id = cp.contact_id)
     LEFT JOIN civicrm_relationship cr ON (cr.contact_id_a = cp.contact_id AND cr.is_active)
-    where cp.id IN ( $teamMemberPcpIds )
+    where cp.id IN ( $teamMemberPcpIds ) {$where}
   ";
   $dao = CRM_Core_DAO::executeQuery($query);
   while ($dao->fetch()) {

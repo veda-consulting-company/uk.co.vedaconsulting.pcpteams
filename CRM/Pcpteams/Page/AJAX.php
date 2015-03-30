@@ -117,13 +117,50 @@ class CRM_Pcpteams_Page_AJAX {
       "custom_{$teamPcpCfId}" => $team_pcp_id,
     );
     $updatedResult = civicrm_api3('CustomValue', 'create', $params);
-    if(!civicrm_error($updatedResult)){
-    $result  = civicrm_api3('Relationship', 'delete', array(
-      'sequential' => 1,
-      'id'         => $entity_id,
+    if (!civicrm_error($updatedResult)) {
+      $result  = civicrm_api3('Relationship', 'delete', array(
+        'sequential' => 1,
+        'id'         => $entity_id,
       ));
-      echo 'approved';
-    }else{
+      $contactID = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcp_id, 'contact_id');
+      $teamMemberInfo = civicrm_api( 'pcpteams', 'getTeamMembersInfo', array(
+          'version'  => 3, 
+          'pcp_id'   => $pcp_id,
+          'contact_id' => $contactID,
+        )
+      );
+      $memberInfo = isset($teamMemberInfo['values'][0]) ? $teamMemberInfo['values'][0] : NULL;
+      if(!$memberInfo){
+        echo 'member not found';
+        CRM_Utils_System::civiExit();
+      }
+      $html = "
+      <div class=\"mem-row\">
+        <div class=\"mem-body-row avatar\">
+          <img width=\"35\" height=\"35\" src=\"{$memberInfo['image_url']}\">
+        </div>
+        <div class=\"mem-body-row name\">
+              {$memberInfo['display_name']}
+        </div> 
+        <div class=\"mem-body-row pcp-progress\">
+        <span>{$memberInfo['donations_count']} Donations</span>
+        <div class=\"pcp-bar\">
+          <div title=\"{$memberInfo['percentage']}%\" style=\"width: {$memberInfo['percentage']}%;\" class=\"pcp-bar-progress\">
+          </div>
+        </div>
+        </div>
+        <div class=\"mem-body-row raised\">
+          {$memberInfo['amount_raised']}
+        </div>
+        <div class=\"mem-body-row donate\">
+          <a href=\"{$memberInfo['donate_url']}\" class=\"btn-donate-small\">Donate</a>
+        </div>
+        <div class=\"clear\"></div>
+      </div> 
+      ";
+      echo $html;
+    }
+    else{
       echo $updatedResult['error_message'];
     }
     CRM_Utils_System::civiExit();
