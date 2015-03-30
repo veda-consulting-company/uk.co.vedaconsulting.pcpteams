@@ -107,7 +107,7 @@
         </div>
         <div class="mem-body">
           {foreach from=$teamMemberRequestInfo item=memberInfo}
-          <div class="mem-row">
+          <div class="mem-row" id="member_{$memberInfo.pcp_id}">
             <!--
             <div class="mem-body-row action">
               Remove link(admin)
@@ -130,7 +130,7 @@
             </div>
             <div class="mem-body-row donate">
               <a class="pcp-button pcp-btn-green" href="javascript:void(0)" onclick="approveTeamMember('{$memberInfo.relationship_id}','{$memberInfo.pcp_id}','{$memberInfo.team_pcp_id}');return false;">{ts}Approve{/ts}</a>
-              <a class="pcp-button pcp-btn-red" href="" onclick="declineTeamMember('{$memberInfo.relationship_id}');return false;">{ts}Decline{/ts}</a>
+              <a class="pcp-button pcp-btn-red" href="javascript:void(0)" onclick="declineTeamMember('{$memberInfo.relationship_id}', '{$memberInfo.pcp_id}');return false;">{ts}Decline{/ts}</a>
             </div>
             <div class="clear"></div>
           </div>
@@ -338,14 +338,13 @@ function approveTeamMember(entityId, pcpId, teampcpId){
         buttons: {
           "Yes": function() {
               var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=approveTeamMember' }"{literal};
-              var redirectUrl = window.location.href;
-              redirectUrl = redirectUrl + '&op=approve';
               cj.ajax({ 
                  url     : dataUrl,
                  type    : 'post',
                  data    : {entity_id : entityId, pcp_id : pcpId, team_pcp_id: teampcpId },
                  success : function( data ) {
-                  location.href = redirectUrl;
+                  cj('#member_'+pcpId).remove();
+                  cj('div.member-block > div.mem-body').append(data);
                  }
               });
             cj(this).dialog("destroy");
@@ -356,7 +355,7 @@ function approveTeamMember(entityId, pcpId, teampcpId){
         }
     });
 }
-function declineTeamMember(entityId){
+function declineTeamMember(entityId, pcpId){
     cj(".crm-pcp-alert-decline-request").show();
     cj(".crm-pcp-alert-decline-request").dialog({
         title: "Decline Request",
@@ -377,7 +376,7 @@ function declineTeamMember(entityId){
                  type    : 'post',
                  data    : {entity_id : entityId},
                  success : function( data ) {
-                  location.href = redirectUrl;
+                  cj('#member_'+pcpId).remove();
                  }
               });
             cj(this).dialog("destroy");
