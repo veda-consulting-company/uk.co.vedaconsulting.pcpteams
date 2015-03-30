@@ -10,7 +10,7 @@
         <div id="pcp_title" class="title {if $is_edit_page}crm-pcp-inline-edit{/if}">{$pcpinfo.title}</div>
       <div class="clear"></div>
     </div>
-    <div class="pcp-progress">
+    <div id="pcp-progress" class="pcp-progress">
       <span class="stat-num"><strong>{$pcpinfo.percentage}<i>%</i></strong></span>
       <div class="circle">
       </div>
@@ -321,7 +321,11 @@ CRM.$(function($) {
       gradient: ["#FF0000", "#e0001a"]
     },
   }).on('circle-animation-progress', function(event, progress) {
-    $(this).find('strong').html(parseInt(circleVar) + '<i>%</i>');
+    if ((100 * progress) <= circleVar) {
+      $('#pcp-progress').find('strong').html(parseInt(100 * progress) + '<i>%</i>');
+    } else {
+      $('#pcp-progress').find('strong').html(parseInt(circleVar) + '<i>%</i>');
+    }
   });
 });
 function approveTeamMember(entityId, pcpId, teampcpId){
