@@ -697,6 +697,9 @@ function _civicrm_api3_pcpteams_getTeamMemberPCPIds($params){
     $teamPcpId = implode(', ', $params['teams']);
     $selectClause = "entity_id as pcp_id";
     $whereClause  = "team_pcp_id IN ( {$teamPcpId} )";
+    if (empty($teamPcpId)) {
+      return array();
+    }
   } else {
     
     if(empty($params['pcp_id'])){
