@@ -22,7 +22,11 @@
       </div> 
       <div class="target">
         <span class="text">Of target</span>
+        {* FIXME, Style should to take care of css*}
+        <div>
+          <div class="amount currency_symbol" style="float:left;">{$pcpinfo.currency_symbol}</div>
           <div id="pcp_goal_amount" class="amount {if $is_edit_page}crm-pcp-inline-edit{/if}">{$pcpinfo.goal_amount}</div>
+        </div>
       </div> 
     </div>
     <div class="clear"></div>

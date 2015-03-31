@@ -111,7 +111,6 @@ function civicrm_api3_pcpteams_get($params) {
   //the field_name check fails 'pcp_contact_id' == 'contact_id' in _civicrm_api3_dao_to_array()
   $result[$dao->id]['contact_id']    = $dao->contact_id;
    
-  
   // Append custom info
   // Note: This should ideally be done in _civicrm_api3_dao_to_array, but since PCP is not one of 
   // recongnized entity in core, we can append it seprately for now.
@@ -886,9 +885,8 @@ function civicrm_api3_pcpteams_getRank($params) {
   $result = @_civicrm_api3_dao_to_array($dao);
   $pcpAmounts = array();
   foreach ($result as $pcps) {
-    $pcpAmounts[$pcps['id']] = CRM_PCP_BAO_PCP::thermoMeter($pcps['id']);
+    $pcpAmounts[$pcps['id']] = civicrm_api3_pcpteams_getAmountRaised(array('pcp_id' => $pcps['id'], 'version' => 3));
   }
-  
   //remove pcps doesn't have donations
   arsort($pcpAmounts);
   
@@ -1029,32 +1027,6 @@ function _civicrm_api3_pcpteams_checkTeamAdmin_spec(&$params) {
 }
 
 
-function civicrm_api3_pcpteams_getRaisedSoFar($params) {
-  $result = CRM_Core_DAO::$_nullArray;
-  $query  = "
-    SELECT cc.total_amount FROM `civicrm_contribution_soft` cs
-    INNER JOIN civicrm_contribution cc on (cc.id = cs.`contribution_id`)
-    INNER JOIN civicrm_pcp_block cpb on (cpb.target_entity_id = cc.contribution_page_id)
-    WHERE cpb.entity_id = %1 AND cs.`pcp_id` = %2 GROUP BY cs.`contribution_id`
-  ";
-  $queryParams = array(
-    1 => array($params['page_id'], 'Integer'),
-    2 => array($params['pcp_id'], 'Integer'),
-  );
-  $dao = CRM_Core_DAO::executeQuery($query, $queryParams);
-  $result[$params['pcp_id']] = 0;
-  while ($dao->fetch()) {
-    $result[$params['pcp_id']] += $dao->total_amount;
-  }
-
-  return civicrm_api3_create_success($result, $params);
-}
-
-function _civicrm_api3_pcpteams_getRaisedSoFar_spec(&$params) {
-  $params['page_id']['api.required'] = 1;
-  $params['pcp_id']['api.required'] = 1;
-}
-
 function _civicrm_api3_pcpteams_getMoreInfo(&$params) {
   foreach ($params as $pcpId => $pcpValues) {
     $entityFile   = CRM_Core_BAO_File::getEntityFile('civicrm_pcp', $pcpId);
@@ -1079,11 +1051,16 @@ function _civicrm_api3_pcpteams_getMoreInfo(&$params) {
      $params[$pcpId]['image_id']         = $fileId;
      $params[$pcpId]['donate_url']       = $donateUrl;
      $params[$pcpId]['is_teampage']      = $isTeamPcp;
-    
+       
+
     //calculate percentage
     $percentage   = 0;
     if(isset($pcpValues['goal_amount']) && number_format($pcpValues['goal_amount']) != '0'){
       $percentage = number_format(($params[$pcpId]['amount_raised'] / $params[$pcpId]['goal_amount']) * 100);
+    }
+    
+    if (isset($pcpValues['currency'])) {
+     $params[$pcpId]['currency_symbol']  = CRM_Core_DAO::getFieldValue('CRM_Financial_DAO_Currency', $pcpValues['currency'], 'symbol', 'name');
     }
     $params[$pcpId]['percentage']       = $percentage;
   }
