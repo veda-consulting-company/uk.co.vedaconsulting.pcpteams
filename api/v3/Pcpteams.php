@@ -111,11 +111,6 @@ function civicrm_api3_pcpteams_get($params) {
   //the field_name check fails 'pcp_contact_id' == 'contact_id' in _civicrm_api3_dao_to_array()
   $result[$dao->id]['contact_id']    = $dao->contact_id;
    
-  $currency          = $result[$dao->id]['currency'];
-  $currencySymbols   = CRM_Core_PseudoConstant::get('CRM_Contribute_DAO_Contribution', 'currency', array('keyColumn' => 'name', 'labelColumn' => 'symbol'));
-  $pcpCurrencySymbol = CRM_Utils_Array::value($currency, $currencySymbols, $currency);
-  $result[$dao->id]['currency_symbol'] = $pcpCurrencySymbol;
-  
   // Append custom info
   // Note: This should ideally be done in _civicrm_api3_dao_to_array, but since PCP is not one of 
   // recongnized entity in core, we can append it seprately for now.
@@ -1056,11 +1051,16 @@ function _civicrm_api3_pcpteams_getMoreInfo(&$params) {
      $params[$pcpId]['image_id']         = $fileId;
      $params[$pcpId]['donate_url']       = $donateUrl;
      $params[$pcpId]['is_teampage']      = $isTeamPcp;
-    
+       
+
     //calculate percentage
     $percentage   = 0;
     if(isset($pcpValues['goal_amount']) && number_format($pcpValues['goal_amount']) != '0'){
       $percentage = number_format(($params[$pcpId]['amount_raised'] / $params[$pcpId]['goal_amount']) * 100);
+    }
+    
+    if (isset($pcpValues['currency'])) {
+     $params[$pcpId]['currency_symbol']  = CRM_Core_DAO::getFieldValue('CRM_Financial_DAO_Currency', $pcpValues['currency'], 'symbol', 'name');
     }
     $params[$pcpId]['percentage']       = $percentage;
   }
