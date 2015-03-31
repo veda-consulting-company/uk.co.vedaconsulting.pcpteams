@@ -78,6 +78,6 @@ class CRM_Pcpteams_Form_Workflow extends CRM_Core_Form {
 
     $this->assign('pcpComponent', $this->_component);
 
-    $session->pushUserContext(CRM_Utils_System::url('civicrm/pcp/dashboard', 'reset=1'));
+    $session->pushUserContext(CRM_Utils_System::url('civicrm/pcp/manage', 'id='.$this->_id));
   }
 }

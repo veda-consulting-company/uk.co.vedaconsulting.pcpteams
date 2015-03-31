@@ -189,7 +189,7 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
     }
 
     if (empty($this->_pages)) {
-      CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/dashboard', 'reset=1'));
+      CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/manage', 'id='.$controller->get('id')));
     }
     $this->addSequentialPages($this->_pages, $action);
   }
