@@ -39,28 +39,28 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     //FIXME: proper status message
     switch ($opBtn) {
       case 'join':
-        $statusTitle = "Join Team Request";
-        $statusText  = 'Request has been sent to team successfully...';
+        $statusTitle = "Team Request Sent";
+        $statusText  = 'A notification has been sent to the team. Once approved, team should be visible on your page.';
         $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
         break;
       case 'create':
-        $statusTitle = "Create Team";
-        $statusText  = "That's Great., You have successfully created the Team";
+        $statusTitle = "New Team Created";
+        $statusText  = "That's Great, You have successfully created the Team";
         $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
         break;
       case 'invite':
         $statusTitle = "Invite Team";
-        $statusText  = "Invitation has sent successfully..";
+        $statusText  = "Invitation request(s) has been sent.";
         $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
         break;
       case 'approve':
-        $statusTitle = "Approve Request";
-        $statusText  = "You have Approved the Team Request";
+        $statusTitle = "Team Member Request Approved";
+        $statusText  = "Team member request has been approved.";
         $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
         break;
       case 'decline':
-        $statusTitle = "Decline Request";
-        $statusText  = "You have Declined the Team Request";
+        $statusTitle = "Team Member Request Declined";
+        $statusText  = "Team member request has been declined.";
         $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
         break;
       default:
