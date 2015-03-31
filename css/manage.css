@@ -89,6 +89,13 @@
   font-stretch: normal !important !important;
   color: rgb(98,100,101) !important !important;
 }
+.crm-container .crm-pcp-manage .pcp-panel .stats .target .amount {
+  float: left !important;
+}
+.crm-container .crm-pcp-manage .pcp-panel .stats .target .crm-pcp-inline-edit {
+  width: 70% !important;
+  margin-left: 4px;
+}
 .crm-container .crm-pcp-manage .pcp-body .team-stats .amount,
 .crm-container .crm-pcp-manage .pcp-panel .stats .amount {
   font-family: "Bliss Pro Heavy",Impact,sans-serif !important;
