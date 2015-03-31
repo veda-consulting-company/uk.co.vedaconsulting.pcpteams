@@ -7,6 +7,17 @@ class CRM_Pcpteams_Form_TeamQuery extends CRM_Pcpteams_Form_Workflow {
   function preProcess() {
     parent::preProcess();
     CRM_Utils_System::setTitle(ts('Team Question'));
+
+    // if invitation detected forward to invitation screen
+    $teamPcpId = $this->get('tpId');
+    if (empty($teamPcpId)) {
+      $teamPcpId = CRM_Core_Session::singleton()->get('pcpteams_tpid');
+    }
+    if ($teamPcpId) {
+      $this->set('tpId', $teamPcpId);
+      $this->set("workflowTeam", 'invite');
+      CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/support', "code=cpftn&option=invite&qfKey={$this->controller->_key}"));
+    }
   }
 
   function buildQuickForm() {

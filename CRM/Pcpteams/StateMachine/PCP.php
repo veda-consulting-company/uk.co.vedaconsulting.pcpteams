@@ -160,7 +160,7 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
 
     // if no event or already registered, skip event pages
     if (!$eventId || $controller->get('participantId')) {
-      unset($pages['cpfec']);
+      unset($pages['cpfec'], $pages['cpfere']);
     }
     if ('cpfeq' != $step) {
       unset($pages['cpfeq'], $pages['cpfer']);

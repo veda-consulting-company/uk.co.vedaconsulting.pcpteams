@@ -72,6 +72,11 @@ class CRM_Pcpteams_Form_Workflow extends CRM_Core_Form {
     $this->set('page_id', $this->_id);
     $this->set('component_page_id', $this->_pageId);
     $this->set('pcpComponent', $this->_component);
+    if ($this->_tpId) {
+      // users returning after event registration may no longer have tpId in
+      // controller session, and therefore we need to set it in php session
+      $session->set('pcpteams_tpid', $this->_tpId);
+    }
 
     // we do not want to display recently viewed items, so turn off
     $this->assign('displayRecent', FALSE);
