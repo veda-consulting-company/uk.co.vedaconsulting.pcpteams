@@ -886,9 +886,8 @@ function civicrm_api3_pcpteams_getRank($params) {
   $result = @_civicrm_api3_dao_to_array($dao);
   $pcpAmounts = array();
   foreach ($result as $pcps) {
-    $pcpAmounts[$pcps['id']] = CRM_PCP_BAO_PCP::thermoMeter($pcps['id']);
+    $pcpAmounts[$pcps['id']] = civicrm_api3_pcpteams_getAmountRaised(array('pcp_id' => $pcps['id'], 'version' => 3));
   }
-  
   //remove pcps doesn't have donations
   arsort($pcpAmounts);
   
@@ -1028,32 +1027,6 @@ function _civicrm_api3_pcpteams_checkTeamAdmin_spec(&$params) {
   $params['team_contact_id']['api.required'] = 1;
 }
 
-
-function civicrm_api3_pcpteams_getRaisedSoFar($params) {
-  $result = CRM_Core_DAO::$_nullArray;
-  $query  = "
-    SELECT cc.total_amount FROM `civicrm_contribution_soft` cs
-    INNER JOIN civicrm_contribution cc on (cc.id = cs.`contribution_id`)
-    INNER JOIN civicrm_pcp_block cpb on (cpb.target_entity_id = cc.contribution_page_id)
-    WHERE cpb.entity_id = %1 AND cs.`pcp_id` = %2 GROUP BY cs.`contribution_id`
-  ";
-  $queryParams = array(
-    1 => array($params['page_id'], 'Integer'),
-    2 => array($params['pcp_id'], 'Integer'),
-  );
-  $dao = CRM_Core_DAO::executeQuery($query, $queryParams);
-  $result[$params['pcp_id']] = 0;
-  while ($dao->fetch()) {
-    $result[$params['pcp_id']] += $dao->total_amount;
-  }
-
-  return civicrm_api3_create_success($result, $params);
-}
-
-function _civicrm_api3_pcpteams_getRaisedSoFar_spec(&$params) {
-  $params['page_id']['api.required'] = 1;
-  $params['pcp_id']['api.required'] = 1;
-}
 
 function _civicrm_api3_pcpteams_getMoreInfo(&$params) {
   foreach ($params as $pcpId => $pcpValues) {
