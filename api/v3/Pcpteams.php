@@ -111,6 +111,10 @@ function civicrm_api3_pcpteams_get($params) {
   //the field_name check fails 'pcp_contact_id' == 'contact_id' in _civicrm_api3_dao_to_array()
   $result[$dao->id]['contact_id']    = $dao->contact_id;
    
+  $currency          = $result[$dao->id]['currency'];
+  $currencySymbols   = CRM_Core_PseudoConstant::get('CRM_Contribute_DAO_Contribution', 'currency', array('keyColumn' => 'name', 'labelColumn' => 'symbol'));
+  $pcpCurrencySymbol = CRM_Utils_Array::value($currency, $currencySymbols, $currency);
+  $result[$dao->id]['currency_symbol'] = $pcpCurrencySymbol;
   
   // Append custom info
   // Note: This should ideally be done in _civicrm_api3_dao_to_array, but since PCP is not one of 
