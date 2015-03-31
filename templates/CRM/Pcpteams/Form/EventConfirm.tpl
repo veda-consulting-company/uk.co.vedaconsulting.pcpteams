@@ -10,6 +10,8 @@
 	 	<p>
 	 		Do you already have a place in this event?
 	 	</p>
+                     {assign var=eventId   value=$eventDetails.id}
+                    <a class='crm-button' href='{crmURL p="civicrm/event/register" q="reset=1&id=$eventId"}'>{ts}No I need to register {/ts}</a>
 	 </div>
 	<!-- ( FIELD (AUTOMATIC LAYOUT) ) -->
 
