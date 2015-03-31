@@ -16,20 +16,12 @@ class CRM_Pcpteams_Form_EventConfirm extends CRM_Pcpteams_Form_Workflow {
     $this->_pageId = $this->controller->get('pageId');
     $eventDetails = CRM_Pcpteams_Utils::getEventDetailsbyEventId($this->_pageId);
     
-    $redirectRegistration     = CRM_Utils_System::url('civicrm/pcp/support', "code=cpftq&qfKey={$this->controller->_key}", TRUE, Null, FALSE);
-    $redirectSkipRegistration = CRM_Utils_System::url('civicrm/event/register', "reset=1&id={$this->get('component_page_id')}", TRUE, NULL, FALSE);
-    
     $this->addButtons(array(
       array(
         'type' => 'next',
         'name' => ts('Yes I do'),
-        'js' => array('onclick' => "location.href='{$redirectRegistration}'; return false;"),
+        'isDefault' => TRUE,
       ),
-      array(
-        'type' => 'submit',
-        'name' => ts('No I need to register'),
-        'js' => array('onclick' => "location.href='{$redirectSkipRegistration}'; return false;"),
-      )
     ));
 
     // export form elements
@@ -39,7 +31,7 @@ class CRM_Pcpteams_Form_EventConfirm extends CRM_Pcpteams_Form_Workflow {
   }
 
   function postProcess() {
-   
+    CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/support', "code=cpftq&qfKey={$this->controller->_key}"));
   }
 
   /**

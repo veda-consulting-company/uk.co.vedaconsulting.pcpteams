@@ -349,10 +349,9 @@ function _getPcpDashboardActionLink($params){
   if(empty($params['is_active'])) {
     $action     = "
     <span>
-      <a href=\"{$manageURL}\" class=\"action-item crm-hover-button\" title='Configure' >Manage</a>
-      <a href=\"{$manageURL}\" class=\"action-item crm-hover-button\" title='URL for this Page' >View Page</a>
+      <a href=\"{$disableURL}\" class=\"action-item crm-hover-button\" title=\"$active\" >{$active}</a>
     </span>
-    <span class='btn-slide crm-hover-button'>more
+    <span class='btn-slide crm-hover-button' style='display: none;'>more
       <ul class='panel'>
         <li>
           <a href=\"{$disableURL}\" class=\"action-item crm-hover-button\" title=\"$active\" >{$active}</a>
@@ -370,9 +369,8 @@ function _getPcpDashboardActionLink($params){
   $action     = "
     <span>
       <a href=\"{$manageURL}\" class=\"action-item crm-hover-button\" title='Manage' >Manage</a>
-      <a href=\"{$manageURL}\" class=\"action-item crm-hover-button\" title='URL for this Page' >View Page</a>
     </span>
-    <span class='btn-slide crm-hover-button'>more
+    <span class='btn-slide crm-hover-button' style='display: none;'>more
       <ul class='panel'>
         <li>
           <a href=\"{$joinTeamURl}\" class=\"action-item crm-hover-button\" title='Join Team' >{$updateLabel} Team</a>
@@ -486,7 +484,6 @@ function _getTeamInfoActionLink($entityId, $teamPcpId, $role){
     $manageURL  = CRM_Utils_System::url('civicrm/pcp/manage', "id={$teamPcpId}"); 
     $span = " <span>
       <a href=\"{$manageURL}\" class=\"action-item crm-hover-button\" title='Manage' >Manage</a>
-      <a href=\"{$pageURL}\" class=\"action-item crm-hover-button\" title='URL for this Page' >View Page</a>
       <a href='javascript:void(0)' class=\"action-item crm-hover-button\" title='Delete' onclick = 'deleteTeamPcp({$entityId},{$teamPcpId});'>Delete</a>
     </span>";
   }
@@ -576,10 +573,10 @@ function civicrm_api3_pcpteams_getTeamRequest($params) {
     while($teamMemberQueryDao->fetch()) {
       $customRelationQuery = "SELECT pcp_a_b as source_pcp_id, pcp_b_a as destination_pcp_id FROM civicrm_value_pcp_relationship_set WHERE entity_id = {$teamMemberQueryDao->relationship_id}";
       $customDao = CRM_Core_DAO::executeQuery($customRelationQuery);
-      $customDao->fetch();
-      $teamMemberDetails[] = array('source_pcp_id' => $customDao->source_pcp_id, 'destination_pcp_id' => $customDao->destination_pcp_id, 'relationship_id' => $teamMemberQueryDao->relationship_id);
+      if($customDao->fetch()) {
+        $teamMemberDetails[] = array('source_pcp_id' => $customDao->source_pcp_id, 'destination_pcp_id' => $customDao->destination_pcp_id, 'relationship_id' => $teamMemberQueryDao->relationship_id);
+      }
     }
-
     if(!empty($teamMemberDetails)) {
       foreach($teamMemberDetails as $teamMember) {
         $query = "
@@ -591,32 +588,35 @@ function civicrm_api3_pcpteams_getTeamRequest($params) {
           , cp.goal_amount    as pcp_goal_amount  
           , cl.email          as email  
           , ca.city           as city
-          , ca.state_province_id    as state  
-          , ca.country_id    as country 
+          , csp.name          as state  
+          , cca.name          as country 
           FROM civicrm_pcp cp
           INNER JOIN civicrm_event ce ON ce.id = cp.page_id
           INNER JOIN civicrm_contact cc ON ( cc.id = cp.contact_id )
           INNER JOIN civicrm_email cl ON ( cl.contact_id = cp.contact_id )
           INNER JOIN civicrm_address ca ON ( ca.contact_id = cp.contact_id )
+          INNER JOIN civicrm_country cca ON ( ca.country_id = cca.id )
+          INNER JOIN civicrm_state_province csp ON ( ca.state_province_id = csp.id )
           WHERE cp.id = {$teamMember['source_pcp_id']}
         ";
         $dao = CRM_Core_DAO::executeQuery($query);
-        $dao->fetch();
-        $teamPcpResult = civicrm_api('Pcpteams', 'get', array('version' => 3, 'sequential' => 1, 'pcp_id' => $teamMember['destination_pcp_id']));
-        $result[$dao->pcp_id] = array(
-          'member_display_name' => $dao->display_name,
-          'member_email'        => $dao->email,
-          'member_city'         => $dao->city,
-          'member_country'      => $dao->country,
-          'member_state_province_id'  => $dao->state_province_id,
-          'member_pcp_id'             => $dao->pcp_id,
-          'member_pcp_title'          => $dao->pcp_title,
-          'member_page_title'         => $dao->page_title,
-          'contactId'                 => $dao->pcp_contact_id,
-          'team_display_name'         => CRM_Contact_BAO_Contact::displayName($teamPcpResult['values'][0]['contact_id']),
-          'team_pcp_title'            => $teamPcpResult['values'][0]['title'],
-          'action'                    => _getTeamRequestActionLink($teamMember['relationship_id'], $dao->pcp_id, $teamPcpResult['id']),
-        );
+        if($dao->fetch()) {
+          $teamPcpResult = civicrm_api('Pcpteams', 'get', array('version' => 3, 'sequential' => 1, 'pcp_id' => $teamMember['destination_pcp_id']));
+          $result[$dao->pcp_id] = array(
+            'member_display_name' => $dao->display_name,
+            'member_email'        => $dao->email,
+            'member_city'         => $dao->city,
+            'member_country'      => $dao->country,
+            'member_state_province_id'  => $dao->state ,
+            'member_pcp_id'             => $dao->pcp_id,
+            'member_pcp_title'          => $dao->pcp_title,
+            'member_page_title'         => $dao->page_title,
+            'contactId'                 => $dao->pcp_contact_id,
+            'team_display_name'         => CRM_Contact_BAO_Contact::displayName($teamPcpResult['values'][0]['contact_id']),
+            'team_pcp_title'            => $teamPcpResult['values'][0]['title'],
+            'action'                    => _getTeamRequestActionLink($teamMember['relationship_id'], $dao->pcp_id, $teamPcpResult['id']),
+          );
+        }
       }
     }
   }
