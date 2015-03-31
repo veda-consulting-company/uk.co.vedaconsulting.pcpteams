@@ -269,11 +269,22 @@ function civicrm_api3_pcpteams_getContactList($params) {
       $where .= " AND display_name like '$strSearch'";
     }
     
+    if(isset($params['event_id'])) {
+      $where .= " AND cp.page_id = " . (int) $params['event_id'];
+    }
     //query
     $query = "
       Select id, display_name, contact_type
       FROM civicrm_contact 
     ";
+     
+    if (isset($params['contact_sub_type']) && $params['contact_sub_type'] == 'Team') {
+      $query = "
+        SELECT cc.id, cc.display_name, cc.contact_type
+        FROM civicrm_contact cc
+        INNER JOIN civicrm_pcp cp ON (cp.contact_id = cc.id)
+      ";
+    }
     
     //where clause
     if(!empty($where)){

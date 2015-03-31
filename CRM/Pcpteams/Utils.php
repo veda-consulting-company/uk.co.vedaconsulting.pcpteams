@@ -381,7 +381,7 @@ class  CRM_Pcpteams_Utils {
     }
   }
   
-  static function sendInviteEmail($message_template_id, $contact_id, $emailParams = array(), $teampcpId ) {
+  static function sendInviteEmail($message_template_id, $contact_id, $emailParams = array(), $teampcpId, $activityId ) {
     
     $mailParams = array();
     $contactParams = array();
@@ -403,6 +403,9 @@ class  CRM_Pcpteams_Utils {
     if(empty($mailParams)) {
       return NULL;
     }
+    
+    $activityContacts = CRM_Core_OptionGroup::values('activity_contacts', FALSE, FALSE, FALSE, NULL, 'name');
+    $targetID = CRM_Utils_Array::key('Activity Targets', $activityContacts);
       //friend contacts creation
     foreach ($contactParams as $key => $value) {
       //create contact only if it does not exits in db
@@ -412,6 +415,21 @@ class  CRM_Pcpteams_Utils {
 
       if (!$contact) {
         $contact = CRM_Contact_BAO_Contact::createProfileContact($value, CRM_Core_DAO::$_nullArray);
+      }
+       // attempt to save activity targets
+      $targetParams = array(
+        'activity_id' => $activityId,
+        'contact_id'  => $contact,
+        'record_type_id' => $targetID
+      );
+
+      // See if it already exists
+      $activityContact = new CRM_Activity_DAO_ActivityContact();
+      $activityContact->activity_id = $activityId;
+      $activityContact->contact_id = $contact;
+      $activityContact->find(TRUE);
+      if (empty($activityContact->id)) {
+        $resultTarget = CRM_Activity_BAO_ActivityContact::create($targetParams);
       }
     }
     $mailParams['message'] = CRM_Utils_Array::value('suggested_message', $emailParams);

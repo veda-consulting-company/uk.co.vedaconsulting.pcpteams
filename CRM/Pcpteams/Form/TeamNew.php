@@ -37,7 +37,7 @@ class CRM_Pcpteams_Form_TeamNew {
         'isDefault' => TRUE,
       ),
     ));
-    $groupURL = CRM_Utils_System::url('civicrm/pcp/page', 'reset=1');
+    $groupURL = CRM_Utils_System::url('civicrm/pcp/support', "code=cpfgq&qfKey={$form->controller->_key}");
     $form->assign('skipURL', $groupURL);
 
     // export form elements

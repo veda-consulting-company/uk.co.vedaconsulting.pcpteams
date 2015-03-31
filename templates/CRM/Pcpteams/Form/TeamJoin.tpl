@@ -23,7 +23,8 @@
 
 {literal}
 <script type="text/javascript">
-      cj(document).ready(function () {  
+      cj(document).ready(function () {
+        var eventId = {/literal}{$component_page_id};{literal}
         cj("#pcp_team_contact").select2({  
             placeholder: "Search Team",  
             ajax: {
@@ -33,6 +34,7 @@
                 params.input = input;
                 params.contact_sub_type = 'Team';
                 params.page_num = page_num;
+                params.event_id = eventId;
                 return {
                   entity: 'pcpteams',
                   action: 'getContactlist',
