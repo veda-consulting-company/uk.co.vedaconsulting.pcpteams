@@ -9,8 +9,15 @@ require_once 'CRM/Core/Form.php';
  */
 class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
   function preProcess(){
-    $this->assign('teamTitle', $this->get('teamName'));
-    CRM_Utils_System::setTitle(ts('Team Name Available'));
+    $workflow = $this->get('workflowTeam');
+    $teamTitle= $this->get('teamName');
+    
+    $this->assign('teamTitle', $teamTitle);
+    
+    $teamTitle = 'Team - '.$teamTitle;
+    CRM_Utils_System::setTitle($teamTitle);
+    $this->assign('workflow', $workflow);
+    
     $this->_contactID = CRM_Pcpteams_Utils::getloggedInUserId();
     if (!$this->get('page_id')) {
       CRM_Core_Error::fatal(ts("Can't determine pcp id."));
@@ -42,7 +49,7 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
       TRUE
     );
     $email->freeze();
-    $this->addWysiwyg('suggested_message', ts('Your Message'), CRM_Core_DAO::getAttribute('CRM_Friend_DAO_Friend', 'suggested_message'));
+    // $this->addWysiwyg('suggested_message', ts('Your Message'), CRM_Core_DAO::getAttribute('CRM_Friend_DAO_Friend', 'suggested_message'));
     $friend    = array();
     $mailLimit = CRM_Pcpteams_Constant::C_INVITE_MAIL_LIMIT;
    
@@ -91,7 +98,8 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
     // Find the msg_tpl ID of sample invite template
     $result = civicrm_api3('MessageTemplate', 'get', array( 'sequential' => 1, 'version'=> 3, 'msg_title' => "Sample Team Invite Template",));
     $teampcpId = CRM_Pcpteams_Utils::getPcpIdByContactAndEvent($this->get('component_page_id'), $this->get('teamContactID'));
-    if(!civicrm_error($result) && $result['id']) {
+
+    if(!civicrm_error($result) && $result['id'] && !empty($values)) {
       // Send Invitation emails
       CRM_Pcpteams_Utils::sendInviteEmail($result['id'], $this->_contactID, $values, $teampcpId);
     }

@@ -2,7 +2,8 @@
         {if $snippet eq 'json'}
         <h2>{ts}Invite others to join you{/ts}</h2><br />
         {else}
-        <h2>{ts}Thanks, {$teamTitle} is now setup, you can now invite others to join you{/ts}</h2><br />
+        {* workflow eq 1 is team create and 2 is team join *}
+        <h2>{ts}Thanks {if $workflow eq 1} , {$teamTitle} is now setup, {elseif $workflow eq 2} for Joining to {$teamTitle} ,{/if} you can now invite others to join you{/ts}</h2><br />
         {/if}
         <div class="crm-group tell_friend_form-group">
             <table class="form-layout-compressed">
@@ -11,10 +12,10 @@
                     <td class="right font-size12pt">{$form.from_name.label}&nbsp;&nbsp;</td>
                     <td class="font-size12pt">{$form.from_name.html} &lt;{$form.from_email.html}&gt;</td>
                 </tr>
-                <tr>
+                <!-- <tr>
                   <td class="label font-size12pt">{$form.suggested_message.label}</td>
                   <td>{$form.suggested_message.html}</td>
-                </tr>
+                </tr> -->
                 <tr>
                   <td></td>
                   <td>
