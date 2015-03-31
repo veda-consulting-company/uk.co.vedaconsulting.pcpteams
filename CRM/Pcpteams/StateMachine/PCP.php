@@ -60,6 +60,7 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
       'cpfeq'  => 'CRM_Pcpteams_Form_EventQuery',
       'cpfer'  => 'CRM_Pcpteams_Form_EventReact',
       'cpfec'  => 'CRM_Pcpteams_Form_EventConfirm',
+      'cpfere' => 'CRM_Pcpteams_Form_EventRegister',
       'cpftq'  => 'CRM_Pcpteams_Form_TeamQuery',
       'cpftn'  => 'CRM_Pcpteams_Form_TeamReact',
       'cpftc'  => 'CRM_Pcpteams_Form_TeamConfirm',

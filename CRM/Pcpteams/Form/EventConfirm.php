@@ -13,9 +13,7 @@ class CRM_Pcpteams_Form_EventConfirm extends CRM_Pcpteams_Form_Workflow {
   }
 
   function buildQuickForm() {
-    $this->_pageId = $this->controller->get('pageId');
-    $eventDetails = CRM_Pcpteams_Utils::getEventDetailsbyEventId($this->_pageId);
-    
+    $eventDetails = CRM_Pcpteams_Utils::getEventDetailsbyEventId($this->controller->get('component_page_id'));
     $this->addButtons(array(
       array(
         'type' => 'next',
