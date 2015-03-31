@@ -1074,7 +1074,7 @@ function _civicrm_api3_pcpteams_getMoreInfo(&$params) {
     $aContactTypes   = CRM_Contact_BAO_Contact::getContactTypes( $pcpValues['contact_id'] );
     $isTeamPcp       = in_array('Team'      , $aContactTypes) ? TRUE : FALSE;
      $params[$pcpId]['page_title']       = CRM_Core_DAO::getFieldValue('CRM_Event_DAO_Event', $pcpValues['page_id'], 'title');
-     $params[$pcpId]['amount_raised']    = civicrm_api3_pcpteams_getAmountRaised($pcpId);
+     $params[$pcpId]['amount_raised']    = civicrm_api3_pcpteams_getAmountRaised(array('pcp_id' => $pcpId, 'version' => 3));
      $params[$pcpId]['image_url']        = $imageUrl ? $imageUrl : CRM_Pcpteams_Constant::C_DEFAULT_PROFILE_PIC;
      $params[$pcpId]['image_id']         = $fileId;
      $params[$pcpId]['donate_url']       = $donateUrl;
@@ -1089,17 +1089,23 @@ function _civicrm_api3_pcpteams_getMoreInfo(&$params) {
   }
 }
 
-function civicrm_api3_pcpteams_getAmountRaised($pcpId) {
+function civicrm_api3_pcpteams_getAmountRaised($params) {
+    $pcpId = $params['pcp_id'];
+
     $query = "
-    SELECT SUM(cc.total_amount) as total
-    FROM civicrm_pcp_block cpb
-    INNER JOIN civicrm_contribution cc on (cc.contribution_page_id = cpb.target_entity_id )
-    WHERE cc.id IN ( SELECT contribution_id FROM civicrm_contribution_soft WHERE pcp_id = %1)
-    AND cc.contribution_status_id =1 AND cc.is_test = 0";
+      SELECT SUM(cs.amount) as total
+      FROM civicrm_contribution_soft cs
+      LEFT JOIN civicrm_value_pcp_custom_set cscv ON ( cscv.entity_id = cs.pcp_id )
+      WHERE cs.contact_id = ( SELECT contact_id FROM civicrm_pcp WHERE id = %1 ) AND (cscv.team_pcp_id = %1 OR cs.pcp_id = %1)
+    ";
 
     $params = array(1 => array($pcpId, 'Integer'));
+
     $amountRaised = CRM_Core_DAO::singleValueQuery($query, $params);
     return $amountRaised ? $amountRaised : '0.00';
+}
+function _civicrm_api3_pcpteams_getAmountRaised_spec(&$params) {
+  $params['pcp_id']['api.required'] = 1;
 }
 
 function civicrm_api3_pcpteams_getTeamRequestInfo($params) {
