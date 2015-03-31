@@ -236,7 +236,7 @@ function pcpteams_civicrm_buildForm($formName, &$form) {
     $beginHookFormElements = $template->get_template_vars();
     if($beginHookFormElements['pcpLink']) {
       $pageId = $form->getVar('_eventId');
-      $supportURL  = CRM_Utils_System::url('civicrm/pcp/support', "reset=1&pageId={$pageId}&component=event&code=cpftq");
+      $supportURL  = CRM_Utils_System::url('civicrm/pcp/support', "reset=1&pageId={$pageId}&component=event");
       $form->assign('pcpLink', $supportURL);
     }
   }

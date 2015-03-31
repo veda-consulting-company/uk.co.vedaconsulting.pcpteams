@@ -66,15 +66,23 @@ class CRM_Pcpteams_Form_TeamInvite {
       CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/support', "code=cpfgq&qfKey={$this->controller->_key}"));
     }
     else if ($values['teamOption'] == 0) {
-      if($form->_pcpId) {
-        $teamPcpCfId = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
-        $params = array(
-          'version'   => 3,
-          'entity_id' => $form->get('page_id'),
-          "custom_{$teamPcpCfId}" => $form->get('tpId')
-        );
-        $result = civicrm_api3('CustomValue', 'create', $params);
-      }
+      $teampcpId        = $form->get('tpId');
+      $teamId           = CRM_Pcpteams_Utils::getcontactIdbyPcpId($teampcpId);
+      $userId           = CRM_Pcpteams_Utils::getloggedInUserId();
+      // Create Team Member of relation to this Team
+      $cfpcpab = CRM_Pcpteams_Utils::getPcpABCustomFieldId();
+      $cfpcpba = CRM_Pcpteams_Utils::getPcpBACustomFieldId();
+      $customParams = array(
+        "custom_{$cfpcpab}" => $form->get('page_id'),
+        "custom_{$cfpcpba}" => $teampcpId
+      );
+      CRM_Pcpteams_Utils::checkORCreateTeamRelationship($userId, $teamId, $customParams, TRUE);
+      $form->_teamName  = CRM_Contact_BAO_Contact::displayName($teamId);
+      $form->set('teamName', $form->_teamName);
+      $form->set('teamContactID', $teamId);
+      // Team Join: create activity
+      CRM_Pcpteams_Utils::createPcpActivity(array('source' => $userId, 'target' => $teamId), CRM_Pcpteams_Constant::C_CF_TEAM_JOIN, 'Joined to team'.$form->_teamName, 'PCP Team Join');
+      
     }
   }
 }
