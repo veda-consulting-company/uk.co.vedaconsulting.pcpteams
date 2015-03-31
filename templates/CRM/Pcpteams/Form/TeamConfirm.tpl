@@ -11,10 +11,10 @@
                     <td class="right font-size12pt">{$form.from_name.label}&nbsp;&nbsp;</td>
                     <td class="font-size12pt">{$form.from_name.html} &lt;{$form.from_email.html}&gt;</td>
                 </tr>
-                <tr>
+                <!-- <tr>
                   <td class="label font-size12pt">{$form.suggested_message.label}</td>
                   <td>{$form.suggested_message.html}</td>
-                </tr>
+                </tr> -->
                 <tr>
                   <td></td>
                   <td>

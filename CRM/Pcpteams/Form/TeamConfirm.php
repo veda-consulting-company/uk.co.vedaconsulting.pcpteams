@@ -42,7 +42,7 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
       TRUE
     );
     $email->freeze();
-    $this->addWysiwyg('suggested_message', ts('Your Message'), CRM_Core_DAO::getAttribute('CRM_Friend_DAO_Friend', 'suggested_message'));
+    // $this->addWysiwyg('suggested_message', ts('Your Message'), CRM_Core_DAO::getAttribute('CRM_Friend_DAO_Friend', 'suggested_message'));
     $friend    = array();
     $mailLimit = CRM_Pcpteams_Constant::C_INVITE_MAIL_LIMIT;
    
@@ -91,7 +91,10 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
     // Find the msg_tpl ID of sample invite template
     $result = civicrm_api3('MessageTemplate', 'get', array( 'sequential' => 1, 'version'=> 3, 'msg_title' => "Sample Team Invite Template",));
     $teampcpId = CRM_Pcpteams_Utils::getPcpIdByContactAndEvent($this->get('component_page_id'), $this->get('teamContactID'));
-    if(!civicrm_error($result) && $result['id']) {
+    if($teampcpId){
+      $this->set('tpId', $teampcpId);
+    }
+    if(!civicrm_error($result) && $result['id'] && !empty($values)) {
       // Send Invitation emails
       CRM_Pcpteams_Utils::sendInviteEmail($result['id'], $this->_contactID, $values, $teampcpId);
     }
