@@ -839,6 +839,15 @@ function civicrm_api3_pcpteams_getEventList($params) {
     if(isset($params['input'])){
       
       $where .= " AND title like '$strSearch' AND is_active = 1";
+      // find only events ending in the future
+      $endDate = date('YmdHis');
+      $currentandfuture .= "
+        AND ( `end_date` >= {$endDate} OR
+          (
+            ( end_date IS NULL OR end_date = '' ) AND start_date >= {$endDate}
+          )
+        )";
+      $where .= $currentandfuture;
     }
     
     //query
