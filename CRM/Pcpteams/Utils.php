@@ -384,6 +384,7 @@ class  CRM_Pcpteams_Utils {
   static function sendInviteEmail($message_template_id, $contact_id, $emailParams = array(), $teampcpId ) {
     
     $mailParams = array();
+    $contactParams = array();
     //create contact corresponding to each friend
     foreach ($emailParams['friend'] as $key => $details) {
       if ($details["first_name"]) {
@@ -399,6 +400,9 @@ class  CRM_Pcpteams_Utils {
       }
     }
     
+    if(empty($mailParams)) {
+      return NULL;
+    }
       //friend contacts creation
     foreach ($contactParams as $key => $value) {
       //create contact only if it does not exits in db

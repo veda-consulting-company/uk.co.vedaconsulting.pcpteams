@@ -295,7 +295,7 @@ function civicrm_api3_pcpteams_getContactList($params) {
       // If contact_sub_type is 'Team', then add team_admin details to contact
       if(isset($params['contact_sub_type']) && $params['contact_sub_type'] == 'Team') {
         $teamAdmin        = CRM_Pcpteams_Utils::getTeamAdminByTeamContactId($dao->id);
-        $teamAdminString  = $teamAdmin ? ' Admin is: '.$teamAdmin : ' Admin is: unknown';
+        $teamAdminString  = $teamAdmin ? ' ( Admin: '.$teamAdmin.' )': ' ( Admin: unknown )';
         $result[$dao->id]['label'] .= $teamAdminString;
       }
     }
@@ -838,7 +838,7 @@ function civicrm_api3_pcpteams_getEventList($params) {
     $strSearch = "%$name%";
     if(isset($params['input'])){
       
-      $where .= " AND title like '$strSearch'";
+      $where .= " AND title like '$strSearch' AND is_active = 1";
     }
     
     //query
