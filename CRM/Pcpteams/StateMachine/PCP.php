@@ -148,9 +148,12 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
     }
 
     // unset pages per workflow
+    if ('invite' == $controller->get('workflowTeam')) { // team invite
+      unset($pages['cpftc'],$pages['cpftt']);
+    }
     if ('skip' == $controller->get('workflowTeam')) {
       // unset all team pages
-      unset($pages['cpftq'],$pages['cpftn'],$pages['cpftc'],$pages['cpftt'],$pages['cpftw']);
+      unset($pages['cpftq'],$pages['cpftn'],$pages['cpftc'],$pages['cpftt']);
     }
     if ('skip' == $controller->get('workflowGroup')) {
       // unset all group pages
