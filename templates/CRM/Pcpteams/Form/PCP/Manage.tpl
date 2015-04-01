@@ -71,6 +71,20 @@
                 <div id="pcp_goal_amount" class="amount">{$teamPcpInfo.goal_amount|crmMoney:$teamPcpInfo.currency}</div>
               </div>
             </div>
+          {elseif $pcpinfo.has_approval_pending}
+            {* FIXME: need to discuss with DS, and clear the class name and css style for pending team request *}
+            <p> You have {$pcpinfo.has_approval_pending} Team Pending Request... Waiting for team to approve.</p>
+            {foreach from=$pcpinfo.approval_pending item=pendingTeams }
+            <div class="team-info">
+              <div>{$pendingTeams.teamName}</div>
+              <div>{$pendingTeams.teamPcpTitle}</div>
+              <div>{$pendingTeams.pageTitle}</div>
+              <div>{$pendingTeams.teamgoalAmount}</div>
+              <div class="no-team-buttons">
+                <a id="cancel-pending-btn" class="pcp-button pcp-btn-red" href="javascript:void(0)" onclick="deletePendingApproval({$pendingTeams.relationship_id});">{ts}Scrap / Delete Request{/ts}</a>
+              </div>
+            </div>
+            {/foreach}        
           {elseif $pcpinfo.is_teampage}
             <!-- <div class="invite-team-text">Invite people to the team</div> -->
             <div class="team-buttons">
@@ -190,7 +204,7 @@
 
   <div class="clear"></div>
 </div>
-{* FIXME style display none should take care of css*}
+{* FIXME style display none should take care of css, Need to Discuss with DS to make general alert message *}
 <div class="crm-pcp-alert-leave-team" style="display:none;">
   <p> Are you sure, want to leave from this team ?</p>
 </div>
@@ -199,6 +213,9 @@
 </div>
 <div class="crm-pcp-alert-decline-request" style="display:none;">
   <p> Are you sure, want to Decline this request ?</p>
+</div>
+<div class="crm-pcp-alert-cancel-pending-request" style="display:none;">
+  <p> Are you sure, want to delete this request ?</p>
 </div>
 
 {literal}
@@ -276,7 +293,7 @@ CRM.$(function($) {
     }
     if (url) {
       CRM.loadForm(url, {
-        dialog: {width: 650, height: 'auto', title: title}
+        dialog: {width: 650, height: 'auto', title: title, show: 'drop', hide: "drop"}
       }).on('crmFormSuccess', function(e, data) {
         CRM.status(status);
         $(document).ajaxStop(function() { 
@@ -296,7 +313,7 @@ CRM.$(function($) {
       }
       if (url) {
         CRM.loadForm(url, {
-          dialog: {width: 500, height: 'auto'}
+          dialog: {width: 500, height: 'auto', show: 'drop', hide: "drop"}
         }).on('crmFormSuccess', function(e, data) {
           $(document).ajaxStop(function() { 
             location.reload(true); 
@@ -338,7 +355,9 @@ function approveTeamMember(entityId, pcpId, teampcpId){
         title: "Approve Request",
         modal: true,
         resizable: true,
-        bgiframe: true,
+        bgiframe: true, 
+        show: 'drop', 
+        hide: 'drop',
         overlay: {
           opacity: 0.5,
           background: "black"
@@ -370,6 +389,8 @@ function declineTeamMember(entityId, pcpId){
         modal: true,
         resizable: true,
         bgiframe: true,
+        show: 'drop', 
+        hide: 'drop',        
         overlay: {
           opacity: 0.5,
           background: "black"
@@ -402,6 +423,8 @@ function leaveTeam(teampcpId, userId){
         modal: true,
         resizable: true,
         bgiframe: true,
+        show: 'drop', 
+        hide: 'drop',        
         overlay: {
           opacity: 0.5,
           background: "black"
@@ -428,6 +451,42 @@ function leaveTeam(teampcpId, userId){
         }
     });
  
+}
+function deletePendingApproval(entityId){
+    cj(".crm-pcp-alert-cancel-pending-request").show();
+    cj(".crm-pcp-alert-cancel-pending-request").dialog({
+        title: "Decline Request",
+        modal: true,
+        resizable: true,
+        bgiframe: true,
+        show: 'drop', 
+        hide: 'drop',        
+        overlay: {
+          opacity: 0.5,
+          background: "black"
+        },
+        buttons: {
+          "Yes": function() {
+              var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=declineTeamMember' }"{literal};
+              var redirectUrl = window.location.href;
+              redirectUrl = redirectUrl + '&op=pending';
+              cj.ajax({ 
+                 url     : dataUrl,
+                 type    : 'post',
+                 data    : {entity_id : entityId},
+                 success : function( data ) {
+                  cj(document).ajaxStop(function() { 
+                    location.href = redirectUrl; 
+                  });
+                 }
+              });
+            cj(this).dialog("destroy");
+          },
+          "No" : function() {
+            cj(this).dialog("destroy");
+          }
+        }
+    });
 }
 </script>
 {/literal}
