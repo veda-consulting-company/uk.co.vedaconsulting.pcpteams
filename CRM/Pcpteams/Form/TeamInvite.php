@@ -58,6 +58,11 @@ class CRM_Pcpteams_Form_TeamInvite {
 
   function postProcess(&$form) {
     $values = $form->exportValues();
+
+    // lets forget session var if any
+    if (CRM_Core_Session::singleton()->get('pcpteams_tpid')) {
+      CRM_Core_Session::singleton()->set('pcpteams_tpid', NULL);
+    }
     if ($values['teamOption'] == 1) { // join team
       $this->set("workflowTeam", 2); // follow the flow as if teamQuery would have chosen join
       CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/support', "code=cpftn&qfKey={$this->controller->_key}"));
