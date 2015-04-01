@@ -63,6 +63,11 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
         $statusText  = "Team member request has been declined.";
         $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
         break;
+      case 'pending':
+        $statusTitle = "Pending Request";
+        $statusText  = "Pending Request has been cancelled.";
+        $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
+        break;        
       default:
         break;
     }
@@ -117,6 +122,7 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
         'team_pcp_id' => $pcpId,
       ));
       $this->assign('teamMemberRequestInfo', isset($teamMemberRequestInfo['values']) ? $teamMemberRequestInfo['values'] : NULL);
+      $this->assign('teamMemberRequestCount', $teamMemberRequestInfo['count']);
       if (!empty($teamMemberRequestInfo['values']) && $this->_isEditPermission) {
         $statusTitle = "New member request";
         $statusText  = 'You have ' . count($teamMemberRequestInfo['values']) . ' new member request(s). Click <a id="showMemberRequests" class="pcp-button pcp-btn-red" href="#member-req-block">here</a> to manage them.';

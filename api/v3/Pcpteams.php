@@ -110,7 +110,12 @@ function civicrm_api3_pcpteams_get($params) {
   //this dao_to_array suppressing the contact_id because 
   //the field_name check fails 'pcp_contact_id' == 'contact_id' in _civicrm_api3_dao_to_array()
   $result[$dao->id]['contact_id']    = $dao->contact_id;
-   
+  
+  // check the user has pending request
+  $pendingDetails = civicrm_api3_pcpteams_getMyPendingTeam(array('contact_id' => $dao->contact_id));
+  $result[$dao->id]['has_approval_pending'] = $pendingDetails['count'];
+  $result[$dao->id]['approval_pending']     = isset($pendingDetails['values']) ? $pendingDetails['values'] : CRM_Core_DAO::$_nullArray;
+  
   // Append custom info
   // Note: This should ideally be done in _civicrm_api3_dao_to_array, but since PCP is not one of 
   // recongnized entity in core, we can append it seprately for now.
@@ -516,43 +521,34 @@ function civicrm_api3_pcpteams_getMyPendingTeam($params) {
   $result= CRM_Core_DAO::$_nullArray;
   $contact_id_a = $params['contact_id']; 
   $relTypeId    = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType',  CRM_Pcpteams_Constant::C_TEAM_RELATIONSHIP_TYPE, 'id', 'name_a_b');
-  $teamQuery    = "SELECT `contact_id_b` as team_contact_id FROM `civicrm_relationship` WHERE `contact_id_a` = %1 AND `relationship_type_id` = %2 AND `is_active` = 0";
   $teamQueryParams  = array(1 => array($contact_id_a, 'Int'), 2 => array($relTypeId, 'Int'));
-  $teamDao          = CRM_Core_DAO::executeQuery($teamQuery, $teamQueryParams);
-  $teamContactIds = array();
-  while($teamDao->fetch()) {
-    $teamContactIds[] = $teamDao->team_contact_id;
-  }
-  $sTeamIds = implode(', ', array_filter($teamContactIds));
-  if(!empty($sTeamIds)) {
+
+  if(!empty($contact_id_a) && !empty($relTypeId)) {
     $query = "
       SELECT  ce.title    as page_title 
       , cp.id             as pcp_id  
       , cp.contact_id     as pcp_contact_id  
       , cc.display_name   as team_name  
       , cp.title          as pcp_title  
-      , cp.goal_amount    as pcp_goal_amount  
+      , cp.goal_amount    as pcp_goal_amount
+      , cr.id             as relationship_id 
       FROM civicrm_pcp cp 
       INNER JOIN civicrm_event ce ON ce.id = cp.page_id
       INNER JOIN civicrm_contact cc ON ( cc.id = cp.contact_id )
-      WHERE cp.contact_id IN ( $sTeamIds )
+      INNER JOIN civicrm_relationship cr ON ( cr.contact_id_b = cp.contact_id AND cr.relationship_type_id = %2 )
+      WHERE cr.contact_id_a = %1 AND cr.is_active = 0
     ";
-    $dao = CRM_Core_DAO::executeQuery($query);
+    $dao = CRM_Core_DAO::executeQuery($query, $teamQueryParams);
     while($dao->fetch()){
-      $pcpResult = civicrm_api('pcpteams', 'get', array(
-          'version' => 3,
-          'sequential'  => 1,
-          'pcp_id'      => $dao->pcp_id
-        )
-      );
       $result[] = array(
         'teamName'      => $dao->team_name,
         'teamPcpTitle'  => $dao->pcp_title,
         'pageTitle'     => $dao->page_title,
         'teamgoalAmount'=> $dao->pcp_goal_amount,
-        'amount_raised' => $pcpResult['values'][0]['amount_raised'],
+        'amount_raised' => civicrm_api3_pcpteams_getAmountRaised(array('pcp_id' => $dao->pcp_id, 'version' => 3)),
         'teamPcpId'     => $dao->pcp_id,
         'contactId'     => $dao->pcp_contact_id,
+        'relationship_id'=> $dao->relationship_id,
       );
     }
   }
