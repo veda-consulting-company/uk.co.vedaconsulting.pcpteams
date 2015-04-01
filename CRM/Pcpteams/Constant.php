@@ -24,6 +24,7 @@
           C_CF_TEAM_INVITE        = 'PCP Team Invite',           //  Optionvalue - team invite
           C_CF_GROUP_JOIN         = 'PCP Group Join',             //  Optionvalue - Group Join
           C_CF_TRIBUTE_JOIN       = 'PCP Tribute Join',           //  Optionvalue - Tribute Join
+          C_CF_PCP_CREATED        = 'PCP Created',           //  Optionvalue - Tribute Join
           C_CONTACT_SUB_TYPE      = 'Team',                     //  Contact Sub Type - Team
           C_INVITE_MAIL_LIMIT     = 5,
           C_DEFAULT_PROFILE_PIC   = 'http://vedaconsulting_llr_v1.llrdev.org.uk/custom_civicrm/extensions/uk.co.vedaconsulting.pcpteams/img/avatar.jpeg';

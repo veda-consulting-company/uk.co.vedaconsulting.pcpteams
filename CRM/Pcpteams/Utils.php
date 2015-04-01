@@ -311,8 +311,19 @@ class  CRM_Pcpteams_Utils {
       )
     );
     if(!civicrm_error($pcpResult) && $pcpResult['id']) {
+      //create activity for pcp created.
+      $ids          = array('target' => $pcpContactId);
+      $userId       = self::getloggedInUserId();
+      if ($userId != $pcpContactId) {
+        $ids['source'] = $userId;
+      }
+      $activityName = $subject = CRM_Pcpteams_Constant::C_CF_PCP_CREATED;
+      $desc         = 'New PCP has created';
+      self::createPcpActivity($ids, $activityName, $desc, $subject);
       return $pcpResult['id'];
     }
+    
+    
     return NULL;
   }
   
@@ -349,8 +360,8 @@ class  CRM_Pcpteams_Utils {
     $activityTypeID = CRM_Pcpteams_Utils::getActivityTypeId($activityname);
     if($activityTypeID) {
       $activityParams = array(
-                              'source_contact_id' => $ids['source'],
-                              'target_contact_id' => $ids['target'],
+                              // 'source_contact_id' => $ids['source'],
+                              // 'target_contact_id' => $ids['target'],
                               'activity_type_id' => $activityTypeID,
                               'subject' => $subject,
                               'details' => $html,
@@ -358,7 +369,14 @@ class  CRM_Pcpteams_Utils {
                               'status_id' => 2,
                               'version' => 3
                              );
-
+      if (isset($ids['target'])) {
+        $activityParams['target_contact_id'] = $ids['target'];
+      }
+      
+      if (isset($ids['source'])) {
+        $activityParams['source_contact_id'] = $ids['source'];
+      }
+      
       return civicrm_api( 'activity','create', $activityParams );
     }
   }
