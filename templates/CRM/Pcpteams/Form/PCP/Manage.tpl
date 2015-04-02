@@ -71,9 +71,9 @@
                 <div id="pcp_goal_amount" class="amount">{$teamPcpInfo.goal_amount|crmMoney:$teamPcpInfo.currency}</div>
               </div>
             </div>
-          {elseif $pcpinfo.has_approval_pending}
-            <h3>You have {$pcpinfo.has_approval_pending} Team Request waiting for approval.</h3>
-            {foreach from=$pcpinfo.approval_pending item=pendingTeams }
+          {elseif $pcpinfo.approval_pending_count}
+            <h3>You have {$pcpinfo.approval_pending_count} Team Request waiting for approval.</h3>
+            {foreach from=$pcpinfo.approval_pending_desc item=pendingTeams }
               <div>
                 <div class="avatar">
                   <img width="75" height="75" src="{$teamPcpInfo.image_url}">
