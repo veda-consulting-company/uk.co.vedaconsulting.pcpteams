@@ -90,7 +90,7 @@ class CRM_Pcpteams_Form_TeamInvite {
         'source_contact_id' => $userId, 
         'target_contact_id' => $teamId
       );
-      CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_TEAM_JOIN);
+      CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_REQ_MADE);
       
     }
   }

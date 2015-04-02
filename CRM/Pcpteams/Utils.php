@@ -360,6 +360,8 @@ class  CRM_Pcpteams_Utils {
     
     if (isset($params['source_contact_id'])) {
       $sourceName = CRM_Contact_BAO_Contact::displayName($params['source_contact_id']);
+    }else{
+      $params['source_contact_id'] = self::getloggedInUserId();
     }
     
     if (isset($params['target_contact_id'])) {
@@ -389,6 +391,15 @@ class  CRM_Pcpteams_Utils {
         break;
       case CRM_Pcpteams_Constant::C_AT_PCP_CREATED:
         $details = "New PCP has created";        
+        break;
+      case CRM_Pcpteams_Constant::C_AT_REQ_AUTHORISED:
+        $details = "Member Join Team request has authorised";
+        break;
+      case CRM_Pcpteams_Constant::C_AT_REQ_DECLINED:
+        $details = "Member Join Team request has declined";
+        break;
+      case CRM_Pcpteams_Constant::C_AT_REQ_MADE:
+        $details = "Member Join Team request made by".$sourceName.' to '. $targetName;
         break;
       default:
         $details = $activityname;

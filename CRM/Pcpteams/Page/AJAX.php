@@ -123,6 +123,13 @@ class CRM_Pcpteams_Page_AJAX {
         'id'         => $entity_id,
       ));
       $contactID = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcp_id, 'contact_id');
+      //create Activity - Join Team Request Authourised
+      $actParams = array(
+        'assignee_contact_id'=>  CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $team_pcp_id, 'contact_id'),
+        'target_contact_id'  =>  $contactID,
+      );
+      CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_REQ_AUTHORISED);
+      //end
       $teamMemberInfo = civicrm_api( 'pcpteams', 'getTeamMembersInfo', array(
           'version'  => 3, 
           'pcp_id'   => $pcp_id,
@@ -168,11 +175,20 @@ class CRM_Pcpteams_Page_AJAX {
   
   static function declineTeamMember(){
     $entity_id      = CRM_Utils_Type::escape($_POST['entity_id'], 'Integer');
+    $assigneeId     = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_Relationship', $entity_id, 'contact_id_b');
+    $targetId       = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_Relationship', $entity_id, 'contact_id_a');
     $updatedResult  = civicrm_api3('Relationship', 'delete', array(
       'sequential' => 1,
       'id'         => $entity_id,
       ));
     if(!civicrm_error($updatedResult)){
+      //create Activity - Join Team Request Authourised
+      $actParams = array(
+        'assignee_contact_id'=>  $assigneeId,
+        'target_contact_id'  =>  $targetId,
+      );
+      CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_REQ_AUTHORISED);
+      //end
       echo 'declined';
     }else{
       echo $updatedResult['error_message'];
