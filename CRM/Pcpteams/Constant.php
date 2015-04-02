@@ -20,7 +20,7 @@
           C_CONTACTTYPE_IN_CELEB  = 'In_Celebration',           //  Contact Sub Type - In Celebration
           C_ACTIVITY_TYPE         = 'activity_type',            //  OptionGroupName
           C_AT_TEAM_CREATE        = 'PCP Team Create',          //  Activity Type - team create
-          C_AT_TEAM_JOIN          = 'PCP Team Join',            //  Activity Type - team join
+          // C_AT_TEAM_JOIN          = 'PCP Team Join',            //  Activity Type - team join
           C_AT_TEAM_INVITE        = 'PCP Team Invite',          //  Activity Type - team invite
           C_AT_GROUP_JOIN         = 'PCP Group Join',           //  Activity Type - Group Join
           C_AT_TRIBUTE_JOIN       = 'PCP Tribute Join',         //  Activity Type - Tribute Join
@@ -28,6 +28,7 @@
           C_AT_REQ_MADE           = 'PCP Team Request Made',
           C_AT_REQ_AUTHORISED     = 'PCP Team Request Authorised',
           C_AT_REQ_DECLINED       = 'PCP Team Request Declined',
+          C_AT_INVITATION_ACCEPTED= 'PCP Team Invitation Accepted',
           C_AT_LEAVE_TEAM         = 'PCP Member Left Team',
           C_CONTACT_SUB_TYPE      = 'Team',                     //  Contact Sub Type - Team
           C_INVITE_MAIL_LIMIT     = 5,

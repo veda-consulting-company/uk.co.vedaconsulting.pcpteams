@@ -83,7 +83,14 @@ class CRM_Pcpteams_Page_AJAX {
       'team_pcp_id' => $team_pcp_id,
     );
     $result = civicrm_api('pcpteams', 'leaveTeam', $params);
+      
     if($result){
+      //create Activity - Join Team Request Authourised
+      $actParams = array(
+        'target_contact_id'=>  CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $team_pcp_id, 'contact_id'),
+      );
+      CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_LEAVE_TEAM);
+      //end
       echo 'updated'; //FIXME : Need to display proper response
     }
     

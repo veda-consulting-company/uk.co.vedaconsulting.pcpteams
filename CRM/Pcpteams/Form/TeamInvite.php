@@ -87,9 +87,9 @@ class CRM_Pcpteams_Form_TeamInvite {
       $form->set('teamContactID', $teamId);
       // Team Join: create activity
       $actParams = array(
-        'source_contact_id' => $userId, 
         'target_contact_id' => $teamId
       );
+      CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_INVITATION_ACCEPTED);
       CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_REQ_MADE);
       
     }

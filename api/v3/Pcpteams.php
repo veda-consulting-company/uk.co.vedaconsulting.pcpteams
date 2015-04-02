@@ -111,11 +111,6 @@ function civicrm_api3_pcpteams_get($params) {
   //the field_name check fails 'pcp_contact_id' == 'contact_id' in _civicrm_api3_dao_to_array()
   $result[$dao->id]['contact_id']    = $dao->contact_id;
   
-  // check the user has pending request
-  $pendingDetails = civicrm_api3_pcpteams_getMyPendingTeam(array('contact_id' => $dao->contact_id));
-  $result[$dao->id]['has_approval_pending'] = $pendingDetails['count'];
-  $result[$dao->id]['approval_pending']     = isset($pendingDetails['values']) ? $pendingDetails['values'] : CRM_Core_DAO::$_nullArray;
-  
   // Append custom info
   // Note: This should ideally be done in _civicrm_api3_dao_to_array, but since PCP is not one of 
   // recongnized entity in core, we can append it seprately for now.
@@ -771,6 +766,7 @@ function civicrm_api3_pcpteams_getTeamMembersInfo($params){
   $teamMemberPcpIds   = implode(', ', $teamMemberPcpIds);
   $relTypeAdmin       = CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE;
   $adminRelTypeId     = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', $relTypeAdmin, 'id', 'name_a_b');
+  $teamPcpContactId   = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $params['pcp_id'], 'contact_id');
   $where              = NULL;
   if (isset($params['contact_id'])) {
     $where = " AND cp.contact_id = {$params['contact_id']}";
@@ -782,12 +778,12 @@ function civicrm_api3_pcpteams_getTeamMembersInfo($params){
       , cp.goal_amount  as goal_amount
       , cc.display_name as display_name
       , CASE 
-        WHEN cr.relationship_type_id = {$adminRelTypeId} THEN '1' ELSE '0'
+        WHEN cr.relationship_type_id = {$adminRelTypeId} AND cr.contact_id_b = {$teamPcpContactId} THEN '1' ELSE '0'
         END             as is_team_admin
     FROM civicrm_pcp cp
     LEFT JOIN civicrm_value_pcp_custom_set cpcs ON (cpcs.entity_id = cp.id)
     LEFT JOIN civicrm_contact cc ON (cc.id = cp.contact_id)
-    LEFT JOIN civicrm_relationship cr ON (cr.contact_id_a = cp.contact_id AND cr.is_active)
+    LEFT JOIN civicrm_relationship cr ON (cr.contact_id_a = cp.contact_id AND cr.is_active = 1)
     where cp.id IN ( $teamMemberPcpIds ) {$where}
   ";
   $dao = CRM_Core_DAO::executeQuery($query);
@@ -1070,6 +1066,12 @@ function _civicrm_api3_pcpteams_getMoreInfo(&$params) {
      $params[$pcpId]['currency_symbol']  = CRM_Core_DAO::getFieldValue('CRM_Financial_DAO_Currency', $pcpValues['currency'], 'symbol', 'name');
     }
     $params[$pcpId]['percentage']       = $percentage;
+    
+    // check the user has pending request
+    $pendingDetails = civicrm_api3_pcpteams_getMyPendingTeam(array('contact_id' => $pcpValues['contact_id']));
+    $params[$pcpId]['pending_team_pcp_id']    = isset($pendingDetails['values'][0]) ? $pendingDetails['values'][0]['teamPcpId'] : NULL;
+    $params[$pcpId]['pending_team_relationship_id']    = isset($pendingDetails['values'][0]) ? $pendingDetails['values'][0]['relationship_id'] : NULL;
+  
   }
 }
 

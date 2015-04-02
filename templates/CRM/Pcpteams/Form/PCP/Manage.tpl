@@ -73,44 +73,31 @@
                 <div id="pcp_goal_amount" class="amount">{$teamPcpInfo.goal_amount|crmMoney:$teamPcpInfo.currency}</div>
               </div>
             </div>
-          {elseif $pcpinfo.has_approval_pending}
-            <h3>You have {$pcpinfo.has_approval_pending} Team Request waiting for approval.</h3>
-            {foreach from=$pcpinfo.approval_pending item=pendingTeams }
+          {elseif $pcpinfo.pending_team_pcp_id}
+            <h3>You have Team Request waiting for approval.</h3>
               <div>
                 <div class="avatar">
                   <img width="75" height="75" src="{$teamPcpInfo.image_url}">
                 </div>
                 <div class="team-info">
-                  <h3><a href="{crmURL p="civicrm/pcp/manage" q="id=``"}">{$pendingTeams.teamPcpTitle}</a></h3>
-                  <p>{$pendingTeams.pageTitle}</p>
+                  <h3>{$pendingApprovalInfo.title}</h3>
+                  <p>{$pendingApprovalInfo.intro_text}</p>
                 </div>
                 <div class="team-stats">
                   <div class="raised-total">
-                    <span class="amount">{$teamPcpInfo.amount_raised|crmMoney:$teamPcpInfo.currency}</span>
+                    <span class="amount">{$pendingApprovalInfo.amount_raised|crmMoney:$pendingApprovalInfo.currency}</span>
                     <div class="raised"><span class="text">Raised so far</span></div>
                   </div>
                   <div class="target">
                     <span class="text">Of target</span>
-                    <div id="pcp_goal_amount" class="amount">{$pendingTeams.teamgoalAmount|crmMoney:$teamPcpInfo.currency}</div>
+                    <div id="pcp_goal_amount" class="amount">{$pendingApprovalInfo.goal_amount|crmMoney:$pendingApprovalInfo.currency}</div>
                   </div>
                 </div>
                 <div class="clear"></div>
               </div>
               <div class="pending-team-buttons">
-                <a id="cancel-pending-btn" class="pcp-button pcp-btn-red" href="javascript:void(0)" onclick="deletePendingApproval({$pendingTeams.relationship_id});">{ts}Withdraw Request{/ts}</a>
+                <a id="cancel-pending-btn" class="pcp-button pcp-btn-red" href="javascript:void(0)" onclick="deletePendingApproval({$pendingApprovalInfo.relationship_id});">{ts}Withdraw Request{/ts}</a>
               </div>
-              <!--
-              <div class="team-info">
-                <div>{$pendingTeams.teamName}</div>
-                <div>{$pendingTeams.teamPcpTitle}</div>
-                <div>{$pendingTeams.pageTitle}</div>
-                <div>{$pendingTeams.teamgoalAmount}</div>
-                <div class="no-team-buttons">
-                  <a id="cancel-pending-btn" class="pcp-button pcp-btn-red" href="javascript:void(0)" onclick="deletePendingApproval({$pendingTeams.relationship_id});">{ts}Scrap / Delete Request{/ts}</a>
-                </div>
-              </div>
-              -->
-            {/foreach}        
           {elseif $pcpinfo.is_teampage}
             <!-- <div class="invite-team-text">Invite people to the team</div> -->
             <div class="team-buttons">
