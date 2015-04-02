@@ -1069,8 +1069,8 @@ function _civicrm_api3_pcpteams_getMoreInfo(&$params) {
     
     // check the user has pending request
     $pendingDetails = civicrm_api3_pcpteams_getMyPendingTeam(array('contact_id' => $pcpValues['contact_id']));
-    $params[$pcpId]['approval_pending_count'] = $pendingDetails['count'];
-    $params[$pcpId]['approval_pending_desc']  = isset($pendingDetails['values']) ? $pendingDetails['values'] : CRM_Core_DAO::$_nullArray;
+    $params[$pcpId]['pending_team_pcp_id']    = isset($pendingDetails['values'][0]) ? $pendingDetails['values'][0]['teamPcpId'] : NULL;
+    $params[$pcpId]['pending_team_relationship_id']    = isset($pendingDetails['values'][0]) ? $pendingDetails['values'][0]['relationship_id'] : NULL;
   
   }
 }

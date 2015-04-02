@@ -80,6 +80,14 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
       $teamPcpInfo = self::getPcpDetails($pcpDetails['team_pcp_id']);
     }
     $this->assign('teamPcpInfo', $teamPcpInfo);
+
+    $pendingApprovalInfo = array();
+    if (isset($pcpDetails['pending_team_pcp_id'])) {
+      $pendingApprovalInfo = self::getPcpDetails($pcpDetails['pending_team_pcp_id']);
+      //relationship Id., to withdraw pending request
+      $pendingApprovalInfo['relationship_id'] = $pcpDetails['pending_team_relationship_id'];
+    }
+    $this->assign('pendingApprovalInfo', $pendingApprovalInfo);
     
     //Fundraising Rank    
     $aRankResult = civicrm_api('pcpteams', 'getRank', array(
