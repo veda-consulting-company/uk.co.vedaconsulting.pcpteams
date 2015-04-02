@@ -58,7 +58,11 @@ class CRM_Pcpteams_Form_TeamJoin {
     $form->set('teamName', $form->_teamName);
     $form->set('teamContactID', $teamId);
     // Team Join: create activity
-    CRM_Pcpteams_Utils::createPcpActivity(array('source' => $userId, 'target' => $teamId), CRM_Pcpteams_Constant::C_CF_TEAM_JOIN, 'Joined to team'.$form->_teamName, 'PCP Team Join');
+    $actParams = array(
+      'source_contact_id' => $userId, 
+      'target_contact_id' => $teamId
+    );    
+    CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_TEAM_JOIN);
    
   }
 

@@ -85,7 +85,11 @@ class CRM_Pcpteams_Form_TeamNew {
       $result = civicrm_api3('CustomValue', 'create', $params);
       $form->set('teamName', $orgName);
       $form->set('teamContactID', $createTeam['id']);
-      CRM_Pcpteams_Utils::createPcpActivity(array('source' => $userId, 'target' => $createTeam['id']), CRM_Pcpteams_Constant::C_CF_TEAM_CREATE, 'Team is created'.$orgName, 'New Team Creation');
+      $actParams = array(
+        'source_contact_id' => $userId, 
+        'target_contact_id' => $createTeam['id']
+      );        
+      CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_TEAM_CREATE);
     }
     else{
       CRM_Core_Session::setStatus(ts("Failed to Create Team \"{$orgName}\" ..."));
