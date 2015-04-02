@@ -375,6 +375,9 @@ class  CRM_Pcpteams_Utils {
         $details = 'Joined to team'.$targetName;
         break;
       case CRM_Pcpteams_Constant::C_AT_TEAM_INVITE:
+        if (isset($params['assignee_contact_id'])) {
+          $targetName = CRM_Contact_BAO_Contact::displayName($params['assignee_contact_id']);
+        }
         $details = 'Invited to Join Team '.$targetName. 'by '.$sourceName;
         break;
       case CRM_Pcpteams_Constant::C_AT_GROUP_JOIN:
@@ -452,7 +455,6 @@ class  CRM_Pcpteams_Utils {
     
     $activityContacts = CRM_Core_OptionGroup::values('activity_contacts', FALSE, FALSE, FALSE, NULL, 'name');
     $targetID   = CRM_Utils_Array::key('Activity Targets', $activityContacts);
-    $assigneeID = CRM_Utils_Array::key('Activity Assignees', $activityContacts);
       //friend contacts creation
     foreach ($contactParams as $key => $value) {
       //create contact only if it does not exits in db
@@ -469,12 +471,7 @@ class  CRM_Pcpteams_Utils {
         'contact_id'  => $contact,
         'record_type_id' => $targetID
       );
-      
-      $assigneeParams = array(
-        'activity_id' => $activityId,
-        'contact_id'  => CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $teampcpId, 'contact_id'),
-        'record_type_id' => $assigneeID
-      );
+
       // See if it already exists
       $activityContact = new CRM_Activity_DAO_ActivityContact();
       $activityContact->activity_id = $activityId;
@@ -482,7 +479,6 @@ class  CRM_Pcpteams_Utils {
       $activityContact->find(TRUE);
       if (empty($activityContact->id)) {
         CRM_Activity_BAO_ActivityContact::create($targetParams);
-        CRM_Activity_BAO_ActivityContact::create($assigneeParams);
       }
     }
     $mailParams['message'] = CRM_Utils_Array::value('suggested_message', $emailParams);

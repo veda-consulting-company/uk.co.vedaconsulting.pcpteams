@@ -104,7 +104,7 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
       // Create Team Invite activity
       $actParams = array(
         'source_contact_id'  =>  $this->_contactID,
-        'target_contact_id'  =>  $this->get('teamContactID'),
+        'assignee_contact_id'=>  $this->get('teamContactID'),
       );
       $activity = CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_TEAM_INVITE);
       // Send Invitation emails
