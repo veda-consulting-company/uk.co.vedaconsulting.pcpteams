@@ -5,9 +5,9 @@
     <!-- profile Image -->
     <div class="avatar-title-block">
         <div class="avatar">
-          <img id="{$pcpinfo.image_id}" {if $is_edit_page} class="crm-pcp-inline-edit-pic" {/if} href="{$updateProfPic}" width="150" height="150" src="{$pcpinfo.image_url}">
+          <img id="{$pcpinfo.image_id}" {if $is_edit_page} class="crm-pcp-inline-pic-edit" {/if} href="{$updateProfPic}" width="150" height="150" src="{$pcpinfo.image_url}">
         </div>
-        <div id="pcp_title" class="title {if $is_edit_page}crm-pcp-inline-edit{/if}">{$pcpinfo.title}</div>
+        <div id="pcp_title" class="title {if $is_edit_page}crm-pcp-inline-text-edit{/if}">{$pcpinfo.title}</div>
       <div class="clear"></div>
     </div>
     <div id="pcp-progress" class="pcp-progress">
@@ -25,7 +25,7 @@
         {* FIXME, Style should to take care of css*}
         <div>
           <div class="amount symbol">{$pcpinfo.currency_symbol}</div>
-          <div id="pcp_goal_amount" class="amount {if $is_edit_page}crm-pcp-inline-edit{/if}">{$pcpinfo.goal_amount}</div>
+          <div id="pcp_goal_amount" class="amount {if $is_edit_page}crm-pcp-inline-text-edit{/if}">{$pcpinfo.goal_amount}</div>
         </div>
       </div> 
     </div>
@@ -33,6 +33,7 @@
   </div>
   <!-- End header-->
 
+  <div class="pcp-messages">
   {if !empty($pcpStatus)}
   {foreach from=$pcpStatus item=pstatus}
     <div class="{$pstatus.type} pcp-message">
@@ -41,6 +42,7 @@
     </div>
   {/foreach}
   {/if}
+  </div>
 
   <div class="pcp-body">
     <div class="totaliser-giveto-block">
@@ -49,8 +51,8 @@
           Totaliser
         </div>
         <!-- BIO section -->
-        <div id="pcp_intro_text" {if $is_edit_page}class="intro-text crm-pcp-inline-edit" data-edit-params='{ldelim}"cid": "{$contactId}", "class_name": "CRM_Contact_Form_Inline_ContactInfo"{rdelim}' {else} class="intro-text" {/if}>{$pcpinfo.intro_text}</div>
-        <div id="pcp_page_text" class="page-text {if $is_edit_page}crm-pcp-inline-edit{/if}">{$pcpinfo.page_text}</div>
+        <div id="pcp_intro_text" {if $is_edit_page}class="intro-text crm-pcp-inline-text-edit" data-edit-params='{ldelim}"cid": "{$contactId}", "class_name": "CRM_Contact_Form_Inline_ContactInfo"{rdelim}' {else} class="intro-text" {/if}>{$pcpinfo.intro_text}</div>
+        <div id="pcp_page_text" class="page-text {if $is_edit_page}crm-pcp-inline-text-edit{/if}">{$pcpinfo.page_text}</div>
         <!-- BIO section ends -->
         <div class="team-section">
           {if $pcpinfo.team_pcp_id}
@@ -112,13 +114,13 @@
           {elseif $pcpinfo.is_teampage}
             <!-- <div class="invite-team-text">Invite people to the team</div> -->
             <div class="team-buttons">
-              <a id="invite-team-btn" class="pcp-button pcp-btn-red crm-pcp-inline-edit-team" href="{$inviteTeamURl}">{ts}Invite Team Members{/ts}</a>
+              <a id="invite-team-btn" class="pcp-button pcp-btn-red crm-pcp-inline-team-edit" href="{$inviteTeamURl}">{ts}Invite Team Members{/ts}</a>
               <a id="leave-team-btn" class="pcp-button pcp-btn-red" href="javascript:void(0)" onclick="leaveTeam({$pcpinfo.id}, {$userId})">{ts}Leave Team{/ts}</a>
             </div>
           {else}
             <div class="no-team-buttons">
-              <a id="create-team-btn" class="pcp-button pcp-btn-red crm-pcp-inline-edit-team" href="{$createTeamUrl}">{ts}Create a Team{/ts}</a>
-              <a id="join-team-btn" class="pcp-button pcp-btn-red crm-pcp-inline-edit-team" href="{$joinTeamUrl}">{ts}Join a Team{/ts}</a>
+              <a id="create-team-btn" class="pcp-button pcp-btn-red crm-pcp-inline-team-edit" href="{$createTeamUrl}">{ts}Create a Team{/ts}</a>
+              <a id="join-team-btn" class="pcp-button pcp-btn-red crm-pcp-inline-team-edit" href="{$joinTeamUrl}">{ts}Join a Team{/ts}</a>
             </div>
           {/if}
           <div class="clear"></div>
@@ -246,7 +248,6 @@
 <script type="text/javascript">
 CRM.$(function($) {
   var apiUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='className=CRM_Pcpteams_Page_AJAX&fnName=inlineEditorAjax&snippet=6&json=1'}";{literal}
-  var isEditPage = {/literal}"{$is_edit_page}";{literal}
   var editparams = {
     type      : 'text',
     //cssclass  : 'crm-form-textarea',
@@ -255,7 +256,7 @@ CRM.$(function($) {
     submit    : 'OK',
     submitdata: {pcp_id: {/literal}{$pcpinfo.id}{literal}},
     tooltip   : 'Click to edit..',
-    indicator : 'Saving..',//'<img src="http://www.appelsiini.net/projects/jeditable/img/indicator.gif">',
+    indicator : 'Saving..',
     callback  : function( editedValue ){
        var editedId = cj(this).attr('id');
        $(this).html(editedValue);
@@ -263,26 +264,26 @@ CRM.$(function($) {
        $(this).css("border", "none");
      }
   }
-  $('.crm-pcp-inline-edit').editable(apiUrl, editparams);
+  // inline text edit
+  $('.crm-pcp-inline-text-edit').editable(apiUrl, editparams);
+  $('.crm-pcp-inline-text-edit').mouseover(function(){
+    $(this).css("background", "#E5DEDE");
+    $(this).css("border", "2px dashed #c4c4c4");
+    $(this).css("border-radius", "10px");
+  });
+  $('.crm-pcp-inline-text-edit').mouseout(function(){
+    $(this).css("background", "#F7F6F6");
+    $(this).css("border", "none");
+  });
 
+  // inline text edit for buttons
   editparams['callback'] = function( editedValue ){
     var editedId = cj(this).attr('id');
     $(this).html(editedValue);
     $(this).css("background", "#e0001a");
     $(this).css("border", "none");
   }
-  if(isEditPage){
-    $('.crm-pcp-inline-btn-edit').editable(apiUrl, editparams);
-  }
-  $('.crm-pcp-inline-edit').mouseover(function(){
-    $(this).css("background", "#E5DEDE");
-    $(this).css("border", "2px dashed #c4c4c4");
-    $(this).css("border-radius", "10px");
-  });
-  $('.crm-pcp-inline-edit').mouseout(function(){
-    $(this).css("background", "#F7F6F6");
-    $(this).css("border", "none");
-  });
+  $('.crm-pcp-inline-btn-edit').editable(apiUrl, editparams);
   $('.crm-pcp-inline-btn-edit').mouseover(function(){
     $(this).css("background", "rgb(19, 18, 18)");
     $(this).css("border", "2px dashed #c4c4c4");
@@ -293,69 +294,67 @@ CRM.$(function($) {
     $(this).css("border", "none");
   });
 
+  // team member request block show/hide
   $('.member-req-block').hide();
   $('#showMemberRequests').on('click', function() {
     $('.member-req-block').show('slow');
     $(this).parent().parent().hide();
   });
   
-  //inline Create and Join Team 
-  $('.crm-pcp-inline-edit-team').on('click', function(ev){
+  //inline Create, Invite and Join Team 
+  $('.crm-pcp-inline-team-edit').on('click', function(ev){
     ev.preventDefault();
-    var url = cj(this).attr('href');
-    var id = cj(this).attr('id');
-    var redirectUrl = window.location.href; //FIXME: need to make sure with DS, can use this method
+    var url   = cj(this).attr('href');
     var title = 'Join Team';
-    redirectUrl = redirectUrl + '&op=join';
-    if (id == 'create-team-btn') {
-      title = 'Create Team';
-      redirectUrl = redirectUrl + '&op=create';
-    }
-    if (id == 'invite-team-btn') {
-      title = 'Invite Team';
-      redirectUrl = redirectUrl + '&op=invite';
-    }
     if (url) {
       CRM.loadForm(url, {
         dialog: {width: 650, height: 'auto', title: title, show: 'drop', hide: "drop"}
       }).on('crmFormSuccess', function(e, data) {
-        CRM.status(status);
+        if (typeof(data.crmMessages) == 'object') {
+          // swtich off civi's status popup loader
+          $(document).off('ajaxSuccess');
+          // use pcp's status message display method
+          $.each(data.crmMessages, function(n, msg) {
+           var pcpMessage = "<div class='pcp-info pcp-message'><h3>" + msg.title + "</h3><p>" + msg.text + "</p></div>";
+            $('.pcp-messages').html('');
+            $(pcpMessage).appendTo('.pcp-messages').show('slow');
+          });
+        }
+      });
+    }
+  });
+  
+  // profile image inline edit
+  $('.crm-pcp-inline-pic-edit').on('click', function(ev){
+    var url = $(this).attr('href');
+    var fileid = $(this).attr('id');
+    if(fileid){
+      url = url + '&fileid=' + fileid;
+    }
+    if (url) {
+      CRM.loadForm(url, {
+        dialog: {width: 500, height: 'auto', show: 'drop', hide: "drop"}
+      }).on('crmFormSuccess', function(e, data) {
+        console.log(data);
         $(document).ajaxStop(function() { 
-          location.href = redirectUrl; 
+          location.reload(true); 
+          //DS FIXME: avoid loading of page with url below
+          //$('.crm-pcp-inline-pic-edit').attr('src','/civicrm/file?reset=1&id=9&eid=50&time=' + new Date().getTime());
         });
       });
-    }// end if 
-  });// end on click
-  
-  //inline Profile Image 
-  if (isEditPage) {
-    $('.crm-pcp-inline-edit-pic').on('click', function(ev){
-      var url = $(this).attr('href');
-      var fileid = $(this).attr('id');
-      if(fileid){
-        url = url + '&fileid=' + fileid;
-      }
-      if (url) {
-        CRM.loadForm(url, {
-          dialog: {width: 500, height: 'auto', show: 'drop', hide: "drop"}
-        }).on('crmFormSuccess', function(e, data) {
-          $(document).ajaxStop(function() { 
-            location.reload(true); 
-          });
-        });
-      }// end if 
-    });// end on click
-  }
-  $('.crm-pcp-inline-edit-pic').mouseover(function(){
+    }
+  });
+  $('.crm-pcp-inline-pic-edit').mouseover(function(){
     $(this).css("background", "#E5DEDE");
     $(this).css("border", "2px dashed #c4c4c4");
     $(this).css("border-radius", "10px");
   });
-  $('.crm-pcp-inline-edit-pic').mouseout(function(){
+  $('.crm-pcp-inline-pic-edit').mouseout(function(){
     $(this).css("background", "#F7F6F6");
     $(this).css("border", "none");
   });
 
+  // circular progress bar
   var circleVar = {/literal}{$pcpinfo.percentage};{literal}
   $('.circle').circleProgress({
     value: circleVar/100,
