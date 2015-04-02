@@ -416,12 +416,16 @@ class  CRM_Pcpteams_Utils {
         $subject = 'Sent Team Request';
         $details = "Member Join Team request made by".$sourceName.' to '. $targetName;
         break;
+      case CRM_Pcpteams_Constant::C_AT_LEAVE_TEAM:
+        $subject = 'PCP Member Left Team';
+        $details = "PCP Member Left Team ". $targetName;
+        break;
       default:
+        $subject = $activityname;
         $details = $activityname;
         break;
     }
     
-    $subject        = $activityname;
     $activityTypeID = CRM_Pcpteams_Utils::getActivityTypeId($activityname);
     
     if($activityTypeID) {
