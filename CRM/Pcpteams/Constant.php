@@ -25,6 +25,10 @@
           C_AT_GROUP_JOIN         = 'PCP Group Join',           //  Activity Type - Group Join
           C_AT_TRIBUTE_JOIN       = 'PCP Tribute Join',         //  Activity Type - Tribute Join
           C_AT_PCP_CREATED        = 'PCP Created',              //  Activity Type - pcp created
+          C_AT_REQ_MADE           = 'PCP Team Request Made',
+          C_AT_REQ_AUTHORISED     = 'PCP Team Request Authorised',
+          C_AT_REQ_DECLINED       = 'PCP Team Request Declined',
+          C_AT_LEAVE_TEAM         = 'PCP Member Left Team',
           C_CONTACT_SUB_TYPE      = 'Team',                     //  Contact Sub Type - Team
           C_INVITE_MAIL_LIMIT     = 5,
           C_DEFAULT_PROFILE_PIC   = 'http://vedaconsulting_llr_v1.llrdev.org.uk/custom_civicrm/extensions/uk.co.vedaconsulting.pcpteams/img/avatar.jpeg';

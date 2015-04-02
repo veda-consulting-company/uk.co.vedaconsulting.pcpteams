@@ -378,13 +378,13 @@ class  CRM_Pcpteams_Utils {
         if (isset($params['assignee_contact_id'])) {
           $targetName = CRM_Contact_BAO_Contact::displayName($params['assignee_contact_id']);
         }
-        $details = 'Invited to Join Team '.$targetName. 'by '.$sourceName;
+        $details = 'Invited to Join Team '.$targetName. ' by '.$sourceName;
         break;
       case CRM_Pcpteams_Constant::C_AT_GROUP_JOIN:
         $details = 'Joined to branch '.$targetName;
         break;
       case CRM_Pcpteams_Constant::C_AT_TRIBUTE_JOIN:
-        $details = 'Joined to Tribute '.$params['reason'].'of '.$targetName;
+        $details = 'Joined to Tribute '.$params['reason'].' of '.$targetName;
         unset($params['reason']);
         break;
       case CRM_Pcpteams_Constant::C_AT_PCP_CREATED:
