@@ -133,6 +133,10 @@
 .crm-container .crm-pcp-manage .pcp-body .colheader {
   margin-bottom: 10px !important;
 }
+.crm-container .crm-pcp-manage .pcp-body .team-section h3 {
+  background-color: #F7F6F6 !important;
+  font-size: 16px !important;
+}
 .crm-container .crm-pcp-manage .pcp-body .mem-body .mem-row,
 .crm-container .crm-pcp-manage .pcp-body .rank,
 .crm-container .crm-pcp-manage .pcp-body .top-donations,

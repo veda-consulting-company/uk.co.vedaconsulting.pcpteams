@@ -137,17 +137,23 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
     }
 
     // if need jumping to invite page
-    if ($teamPcpId && !$workflowTeam) {
-      $controller->set('workflowTeam', 'invite');
+    if (!$workflowTeam) {
+      if (empty($teamPcpId)) {
+        $teamPcpId = CRM_Core_Session::singleton()->get('pcpteams_tpid');
+      }
+      if ($teamPcpId) {
+        $controller->set('tpId', $teamPcpId);
+        $controller->set('workflowTeam', 'invite');
+      }
     }
 
     // unset pages per workflow
     if ('invite' == $controller->get('workflowTeam')) { // team invite
-      unset($pages['cpftq']); // unset team query
+      unset($pages['cpftc'],$pages['cpftt']);
     }
     if ('skip' == $controller->get('workflowTeam')) {
       // unset all team pages
-      unset($pages['cpftq'],$pages['cpftn'],$pages['cpftc'],$pages['cpftt'],$pages['cpftw']);
+      unset($pages['cpftq'],$pages['cpftn'],$pages['cpftc'],$pages['cpftt']);
     }
     if ('skip' == $controller->get('workflowGroup')) {
       // unset all group pages
