@@ -108,7 +108,12 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
       );
       $activity = CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_TEAM_INVITE);
       // Send Invitation emails
-      CRM_Pcpteams_Utils::sendInviteEmail($result['id'], $this->_contactID, $values, $teampcpId, $activity['id']);
+      $result = CRM_Pcpteams_Utils::sendInviteEmail($result['id'], $this->_contactID, $values, $teampcpId, $activity['id']);
+      if ($result) {
+        CRM_Core_Session::setStatus(ts('Invitation request(s) has been sent'), ts('Invite Team')); 
+      } else {
+        CRM_Core_Session::setStatus(ts('No invitation request was sent.'), ts('No Invites')); 
+      }
     }
   }
 
