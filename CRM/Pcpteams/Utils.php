@@ -358,11 +358,11 @@ class  CRM_Pcpteams_Utils {
       return null;
     }
     
-    if (isset($params['source_contact_id'])) {
-      $sourceName = CRM_Contact_BAO_Contact::displayName($params['source_contact_id']);
-    }else{
+    if (!isset($params['source_contact_id'])) {
       $params['source_contact_id'] = self::getloggedInUserId();
     }
+    
+    $sourceName = CRM_Contact_BAO_Contact::displayName($params['source_contact_id']);
     
     if (isset($params['target_contact_id'])) {
       $targetName = CRM_Contact_BAO_Contact::displayName($params['target_contact_id']);
@@ -371,34 +371,49 @@ class  CRM_Pcpteams_Utils {
     //to handle to default values, subject and description for the activity type
     switch ($activityname) {
       case CRM_Pcpteams_Constant::C_AT_TEAM_CREATE:
+        $subject = 'Team is created';
         $details = 'Team is created'.$targetName;
         break;
-      case CRM_Pcpteams_Constant::C_AT_TEAM_JOIN:
-        $details = 'Joined to team'.$targetName;
-        break;
       case CRM_Pcpteams_Constant::C_AT_TEAM_INVITE:
+        $isTeamAdmin = 0;
         if (isset($params['assignee_contact_id'])) {
           $targetName = CRM_Contact_BAO_Contact::displayName($params['assignee_contact_id']);
+          $checkAdminParams = array(
+            'version' => 3,
+            'user_id' => $params['source_contact_id'],
+            'team_contact_id' => $params['assignee_contact_id'],
+          );
+          $chkTeamAdmin= civicrm_api('Pcpteams', 'checkTeamAdmin', $checkAdminParams);
+          $isTeamAdmin = $chkTeamAdmin['is_team_admin'];
         }
+        
+        $sourceName .= $isTeamAdmin ? ' ( Team Admin )' : ' ( Team Member )';
+        $subject = 'Invite to Join Team';
         $details = 'Invited to Join Team '.$targetName. ' by '.$sourceName;
         break;
       case CRM_Pcpteams_Constant::C_AT_GROUP_JOIN:
+      $subject = 'Joined to branch';
         $details = 'Joined to branch '.$targetName;
         break;
       case CRM_Pcpteams_Constant::C_AT_TRIBUTE_JOIN:
+        $subject = 'Joined to Tribute contact';
         $details = 'Joined to Tribute '.$params['reason'].' of '.$targetName;
         unset($params['reason']);
         break;
       case CRM_Pcpteams_Constant::C_AT_PCP_CREATED:
+        $subject = 'New PCP has created';
         $details = "New PCP has created";        
         break;
       case CRM_Pcpteams_Constant::C_AT_REQ_AUTHORISED:
+        $subject = 'Team Request authorised';
         $details = "Member Join Team request has authorised";
         break;
       case CRM_Pcpteams_Constant::C_AT_REQ_DECLINED:
+        $subject = 'Team Request rejected';
         $details = "Member Join Team request has declined";
         break;
       case CRM_Pcpteams_Constant::C_AT_REQ_MADE:
+        $subject = 'Sent Team Request';
         $details = "Member Join Team request made by".$sourceName.' to '. $targetName;
         break;
       default:
