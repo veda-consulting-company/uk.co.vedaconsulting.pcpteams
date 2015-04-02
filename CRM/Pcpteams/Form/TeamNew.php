@@ -86,7 +86,6 @@ class CRM_Pcpteams_Form_TeamNew {
       $form->set('teamName', $orgName);
       $form->set('teamContactID', $createTeam['id']);
       $actParams = array(
-        'source_contact_id' => $userId, 
         'target_contact_id' => $createTeam['id']
       );        
       CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_TEAM_CREATE);

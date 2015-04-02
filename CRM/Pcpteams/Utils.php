@@ -415,7 +415,7 @@ class  CRM_Pcpteams_Utils {
         'subject'           => $subject,
         'details'           => $details,
         'activity_date_time'=> date( 'YmdHis' ),
-        'status_id'         => 2,
+        'status_id'         => 2, // status completed
         'version'           => 3,
       );
       $activityParams = array_merge($activityParams, $params);

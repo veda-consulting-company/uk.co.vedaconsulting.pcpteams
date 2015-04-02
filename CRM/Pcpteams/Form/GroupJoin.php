@@ -72,10 +72,8 @@ class CRM_Pcpteams_Form_GroupJoin extends CRM_Core_Form {
       $result = civicrm_api3('CustomValue', 'create', $params);
       if(!civicrm_error($result)){
         $branchName = CRM_Contact_BAO_Contact::displayName($branchId);
-        $userId      = CRM_Pcpteams_Utils::getloggedInUserId();
         // Group Join: create activity
         $actParams = array(
-          'source_contact_id'  =>  $userId,
           'target_contact_id'  =>  $branchId,
         );
         CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_GROUP_JOIN);

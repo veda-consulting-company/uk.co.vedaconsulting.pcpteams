@@ -270,7 +270,18 @@
       <is_reserved>0</is_reserved>
       <is_active>1</is_active>
       <option_group_name>activity_type</option_group_name>
-    </OptionValue> 
+    </OptionValue>
+    <OptionValue>
+      <label>PCP Team Invitation Accepted</label>
+      <name>PCP Team Invitation Accepted</name>
+      <filter>0</filter>
+      <is_default>0</is_default>
+      <weight>1</weight>
+      <is_optgroup>0</is_optgroup>
+      <is_reserved>0</is_reserved>
+      <is_active>1</is_active>
+      <option_group_name>activity_type</option_group_name>
+    </OptionValue>     
     <OptionValue>
       <label>PCP Team Create</label>
       <name>PCP Team Create</name>

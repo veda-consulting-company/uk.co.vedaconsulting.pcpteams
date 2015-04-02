@@ -75,10 +75,8 @@ class CRM_Pcpteams_Form_TributeJoin extends CRM_Core_Form {
       $result = civicrm_api3('CustomValue', 'create', $tributeContatparams);
       if(!civicrm_error($result)){
         $tributeName = CRM_Contact_BAO_Contact::displayName($tributeId);
-        $userId      = CRM_Pcpteams_Utils::getloggedInUserId();
         // Tribute Join: create activity
         $actParams = array(
-          'source_contact_id' => $userId, 
           'target_contact_id' => $tributeId,
           'reason'            => $this->_tributeReason
         ); 
