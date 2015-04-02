@@ -74,7 +74,11 @@ class CRM_Pcpteams_Form_GroupJoin extends CRM_Core_Form {
         $branchName = CRM_Contact_BAO_Contact::displayName($branchId);
         $userId      = CRM_Pcpteams_Utils::getloggedInUserId();
         // Group Join: create activity
-        CRM_Pcpteams_Utils::createPcpActivity(array('source' => $userId, 'target' => $branchId), CRM_Pcpteams_Constant::C_CF_GROUP_JOIN, 'Joined to branch '.$branchName, 'PCP Group Join');
+        $actParams = array(
+          'source_contact_id'  =>  $userId,
+          'target_contact_id'  =>  $branchId,
+        );
+        CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_GROUP_JOIN);
         CRM_Core_Session::setStatus(ts("Successfully added to the branch {$branchName}"), '', 'success');
       }
     } 

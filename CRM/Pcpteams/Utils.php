@@ -311,8 +311,19 @@ class  CRM_Pcpteams_Utils {
       )
     );
     if(!civicrm_error($pcpResult) && $pcpResult['id']) {
+      //create activity for pcp created.
+      $ids          = array('target_contact_id' => $pcpContactId);
+      $userId       = self::getloggedInUserId();
+      if ($userId != $pcpContactId) {
+        $ids['source_contact_id'] = $userId;
+      }
+      $activityName = $subject = CRM_Pcpteams_Constant::C_AT_PCP_CREATED;
+      $desc         = 'New PCP has created';
+      self::createPcpActivity($ids, $activityName);
       return $pcpResult['id'];
     }
+    
+    
     return NULL;
   }
   
@@ -342,24 +353,73 @@ class  CRM_Pcpteams_Utils {
     return $activityType['values'][$activityType['id']]['value'];
   }
   
-  static function createPcpActivity( $ids = array(), $activityname, $html , $subject){
-    if(empty($ids)){
+  static function createPcpActivity( $params, $activityname ){
+    if(empty($activityname)){
       return null;
     }
+    
+    if (isset($params['source_contact_id'])) {
+      $sourceName = CRM_Contact_BAO_Contact::displayName($params['source_contact_id']);
+    }else{
+      $params['source_contact_id'] = self::getloggedInUserId();
+    }
+    
+    if (isset($params['target_contact_id'])) {
+      $targetName = CRM_Contact_BAO_Contact::displayName($params['target_contact_id']);
+    }
+        
+    //to handle to default values, subject and description for the activity type
+    switch ($activityname) {
+      case CRM_Pcpteams_Constant::C_AT_TEAM_CREATE:
+        $details = 'Team is created'.$targetName;
+        break;
+      case CRM_Pcpteams_Constant::C_AT_TEAM_JOIN:
+        $details = 'Joined to team'.$targetName;
+        break;
+      case CRM_Pcpteams_Constant::C_AT_TEAM_INVITE:
+        if (isset($params['assignee_contact_id'])) {
+          $targetName = CRM_Contact_BAO_Contact::displayName($params['assignee_contact_id']);
+        }
+        $details = 'Invited to Join Team '.$targetName. ' by '.$sourceName;
+        break;
+      case CRM_Pcpteams_Constant::C_AT_GROUP_JOIN:
+        $details = 'Joined to branch '.$targetName;
+        break;
+      case CRM_Pcpteams_Constant::C_AT_TRIBUTE_JOIN:
+        $details = 'Joined to Tribute '.$params['reason'].' of '.$targetName;
+        unset($params['reason']);
+        break;
+      case CRM_Pcpteams_Constant::C_AT_PCP_CREATED:
+        $details = "New PCP has created";        
+        break;
+      case CRM_Pcpteams_Constant::C_AT_REQ_AUTHORISED:
+        $details = "Member Join Team request has authorised";
+        break;
+      case CRM_Pcpteams_Constant::C_AT_REQ_DECLINED:
+        $details = "Member Join Team request has declined";
+        break;
+      case CRM_Pcpteams_Constant::C_AT_REQ_MADE:
+        $details = "Member Join Team request made by".$sourceName.' to '. $targetName;
+        break;
+      default:
+        $details = $activityname;
+        break;
+    }
+    
+    $subject        = $activityname;
     $activityTypeID = CRM_Pcpteams_Utils::getActivityTypeId($activityname);
+    
     if($activityTypeID) {
       $activityParams = array(
-                              'source_contact_id' => $ids['source'],
-                              'target_contact_id' => $ids['target'],
-                              'activity_type_id' => $activityTypeID,
-                              'subject' => $subject,
-                              'details' => $html,
-                              'activity_date_time' => date( 'YmdHis' ),
-                              'status_id' => 2,
-                              'version' => 3
-                             );
-
-      return civicrm_api( 'activity','create', $activityParams );
+        'activity_type_id'  => $activityTypeID,
+        'subject'           => $subject,
+        'details'           => $details,
+        'activity_date_time'=> date( 'YmdHis' ),
+        'status_id'         => 2,
+        'version'           => 3,
+      );
+      $activityParams = array_merge($activityParams, $params);
+      return civicrm_api( 'Activity','create', $activityParams );
     }
   }
   
@@ -405,7 +465,7 @@ class  CRM_Pcpteams_Utils {
     }
     
     $activityContacts = CRM_Core_OptionGroup::values('activity_contacts', FALSE, FALSE, FALSE, NULL, 'name');
-    $targetID = CRM_Utils_Array::key('Activity Targets', $activityContacts);
+    $targetID   = CRM_Utils_Array::key('Activity Targets', $activityContacts);
       //friend contacts creation
     foreach ($contactParams as $key => $value) {
       //create contact only if it does not exits in db
@@ -429,7 +489,7 @@ class  CRM_Pcpteams_Utils {
       $activityContact->contact_id = $contact;
       $activityContact->find(TRUE);
       if (empty($activityContact->id)) {
-        $resultTarget = CRM_Activity_BAO_ActivityContact::create($targetParams);
+        CRM_Activity_BAO_ActivityContact::create($targetParams);
       }
     }
     $mailParams['message'] = CRM_Utils_Array::value('suggested_message', $emailParams);

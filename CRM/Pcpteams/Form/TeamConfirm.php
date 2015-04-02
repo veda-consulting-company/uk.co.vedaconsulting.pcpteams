@@ -102,7 +102,11 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
     if(!civicrm_error($result) && $result['id'] && !empty($values)) {
       $contactDisplayName = CRM_Contact_BAO_Contact::displayName($this->_contactID);
       // Create Team Invite activity
-      $activity = CRM_Pcpteams_Utils::createPcpActivity(array('source' => $this->_contactID, 'target' => $this->get('teamContactID')), CRM_Pcpteams_Constant::C_CF_TEAM_INVITE, 'Invited to Join Team '.$this->get('teamName'). 'by '.$contactDisplayName, 'PCP Team Invite');
+      $actParams = array(
+        'source_contact_id'  =>  $this->_contactID,
+        'assignee_contact_id'=>  $this->get('teamContactID'),
+      );
+      $activity = CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_TEAM_INVITE);
       // Send Invitation emails
       CRM_Pcpteams_Utils::sendInviteEmail($result['id'], $this->_contactID, $values, $teampcpId, $activity['id']);
     }

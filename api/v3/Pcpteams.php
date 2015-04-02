@@ -88,7 +88,7 @@ function civicrm_api3_pcpteams_create($params) {
   //end custom set
 
   $values = array();
-   _civicrm_api3_object_to_array_unique_fields($pcp, $values[$pcp->id]);
+  @_civicrm_api3_object_to_array_unique_fields($pcp, $values[$pcp->id]);
   return civicrm_api3_create_success($values, $params, 'Pcpteams', 'create');
 }
 function _civicrm_api3_pcpteams_create_spec(&$params) {
