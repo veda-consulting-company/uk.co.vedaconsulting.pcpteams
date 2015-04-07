@@ -163,8 +163,10 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     // and display in pcp style. We can use civi's no-pop up style, but for ajax
     // snippet that doesn't work anyway
     $allStatus = CRM_Core_Session::singleton()->getStatus(TRUE);
-    foreach ($allStatus as $status) {
-      $this->setPcpStatus($status['text'], $status['title'], 'pcp-info');
+    if ($allStatus) {
+      foreach ($allStatus as $status) {
+        $this->setPcpStatus($status['text'], $status['title'], 'pcp-info');
+      }
     }
   }
 

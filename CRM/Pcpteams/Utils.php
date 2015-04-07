@@ -466,18 +466,21 @@ class  CRM_Pcpteams_Utils {
     
     $mailParams = array();
     $contactParams = array();
+    if (isset($emailParams['tplParams'])) {
+      $mailParams['tplParams'] = $emailParams['tplParams'];
+    }
     //create contact corresponding to each friend
     foreach ($emailParams['friend'] as $key => $details) {
       if ($details["first_name"]) {
-        $contactParams[$key] = array(
-          'first_name' => $details["first_name"],
-          'last_name' => $details["last_name"],
-          'contact_source' => ts('PCP Team Invite'),
-          'email-Primary' => $details["email"],
-        );
-
         $displayName = $details["first_name"] . " " . $details["last_name"];
-        $mailParams['email'][$displayName] = $details["email"];
+        $contactParams[$key] = array(
+          'first_name'     => $details["first_name"],
+          'last_name'      => $details["last_name"],
+          'contact_source' => ts('PCP Team Invite'),
+          'email-Primary'  => $details["email"],
+          'display_name'   => $displayName,
+        );
+        $mailParams['email'][$displayName] = $contactParams[$key];
       }
     }
     
@@ -513,10 +516,9 @@ class  CRM_Pcpteams_Utils {
         CRM_Activity_BAO_ActivityContact::create($targetParams);
       }
     }
-    $mailParams['message'] = CRM_Utils_Array::value('suggested_message', $emailParams);
     $mailParams['messageTemplateID'] = $message_template_id;
-    $mailParams['page_url'] = CRM_Utils_System::url('civicrm/pcp/manage', "reset=1&id={$teampcpId}", TRUE, NULL, FALSE, TRUE);
-    self::sendMail($contact_id, $mailParams);
+    
+    return self::sendMail($contact_id, $mailParams);
   }
   
   static function getPcpBlockId($eventId, $component = 'event') {
@@ -620,26 +622,31 @@ class  CRM_Pcpteams_Utils {
     if (empty($values['email_from'])) {
       $values['email_from'] = $email;
     }
-    foreach ($values['email'] as $displayName => $emailTo) {
-      if ($emailTo) {
+    
+    $tplParams = array();
+    if (isset($values['tplParams'])) {
+      $tplParams = $values['tplParams'];
+    }
+    $sent = FALSE;
+    foreach ($values['email'] as $key => $emailDetails) {
+      if ($emailDetails['email-Primary']) {
         // FIXME: factor the below out of the foreach loop
-        CRM_Core_BAO_MessageTemplate::sendTemplate(
+        $tplParams['inviteeFirstName'] = $emailDetails['first_name'];
+        $tplParams['inviteeEmail'] = $emailDetails['email-Primary'];
+        list($sent, $subject, $text, $html) = CRM_Core_BAO_MessageTemplate::sendTemplate(
           array(
             'messageTemplateID' => $values['messageTemplateID'],
-            'contactId' => $contactID,
-            'tplParams' => array(
-              'senderContactName' => $fromName,
-              'pageURL' => $values['page_url'],
-              'senderMessage' => $values['message']
-            ),
-            'from' => "$fromName <{$values['email_from']}>",
-            'toName' => $displayName,
-            'toEmail' => $emailTo,
-            'replyTo' => $email,
+            'contactId'         => $contactID,
+            'tplParams'         => $tplParams,
+            'from'              => "$fromName <{$values['email_from']}>",
+            'toName'            => $emailDetails['display_name'],
+            'toEmail'           => $emailDetails['email-Primary'],
+            'replyTo'           => $email,
           )
         );
       }
     }
+    return $sent ? TRUE : FALSE;
   }
 
 }
