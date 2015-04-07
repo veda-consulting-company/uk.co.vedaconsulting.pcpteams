@@ -91,6 +91,37 @@ class CRM_Pcpteams_Page_AJAX {
       );
       CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_LEAVE_TEAM);
       //end
+      
+      //send email once left the team
+      $teamAdminId    = CRM_Pcpteams_Utils::getTeamAdmin($team_pcp_id);
+      list($teamAdminName, $teamAdminEmail)  = CRM_Contact_BAO_Contact::getContactDetails($teamAdminId);
+      $contactDetails = civicrm_api('Contact', 'get', array('version' => 3, 'sequential' => 1, 'id' => $user_id));
+      $teamId         = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $team_pcp_id, 'contact_id');
+      $teamName       = CRM_Contact_BAO_Contact::displayName($teamId);
+      $msgTplId       = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_MessageTemplate', CRM_Pcpteams_Constant::C_LEAVE_TEAM_MSG_TPL, 'id', 'msg_title'); 
+
+      $emailParams =  array(
+        'tplParams' => array(
+          'teamAdminName' => $teamAdminName,
+          'userFirstName' => $contactDetails['values'][0]['first_name'],
+          'userlastName'  => $contactDetails['values'][0]['last_name'],
+          'teamName'      => $teamName,
+        ),
+        'email' => array(
+          $teamAdminName => array(
+            'first_name'    => $teamAdminName,
+            'last_name'     => $teamAdminName,
+            'email-Primary' => $teamAdminEmail,
+            'display_name'  => $teamAdminName,
+          )
+        ),
+        'messageTemplateID' => $msgTplId,
+        // 'email_from' => $fromEmail,
+      );
+      
+      $sendEmail = CRM_Pcpteams_Utils::sendMail($user_id, $emailParams);
+    
+      
       echo 'updated'; //FIXME : Need to display proper response
     }
     

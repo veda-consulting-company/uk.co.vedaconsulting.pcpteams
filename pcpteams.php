@@ -66,17 +66,44 @@ function pcpteams_civicrm_install() {
   ";
   CRM_Core_DAO::executeQuery($alterSql);
   
-  $messageHtmlSampleTeamInviteFile  = $extensionDir . '/message_templates/sample_team_invite.html';
+  //invite team 
+  $messageHtmlSampleTeamInviteFile  = $extensionDir . '/message_templates/msg_tpl_invite_members_to_team.tpl';
   $messageHtml      = file_get_contents($messageHtmlSampleTeamInviteFile);
-  $message_params = array(
+  $message_params['invite_team'] = array(
     'sequential'  => 1,
     'version'     => 3,
-    'msg_title'   => "Sample Team Invite Template",
-    'msg_subject' => "Team Invitation",
+    'msg_title'   => "Invitation to join team",
+    'msg_subject' => (string) '{$inviteeFirstName}  you have been invited to join {$teamName} and support Leukaemia and Lymphoma Research',
     'is_default'  => 1,
     'msg_html'    => $messageHtml,
   );
-  $result = civicrm_api3('MessageTemplate', 'create', $message_params);
+  
+  //join team
+  $messageHtmlSampleTeamInviteFile  = $extensionDir . '/message_templates/msg_tpl_join_request_to_team.tpl';
+  $messageHtml      = file_get_contents($messageHtmlSampleTeamInviteFile);
+  $message_params['join_team'] = array(
+    'sequential'  => 1,
+    'version'     => 3,
+    'msg_title'   => "New member request to join team",
+    'msg_subject' => (string) '{$userFirstName} {$userlastName} has requested to join Team {$teamName} please authorise',
+    'is_default'  => 1,
+    'msg_html'    => $messageHtml,
+  );
+
+  //leave team    
+  $messageHtmlSampleTeamInviteFile  = $extensionDir . '/message_templates/msg_tpl_leave_team.tpl';
+  $messageHtml      = file_get_contents($messageHtmlSampleTeamInviteFile);
+  $message_params['leave_team'] = array(
+    'sequential'  => 1,
+    'version'     => 3,
+    'msg_title'   => "Someone has left your team",
+    'msg_subject' => (string) '{$userFirstName} {$userLastName} has decided to leave Team {$teamName}',
+    'is_default'  => 1,
+    'msg_html'    => $messageHtml,
+  );    
+  foreach ($message_params as $key => $message_param) {
+    $result = civicrm_api3('MessageTemplate', 'create', $message_param);
+  }
 
   return _pcpteams_civix_civicrm_install();
 }

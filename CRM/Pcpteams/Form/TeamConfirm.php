@@ -93,17 +93,26 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
     //return TRUE;
     $values = $this->controller->exportValues($this->_name); 
     // Find the msg_tpl ID of sample invite template
-    $result = civicrm_api3('MessageTemplate', 'get', array( 'sequential' => 1, 'version'=> 3, 'msg_title' => "Sample Team Invite Template",));
+    $msgTplId  = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_MessageTemplate', CRM_Pcpteams_Constant::C_INVITE_TEAM_MSG_TPL, 'id', 'msg_title');
     $teampcpId = CRM_Pcpteams_Utils::getPcpIdByContactAndEvent($this->get('component_page_id'), $this->get('teamContactID'));
 
-    if(!civicrm_error($result) && $result['id'] && !empty($values)) {
+    if( $msgTplId && !empty($values)) {
       // Create Team Invite activity
       $actParams = array(
         'assignee_contact_id'=>  $this->get('teamContactID'),
       );
       $activity = CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_TEAM_INVITE);
+      
       // Send Invitation emails
-      $result = CRM_Pcpteams_Utils::sendInviteEmail($result['id'], $this->_contactID, $values, $teampcpId, $activity['id']);
+      $pcpDetails = civicrm_api('pcpteams', 'get', array('version' => 3, 'sequential' => 1, 'pcp_id' => $this->get('page_id')));
+      list($userName, $userEmail) = CRM_Contact_BAO_Contact::getContactDetails($this->_contactID);
+      $values['tplParams'] = array(
+        'eventName' => $pcpDetails['values'][0]['page_title'],
+        'userName'  => $userName,
+        'teamName'  => $this->get('teamName'),
+      );
+      
+      $result = CRM_Pcpteams_Utils::sendInviteEmail($msgTplId, $this->_contactID, $values, $teampcpId, $activity['id']);
       if ($result) {
         CRM_Core_Session::setStatus(ts('Invitation request(s) has been sent'), ts('Invite Team')); 
       } else {
