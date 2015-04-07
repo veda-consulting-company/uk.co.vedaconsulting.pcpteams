@@ -22,9 +22,9 @@
   background-origin: padding-box !important;
   background-size: auto auto !important;
   margin-bottom: 20px !important;
-  border-radius: 20px !important;
-  border-bottom: 6px solid !important;
-  border-left: 5px solid !important;
+  border-radius: 3px !important;
+  box-shadow: rgb(153, 153, 153) 0px 2px 8px 0px !important;
+  border: 1px solid #c4c4c4 !important;
 }
 /* divs inside panel */
 .crm-container .crm-pcp-manage .pcp-panel .avatar-title-block {
