@@ -53,7 +53,7 @@ class CRM_Pcpteams_Form_TeamJoin {
       "custom_{$cfpcpab}" => $form->get('page_id'),
       "custom_{$cfpcpba}" => $teampcpId
     );
-    CRM_Pcpteams_Utils::checkORCreateTeamRelationship($userId, $teamId, $customParams, TRUE);
+    CRM_Pcpteams_Utils::createTeamRelationship($userId, $teamId, $customParams);
     $form->_teamName  = CRM_Contact_BAO_Contact::displayName($teamId);
     $form->set('teamName', $form->_teamName);
     $form->set('teamContactID', $teamId);

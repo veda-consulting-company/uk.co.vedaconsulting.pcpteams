@@ -81,23 +81,21 @@ class  CRM_Pcpteams_Utils {
   /**
    * To check the valid relationship is exists., Create If not Found one.
    */
-  static function checkORCreateTeamRelationship($iContactIdA, $iContactIdB, $custom = array(), $checkandCreate = FALSE, $action = 'join' ){
+  static function createTeamRelationship($iContactIdA, $iContactIdB, $custom = array(), $action = 'join' ){
     if(empty($iContactIdA) || empty($iContactIdB)){
       $status = empty($iContactIdB) ? 'Team Contact is Missing' : 'Team Member Contact Id is Missing';
       CRM_Core_Session::setStatus($status);
+      return FALSE;
     }
+
     $teamRelTypeName = CRM_Pcpteams_Constant::C_TEAM_RELATIONSHIP_TYPE;
-    // When a new team is created
     if($action == 'create') {
+      // When a new team is created, we use admin relationship
       $teamRelTypeName = CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE;
     } 
-    $relTypeId       = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', $teamRelTypeName, 'id', 'name_a_b');
+    $relTypeId = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', $teamRelTypeName, 'id', 'name_a_b');
 
-    //check the Relationship Type Exists
-    if(empty($relTypeId)){
-      CRM_Core_Session::setStatus( t('Failed To create Relationship. Relationship Type (%1) does not exist.', array('%1' => $teamRelTypeName)) );
-    }else{
-      
+    if ($relTypeId) {
       $aParams = array();
       //check the duplicates
       $aParams = array(
@@ -106,8 +104,10 @@ class  CRM_Pcpteams_Utils {
         'relationship_type_id'  => $relTypeId.'_a_b',
       );
       $bDuplicateFound = CRM_Contact_BAO_Relationship::checkDuplicateRelationship($aParams, $iContactIdA, $iContactIdB);
-
-      if(!$bDuplicateFound && $checkandCreate){
+      if ($bDuplicateFound) {
+        CRM_Core_Session::setStatus(ts('Relationship already exists.'));
+        return FALSE;
+      } else {
         $aParams['contact_id_a'] = $iContactIdA;
         $aParams['contact_id_b'] = $iContactIdB;
         $aParams['relationship_type_id'] = $relTypeId;
@@ -118,11 +118,13 @@ class  CRM_Pcpteams_Utils {
         $createRelationship = civicrm_api3('Relationship', 'create', $aParams);
         if(!civicrm_error($createRelationship)){
           $teamName = self::getContactWithHyperlink($iContactIdB);
-          CRM_Core_Session::setStatus(ts("Team contact has validated and successfully joined as {$teamRelTypeName} {$teamName}"), '', 'success');
+          return TRUE;
         }
       }
+    } else {
+      CRM_Core_Session::setStatus( t('Failed To create Relationship. Relationship Type (%1) does not exist.', array('%1' => $teamRelTypeName)) );
     }
-
+    return FALSE;
   }
   
   static function getcontactIdbyPcpId($id) {

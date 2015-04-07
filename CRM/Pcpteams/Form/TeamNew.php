@@ -75,7 +75,7 @@ class CRM_Pcpteams_Form_TeamNew {
     // Create/Update custom record with team pcp id and create relationship with user as Team Admin
     if($teamPcpId) {
       $userId = CRM_Pcpteams_Utils::getloggedInUserId();
-      CRM_Pcpteams_Utils::checkORCreateTeamRelationship($userId, $createTeam['id'], $custom = array(), TRUE, 'create');
+      CRM_Pcpteams_Utils::createTeamRelationship($userId, $createTeam['id'], $custom = array(), 'create');
       $teamPcpCfId = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
         $params = array(
           'version'   => 3,

@@ -36,18 +36,10 @@ class CRM_Pcpteams_Form_TeamInvite {
   }
   
   function buildQuickForm(&$form) {
-    $teamOptions = array();
-    $teamOptions = array(
-        ts(' Yes, this is the team'),
-        ts(' No, I would like to join another team'),
-        ts(' I do not want to join any team')
-      );
-    $form->addRadio('teamOption', '', $teamOptions, NULL, '<br/><br/>');
-
     $form->addButtons(array(
       array(
         'type' => 'next',
-        'name' => ts('Continue'),
+        'name' => ts('Yes, This is the team'),
         'isDefault' => TRUE,
       ),
     ));
@@ -61,35 +53,30 @@ class CRM_Pcpteams_Form_TeamInvite {
     if (CRM_Core_Session::singleton()->get('pcpteams_tpid')) {
       CRM_Core_Session::singleton()->set('pcpteams_tpid', NULL);
     }
-    if ($values['teamOption'] == 1) { // join team
-      $this->set("workflowTeam", 2); // follow the flow as if teamQuery would have chosen join
-      CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/support', "code=cpftn&qfKey={$this->controller->_key}"));
-    }
-    else if ($values['teamOption'] == 2) {
-      CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/support', "code=cpfgq&qfKey={$this->controller->_key}"));
-    }
-    else if ($values['teamOption'] == 0) {
-      $teampcpId        = $form->get('tpId');
-      $teamId           = CRM_Pcpteams_Utils::getcontactIdbyPcpId($teampcpId);
-      $userId           = CRM_Pcpteams_Utils::getloggedInUserId();
-      // Create Team Member of relation to this Team
-      $cfpcpab = CRM_Pcpteams_Utils::getPcpABCustomFieldId();
-      $cfpcpba = CRM_Pcpteams_Utils::getPcpBACustomFieldId();
-      $customParams = array(
-        "custom_{$cfpcpab}" => $form->get('page_id'),
-        "custom_{$cfpcpba}" => $teampcpId
-      );
-      CRM_Pcpteams_Utils::checkORCreateTeamRelationship($userId, $teamId, $customParams, TRUE);
-      $form->_teamName  = CRM_Contact_BAO_Contact::displayName($teamId);
-      $form->set('teamName', $form->_teamName);
-      $form->set('teamContactID', $teamId);
-      // Team Join: create activity
-      $actParams = array(
-        'target_contact_id' => $teamId
-      );
-      CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_INVITATION_ACCEPTED);
-      CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_REQ_MADE);
-      
+
+    $teampcpId        = $form->get('tpId');
+    $teamId           = CRM_Pcpteams_Utils::getcontactIdbyPcpId($teampcpId);
+    $userId           = CRM_Pcpteams_Utils::getloggedInUserId();
+    // Create Team Member of relation to this Team
+    $cfpcpab = CRM_Pcpteams_Utils::getPcpABCustomFieldId();
+    $cfpcpba = CRM_Pcpteams_Utils::getPcpBACustomFieldId();
+    $customParams = array(
+      "custom_{$cfpcpab}" => $form->get('page_id'),
+      "custom_{$cfpcpba}" => $teampcpId
+    );
+    $result = CRM_Pcpteams_Utils::createTeamRelationship($userId, $teamId, $customParams);
+    $form->_teamName  = CRM_Contact_BAO_Contact::displayName($teamId);
+    $form->set('teamName', $form->_teamName);
+    $form->set('teamContactID', $teamId);
+    // Team Join: create activity
+    $actParams = array(
+      'target_contact_id' => $teamId
+    );
+    CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_INVITATION_ACCEPTED);
+    CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_REQ_MADE);
+
+    if ($result) {
+      CRM_Core_Session::setStatus(ts("A notification has been sent to the team. Once approved, team should be visible on your page.", ts("Team Request Sent"0);
     }
   }
 }
