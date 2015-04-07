@@ -160,7 +160,7 @@
               {$memberInfo.amount_raised|crmMoney}
             </div>
             <div class="mem-body-row donate">
-              <a class="pcp-button pcp-btn-green" href="javascript:void(0)" onclick="approveTeamMember('{$memberInfo.relationship_id}','{$memberInfo.pcp_id}','{$memberInfo.team_pcp_id}');return false;">{ts}Approve{/ts}</a>
+              <a class="pcp-button pcp-btn-green crm-pcp-alert-approve-request" href="javascript:void(0)" data-entity-id={$memberInfo.relationship_id} data-pcp-id={$memberInfo.pcp_id} data-teampcp-id={$memberInfo.team_pcp_id}>{ts}Approve{/ts}</a>
               <a class="pcp-button pcp-btn-red" href="javascript:void(0)" onclick="declineTeamMember('{$memberInfo.relationship_id}', '{$memberInfo.pcp_id}');return false;">{ts}Decline{/ts}</a>
             </div>
             <div class="clear"></div>
@@ -302,7 +302,7 @@ CRM.$(function($) {
           $(document).off('ajaxSuccess');
           // use pcp's status message display method
           $.each(data.crmMessages, function(n, msg) {
-           var pcpMessage = "<div class='pcp-info pcp-message'><h3>" + msg.title + "</h3><p>" + msg.text + "</p></div>";
+            var pcpMessage = "<div class='pcp-info pcp-message'><h3>" + msg.title + "</h3><p>" + msg.text + "</p></div>";
             $('.pcp-messages').html('');
             $(pcpMessage).appendTo('.pcp-messages').show('slow');
           });
@@ -362,56 +362,37 @@ CRM.$(function($) {
   $(".crm-pcp-alert-approve-request").on('click', function(ev) {
     var $el = $(this);
     CRM.confirm({
-      //url: CRM.url('civicrm/ajax/statusmsg'),
       title: ts('{/literal}{ts escape="js"}Approve Request{/ts}{literal}'),
       options: {{/literal}yes: '{ts escape="js"}Yes{/ts}', no: '{ts escape="js"}No{/ts}'{literal}},
-      //width: 300
     }).on('crmConfirm:yes', function() {
       var postUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=approveTeamMember'}"{literal};
       var request = $.post(postUrl, {entity_id : $el.data('entityId'), pcp_id : $el.data('pcpId'), team_pcp_id: $el.data('teampcpId')});
-      CRM.status({/literal}"{ts escape='js'}Record Approved{/ts}"{literal}, request);
-      request.done(function() {
-        CRM.refreshParent($el);
+      setPcpMessage('Member Request Approved', 'Member Request Approved');
+      request.done(function(data) {
+        $('div.member-block > div.mem-body').append(data);
+        adjustMemReqBlockDisplay();
       });
     });
   });
+
+  function setPcpMessage(title, text) {
+    var pcpMessage = "<div class='pcp-info pcp-message'><h3>";
+    if (title) {
+      pcpMessage = pcpMessage + "<h3>" + title + "</h3>";
+    }
+    if (text) {
+      pcpMessage = pcpMessage + "<p>" + text + "</p>";
+    }
+    $('.pcp-messages').html('');
+    $(pcpMessage).appendTo('.pcp-messages').show('slow');
+  }
+  function adjustMemReqBlockDisplay() {
+    if ($(".member-req-block > .mem-body > div").length <= 2) {
+      $(".member-req-block").hide('slow');
+    }
+  }
 });
 
-/*
-function approveTeamMember(entityId, pcpId, teampcpId){
-    cj(".crm-pcp-alert-approve-request").show();
-    cj(".crm-pcp-alert-approve-request").dialog({
-        title: "Approve Request",
-        modal: true,
-        resizable: true,
-        bgiframe: true, 
-        show: 'drop', 
-        hide: 'drop',
-        overlay: {
-          opacity: 0.5,
-          background: "black"
-        },
-        buttons: {
-          "Yes": function() {
-              var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=approveTeamMember' }"{literal};
-              cj.ajax({ 
-                 url     : dataUrl,
-                 type    : 'post',
-                 data    : {entity_id : entityId, pcp_id : pcpId, team_pcp_id: teampcpId },
-                 success : function( data ) {
-                  cj('#member_'+pcpId).remove();
-                  cj('div.member-block > div.mem-body').append(data);
-                 }
-              });
-            cj(this).dialog("destroy");
-          },
-          "No" : function() {
-            cj(this).dialog("destroy");
-          }
-        }
-    });
-}
-*/
 function declineTeamMember(entityId, pcpId){
     cj(".crm-pcp-alert-decline-request").show();
     cj(".crm-pcp-alert-decline-request").dialog({
