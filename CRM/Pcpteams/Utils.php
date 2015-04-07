@@ -388,16 +388,16 @@ class  CRM_Pcpteams_Utils {
         }
         
         $sourceName .= $isTeamAdmin ? ' ( Team Admin )' : ' ( Team Member )';
-        $subject = 'Invite to Join Team';
-        $details = 'Invited to Join Team '.$targetName. ' by '.$sourceName;
+        $subject = 'Invite to join team';
+        $details = 'Invited to join team '.$targetName. ' by '.$sourceName;
         break;
       case CRM_Pcpteams_Constant::C_AT_GROUP_JOIN:
       $subject = 'Joined to branch';
         $details = 'Joined to branch '.$targetName;
         break;
       case CRM_Pcpteams_Constant::C_AT_TRIBUTE_JOIN:
-        $subject = 'Joined to Tribute contact';
-        $details = 'Joined to Tribute '.$params['reason'].' of '.$targetName;
+        $subject = 'Joined to tribute contact';
+        $details = 'Joined to tribute '.$params['reason'].' of '.$targetName;
         unset($params['reason']);
         break;
       case CRM_Pcpteams_Constant::C_AT_PCP_CREATED:
@@ -405,20 +405,20 @@ class  CRM_Pcpteams_Utils {
         $details = "New PCP has created";        
         break;
       case CRM_Pcpteams_Constant::C_AT_REQ_AUTHORISED:
-        $subject = 'Team Request authorised';
-        $details = "Member Join Team request has authorised";
+        $subject = 'Team request authorised';
+        $details = "Member join team request has authorised";
         break;
       case CRM_Pcpteams_Constant::C_AT_REQ_DECLINED:
-        $subject = 'Team Request rejected';
-        $details = "Member Join Team request has declined";
+        $subject = 'Team request rejected';
+        $details = "Member join team request has declined";
         break;
       case CRM_Pcpteams_Constant::C_AT_REQ_MADE:
-        $subject = 'Sent Team Request';
-        $details = "Member Join Team request made by".$sourceName.' to '. $targetName;
+        $subject = 'Sent team request';
+        $details = "Member join team request made by".$sourceName.' to '. $targetName;
         break;
       case CRM_Pcpteams_Constant::C_AT_LEAVE_TEAM:
-        $subject = 'PCP Member Left Team';
-        $details = "PCP Member Left Team ". $targetName;
+        $subject = 'PCP member left team';
+        $details = "PCP member left team ". $targetName;
         break;
       default:
         $subject = $activityname;

@@ -77,7 +77,7 @@
             <h3>You have Team Request waiting for approval.</h3>
               <div>
                 <div class="avatar">
-                  <img width="75" height="75" src="{$teamPcpInfo.image_url}">
+                  <img width="75" height="75" src="{$pendingApprovalInfo.image_url}">
                 </div>
                 <div class="team-info">
                   <h3>{$pendingApprovalInfo.title}</h3>
