@@ -358,7 +358,26 @@ CRM.$(function($) {
       $('#pcp-progress').find('strong').html(parseInt(circleVar) + '<i>%</i>');
     }
   });
+
+  $(".crm-pcp-alert-approve-request").on('click', function(ev) {
+    var $el = $(this);
+    CRM.confirm({
+      //url: CRM.url('civicrm/ajax/statusmsg'),
+      title: ts('{/literal}{ts escape="js"}Approve Request{/ts}{literal}'),
+      options: {{/literal}yes: '{ts escape="js"}Yes{/ts}', no: '{ts escape="js"}No{/ts}'{literal}},
+      //width: 300
+    }).on('crmConfirm:yes', function() {
+      var postUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=approveTeamMember'}"{literal};
+      var request = $.post(postUrl, {entity_id : $el.data('entityId'), pcp_id : $el.data('pcpId'), team_pcp_id: $el.data('teampcpId')});
+      CRM.status({/literal}"{ts escape='js'}Record Approved{/ts}"{literal}, request);
+      request.done(function() {
+        CRM.refreshParent($el);
+      });
+    });
+  });
 });
+
+/*
 function approveTeamMember(entityId, pcpId, teampcpId){
     cj(".crm-pcp-alert-approve-request").show();
     cj(".crm-pcp-alert-approve-request").dialog({
@@ -392,6 +411,7 @@ function approveTeamMember(entityId, pcpId, teampcpId){
         }
     });
 }
+*/
 function declineTeamMember(entityId, pcpId){
     cj(".crm-pcp-alert-decline-request").show();
     cj(".crm-pcp-alert-decline-request").dialog({
