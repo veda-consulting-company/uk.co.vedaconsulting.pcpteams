@@ -10,8 +10,6 @@ require_once 'CRM/Core/Form.php';
 class CRM_Pcpteams_Form_TeamInvite {
 
   function preProcess(&$form) {
-    CRM_Utils_System::setTitle(ts('Invited to join a team'));
-
     $teamPcpId = $form->get('tpId');
     if (empty($teamPcpId)) {
       CRM_Core_Error::fatal(ts('Unable to Find Team Record for this URL. Please check the Team is active...'));

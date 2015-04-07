@@ -6,7 +6,6 @@ class CRM_Pcpteams_Form_TeamQuery extends CRM_Pcpteams_Form_Workflow {
 
   function preProcess() {
     parent::preProcess();
-    CRM_Utils_System::setTitle(ts('Team Question'));
 
     // If invitation detected forward to invitation screen
     // Note: controller is responsible for making sure tpId is in session

@@ -10,11 +10,7 @@ require_once 'CRM/Core/Form.php';
 class CRM_Pcpteams_Form_EventJoin {
 
   function preProcess(&$form) {
-    CRM_Utils_System::setTitle(ts('Event Search'));
-  }
-  
-  static function setDefaultValues(&$form) {
-   
+    // init
   }
 
   function buildQuickForm(&$form) {

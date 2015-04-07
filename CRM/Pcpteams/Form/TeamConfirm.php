@@ -13,9 +13,6 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
     $teamTitle= $this->get('teamName');
     
     $this->assign('teamTitle', $teamTitle);
-    
-    $teamTitle = 'Team - '.$teamTitle;
-    CRM_Utils_System::setTitle($teamTitle);
     $this->assign('workflow', $workflow);
     
     $this->_contactID = CRM_Pcpteams_Utils::getloggedInUserId();

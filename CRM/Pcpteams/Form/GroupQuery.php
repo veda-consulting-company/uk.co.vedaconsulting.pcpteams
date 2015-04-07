@@ -11,7 +11,6 @@ class CRM_Pcpteams_Form_GroupQuery extends CRM_Pcpteams_Form_Workflow {
 
   function preProcess() {
     parent::preProcess();
-    CRM_Utils_System::setTitle(ts('Group Question'));
   }
   
   function buildQuickForm() {

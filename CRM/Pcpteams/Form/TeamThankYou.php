@@ -10,8 +10,6 @@ require_once 'CRM/Core/Form.php';
 class CRM_Pcpteams_Form_TeamThankYou extends CRM_Core_Form {
   function preProcess(){
     $workflow  = $this->get('workflowTeam');
-    $teamTitle = 'Team - '.$this->get('teamName');
-    CRM_Utils_System::setTitle($teamTitle);
     $this->assign('workflow', $workflow);
     $this->assign('teamTitle', $this->get('teamName'));
 

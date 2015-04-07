@@ -10,7 +10,6 @@ require_once 'CRM/Core/Form.php';
 class CRM_Pcpteams_Form_TributeQuery extends CRM_Pcpteams_Form_Workflow {
   function preProcess(){
     parent::preProcess();
-    CRM_Utils_System::setTitle(ts('Reason'));
   }
   
   function buildQuickForm() {

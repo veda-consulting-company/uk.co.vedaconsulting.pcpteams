@@ -12,7 +12,6 @@ class CRM_Pcpteams_Form_GroupJoin extends CRM_Core_Form {
     if (!$this->get('page_id')) {
       CRM_Core_Error::fatal(ts("Can't determine pcp id."));
     }
-    CRM_Utils_System::setTitle(ts('Join Group'));
     
     $selectedValue = $this->get('workflowGroup');
     if( $selectedValue == 1){
