@@ -148,6 +148,13 @@
   padding: 10px !important;
   border-radius: 12px !important;
 }
+.crm-container .crm-pcp-manage .pcp-body .team-section {
+  text-align: center !important;
+}
+.crm-container .crm-pcp-manage .pcp-body .team-section .pending-team-buttons,
+.crm-container .crm-pcp-manage .pcp-body .team-section .team-buttons {
+  text-align: left !important;
+}
 .crm-container .crm-pcp-manage .pcp-body .mem-body .mem-row {
   width: 98% !important;
 }
@@ -249,4 +256,9 @@
 .crm-container .crm-pcp-manage .pcp-info {
   background-color: #999999 !important;
   border-color: #55a12c !important;
+}
+.crm-container .crm-pcp-manage .waiting-approval {
+  background-image: url("../img/div-cross-line.png") !important;
+  background-size: 100% 100% !important;
+  margin-bottom: 10px !important;
 }

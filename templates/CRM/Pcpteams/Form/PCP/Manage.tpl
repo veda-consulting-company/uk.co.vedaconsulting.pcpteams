@@ -74,8 +74,8 @@
               </div>
             </div>
           {elseif $pcpinfo.pending_team_pcp_id}
-            <h3>You have Team Request waiting for approval.</h3>
-              <div>
+            <h3>(You have Team Request waiting for approval)</h3>
+              <div class="waiting-approval">
                 <div class="avatar">
                   <img width="75" height="75" src="{$pendingApprovalInfo.image_url}">
                 </div>
