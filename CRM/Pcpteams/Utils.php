@@ -585,6 +585,9 @@ class  CRM_Pcpteams_Utils {
       if (CRM_Core_DAO::singleValueQuery($relQuery, $relQueryParams)) {
         return TRUE;
       }
+      if (CRM_Contact_BAO_Contact_Permission::allow($pcpOwnerContactId, CRM_Core_Permission::VIEW)) {
+        return TRUE;
+      }
     }
     else {
         $query = "
@@ -600,6 +603,9 @@ class  CRM_Pcpteams_Utils {
         );
 
         if(CRM_Core_DAO::singleValueQuery($query, $queryParams)) {
+          return TRUE;
+        }
+        if (CRM_Contact_BAO_Contact_Permission::allow($pcpOwnerContactId, CRM_Core_Permission::EDIT)) {
           return TRUE;
         }
       }

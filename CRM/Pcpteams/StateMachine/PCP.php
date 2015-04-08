@@ -148,7 +148,7 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
     }
 
     // unset pages per workflow
-    if ('invite' == $controller->get('workflowTeam')) { // team invite
+    if (in_array($controller->get('workflowTeam'), array('invite', 2))) { // team invite or join
       unset($pages['cpftc'],$pages['cpftt']);
     }
     if ('skip' == $controller->get('workflowTeam')) {

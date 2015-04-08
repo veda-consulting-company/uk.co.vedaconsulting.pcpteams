@@ -16,6 +16,19 @@ class CRM_Pcpteams_Form_TeamThankYou extends CRM_Core_Form {
     if (!$this->get('page_id')) {
       CRM_Core_Error::fatal(ts("Can't determine pcp id."));
     }
+
+    $texts = array();
+    if (!$this->get('team_thank_message')) {
+      $allStatus = CRM_Core_Session::singleton()->getStatus(TRUE);
+      if ($allStatus) {
+        foreach ($allStatus as $status) {
+          $texts[] = "<p>{$status['text']}</p>";
+        }
+      }
+      $texts = implode("<br/>", $texts);
+      $this->set('team_thank_message', $texts);
+    }
+    $this->assign("team_thank_message", $this->get('team_thank_message'));
   }
 
   function buildQuickForm() {

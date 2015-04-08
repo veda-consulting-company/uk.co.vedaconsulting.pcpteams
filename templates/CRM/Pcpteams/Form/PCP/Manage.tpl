@@ -74,8 +74,8 @@
               </div>
             </div>
           {elseif $pcpinfo.pending_team_pcp_id}
-            <h3>You have Team Request waiting for approval.</h3>
-              <div>
+            <h3>(You have Team Request waiting for approval)</h3>
+              <div class="waiting-approval">
                 <div class="avatar">
                   <img width="75" height="75" src="{$pendingApprovalInfo.image_url}">
                 </div>
@@ -119,9 +119,9 @@
             <a href="{$pcpinfo.donate_url}"><span id="donate_link_text" {if $is_edit_page}class="crm-pcp-inline-btn-edit"{/if}>Donate</span></a>
           </div>
         </div>
-        <div class="rank">
-          This Page is <strong>{$rankInfo.rank}<small>{$rankInfo.suffix}</small></strong> out of the <strong>{$rankInfo.pageCount}</strong> fundraisers taking part in event.
-        </div>
+        {if !empty($donationInfo)}
+          <div class="rank">This Page is <strong>{$rankInfo.rank}<small>{$rankInfo.suffix}</small></strong> out of the <strong>{$rankInfo.pageCount}</strong> fundraisers taking part in event.</div>
+        {/if}
         {foreach from=$donationInfo item=donations}
           <div class="top-donations">
             {$donations.display_name} has donated <strong> {$donations.total_amount|crmMoney} </strong>

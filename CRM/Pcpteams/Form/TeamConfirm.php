@@ -114,9 +114,20 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
       
       $result = CRM_Pcpteams_Utils::sendInviteEmail($msgTplId, $this->_contactID, $values, $teampcpId, $activity['id']);
       if ($result) {
-        CRM_Core_Session::setStatus(ts('Invitation request(s) has been sent'), ts('Invite Team')); 
+        if ($_GET['snippet']) {
+          // from pcp edit screen
+          CRM_Core_Session::setStatus(ts('Invitation request(s) has been sent'), ts('Invite Team')); 
+        } else {
+          // from workflow (create team)
+          CRM_Core_Session::setStatus(ts('Your team has been created. We have emailed your team mates asking them to join you. You will receive and email when each of them accepts your invite Invitation request(s) has been sent'), ts('Team Join Request(s) Sent')); 
+        }
       } else {
-        CRM_Core_Session::setStatus(ts('No invitation request was sent.'), ts('No Invites')); 
+        if ($_GET['snippet']) {
+          CRM_Core_Session::setStatus(ts('No invitation request was sent.'), ts('No Invites')); 
+        } else {
+          // from workflow (create team)
+          CRM_Core_Session::setStatus(ts('Your team has been created. You can invite members from your team page.'), ts('Invite Members From Your Team Page')); 
+        }
       }
     }
   }
