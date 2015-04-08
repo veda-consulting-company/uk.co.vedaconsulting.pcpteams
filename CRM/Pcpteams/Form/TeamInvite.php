@@ -76,7 +76,7 @@ class CRM_Pcpteams_Form_TeamInvite {
     CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_REQ_MADE);
 
     if ($result) {
-      CRM_Core_Session::setStatus(ts("A notification has been sent to the team. Once approved, team should be visible on your page.", ts("Team Request Sent"0);
+      CRM_Core_Session::setStatus(ts("A notification has been sent to the team. Once approved, team should be visible on your page."), ts("Team Request Sent"));
     }
   }
 }
