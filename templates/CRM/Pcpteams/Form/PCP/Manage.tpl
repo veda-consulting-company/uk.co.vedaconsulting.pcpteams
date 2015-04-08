@@ -414,7 +414,7 @@ function declineTeamMember(entityId, pcpId){
               cj.ajax({ 
                  url     : dataUrl,
                  type    : 'post',
-                 data    : {entity_id : entityId},
+                 data    : {entity_id : entityId, op : 'decline'},
                  success : function( data ) {
                   cj('#member_'+pcpId).remove();
                  }
@@ -484,7 +484,7 @@ function deletePendingApproval(entityId){
               cj.ajax({ 
                  url     : dataUrl,
                  type    : 'post',
-                 data    : {entity_id : entityId},
+                 data    : {entity_id : entityId, op : 'pending'},
                  success : function( data ) {
                   cj(document).ajaxStop(function() { 
                     location.href = redirectUrl; 
