@@ -89,7 +89,7 @@ class CRM_Pcpteams_Form_TeamNew {
         'target_contact_id' => $createTeam['id']
       );        
       CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_TEAM_CREATE);
-      CRM_Core_Session::setStatus(ts("That's Great, You have successfully created the Team ") . $orgName, ts('New Team Created'));
+      CRM_Core_Session::setStatus(ts("Your Team %1 has been created, you can invite members from your team page.", array(1 => $orgName)), ts('New Team Created'));
     }
     else{
       CRM_Core_Session::setStatus(ts("Failed to Create Team \"{$orgName}\" ..."));
