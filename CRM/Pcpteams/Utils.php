@@ -577,10 +577,11 @@ class  CRM_Pcpteams_Utils {
         FROM civicrm_relationship
         WHERE contact_id_a = %1 AND contact_id_b = %2 AND relationship_type_id = %3
       ";
+      $relTypeId = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', CRM_Pcpteams_Constant::C_TEAM_RELATIONSHIP_TYPE, 'id', 'name_a_b');
       $relQueryParams = array(
         1 => array( $loggedContactId, 'Integer'),
         2 => array( $pcpOwnerContactId, 'Integer'),
-        3 => array( 19, 'Integer'),
+        3 => array( $relTypeId, 'Integer'),
       );
       if (CRM_Core_DAO::singleValueQuery($relQuery, $relQueryParams)) {
         return TRUE;

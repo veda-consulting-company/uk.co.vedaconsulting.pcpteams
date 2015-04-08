@@ -12,7 +12,7 @@ class CRM_Pcpteams_Page_AJAX {
     $teamPcpCfId  = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId(); 
 
     //check the hasPermission to view details
-    if (!CRM_Pcpteams_Utils::hasPermission($team_pcp_id, NULL, CRM_Core_Permission::VIEW)) {
+    if (!CRM_Pcpteams_Utils::hasPermission($entity_id, NULL, CRM_Core_Permission::EDIT)) {
       CRM_Core_Session::setStatus(ts("Sorry! You dont have right permission to Edit this page"));
       CRM_Utils_System::civiExit();
     }

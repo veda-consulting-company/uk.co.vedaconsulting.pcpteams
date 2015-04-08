@@ -279,7 +279,7 @@ function civicrm_api3_pcpteams_getPcpDashboardInfo($params) {
   
   //check the contact id is the logged in userId
   if ($params['contact_id'] != CRM_Pcpteams_Utils::getloggedInUserId()) {
-    CRM_Utils_System::setStatus(ts('Permission Denied'));
+    CRM_Core_Session::setStatus(ts('Permission Denied'));
     return civicrm_api3_create_success(CRM_Core_DAO::$_nullArray, $params);
   }
   
@@ -380,7 +380,7 @@ function civicrm_api3_pcpteams_getMyTeamInfo($params) {
   
   //check the contact id is the logged in userId
   if ($params['contact_id'] != CRM_Pcpteams_Utils::getloggedInUserId()) {
-    CRM_Utils_System::setStatus(ts('Permission Denied'));
+    CRM_Core_Session::setStatus(ts('Permission Denied'));
     return civicrm_api3_create_success($result, $params);
   }
   
@@ -497,7 +497,7 @@ function civicrm_api3_pcpteams_getMyPendingTeam($params) {
   }
   //check the contact id is the logged in userId
   if ($checkPermission && $params['contact_id'] != CRM_Pcpteams_Utils::getloggedInUserId()) {
-    CRM_Utils_System::setStatus(ts('Permission Denied'));
+    CRM_Core_Session::setStatus(ts('Permission Denied'));
     return civicrm_api3_create_success($result, $params);
   }
   
@@ -542,7 +542,7 @@ function civicrm_api3_pcpteams_getTeamRequest($params) {
   
   //check the contact id is the logged in userId
   if ($params['contact_id'] != CRM_Pcpteams_Utils::getloggedInUserId()) {
-    CRM_Utils_System::setStatus(ts('Permission Denied'));
+    CRM_Core_Session::setStatus(ts('Permission Denied'));
     return civicrm_api3_create_success($result, $params);
   }
     
@@ -661,7 +661,7 @@ function civicrm_api3_pcpteams_getTeamMembers($params) {
   
   //check the contact id is the logged in userId
   if ($params['contact_id'] != CRM_Pcpteams_Utils::getloggedInUserId()) {
-    CRM_Utils_System::setStatus(ts('Permission Denied'));
+    CRM_Core_Session::setStatus(ts('Permission Denied'));
     return civicrm_api3_create_success($result, $params);
   }
   
@@ -1116,8 +1116,8 @@ function _civicrm_api3_pcpteams_getAmountRaised_spec(&$params) {
 function civicrm_api3_pcpteams_getTeamRequestInfo($params) {
   $result= CRM_Core_DAO::$_nullArray;
   //check the hasPermission to view details
-  if (!CRM_Pcpteams_Utils::hasPermission($params['team_pcp_id'], NULL, CRM_Core_Permission::VIEW)) {
-    CRM_Core_Session::setStatus(ts("Sorry! you dont have right permission to see this team request information"));
+  if (!CRM_Pcpteams_Utils::hasPermission($params['team_pcp_id'], NULL, CRM_Core_Permission::EDIT)) {
+    // CRM_Core_Session::setStatus(ts("Sorry! you dont have right permission to see this team request information"));
     return civicrm_api3_create_success($result, $params);
   }
   
