@@ -556,7 +556,7 @@ class  CRM_Pcpteams_Utils {
     } 
     // Check the pcp page which he is looking is the owner of pcp, then allow 'edit' permission 
     if($pcpOwnerContactId == $loggedContactId) {
-      $hasPermission = TRUE;
+      return TRUE;
     } // Else if he is the memeber of the pcp , then allow 'view' permission
     else if ($action == CRM_Core_Permission::VIEW) { 
       // Find PCPs for this contact 
@@ -569,7 +569,22 @@ class  CRM_Pcpteams_Utils {
         2 => array($loggedContactId, 'Integer'),
       );
       if(CRM_Core_DAO::singleValueQuery($pcpQuery, $pcpQueryParams)) {
-          $hasPermission = TRUE;
+          return TRUE;
+      }
+      //check is any pending request;
+      $relQuery = "
+        SELECT id 
+        FROM civicrm_relationship
+        WHERE contact_id_a = %1 AND contact_id_b = %2 AND relationship_type_id = %3
+      ";
+      $relTypeId = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', CRM_Pcpteams_Constant::C_TEAM_RELATIONSHIP_TYPE, 'id', 'name_a_b');
+      $relQueryParams = array(
+        1 => array( $loggedContactId, 'Integer'),
+        2 => array( $pcpOwnerContactId, 'Integer'),
+        3 => array( $relTypeId, 'Integer'),
+      );
+      if (CRM_Core_DAO::singleValueQuery($relQuery, $relQueryParams)) {
+        return TRUE;
       }
       if (CRM_Contact_BAO_Contact_Permission::allow($pcpOwnerContactId, CRM_Core_Permission::VIEW)) {
         return TRUE;
@@ -589,13 +604,13 @@ class  CRM_Pcpteams_Utils {
         );
 
         if(CRM_Core_DAO::singleValueQuery($query, $queryParams)) {
-          $hasPermission = TRUE;
+          return TRUE;
         }
         if (CRM_Contact_BAO_Contact_Permission::allow($pcpOwnerContactId, CRM_Core_Permission::EDIT)) {
           return TRUE;
         }
       }
-    return $hasPermission;
+    return FALSE;
   }
 
   static function getTeamAdminByTeamContactId($teamContactId) {
