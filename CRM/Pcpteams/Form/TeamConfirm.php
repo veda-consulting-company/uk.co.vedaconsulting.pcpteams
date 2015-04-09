@@ -105,7 +105,7 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
         'eventName' => $pcpDetails['values'][0]['page_title'],
         'userName'  => $userName,
         'teamName'  => $this->get('teamName'),
-        'pageURL'   => CRM_Utils_System::url('civicrm/event/register', "reset=1&id={$this->get('component_page_id')}", TRUE, NULL, FALSE, TRUE),
+        'pageURL'   => CRM_Utils_System::url('civicrm/pcp/support', "reset=1&pageId={$this->get('component_page_id')}&component=event&tpId={$this->get('page_id')}", TRUE, NULL, FALSE, TRUE),
       );
       // As team contact id is set in the team join post process, team contact id is not available in this form if you are coming from manage page
       $teamContactId = $this->get('teamContactID');
@@ -116,7 +116,16 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
       $actParams = array(
         'assignee_contact_id'=>   $teamContactId,
       );
-      $activity = CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_TEAM_INVITE);
+      $checkAdminParams = array(
+        'version' => 3,
+        'user_id' => $this->_contactID,
+        'team_contact_id' => $teamContactId,
+      );
+      $chkTeamAdmin= civicrm_api('Pcpteams', 'checkTeamAdmin', $checkAdminParams);
+      $isTeamAdmin = $chkTeamAdmin['is_team_admin'];
+        
+      $teamInviteActivityType = $isTeamAdmin ? CRM_Pcpteams_Constant::C_AT_INVITATION_JOIN_TEAM_ADMIN : CRM_Pcpteams_Constant::C_AT_INVITATION_JOIN_TEAM_MEMBER;
+      $activity = CRM_Pcpteams_Utils::createPcpActivity($actParams, $teamInviteActivityType);
       
       $result = CRM_Pcpteams_Utils::sendInviteEmail($msgTplId, $this->_contactID, $values, $teampcpId, $activity['id']);
       if ($result) {
