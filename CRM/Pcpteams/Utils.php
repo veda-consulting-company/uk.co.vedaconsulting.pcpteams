@@ -560,6 +560,7 @@ class  CRM_Pcpteams_Utils {
     } // Else if he is the memeber of the pcp , then allow 'view' permission
     else if ($action == CRM_Core_Permission::VIEW) { 
       // Find PCPs for this contact 
+      // FIXME: checking the user is the member of team pcp
       $pcpQuery = "
         SELECT cps.id FROM civicrm_value_pcp_custom_set cps 
         INNER JOIN civicrm_pcp cp ON (cp.id = cps.entity_id)
@@ -570,6 +571,32 @@ class  CRM_Pcpteams_Utils {
       );
       if(CRM_Core_DAO::singleValueQuery($pcpQuery, $pcpQueryParams)) {
           return TRUE;
+      }
+      //check the user can view the other members related to user team PCP
+      $getUserTeamQuery = "
+        SELECT cps.team_pcp_id FROM civicrm_value_pcp_custom_set cps 
+        INNER JOIN civicrm_pcp cp ON (cp.id = cps.entity_id)
+        WHERE cp.contact_id = %1
+      ";
+      $getUserTeamPcpDAO = CRM_Core_DAO::executeQuery($getUserTeamQuery, array( 1 => array($loggedContactId, 'Integer')));
+      $userTeamPcps = array();
+      while ($getUserTeamPcpDAO->fetch()) {
+        $userTeamPcps[] = $getUserTeamPcpDAO->team_pcp_id;
+      }
+      
+      if (!empty($userTeamPcps)) {
+        $userTeamPcpIds = implode(', ', $userTeamPcps);
+        $memberQuery = "
+          SELECT cp.id
+          FROM civicrm_pcp cp
+          LEFT JOIN civicrm_value_pcp_custom_set cpcs ON (cp.id = cpcs.entity_id)
+          LEFT JOIN civicrm_value_pcp_relationship_set crcs ON (cp.id = crcs.pcp_a_b)
+          WHERE (cpcs.entity_id = %1 AND cpcs.team_pcp_id IN ({$userTeamPcpIds})) OR ( crcs.pcp_a_b = %1 AND crcs.pcp_b_a IN ({$userTeamPcpIds}))
+        ";
+        $memberPcp = CRM_Core_DAO::singleValueQuery($memberQuery, array( 1 => array($pcpId, 'Integer')));
+        if ($memberPcp) {
+          return TRUE;
+        }
       }
       //check is any pending request;
       $relQuery = "
