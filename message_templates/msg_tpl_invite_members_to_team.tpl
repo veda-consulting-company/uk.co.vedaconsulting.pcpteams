@@ -23,6 +23,8 @@
 
   We hope you take the plunge! Love the LLR fundraising team
 </p>
+  
+<p><a href="{$pageURL}">{ts}Join fundraising Team{/ts}</a></p>
 
 </body>
 </html>
