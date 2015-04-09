@@ -545,7 +545,7 @@ class  CRM_Pcpteams_Utils {
     return $dao->id;
   }
   
-  static function hasPermission($pcpId, $loggedContactId, $action = CRM_Core_Permission::EDIT) {
+  static function hasPermission($pcpId, $loggedContactId, $action = CRM_Core_Permission::EDIT, $teamPcpId = NULL) {
     if(empty($pcpId)) {
       return NULL;
     }
@@ -588,6 +588,34 @@ class  CRM_Pcpteams_Utils {
       }
       if (CRM_Contact_BAO_Contact_Permission::allow($pcpOwnerContactId, CRM_Core_Permission::VIEW)) {
         return TRUE;
+      }
+    }
+    else if ($action == CRM_Pcpteams_Constant::C_PERMISSION_MEMBER) { 
+      if ($pcpId && $teamPcpId) {
+        //check pcp custom set 
+        $queryParams = array( 
+          1 => array($pcpId, 'Integer'),
+          2 => array($teamPcpId, 'Integer')
+        );
+        $query = "
+          SELECT id FROM civicrm_value_pcp_custom_set 
+          WHERE entity_id = %1 AND team_pcp_id = %2
+        ";
+        $teamMemberExists = CRM_Core_Dao::singleValueQuery($query, $queryParams);
+        if ($teamMemberExists) {
+          return TRUE;
+        }
+        
+        
+        //check pcp relationship custom set
+        $query = "
+        SELECT id FROM civicrm_value_pcp_relationship_set
+        WHERE pcp_a_b = %1 AND pcp_b_a = %2
+        ";
+        $teamMemberExists = CRM_Core_Dao::singleValueQuery($query, $queryParams);
+        if ($teamMemberExists) {
+          return TRUE;
+        }
       }
     }
     else {

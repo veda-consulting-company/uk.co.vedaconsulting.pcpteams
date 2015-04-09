@@ -98,8 +98,11 @@ function _civicrm_api3_pcpteams_create_spec(&$params) {
 function civicrm_api3_pcpteams_get($params) {
   $permParams = array(
     'pcp_id' => $params['pcp_id'],
+    'team_pcp_id' => isset($params['team_pcp_id']) ? $params['team_pcp_id'] : NULL,
   );
-  if (!_civicrm_pcpteams_permission_check($permParams, CRM_Core_Permission::VIEW)) {
+  if (!_civicrm_pcpteams_permission_check($permParams, CRM_Core_Permission::VIEW)
+    && !_civicrm_pcpteams_permission_check($permParams, CRM_Pcpteams_Constant::C_PERMISSION_MEMBER)
+    ) {
     return civicrm_api3_create_error('insufficient permission to view this record');
   }
   
@@ -1166,7 +1169,7 @@ function civicrm_api3_pcpteams_getTeamRequestInfo($params) {
   
   $dao = CRM_Core_Dao::executeQuery($query, $queryParams);
   while($dao->fetch()) {
-    $memberPcpResult = civicrm_api('Pcpteams', 'get', array('version' => 3, 'sequential' => 1, 'pcp_id' => $dao->pcp_a_b));
+    $memberPcpResult = civicrm_api('Pcpteams', 'get', array('version' => 3, 'sequential' => 1, 'pcp_id' => $dao->pcp_a_b, 'team_pcp_id' => $params['team_pcp_id'] ));
     $getAllDonations = civicrm_api3_pcpteams_getAllDonations(array('page_id' => $dao->page_id, 'pcp_id' => $dao->pcp_a_b, 'team_pcp_id' => $params['team_pcp_id'] ));
     $result[$dao->pcp_a_b] = array(
       'display_name'       => $dao->display_name,
@@ -1237,73 +1240,23 @@ function _civicrm_pcpteams_permission_check($params, $action = CRM_Core_Permissi
   $contactId = isset($params['contact_id']) ? $params['contact_id'] : NULL ;
   
   if ($action == CRM_Pcpteams_Constant::C_PERMISSION_MEMBER) {
-    if (isset($params['pcp_id']) && isset($params['team_pcp_id'])) {
-      //check pcp custom set 
-      $query = "
-        SELECT id FROM civicrm_value_pcp_custom_set 
-        WHERE entity_id = %1 AND team_pcp_id = %2
-      ";
-      $queryParams = array( 
-        1 => array($params['pcp_id'], 'Integer'),
-        2 => array($params['team_pcp_id'], 'Integer')
-      );
-      $teamMemberExists = CRM_Core_Dao::singleValueQuery($query, $queryParams);
-      if ($teamMemberExists) {
-        return TRUE;
-      }
-      
-      
-      //check pcp relationship custom set
-      $query = "
-      SELECT id FROM civicrm_value_pcp_relationship_set
-      WHERE pcp_a_b = %1 AND pcp_b_a = %2
-      ";
-      $teamMemberExists = CRM_Core_Dao::singleValueQuery($query, $queryParams);
-      if ($teamMemberExists) {
-        return TRUE;
-      }
-    }
+    return CRM_Pcpteams_Utils::hasPermission($params['pcp_id'], $contactId, $action, $params['team_pcp_id']);
   }
   
+  //pcp id permission check 
   if (isset($params['pcp_id'])) {
-    //check the pcp_id is individual / team pcp_id
-    $pcpContactId = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $params['pcp_id'], 'contact_id');
-    $contactType  = CRM_Contact_BAO_Contact::getContactTypes($pcpContactId);
-    if (in_array(CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE, $contactType)) {
-      $params['team_pcp_id'] = $params['pcp_id'];
-      unset($params['pcp_id']);
-    }
-    else{
-      //pcp id permission check
-      return CRM_Pcpteams_Utils::hasPermission($params['pcp_id'], $contactId, $action);
-    }
+    return CRM_Pcpteams_Utils::hasPermission($params['pcp_id'], $contactId, $action);
   }
   
   //team pcp id permission check 
-  //user can be member / admin for the team
   if (isset($params['team_pcp_id'])) {
-    if (CRM_Pcpteams_Utils::hasPermission($params['team_pcp_id'], $contactId, CRM_Core_Permission::EDIT)) {
-      $_isTeamAdmin = TRUE;
-    }
-    $authorise = CRM_Pcpteams_Utils::hasPermission($params['team_pcp_id'], $contactId, $action);
-    if ($authorise) {
-      return TRUE;
-    }
+    return CRM_Pcpteams_Utils::hasPermission($params['team_pcp_id'], $contactId, $action);
   }
   
   //check with contact_id 
   if ($contactId == CRM_Pcpteams_Utils::getloggedInUserId()) {
     return TRUE;
   }
-  // else {
-  //   $contactType  = CRM_Contact_BAO_Contact::getContactTypes($contactId);
-  //   if (in_array(CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE, $contactType)) {
-  //     $params['team_pcp_id'] = $params['pcp_id'];
-  //     unset($params['pcp_id']);
-  //   }
-  // }
-  
-  
   
   return FALSE;
 }
