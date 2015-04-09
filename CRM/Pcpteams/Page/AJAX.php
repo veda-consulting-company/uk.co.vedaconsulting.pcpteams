@@ -6,58 +6,17 @@
 
 class CRM_Pcpteams_Page_AJAX {
   
-  static function getContactList($params){
-
-    $where = null;
-    if (!empty($params['contact_sub_type'])) {
-      $contactSubType = CRM_Utils_Type::escape($params['contact_sub_type'], 'String');
-      $where .= " AND contact_sub_type = '{$contactSubType}'";
-    }
-    
-    //if get id from params
-    if (!empty($params['id'])) {
-      $where .= " AND id = " . (int) $params['id'];
-    }
-    
-    //search name
-    $name = $params['input'];
-    $strSearch = "%$name%";
-    if(isset($params['input'])){
-      
-      $where .= " AND display_name like '$strSearch'";
-    }
-    
-    //query
-    $query = "
-      Select id, display_name, contact_type
-      FROM civicrm_contact 
-    ";
-    
-    //where clause
-    if(!empty($where)){
-      $query .= " WHERE (1) {$where}";
-    }
-    
-    //LIMIT
-    $query .= " LIMIT 0, 15";
-    
-    //execute query
-    $dao = CRM_Core_DAO::executeQuery($query);
-    while($dao->fetch()){
-      $result['values'][] = array(
-        'id'    =>  $dao->id,
-        'label' =>  $dao->display_name,
-        'icon_class' =>  $dao->contact_type,
-      );
-    }
-
-    return $result;
-  }
-  
   static function unsubscribeTeam(){
     $entity_id    = CRM_Utils_Type::escape($_POST['entity_id'], 'Integer');
     $team_pcp_id  = CRM_Utils_Type::escape($_POST['team_pcp_id'], 'Integer');
     $teamPcpCfId  = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId(); 
+
+    //check the hasPermission to view details
+    if (!CRM_Pcpteams_Utils::hasPermission($entity_id, NULL, CRM_Core_Permission::EDIT)) {
+      CRM_Core_Session::setStatus(ts("Sorry! You dont have right permission to Edit this page"));
+      CRM_Utils_System::civiExit();
+    }
+    
     $params = array(
       'version'   => 3,
       'entity_id' => $entity_id,
@@ -133,7 +92,13 @@ class CRM_Pcpteams_Page_AJAX {
     $pcpId       = CRM_Utils_Type::escape($_POST['pcp_id'], 'Integer');
     $editedValue = CRM_Utils_Type::escape($_POST['value'], 'String');
     $columnfield = str_replace('pcp_', '', $eleId);
-
+    
+    //check the hasPermission to view details
+    if (!CRM_Pcpteams_Utils::hasPermission($pcpId, NULL, CRM_Core_Permission::EDIT)) {
+      CRM_Core_Session::setStatus(ts("Sorry! You dont have right permission to Edit this page"));
+      CRM_Utils_System::civiExit();
+    }
+    
     $params      = array(
       'version' => 3,
       'id'      => $pcpId,
@@ -149,6 +114,14 @@ class CRM_Pcpteams_Page_AJAX {
     $pcp_id         = CRM_Utils_Type::escape($_POST['pcp_id'], 'Integer');
     $team_pcp_id    = CRM_Utils_Type::escape($_POST['team_pcp_id'], 'Integer');
     $teamPcpCfId    = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
+    
+    //check the hasPermission to view details
+    if (!CRM_Pcpteams_Utils::hasPermission($team_pcp_id, NULL, CRM_Core_Permission::EDIT)) {
+      CRM_Core_Session::setStatus(ts("Sorry! You dont have right permission to approve this member"));
+      CRM_Utils_System::civiExit();
+    }
+      
+      
     $params = array(
       'version'   => 3,
       'entity_id' => $pcp_id,
@@ -213,8 +186,22 @@ class CRM_Pcpteams_Page_AJAX {
   
   static function declineTeamMember(){
     $entity_id      = CRM_Utils_Type::escape($_POST['entity_id'], 'Integer');
+    $op             = CRM_Utils_Type::escape($_POST['op'], 'String');
     $assigneeId     = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_Relationship', $entity_id, 'contact_id_b');
     $targetId       = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_Relationship', $entity_id, 'contact_id_a');
+    
+    //check Team admin
+    $teamAdmin      = civicrm_api('pcpteams', 'checkTeamAdmin', array(
+      'version' => 3,
+      'user_id' => $targetId,
+      'team_contact_id' => $assigneeId,
+      )
+    );
+    if (!$teamAdmin['is_team_admin'] && $op == 'decline') {
+      CRM_Core_Session::setStatus(ts("Sorry! You dont have right permission to decline this member"));
+      CRM_Utils_System::civiExit();
+    }
+    
     $updatedResult  = civicrm_api3('Relationship', 'delete', array(
       'sequential' => 1,
       'id'         => $entity_id,
@@ -237,6 +224,13 @@ class CRM_Pcpteams_Page_AJAX {
   static function removeTeamMember() {
     $pcp_id         = CRM_Utils_Request::retrieve('pcp_id', 'Positive', CRM_Core_DAO::$_nullObject, TRUE);
     $team_pcp_id    = CRM_Utils_Request::retrieve('team_pcp_id', 'Positive', CRM_Core_DAO::$_nullObject, TRUE);
+    
+    //check the hasPermission to view details
+    if (!CRM_Pcpteams_Utils::hasPermission($team_pcp_id, NULL, CRM_Core_Permission::EDIT)) {
+      CRM_Core_Session::setStatus(ts("Sorry! You dont have right permission to remove this member"));
+      CRM_Utils_System::civiExit();
+    }
+        
     $teamPcpCfId    = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
     $params = array(
       'version'   => 3,
@@ -255,6 +249,13 @@ class CRM_Pcpteams_Page_AJAX {
   static function deactivateTeamMember() {
     $pcp_id         = CRM_Utils_Request::retrieve('pcp_id', 'Positive', CRM_Core_DAO::$_nullObject, TRUE);
     $team_pcp_id    = CRM_Utils_Request::retrieve('team_pcp_id', 'Positive', CRM_Core_DAO::$_nullObject, TRUE);
+    
+    //check the hasPermission to view details
+    if (!CRM_Pcpteams_Utils::hasPermission($team_pcp_id, NULL, CRM_Core_Permission::EDIT)) {
+      CRM_Core_Session::setStatus(ts("Sorry! You dont have right permission to de-activate this member"));
+      CRM_Utils_System::civiExit();
+    }
+  
     $teamPcpCfId    = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId(); 
     $params = array(
       'version'   => 3,
@@ -269,49 +270,6 @@ class CRM_Pcpteams_Page_AJAX {
     }
     CRM_Utils_System::civiExit();
     
-  }
-  
-  static function getEventList($params) {
-  //Fixme: tidy up the codings
-  //contact_sub_type
-    $where = null;
-    $params['sequential'] = 1;
-    if (!empty($params['contact_sub_type'])) {
-      $contactSubType = CRM_Utils_Type::escape($params['contact_sub_type'], 'String');
-      
-      $where .= " AND contact_sub_type = '{$contactSubType}'";
-    }
-    //if get id from params
-    if (!empty($params['id'])) {
-      $where .= " AND id = " . (int) $params['id'];
-    }
-    //search name
-    $name = $params['input'];
-    $strSearch = "%$name%";
-    if(isset($params['input'])){
-      
-      $where .= " AND title like '$strSearch'";
-    }
-    //query
-    $query = "
-      Select id, title
-      FROM civicrm_event
-    ";
-    //where clause
-    if(!empty($where)){
-      $query .= " WHERE (1) {$where}";
-    }
-    //LIMIT
-    $query .= " LIMIT 0, 15";
-    //execute query
-    $dao = CRM_Core_DAO::executeQuery($query);
-    while($dao->fetch()){
-      $result[$dao->id] = array(
-        'id'    =>  $dao->id,
-        'label' =>  $dao->title,
-      );
-    }
-    return $result;
   }
   
   static function deleteTeamPcp() {
