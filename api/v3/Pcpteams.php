@@ -96,7 +96,10 @@ function _civicrm_api3_pcpteams_create_spec(&$params) {
 }
 
 function civicrm_api3_pcpteams_get($params) {
-  if (!_civicrm_pcpteams_permission_check($params, CRM_Core_Permission::VIEW)) {
+  $permParams = array(
+    'pcp_id' => $params['pcp_id'],
+  );
+  if (!_civicrm_pcpteams_permission_check($permParams, CRM_Core_Permission::VIEW)) {
     return civicrm_api3_create_error('insufficient permission to view this record');
   }
   
@@ -136,8 +139,10 @@ function _civicrm_api3_pcpteams_get_spec(&$params) {
 
 function civicrm_api3_pcpteams_delete($params) {
   //check permission to delete 
-  $params['pcp_id'] = $params['id'];
-  if (!_civicrm_pcpteams_permission_check($params, CRM_Core_Permission::EDIT)) {
+  $permParams = array(
+    'pcp_id' => $params['id'],
+  );
+  if (!_civicrm_pcpteams_permission_check($permParams, CRM_Core_Permission::EDIT)) {
     return civicrm_api3_create_error('insufficient permission to delete this record');
   }
   
@@ -279,8 +284,10 @@ function civicrm_api3_pcpteams_getContactList($params) {
 }
 
 function civicrm_api3_pcpteams_getPcpDashboardInfo($params) {
-  
-  if (!_civicrm_pcpteams_permission_check($params, CRM_Core_Permission::VIEW)) {
+  $permParams = array(
+    'contact_id' => $params['contact_id'],
+  );
+  if (!_civicrm_pcpteams_permission_check($permParams, CRM_Core_Permission::VIEW)) {
     return civicrm_api3_create_error('insufficient permission to view this record');
   }
   
@@ -380,7 +387,10 @@ function _getPcpDashboardActionLink($params){
 function civicrm_api3_pcpteams_getMyTeamInfo($params) {
   
   //check the contact id is the logged in userId
-  if (!_civicrm_pcpteams_permission_check($params, CRM_Core_Permission::VIEW)) {
+  $permParams = array(
+    'contact_id' => $params['contact_id'],
+  );
+  if (!_civicrm_pcpteams_permission_check($permParams, CRM_Core_Permission::VIEW)) {
     return civicrm_api3_create_error('insufficient permission to view this record');
   }
   
@@ -496,7 +506,10 @@ function civicrm_api3_pcpteams_getMyPendingTeam($params) {
   //   $checkPermission = $params['checkPermission'];
   // }
   //check the contact id is the logged in userId
-  if (!_civicrm_pcpteams_permission_check($params, CRM_Core_Permission::VIEW)) {
+  $permParams = array(
+    'contact_id' => $params['contact_id'],
+  );
+  if (!_civicrm_pcpteams_permission_check($permParams, CRM_Core_Permission::VIEW)) {
     return civicrm_api3_create_error('insufficient permission to view this record');
   }
   
@@ -540,7 +553,10 @@ function civicrm_api3_pcpteams_getTeamRequest($params) {
   $result= CRM_Core_DAO::$_nullArray;
   
   //check the contact id is the logged in userId
-  if (!_civicrm_pcpteams_permission_check($params, CRM_Core_Permission::VIEW)) {
+  $permParams = array(
+    'contact_id' => $params['contact_id'],
+  );
+  if (!_civicrm_pcpteams_permission_check($permParams, CRM_Core_Permission::VIEW)) {
     return civicrm_api3_create_error('insufficient permission to view this record');
   }
     
@@ -658,7 +674,10 @@ function civicrm_api3_pcpteams_getTeamMembers($params) {
   $result= CRM_Core_DAO::$_nullArray;
   
   //check the contact id is the logged in userId
-  if (!_civicrm_pcpteams_permission_check($params, CRM_Core_Permission::VIEW)) {
+  $permParams = array(
+    'contact_id' => $params['contact_id'],
+  );
+  if (!_civicrm_pcpteams_permission_check($permParams, CRM_Core_Permission::VIEW)) {
     return civicrm_api3_create_error('insufficient permission to view this record');
   }
   
@@ -752,7 +771,10 @@ function _civicrm_api3_pcpteams_getTeamMemberPCPIds($params){
 function civicrm_api3_pcpteams_getTeamMembersInfo($params){
   $result= CRM_Core_DAO::$_nullArray;
   //check the hasPermission to view details
-  if (!_civicrm_pcpteams_permission_check($params, CRM_Core_Permission::VIEW)) {
+  $permParams = array(
+    'pcp_id' => $params['pcp_id'],
+  );
+  if (!_civicrm_pcpteams_permission_check($permParams, CRM_Core_Permission::VIEW)) {
     return civicrm_api3_create_error('insufficient permission to view this record');
   }
   
@@ -775,6 +797,7 @@ function civicrm_api3_pcpteams_getTeamMembersInfo($params){
       , cp.contact_id   as contact_id
       , cp.goal_amount  as goal_amount
       , cc.display_name as display_name
+      , cpcs.team_pcp_id as team_pcp_id
       , CASE 
         WHEN cr.relationship_type_id = {$adminRelTypeId} AND cr.contact_id_b = {$teamPcpContactId} THEN '1' ELSE '0'
         END             as is_team_admin
@@ -790,7 +813,7 @@ function civicrm_api3_pcpteams_getTeamMembersInfo($params){
   }
   //amount raised and total donations count
   foreach ($members as $memberPcpId => $values) {
-    $getAllDonations            = civicrm_api3_pcpteams_getAllDonations(array('page_id' => $values['page_id'], 'pcp_id' => $values['pcp_id'], 'is_team_member' => 1));
+    $getAllDonations            = civicrm_api3_pcpteams_getAllDonations(array('page_id' => $values['page_id'], 'pcp_id' => $values['pcp_id'], 'team_pcp_id' => $values['team_pcp_id']));
     $values ['donations_count'] = $getAllDonations['count'];
     $result[$memberPcpId]  = $values;
   }
@@ -881,7 +904,10 @@ function civicrm_api3_pcpteams_getEventList($params) {
 function civicrm_api3_pcpteams_getRank($params) {
   $result= CRM_Core_DAO::$_nullArray;
   //check the hasPermission to view details
-  if (!_civicrm_pcpteams_permission_check($params, CRM_Core_Permission::VIEW)) {
+  $permParams = array(
+    'pcp_id' => $params['pcp_id'],
+  );
+  if (!_civicrm_pcpteams_permission_check($permParams, CRM_Core_Permission::VIEW)) {
     return civicrm_api3_create_error('insufficient permission to view this record');
   }
   
@@ -936,7 +962,13 @@ function civicrm_api3_pcpteams_getAllDonations($params) {
   $limit = NULL;
   $result= CRM_Core_DAO::$_nullArray;
   //check the hasPermission to view details
-  if (!_civicrm_pcpteams_permission_check($params, CRM_Core_Permission::VIEW)) {
+  $permParams = array(
+    'pcp_id' => $params['pcp_id'],
+    'team_pcp_id' => isset($params['team_pcp_id']) ? $params['team_pcp_id'] : NULL,
+  );
+  if (!_civicrm_pcpteams_permission_check($permParams, CRM_Core_Permission::VIEW) 
+    && !_civicrm_pcpteams_permission_check($permParams, CRM_Pcpteams_Constant::C_PERMISSION_MEMBER)
+    ) {
     return civicrm_api3_create_error('insufficient permission to view this record');
   }
   if (isset($params['limit']) && CRM_Utils_Type::escape($params['limit'], 'Integer')) {
@@ -979,7 +1011,10 @@ function civicrm_api3_pcpteams_getTopDonations($params) {
   $result= CRM_Core_DAO::$_nullArray;
   
   //check the hasPermission to view details
-  if (!_civicrm_pcpteams_permission_check($params, CRM_Core_Permission::VIEW)) {
+  $permParams = array(
+    'pcp_id' => $params['pcp_id'],
+  );
+  if (!_civicrm_pcpteams_permission_check($permParams, CRM_Core_Permission::VIEW)) {
     return civicrm_api3_create_error('insufficient permission to view this record');
   }
   
@@ -1082,7 +1117,7 @@ function _civicrm_api3_pcpteams_getMoreInfo(&$params) {
     $params[$pcpId]['percentage']       = $percentage;
     
     // check the user has pending request
-    $pendingDetails = civicrm_api3_pcpteams_getMyPendingTeam(array('contact_id' => $pcpValues['contact_id'], 'checkPermission' => FALSE));
+    $pendingDetails = civicrm_api3_pcpteams_getMyPendingTeam(array('contact_id' => $pcpValues['contact_id']));
     $params[$pcpId]['pending_team_pcp_id']    = isset($pendingDetails['values'][0]) ? $pendingDetails['values'][0]['teamPcpId'] : NULL;
     $params[$pcpId]['pending_team_relationship_id']    = isset($pendingDetails['values'][0]) ? $pendingDetails['values'][0]['relationship_id'] : NULL;
   
@@ -1111,7 +1146,10 @@ function _civicrm_api3_pcpteams_getAmountRaised_spec(&$params) {
 function civicrm_api3_pcpteams_getTeamRequestInfo($params) {
   $result= CRM_Core_DAO::$_nullArray;
   //check the hasPermission to view details
-  if (!_civicrm_pcpteams_permission_check($params, CRM_Core_Permission::VIEW)) {
+  $permParams = array(
+    'team_pcp_id' => $params['team_pcp_id'],
+  );
+  if (!_civicrm_pcpteams_permission_check($permParams, CRM_Core_Permission::VIEW)) {
     return civicrm_api3_create_error('insufficient permission to view this record');
   }
   
@@ -1128,8 +1166,8 @@ function civicrm_api3_pcpteams_getTeamRequestInfo($params) {
   
   $dao = CRM_Core_Dao::executeQuery($query, $queryParams);
   while($dao->fetch()) {
-    $memberPcpResult = civicrm_api('Pcpteams', 'get', array('version' => 3, 'sequential' => 1, 'pcp_id' => $dao->pcp_a_b, 'is_team_member' => 1));
-    $getAllDonations = civicrm_api3_pcpteams_getAllDonations(array('page_id' => $dao->page_id, 'pcp_id' => $dao->pcp_a_b, 'is_team_member' => 1));
+    $memberPcpResult = civicrm_api('Pcpteams', 'get', array('version' => 3, 'sequential' => 1, 'pcp_id' => $dao->pcp_a_b));
+    $getAllDonations = civicrm_api3_pcpteams_getAllDonations(array('page_id' => $dao->page_id, 'pcp_id' => $dao->pcp_a_b, 'team_pcp_id' => $params['team_pcp_id'] ));
     $result[$dao->pcp_a_b] = array(
       'display_name'       => $dao->display_name,
       'pcp_id'             => $dao->pcp_a_b,
@@ -1197,10 +1235,34 @@ function _civicrm_pcpteams_permission_check($params, $action = CRM_Core_Permissi
   }
   
   $contactId = isset($params['contact_id']) ? $params['contact_id'] : NULL ;
-  if (isset($params['is_team_member']) && isset($params['pcp_id'])) {
-    //FIXME: need to check, this pcp contact is member of logged in user team
-    // are the pcp contact request to team or existing member of team
-    return TRUE;
+  
+  if ($action == CRM_Pcpteams_Constant::C_PERMISSION_MEMBER) {
+    if (isset($params['pcp_id']) && isset($params['team_pcp_id'])) {
+      //check pcp custom set 
+      $query = "
+        SELECT id FROM civicrm_value_pcp_custom_set 
+        WHERE entity_id = %1 AND team_pcp_id = %2
+      ";
+      $queryParams = array( 
+        1 => array($params['pcp_id'], 'Integer'),
+        2 => array($params['team_pcp_id'], 'Integer')
+      );
+      $teamMemberExists = CRM_Core_Dao::singleValueQuery($query, $queryParams);
+      if ($teamMemberExists) {
+        return TRUE;
+      }
+      
+      
+      //check pcp relationship custom set
+      $query = "
+      SELECT id FROM civicrm_value_pcp_relationship_set
+      WHERE pcp_a_b = %1 AND pcp_b_a = %2
+      ";
+      $teamMemberExists = CRM_Core_Dao::singleValueQuery($query, $queryParams);
+      if ($teamMemberExists) {
+        return TRUE;
+      }
+    }
   }
   
   if (isset($params['pcp_id'])) {
