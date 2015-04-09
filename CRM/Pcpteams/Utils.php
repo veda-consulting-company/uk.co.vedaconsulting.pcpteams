@@ -376,21 +376,14 @@ class  CRM_Pcpteams_Utils {
         $subject = 'Team is created';
         $details = 'Team is created'.$targetName;
         break;
-      case CRM_Pcpteams_Constant::C_AT_TEAM_INVITE:
-        $isTeamAdmin = 0;
-        if (isset($params['assignee_contact_id'])) {
-          $targetName = CRM_Contact_BAO_Contact::displayName($params['assignee_contact_id']);
-          $checkAdminParams = array(
-            'version' => 3,
-            'user_id' => $params['source_contact_id'],
-            'team_contact_id' => $params['assignee_contact_id'],
-          );
-          $chkTeamAdmin= civicrm_api('Pcpteams', 'checkTeamAdmin', $checkAdminParams);
-          $isTeamAdmin = $chkTeamAdmin['is_team_admin'];
-        }
-        
-        $sourceName .= $isTeamAdmin ? ' ( Team Admin )' : ' ( Team Member )';
-        $subject = 'Invite to join team';
+      case CRM_Pcpteams_Constant::C_AT_INVITATION_JOIN_TEAM_ADMIN:
+        $sourceName .= ' ( Team Admin )' ;
+        $subject = 'Team Member Invite to Join Team';
+        $details = 'Invited to join team '.$targetName. ' by '.$sourceName;
+        break;
+      case CRM_Pcpteams_Constant::C_AT_INVITATION_JOIN_TEAM_MEMBER:
+        $sourceName .= ' ( Team Member )';
+        $subject = 'Team Member Invite to Join Team';
         $details = 'Invited to join team '.$targetName. ' by '.$sourceName;
         break;
       case CRM_Pcpteams_Constant::C_AT_GROUP_JOIN:
@@ -415,7 +408,7 @@ class  CRM_Pcpteams_Utils {
         $details = "Member join team request has declined";
         break;
       case CRM_Pcpteams_Constant::C_AT_REQ_MADE:
-        $subject = 'Sent team request';
+        $subject = 'Team Member Requires Authorisation';
         $details = "Member join team request made by".$sourceName.' to '. $targetName;
         break;
       case CRM_Pcpteams_Constant::C_AT_LEAVE_TEAM:

@@ -225,7 +225,7 @@ class CRM_Pcpteams_Page_AJAX {
         'assignee_contact_id'=>  $assigneeId,
         'target_contact_id'  =>  $targetId,
       );
-      CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_REQ_AUTHORISED);
+      CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_REQ_DECLINED);
       //end
       echo 'declined';
     }else{
