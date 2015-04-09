@@ -12,19 +12,19 @@
 
 <p>
   <strong>
-    Hi {$inviteeFirstName},
-  </strong>
+    {$inviteeFirstName} 
+  </strong></p>
 
-  <strong>{$userName}</strong> has invited you to partake in <strong>{$eventName}</strong> and become a member of team <strong>{$teamName}</strong> and help fight blood cancer with leukaemia and lymphoma research.
+    <p> <strong>{$userName}</strong> has invited you to partake in <strong>{$eventName}</strong> and become a member of team <strong>{$teamName}</strong> and help fight blood cancer with leukaemia and lymphoma research.</p>
 
-  To sign up simply click the link below to register for the event and start your fundraising.
-
-  To help us keep track of you please use <strong>{$inviteeEmail}</strong> when you register.
-
-  We hope you take the plunge! Love the LLR fundraising team
-</p>
+    <p>To sign up simply click the link below to register for the event and start your fundraising. </p>
   
-<p><a href="{$pageURL}">{ts}Join fundraising Team{/ts}</a></p>
+    <p><a href="{$pageURL}">{ts}Link{/ts}</a> </p>
+    <p>To help us keep track of you please use <strong>{$inviteeEmail}</strong> when you register.</p>
+
+    <p>We hope you take the plunge! </p>
+    <p>Love the LLR fundraising team</p>
+  
 
 </body>
 </html>

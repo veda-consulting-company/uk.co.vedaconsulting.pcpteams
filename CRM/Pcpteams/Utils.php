@@ -376,12 +376,12 @@ class  CRM_Pcpteams_Utils {
         $subject = 'Team is created';
         $details = 'Team is created'.$targetName;
         break;
-      case CRM_Pcpteams_Constant::C_AT_INVITATION_JOIN_TEAM_ADMIN:
+      case CRM_Pcpteams_Constant::C_AT_INVITATION_FROM_ADMIN:
         $sourceName .= ' ( Team Admin )' ;
         $subject = 'Team Member Invite to Join Team';
         $details = 'Invited to join team '.$targetName. ' by '.$sourceName;
         break;
-      case CRM_Pcpteams_Constant::C_AT_INVITATION_JOIN_TEAM_MEMBER:
+      case CRM_Pcpteams_Constant::C_AT_INVITATION_FROM_MEMBER:
         $sourceName .= ' ( Team Member )';
         $subject = 'Team Member Invite to Join Team';
         $details = 'Invited to join team '.$targetName. ' by '.$sourceName;

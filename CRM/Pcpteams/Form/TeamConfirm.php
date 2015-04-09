@@ -124,7 +124,7 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
       $chkTeamAdmin= civicrm_api('Pcpteams', 'checkTeamAdmin', $checkAdminParams);
       $isTeamAdmin = $chkTeamAdmin['is_team_admin'];
         
-      $teamInviteActivityType = $isTeamAdmin ? CRM_Pcpteams_Constant::C_AT_INVITATION_JOIN_TEAM_ADMIN : CRM_Pcpteams_Constant::C_AT_INVITATION_JOIN_TEAM_MEMBER;
+      $teamInviteActivityType = $isTeamAdmin ? CRM_Pcpteams_Constant::C_AT_INVITATION_FROM_ADMIN : CRM_Pcpteams_Constant::C_AT_INVITATION_FROM_MEMBER;
       $activity = CRM_Pcpteams_Utils::createPcpActivity($actParams, $teamInviteActivityType);
       
       $result = CRM_Pcpteams_Utils::sendInviteEmail($msgTplId, $this->_contactID, $values, $teampcpId, $activity['id']);
