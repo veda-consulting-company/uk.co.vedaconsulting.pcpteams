@@ -27,11 +27,10 @@
           C_AT_PCP_CREATED        = 'PCP Created',              //  Activity Type - pcp created
           C_AT_REQ_MADE           = 'PCP Join Team Request Made',
           C_AT_REQ_AUTHORISED     = 'PCP Member Join Team Request Authorised',
-          C_AT_REQ_DECLINED       = 'PCP  Member Join Team Request Rejected',
-          C_AT_INVITATION_JOIN_TEAM_ADMIN       = 'PCP Email invitation to Join Team (from Team Admin)',
-          C_AT_INVITATION_JOIN_TEAM_MEMBER      = 'PCP Email invitation to Join Team (from Team Member)',
-          C_AT_INVITATION_ACCEPTED_PENDING_AUTH = 'PCP Team Invitation Replied and Pending',
-          C_AT_INVITATION_ACCEPTED_AND_AUTH     = 'PCP Team Invitation Reply Authorised',
+          C_AT_REQ_DECLINED       = 'PCP Member Join Team Request Rejected',
+          C_AT_INVITATION_FROM_ADMIN       = 'PCP Email invitation to Join Team (from Team Admin)',
+          C_AT_INVITATION_FROM_MEMBER      = 'PCP Email invitation to Join Team (from Team Member)',
+          C_AT_INVITATION_ACCEPTED         = 'PCP Team Invitation Replied and Pending',
           C_AT_LEAVE_TEAM         = 'PCP Member Left Team',
           C_CONTACT_SUB_TYPE      = 'Team',                     //  Contact Sub Type - Team
           C_INVITE_MAIL_LIMIT     = 5,
