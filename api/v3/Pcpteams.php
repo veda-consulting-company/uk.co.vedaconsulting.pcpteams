@@ -837,7 +837,6 @@ function _getTeamMemberActionLink($activityId, $myPcpId, $teamPcpId){
   $action     = "
     <span>
       <a href='javascript:void(0)' class=\"action-item crm-hover-button\" title='Remove From Team' onclick='removeTeamMember({$myPcpId},{$teamPcpId} );'>Remove</a>
-      <a href='javascript:void(0)' class=\"action-item crm-hover-button\" title='De-activate' onclick='deactivateTeamMember({{$myPcpId},{$teamPcpId});'>De-activate</a>
     </span>
     ";
   return $action;
