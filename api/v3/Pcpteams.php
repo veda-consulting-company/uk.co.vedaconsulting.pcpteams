@@ -1254,8 +1254,8 @@ function _civicrm_pcpteams_permission_check($params, $action = CRM_Core_Permissi
   }
   
   //check with contact_id 
-  if ($contactId == CRM_Pcpteams_Utils::getloggedInUserId()) {
-    return TRUE;
+  if (isset($contactId)) {
+    return CRM_Pcpteams_Utils::hasPermission(NULL, $contactId, $action);
   }
   
   return FALSE;

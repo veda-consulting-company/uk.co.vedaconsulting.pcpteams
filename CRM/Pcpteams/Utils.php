@@ -538,17 +538,20 @@ class  CRM_Pcpteams_Utils {
     return $dao->id;
   }
   
-  static function hasPermission($pcpId, $loggedContactId, $action = CRM_Core_Permission::EDIT, $teamPcpId = NULL) {
+  static function hasPermission($pcpId = NULL, $contactId = NULL, $action = CRM_Core_Permission::EDIT, $teamPcpId = NULL) {
     if(empty($pcpId)) {
+      if($contactId) {
+        return CRM_Contact_BAO_Contact_Permission::allow($contactId, $action);
+      }
       return NULL;
     }
     $pcpOwnerContactId  = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcpId, 'contact_id');
     $hasPermission      = FALSE;
-    if(empty($loggedContactId)) {
-      $loggedContactId = CRM_Pcpteams_Utils::getloggedInUserId();
+    if(empty($contactId)) {
+      $contactId = CRM_Pcpteams_Utils::getloggedInUserId();
     } 
     // Check the pcp page which he is looking is the owner of pcp, then allow 'edit' permission 
-    if($pcpOwnerContactId == $loggedContactId) {
+    if($pcpOwnerContactId == $contactId) {
       return TRUE;
     } // Else if he is the memeber of the pcp , then allow 'view' permission
     else if ($action == CRM_Core_Permission::VIEW) { 
@@ -560,7 +563,7 @@ class  CRM_Pcpteams_Utils {
         WHERE cps.team_pcp_id = %1 AND cp.contact_id = %2";
       $pcpQueryParams = array(
         1 => array($pcpId, 'Integer'),
-        2 => array($loggedContactId, 'Integer'),
+        2 => array($contactId, 'Integer'),
       );
       if(CRM_Core_DAO::singleValueQuery($pcpQuery, $pcpQueryParams)) {
           return TRUE;
@@ -571,7 +574,7 @@ class  CRM_Pcpteams_Utils {
         INNER JOIN civicrm_pcp cp ON (cp.id = cps.entity_id)
         WHERE cp.contact_id = %1
       ";
-      $getUserTeamPcpDAO = CRM_Core_DAO::executeQuery($getUserTeamQuery, array( 1 => array($loggedContactId, 'Integer')));
+      $getUserTeamPcpDAO = CRM_Core_DAO::executeQuery($getUserTeamQuery, array( 1 => array($contactId, 'Integer')));
       $userTeamPcps = array();
       while ($getUserTeamPcpDAO->fetch()) {
         $userTeamPcps[] = $getUserTeamPcpDAO->team_pcp_id;
@@ -599,7 +602,7 @@ class  CRM_Pcpteams_Utils {
       ";
       $relTypeId = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', CRM_Pcpteams_Constant::C_TEAM_RELATIONSHIP_TYPE, 'id', 'name_a_b');
       $relQueryParams = array(
-        1 => array( $loggedContactId, 'Integer'),
+        1 => array( $contactId, 'Integer'),
         2 => array( $pcpOwnerContactId, 'Integer'),
         3 => array( $relTypeId, 'Integer'),
       );
@@ -645,7 +648,7 @@ class  CRM_Pcpteams_Utils {
           WHERE cr.contact_id_a = %1 AND cr.contact_id_b = %2 AND cr.is_active = %3 AND crt.name_a_b = %4";
 
         $queryParams = array(
-          1 => array($loggedContactId, 'Integer'),
+          1 => array($contactId, 'Integer'),
           2 => array($pcpOwnerContactId, 'Integer'),
           3 => array(1, 'Integer'),
           4 => array(CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE, 'String'),
