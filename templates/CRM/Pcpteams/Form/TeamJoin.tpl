@@ -3,9 +3,9 @@
         <h2>{ts}That's great! Please select the name of the team you wish to join{/ts}</h2><br />
         {if $snippet neq 'json'}
         <span class="bold">{ts}Start typing the name
-            of the team you wish to join and then select the appropriate name from those provided.
-            if you can't find the team you wish to join please contact the team captain of visit the
-            team page and join from there or you could create your own team by clicking the <a class='crm-button' href='{crmURL p="civicrm/pcp/support" q="reset=1&pageId=$component_page_id&component=event&code=cpftn&option=1"}'>{ts}Create New Team{/ts}</a> button or you could email <a href="https://leukaemialymphomaresearch.org.uk/">{ts}LLR{/ts}</a>{/ts}</span>
+            of the team you wish to join and then select the correct name. 
+            if you can't find the team you're looking for please contact the team captain, or visit the
+            team page and join from there. Alternatively you could create your own team by clicking the <a class='crm-button' href='{crmURL p="civicrm/pcp/support" q="reset=1&pageId=$component_page_id&component=event&code=cpftn&option=1"}'>{ts}Create New Team{/ts}</a> button. If you need help, email <a href="https://leukaemialymphomaresearch.org.uk/">{ts}us{/ts}</a>{/ts}</span>
         {/if}
 	{foreach from=$elementNames item=elementName}
 	  <div class="crm-section">
