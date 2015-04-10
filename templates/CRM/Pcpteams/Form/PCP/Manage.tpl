@@ -161,7 +161,7 @@
             </div>
             <div class="mem-body-row donate">
               <a class="pcp-button pcp-btn-green crm-pcp-alert-approve-request" href="javascript:void(0)" data-entity-id={$memberInfo.relationship_id} data-pcp-id={$memberInfo.pcp_id} data-teampcp-id={$memberInfo.team_pcp_id}>{ts}Approve{/ts}</a>
-              <a class="pcp-button pcp-btn-red" href="javascript:void(0)" onclick="declineTeamMember('{$memberInfo.relationship_id}', '{$memberInfo.pcp_id}');return false;">{ts}Decline{/ts}</a>
+              <a class="pcp-button pcp-btn-red crm-pcp-alert-decline-request" href="javascript:void(0)" data-entity-id={$memberInfo.relationship_id} data-pcp-id={$memberInfo.pcp_id} data-teampcp-id={$memberInfo.team_pcp_id}>{ts}Decline{/ts}</a>
             </div>
             <div class="clear"></div>
           </div>
@@ -220,12 +220,6 @@
 {* FIXME style display none should take care of css, Need to Discuss with DS to make general alert message *}
 <div class="crm-pcp-alert-leave-team" style="display:none;">
   <p> Are you sure, want to leave from this team ?</p>
-</div>
-<div class="crm-pcp-alert-approve-request" style="display:none;">
-  <p> Would you llike to Approve this request ?</p>
-</div>
-<div class="crm-pcp-alert-decline-request" style="display:none;">
-  <p> Are you sure, want to Decline this request ?</p>
 </div>
 <div class="crm-pcp-alert-cancel-pending-request" style="display:none;">
   <p> Are you sure, want to delete this request ?</p>
@@ -322,7 +316,6 @@ CRM.$(function($) {
       CRM.loadForm(url, {
         dialog: {width: 500, height: 'auto', show: 'drop', hide: "drop"}
       }).on('crmFormSuccess', function(e, data) {
-        console.log(data);
         $(document).ajaxStop(function() { 
           location.reload(true); 
           //DS FIXME: avoid loading of page with url below
@@ -363,6 +356,7 @@ CRM.$(function($) {
     var $el = $(this);
     CRM.confirm({
       title: ts('{/literal}{ts escape="js"}Approve Request{/ts}{literal}'),
+      message: ts('{/literal}{ts escape="js"}Are you sure you want to approve this request?{/ts}{literal}'),
       options: {{/literal}yes: '{ts escape="js"}Yes{/ts}', no: '{ts escape="js"}No{/ts}'{literal}},
     }).on('crmConfirm:yes', function() {
       var postUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=approveTeamMember'}"{literal};
@@ -370,7 +364,29 @@ CRM.$(function($) {
       setPcpMessage('Member Request Approved', 'Member Request Approved');
       request.done(function(data) {
         $('div.member-block > div.mem-body').append(data);
-        adjustMemReqBlockDisplay();
+        $el.closest('.mem-row').remove();
+        if ($(".member-req-block > .mem-body > div").length <= 1) {
+          $(".member-req-block").hide('slow');
+        }
+      });
+    });
+  });
+
+  $(".crm-pcp-alert-decline-request").on('click', function(ev) {
+    var $el = $(this);
+    CRM.confirm({
+      title: ts('{/literal}{ts escape="js"}Decline Request{/ts}{literal}'),
+      message: ts('{/literal}{ts escape="js"}Are you sure you want to decline this request?{/ts}{literal}'),
+      options: {{/literal}yes: '{ts escape="js"}Yes{/ts}', no: '{ts escape="js"}No{/ts}'{literal}},
+    }).on('crmConfirm:yes', function() {
+      var postUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=declineTeamMember'}"{literal};
+      var request = $.post(postUrl, {entity_id : $el.data('entityId')});
+      setPcpMessage('Member Request Declined', 'Member Request Declined');
+      request.done(function(data) {
+        $el.closest('.mem-row').remove();
+        if ($(".member-req-block > .mem-body > div").length <= 1) {
+          $(".member-req-block").hide('slow');
+        }
       });
     });
   });
@@ -386,11 +402,7 @@ CRM.$(function($) {
     $('.pcp-messages').html('');
     $(pcpMessage).appendTo('.pcp-messages').show('slow');
   }
-  function adjustMemReqBlockDisplay() {
-    if ($(".member-req-block > .mem-body > div").length <= 2) {
-      $(".member-req-block").hide('slow');
-    }
-  }
+
 });
 
 function declineTeamMember(entityId, pcpId){
@@ -427,6 +439,7 @@ function declineTeamMember(entityId, pcpId){
         }
     });
 }
+
 function leaveTeam(teampcpId, userId){
     cj(".crm-pcp-alert-leave-team").show();
     cj(".crm-pcp-alert-leave-team").dialog({

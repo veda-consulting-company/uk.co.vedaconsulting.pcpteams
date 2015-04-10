@@ -228,8 +228,8 @@
       <option_group_name>activity_type</option_group_name>
     </OptionValue>
     <OptionValue>
-      <label>PCP Team Request Made</label>
-      <name>PCP Team Request Made</name>
+      <label>PCP Join Team Request Made</label>
+      <name>PCP Join Team Request Made</name>
       <filter>0</filter>
       <is_default>0</is_default>
       <weight>1</weight>
@@ -239,8 +239,8 @@
       <option_group_name>activity_type</option_group_name>
     </OptionValue>
     <OptionValue>
-      <label>PCP Team Request Authorised</label>
-      <name>PCP Team Request Authorised</name>
+      <label>PCP Member Join Team Request Authorised</label>
+      <name>PCP Member Join Team Request Authorised</name>
       <filter>0</filter>
       <is_default>0</is_default>
       <weight>1</weight>
@@ -250,8 +250,8 @@
       <option_group_name>activity_type</option_group_name>
     </OptionValue>
     <OptionValue>
-      <label>PCP Team Request Declined</label>
-      <name>PCP Team Request Declined</name>
+      <label>PCP Member Join Team Request Rejected</label>
+      <name>PCP Member Join Team Request Rejected</name>
       <filter>0</filter>
       <is_default>0</is_default>
       <weight>1</weight>
@@ -272,8 +272,8 @@
       <option_group_name>activity_type</option_group_name>
     </OptionValue>
     <OptionValue>
-      <label>PCP Team Invitation Accepted</label>
-      <name>PCP Team Invitation Accepted</name>
+      <label>PCP Team Invitation Reply Authorised</label>
+      <name>PCP Team Invitation Reply Authorised</name>
       <filter>0</filter>
       <is_default>0</is_default>
       <weight>1</weight>
@@ -329,6 +329,39 @@
     <OptionValue>
       <label>PCP Tribute Join</label>
       <name>PCP Tribute Join</name>
+      <filter>0</filter>
+      <is_default>0</is_default>
+      <weight>5</weight>
+      <is_optgroup>0</is_optgroup>
+      <is_reserved>0</is_reserved>
+      <is_active>1</is_active>
+      <option_group_name>activity_type</option_group_name>
+    </OptionValue>
+    <OptionValue>
+      <label>PCP Email invitation to Join Team (from Team Admin)</label>
+      <name>PCP Email invitation to Join Team (from Team Admin)</name>
+      <filter>0</filter>
+      <is_default>0</is_default>
+      <weight>5</weight>
+      <is_optgroup>0</is_optgroup>
+      <is_reserved>0</is_reserved>
+      <is_active>1</is_active>
+      <option_group_name>activity_type</option_group_name>
+    </OptionValue>
+    <OptionValue>
+      <label>PCP Email invitation to Join Team (from Team Member)</label>
+      <name>PCP Email invitation to Join Team (from Team Member)</name>
+      <filter>0</filter>
+      <is_default>0</is_default>
+      <weight>5</weight>
+      <is_optgroup>0</is_optgroup>
+      <is_reserved>0</is_reserved>
+      <is_active>1</is_active>
+      <option_group_name>activity_type</option_group_name>
+    </OptionValue>
+    <OptionValue>
+      <label>PCP Team Invitation Replied and Pending</label>
+      <name>PCP Team Invitation Replied and Pending</name>
       <filter>0</filter>
       <is_default>0</is_default>
       <weight>5</weight>

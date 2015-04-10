@@ -97,11 +97,6 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
     $teampcpId = CRM_Pcpteams_Utils::getPcpIdByContactAndEvent($this->get('component_page_id'), $this->get('teamContactID'));
 
     if( $msgTplId && !empty($values)) {
-      // Create Team Invite activity
-      $actParams = array(
-        'assignee_contact_id'=>  $this->get('teamContactID'),
-      );
-      $activity = CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_TEAM_INVITE);
       
       // Send Invitation emails
       $pcpDetails = civicrm_api('pcpteams', 'get', array('version' => 3, 'sequential' => 1, 'pcp_id' => $this->get('page_id')));
@@ -110,7 +105,27 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
         'eventName' => $pcpDetails['values'][0]['page_title'],
         'userName'  => $userName,
         'teamName'  => $this->get('teamName'),
+        'pageURL'   => CRM_Utils_System::url('civicrm/pcp/support', "reset=1&pageId={$this->get('component_page_id')}&component=event&tpId={$this->get('page_id')}", TRUE, NULL, FALSE, TRUE),
       );
+      // As team contact id is set in the team join post process, team contact id is not available in this form if you are coming from manage page
+      $teamContactId = $this->get('teamContactID');
+      if (empty($teamContactId)) {
+        $teamContactId = $pcpDetails['values'][0]['contact_id'];
+      }
+      // Create Team Invite activity
+      $actParams = array(
+        'assignee_contact_id'=>   $teamContactId,
+      );
+      $checkAdminParams = array(
+        'version' => 3,
+        'user_id' => $this->_contactID,
+        'team_contact_id' => $teamContactId,
+      );
+      $chkTeamAdmin= civicrm_api('Pcpteams', 'checkTeamAdmin', $checkAdminParams);
+      $isTeamAdmin = $chkTeamAdmin['is_team_admin'];
+        
+      $teamInviteActivityType = $isTeamAdmin ? CRM_Pcpteams_Constant::C_AT_INVITATION_FROM_ADMIN : CRM_Pcpteams_Constant::C_AT_INVITATION_FROM_MEMBER;
+      $activity = CRM_Pcpteams_Utils::createPcpActivity($actParams, $teamInviteActivityType);
       
       $result = CRM_Pcpteams_Utils::sendInviteEmail($msgTplId, $this->_contactID, $values, $teampcpId, $activity['id']);
       if ($result) {
