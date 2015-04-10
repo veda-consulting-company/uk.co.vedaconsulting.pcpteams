@@ -117,20 +117,20 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
         )
       );
       if (empty($workflowTeam)) {
-        $cfid = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
-        if (!empty($result['values'][0]["custom_{$cfid}"])) {
+        // $cfid = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
+        if (!empty($result['values'][0]["team_pcp_id"])) {
           $controller->set('workflowTeam', 'skip');
         }
       }
       if (empty($workflowGroup)) {
-        $cfid = CRM_Pcpteams_Utils::getBranchorPartnerCustomFieldId();
-        if (!empty($result['values'][0]["custom_{$cfid}"])) {
+        // $cfid = CRM_Pcpteams_Utils::getBranchorPartnerCustomFieldId();
+        if (!empty($result['values'][0]["org_id"])) {
           $controller->set('workflowGroup', 'skip');
         }
       }
       if (empty($workflowTribute)) {
-        $cfid = CRM_Pcpteams_Utils::getPcpTypeContactCustomFieldId();
-        if (!empty($result['values'][0]["custom_{$cfid}"])) {
+        // $cfid = CRM_Pcpteams_Utils::getPcpTypeContactCustomFieldId();
+        if (!empty($result['values'][0]["tribute_contact_id"])) {
           $controller->set('workflowTribute', 'skip');
         }
       }

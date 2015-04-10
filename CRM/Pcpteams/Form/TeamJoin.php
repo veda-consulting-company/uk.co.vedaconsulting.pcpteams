@@ -33,9 +33,9 @@ class CRM_Pcpteams_Form_TeamJoin {
     $defaults = array();
     if ($form->get('page_id')) {
       $result = civicrm_api('Pcpteams', 'get', array('version' => 3, 'sequential' => 1, 'pcp_id' => $form->get('page_id')));
-      $teamCfId = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
-      if(isset($result['values'][0]["custom_{$teamCfId}"])){
-        $defaults['pcp_team_contact'] = CRM_Pcpteams_Utils::getcontactIdbyPcpId($result['values'][0]["custom_{$teamCfId}"]);
+      // $teamCfId = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
+      if(isset($result['values'][0]["team_pcp_id"])){
+        $defaults['pcp_team_contact'] = CRM_Pcpteams_Utils::getcontactIdbyPcpId($result['values'][0]["team_pcp_id"]);
       }
     }
     $form->setDefaults($defaults);
