@@ -70,10 +70,39 @@ class CRM_Pcpteams_Form_TeamInvite {
     $form->set('teamContactID', $teamId);
     // Team Join: create activity
     $actParams = array(
-      'target_contact_id' => $teamId
+      'target_contact_id' => CRM_Pcpteams_Utils::getTeamAdmin($teampcpId),
+      'assignee_contact_id' => $teamId
     );
     CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_INVITATION_ACCEPTED);
     CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_REQ_MADE);
+    
+     //send email once the team request has done. 
+    $teamAdminId    = CRM_Pcpteams_Utils::getTeamAdmin($teampcpId);
+    list($teamAdminName, $teamAdminEmail)  = CRM_Contact_BAO_Contact::getContactDetails($teamAdminId);
+    $contactDetails = civicrm_api('Contact', 'get', array('version' => 3, 'sequential' => 1, 'id' => $userId));
+    $msgTplId       = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_MessageTemplate', CRM_Pcpteams_Constant::C_JOIN_REQUEST_MSG_TPL, 'id', 'msg_title'); 
+
+    $emailParams =  array(
+      'tplParams' => array(
+        'teamAdminName' => $teamAdminName,
+        'userFirstName' => $contactDetails['values'][0]['first_name'],
+        'userlastName'  => $contactDetails['values'][0]['last_name'],
+        'teamName'      => $form->_teamName,
+        'pageURL'       => CRM_Utils_System::url('civicrm/pcp/manage', "reset=1&id={$teampcpId}", TRUE, NULL, FALSE, TRUE),
+      ),
+      'email' => array(
+        $teamAdminName => array(
+          'first_name'    => $teamAdminName,
+          'last_name'     => $teamAdminName,
+          'email-Primary' => $teamAdminEmail,
+          'display_name'  => $teamAdminName,
+        )
+      ),
+      'messageTemplateID' => $msgTplId,
+      // 'email_from' => $fromEmail,
+    );
+    
+    $sendEmail = CRM_Pcpteams_Utils::sendMail($userId, $emailParams);
 
     if ($result) {
       CRM_Core_Session::setStatus(ts("A notification has been sent to the team. Once approved, team should be visible on your page."), ts("Team Request Sent"));

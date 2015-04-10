@@ -16,5 +16,7 @@
 
 <p>To approve this request please log onto your team page.</p>
 
+<p><a href="{$pageURL}">{ts}Link{/ts}</a></p>
+
 </body>
 </html>

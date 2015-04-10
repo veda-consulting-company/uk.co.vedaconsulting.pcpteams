@@ -65,6 +65,7 @@ class CRM_Pcpteams_Page_AJAX {
           'userFirstName' => $contactDetails['values'][0]['first_name'],
           'userlastName'  => $contactDetails['values'][0]['last_name'],
           'teamName'      => $teamName,
+          'pageURL'       => CRM_Utils_System::url('civicrm/pcp/manage', "reset=1&id={$team_pcp_id}", TRUE, NULL, FALSE, TRUE),
         ),
         'email' => array(
           $teamAdminName => array(
@@ -212,7 +213,7 @@ class CRM_Pcpteams_Page_AJAX {
         'assignee_contact_id'=>  $assigneeId,
         'target_contact_id'  =>  $targetId,
       );
-      CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_REQ_AUTHORISED);
+      CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_REQ_DECLINED);
       //end
       echo 'declined';
     }else{

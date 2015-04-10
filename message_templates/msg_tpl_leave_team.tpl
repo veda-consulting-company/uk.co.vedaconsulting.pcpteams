@@ -14,6 +14,8 @@
 
 <p>Just to let you know <strong>{$userFirstName} {$userlastName}</strong>  has decided to leave Team <strong> {$teamName}</strong></p>
 
+<p><a href="{$pageURL}">{ts}Link{/ts}</a></p>
+
 <p>Thanks</p>
 
 <p>The LLR Fundraising Team</p>
