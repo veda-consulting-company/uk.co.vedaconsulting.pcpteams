@@ -460,7 +460,7 @@ class  CRM_Pcpteams_Utils {
     }
   }
   
-  static function sendInviteEmail($message_template_id, $contact_id, $emailParams = array(), $teampcpId, $activityId ) {
+  static function sendInviteEmail($message_template, $contact_id, $emailParams = array(), $teampcpId, $activityId ) {
     
     $mailParams = array();
     $contactParams = array();
@@ -514,7 +514,7 @@ class  CRM_Pcpteams_Utils {
         CRM_Activity_BAO_ActivityContact::create($targetParams);
       }
     }
-    $mailParams['messageTemplateID'] = $message_template_id;
+    $mailParams['valueName'] = $message_template;
     
     return self::sendMail($contact_id, $mailParams);
   }
@@ -710,7 +710,8 @@ class  CRM_Pcpteams_Utils {
         $tplParams['inviteeEmail'] = $emailDetails['email-Primary'];
         list($sent, $subject, $text, $html) = CRM_Core_BAO_MessageTemplate::sendTemplate(
           array(
-            'messageTemplateID' => $values['messageTemplateID'],
+            'groupName'         => CRM_Pcpteams_Constant::C_OG_MSG_TPL_WORKFLOW,
+            'valueName'         => $values['valueName'],
             'contactId'         => $contactID,
             'tplParams'         => $tplParams,
             'from'              => "$fromName <{$values['email_from']}>",
@@ -724,38 +725,4 @@ class  CRM_Pcpteams_Utils {
     return $sent ? TRUE : FALSE;
   }
   
-  static function getPCPMsgTplId($msgTplTitle){
-    if (empty($msgTplTitle)) {
-      return NULL;
-    }
-    //option group workflow for PCP
-    $ogId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_OptionGroup', CRM_Pcpteams_Constant::C_OG_MSG_TPL_WORKFLOW, 'id', 'name');
-    if (!$ogId) {
-      //FIXME : unable to find message template workflow option group
-      return NULL;
-    }
-    
-    $optValue = civicrm_api3('OptionValue', 'getsingle', array(
-      'version'         => 3, 
-      'option_group_id' => $ogId, 
-      'name'            => $msgTplTitle,
-    ));
-    if (!$optValue['id']) {
-      //FIXME : unable to find message template workflow option value
-      return NULL;
-    }
-    
-    $msgTplParams = array(
-      'version'     => 3,
-      'workflow_id' => $optValue['id'],
-      'msg_title'   => $msgTplTitle,
-    );
-    $msgTplValues = civicrm_api3('MessageTemplate', 'getsingle', $msgTplParams);
-    if ($msgTplValues['id']) {
-      return $msgTplValues['id'];
-    }
-    //FIXME: unable to find the correct match msg tpl.
-    return NULL;
-  }
-
 }
