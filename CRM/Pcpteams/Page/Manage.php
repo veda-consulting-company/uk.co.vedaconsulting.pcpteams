@@ -1,9 +1,13 @@
 <?php
 
-require_once 'CRM/Core/Page.php';
-
-class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
+class CRM_Pcpteams_Page_Manage extends CRM_Core_Page {
   
+  function run() {
+    $this->preProcess();
+    $this->buildView();
+    parent::run();
+  }
+
   function preProcess(){
     CRM_Core_Resources::singleton()
       ->addScriptFile('uk.co.vedaconsulting.pcpteams', 'packages/jquery-circle-progress/dist/circle-progress.js', CRM_Core_Resources::DEFAULT_WEIGHT, 'html-header')
@@ -27,7 +31,7 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     $this->assign('userId', $this->_userID);
   }
 
-  function buildQuickForm() {
+  function buildView() {
     //get params from URL
     $state = NULL;
     $pcpId = CRM_Utils_Request::retrieve('id', 'Positive', CRM_Core_DAO::$_nullArray, TRUE); 

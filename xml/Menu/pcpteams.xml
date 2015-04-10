@@ -29,7 +29,7 @@
   </item>
   <item>
     <path>civicrm/pcp/manage</path>
-    <page_callback>CRM_Pcpteams_Form_PCP_Manage</page_callback>
+    <page_callback>CRM_Pcpteams_Page_Manage</page_callback>
     <title>Update Personal Campaign Page</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
