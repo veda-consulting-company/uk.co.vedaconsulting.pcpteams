@@ -190,7 +190,7 @@ class CRM_Pcpteams_Page_AJAX {
     $op             = CRM_Utils_Type::escape($_POST['op'], 'String');
     $assigneeId     = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_Relationship', $entity_id, 'contact_id_b');
     $targetId       = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_Relationship', $entity_id, 'contact_id_a');
-    
+
     //check Team admin
     $teamAdmin      = civicrm_api('pcpteams', 'checkTeamAdmin', array(
       'version' => 3,
@@ -203,6 +203,8 @@ class CRM_Pcpteams_Page_AJAX {
       CRM_Utils_System::civiExit();
     }
     
+    $getUserPcpQuery    = "SELECT pcp_a_b FROM civicrm_value_pcp_relationship_set WHERE entity_id = {$entity_id}";
+    $userPcpId          = CRM_Core_DAO::singleValueQuery($getUserPcpQuery);
     $updatedResult  = civicrm_api3('Relationship', 'delete', array(
       'sequential' => 1,
       'id'         => $entity_id,
@@ -214,6 +216,30 @@ class CRM_Pcpteams_Page_AJAX {
         'target_contact_id'  =>  $targetId,
       );
       CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_REQ_DECLINED);
+      list($userName, $userEmail)  = CRM_Contact_BAO_Contact::getContactDetails($targetId);
+      $contactDetails = civicrm_api('Contact', 'get', array('version' => 3, 'sequential' => 1, 'id' => $targetId));
+      $msgTplId       = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_MessageTemplate', CRM_Pcpteams_Constant::C_JOIN_REQ_DECLINE_TEAM_MSG_TPL, 'id', 'msg_title'); 
+
+      $emailParams =  array(
+        'tplParams' => array(
+          'userFirstName' => $contactDetails['values'][0]['first_name'],
+          'userLastName'  => $contactDetails['values'][0]['last_name'],
+          'teamName'      => CRM_Contact_BAO_Contact::displayName($assigneeId),
+          'pageURL'       => CRM_Utils_System::url('civicrm/pcp/manage', "reset=1&id={$userPcpId}", TRUE, NULL, FALSE, TRUE),
+        ),
+        'email' => array(
+          $userName => array(
+            'first_name'    => $contactDetails['values'][0]['first_name'],
+            'last_name'     => $contactDetails['values'][0]['last_name'],
+            'email-Primary' => $userEmail,
+            'display_name'  => $userName,
+          )
+        ),
+        'messageTemplateID' => $msgTplId,
+        // 'email_from' => $fromEmail,
+      );
+    
+      $sendEmail = CRM_Pcpteams_Utils::sendMail($assigneeId, $emailParams);
       //end
       echo 'declined';
     }else{

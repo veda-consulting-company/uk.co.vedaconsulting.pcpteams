@@ -101,6 +101,18 @@ function pcpteams_civicrm_install() {
     'is_default'  => 1,
     'msg_html'    => $messageHtml,
   );    
+  
+   //decline join request    
+  $messageHtmlSampleTeamInviteFile  = $extensionDir . '/message_templates/msg_tpl_decline_request_to_team.tpl';
+  $messageHtml      = file_get_contents($messageHtmlSampleTeamInviteFile);
+  $message_params['decline_team'] = array(
+    'sequential'  => 1,
+    'version'     => 3,
+    'msg_title'   => "Request to join team declined",
+    'msg_subject' => (string) '{$userFirstName} {$userLastName} your request to join {$teamName} has been turned down',
+    'is_default'  => 1,
+    'msg_html'    => $messageHtml,
+  );    
   foreach ($message_params as $key => $message_param) {
     $result = civicrm_api3('MessageTemplate', 'create', $message_param);
   }
