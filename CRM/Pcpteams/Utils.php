@@ -736,7 +736,7 @@ class  CRM_Pcpteams_Utils {
     $goalAmount = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $teamPcpId, 'goal_amount');
     if ($pcpType == CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE) {
       if($memberPcpId) {
-        if(CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $memberPcpId, 'goal_amount') == 0) {
+        if(empty(CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $memberPcpId, 'goal_amount'))) {
           $params = array(
               'version'     => 3,
               'id'          => $memberPcpId,
@@ -745,21 +745,17 @@ class  CRM_Pcpteams_Utils {
           $result = civicrm_api('pcpteams', 'create', $params);
         }
       } else {
-        $teamMemberInfo = civicrm_api( 'pcpteams', 'getTeamMembersInfo', array(
-          'version'  => 3, 
-          'pcp_id'   => $teamPcpId,
-          )
+        $query = "
+          UPDATE civicrm_pcp AS p1
+          INNER JOIN civicrm_value_pcp_custom_set AS c ON p1.id = c.entity_id
+          SET p1.goal_amount = %1
+          WHERE (p1.goal_amount is NULL OR p1.goal_amount = 0) AND c.team_pcp_id = %2";
+        
+        $queryParams = array(
+          1 => array($goalAmount, 'String'),
+          2 => array($teamPcpId, 'Integer'),
         );
-        foreach ($teamMemberInfo['values'] as $teamMember) {
-          if($teamMember['goal_amount'] == 0 || empty($teamMember['goal_amount'])) {
-            $params = array(
-              'version'     => 3,
-              'id'          => $teamMember['pcp_id'],
-              'goal_amount' => $goalAmount,
-            );
-            $result = civicrm_api('pcpteams', 'create', $params);
-          }
-        }
+        CRM_Core_DAO::executeQuery($query, $queryParams);
       }
     }
   }
