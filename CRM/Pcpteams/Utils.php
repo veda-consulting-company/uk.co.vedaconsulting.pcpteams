@@ -556,7 +556,8 @@ class  CRM_Pcpteams_Utils {
     } // Else if he is the memeber of the pcp , then allow 'view' permission
     else if ($action == CRM_Core_Permission::VIEW) { 
 
-      //check the user can view the other members related to user team PCP
+      //CASE 1: IF logged in user is trying to view team member's pcp page
+      //CASE 1A: get all team pcps for logged in user
       $getUserTeamQuery = "
         SELECT cps.team_pcp_id FROM civicrm_value_pcp_custom_set cps 
         INNER JOIN civicrm_pcp cp ON (cp.id = cps.entity_id)
@@ -565,14 +566,14 @@ class  CRM_Pcpteams_Utils {
       $getUserTeamPcpDAO = CRM_Core_DAO::executeQuery($getUserTeamQuery, array( 1 => array($contactId, 'Integer')));
       $userTeamPcps = array();
       while ($getUserTeamPcpDAO->fetch()) {
-        //can able to view team informations.
+        //CASE 2: IF logged in user is admin OR member of pcp being viewed
         if ($getUserTeamPcpDAO->team_pcp_id == $pcpId) {
           return TRUE;
         }
         $userTeamPcps[] = $getUserTeamPcpDAO->team_pcp_id;
       }
 
-      //user can view other members information in his team
+      //CASE 1B: IF pcp being viewed is related to team-pcp via custom teamp-pcp-id OR under approval relationship
       if (!empty($userTeamPcps)) {
         $userTeamPcpIds = implode(', ', $userTeamPcps);
         $memberQuery = "
@@ -588,7 +589,7 @@ class  CRM_Pcpteams_Utils {
         }
       }
       
-      //user can view pending team informations
+      //CASE 3: IF pcp being viewed has been requested to be joined by logged in user (under approval)
       $relQuery = "
         SELECT id 
         FROM civicrm_relationship
@@ -603,6 +604,7 @@ class  CRM_Pcpteams_Utils {
       if (CRM_Core_DAO::singleValueQuery($relQuery, $relQueryParams)) {
         return TRUE;
       }
+      //CASE 4: if admin is trying to view the pcp
       if (CRM_Contact_BAO_Contact_Permission::allow($pcpOwnerContactId, CRM_Core_Permission::VIEW)) {
         return TRUE;
       }
