@@ -541,9 +541,9 @@ class  CRM_Pcpteams_Utils {
   static function hasPermission($pcpId = NULL, $contactId = NULL, $action = CRM_Core_Permission::EDIT, $teamPcpId = NULL) {
     if(empty($pcpId)) {
       if($contactId) {
-        return CRM_Contact_BAO_Contact_Permission::allow($contactId, $action);
+        return ($contactId == CRM_Pcpteams_Utils::getloggedInUserId()) ? true : CRM_Contact_BAO_Contact_Permission::allow($contactId, $action);
       }
-      return NULL;
+      return FALSE;
     }
     $pcpOwnerContactId  = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcpId, 'contact_id');
     $hasPermission      = FALSE;
@@ -555,31 +555,24 @@ class  CRM_Pcpteams_Utils {
       return TRUE;
     } // Else if he is the memeber of the pcp , then allow 'view' permission
     else if ($action == CRM_Core_Permission::VIEW) { 
-      // Find PCPs for this contact 
-      // FIXME: checking the user is the member of team pcp
-      $pcpQuery = "
-        SELECT cps.id FROM civicrm_value_pcp_custom_set cps 
-        INNER JOIN civicrm_pcp cp ON (cp.id = cps.entity_id)
-        WHERE cps.team_pcp_id = %1 AND cp.contact_id = %2";
-      $pcpQueryParams = array(
-        1 => array($pcpId, 'Integer'),
-        2 => array($contactId, 'Integer'),
-      );
-      if(CRM_Core_DAO::singleValueQuery($pcpQuery, $pcpQueryParams)) {
-          return TRUE;
-      }
+
       //check the user can view the other members related to user team PCP
       $getUserTeamQuery = "
         SELECT cps.team_pcp_id FROM civicrm_value_pcp_custom_set cps 
         INNER JOIN civicrm_pcp cp ON (cp.id = cps.entity_id)
-        WHERE cp.contact_id = %1
+        WHERE cp.contact_id = %1 AND cps.team_pcp_id IS NOT NULL
       ";
       $getUserTeamPcpDAO = CRM_Core_DAO::executeQuery($getUserTeamQuery, array( 1 => array($contactId, 'Integer')));
       $userTeamPcps = array();
       while ($getUserTeamPcpDAO->fetch()) {
+        //can able to view team informations.
+        if ($getUserTeamPcpDAO->team_pcp_id == $pcpId) {
+          return TRUE;
+        }
         $userTeamPcps[] = $getUserTeamPcpDAO->team_pcp_id;
       }
-      
+
+      //user can view other members information in his team
       if (!empty($userTeamPcps)) {
         $userTeamPcpIds = implode(', ', $userTeamPcps);
         $memberQuery = "
@@ -594,7 +587,8 @@ class  CRM_Pcpteams_Utils {
           return TRUE;
         }
       }
-      //check is any pending request;
+      
+      //user can view pending team informations
       $relQuery = "
         SELECT id 
         FROM civicrm_relationship
