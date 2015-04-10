@@ -105,7 +105,7 @@ class CRM_Pcpteams_Page_AJAX {
       'id'      => $pcpId,
       $columnfield => trim($editedValue)
     );
-    $result  = civicrm_api('pcpteams', 'create', $params);
+    $result = civicrm_api('pcpteams', 'create', $params);
     echo $editedValue;
     CRM_Utils_System::civiExit();
   }
