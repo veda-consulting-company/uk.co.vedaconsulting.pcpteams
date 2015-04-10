@@ -730,7 +730,6 @@ class  CRM_Pcpteams_Utils {
     }
     foreach ($teamMembers['values'] as $teamMember) {
       if($teamMember['goal_amount'] == 0) {
-         CRM_Core_Error::debug_var('result3', 'Inside if');
         $params = array(
           'version'     => 3,
           'id'          => $teamMember['pcp_id'],
