@@ -464,7 +464,7 @@ class  CRM_Pcpteams_Utils {
     }
   }
   
-  static function sendInviteEmail($message_template_id, $contact_id, $emailParams = array(), $teampcpId, $activityId ) {
+  static function sendInviteEmail($message_template, $contact_id, $emailParams = array(), $teampcpId, $activityId ) {
     
     $mailParams = array();
     $contactParams = array();
@@ -518,7 +518,7 @@ class  CRM_Pcpteams_Utils {
         CRM_Activity_BAO_ActivityContact::create($targetParams);
       }
     }
-    $mailParams['messageTemplateID'] = $message_template_id;
+    $mailParams['valueName'] = $message_template;
     
     return self::sendMail($contact_id, $mailParams);
   }
@@ -714,7 +714,8 @@ class  CRM_Pcpteams_Utils {
         $tplParams['inviteeEmail'] = $emailDetails['email-Primary'];
         list($sent, $subject, $text, $html) = CRM_Core_BAO_MessageTemplate::sendTemplate(
           array(
-            'messageTemplateID' => $values['messageTemplateID'],
+            'groupName'         => CRM_Pcpteams_Constant::C_OG_MSG_TPL_WORKFLOW,
+            'valueName'         => $values['valueName'],
             'contactId'         => $contactID,
             'tplParams'         => $tplParams,
             'from'              => "$fromName <{$values['email_from']}>",
