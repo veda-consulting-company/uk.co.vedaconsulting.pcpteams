@@ -765,8 +765,7 @@ class  CRM_Pcpteams_Utils {
       return NULL;
     }
     $aContactTypes   = CRM_Contact_BAO_Contact::getContactTypes(CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcpId, 'contact_id'));
-    $isTeamPcp       = in_array('Team'      , $aContactTypes) ? TRUE : FALSE;
-    return $isTeamPcp ? 'Team' : 'Indiviual';
+    return in_array('Team', $aContactTypes) ? 'Team' : 'Indiviual';
     
   }
     
