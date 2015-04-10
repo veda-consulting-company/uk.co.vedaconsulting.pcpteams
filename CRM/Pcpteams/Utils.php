@@ -572,7 +572,7 @@ class  CRM_Pcpteams_Utils {
       $getUserTeamQuery = "
         SELECT cps.team_pcp_id FROM civicrm_value_pcp_custom_set cps 
         INNER JOIN civicrm_pcp cp ON (cp.id = cps.entity_id)
-        WHERE cp.contact_id = %1
+        WHERE cp.contact_id = %1 AND cps.team_pcp_id IS NOT NULL
       ";
       $getUserTeamPcpDAO = CRM_Core_DAO::executeQuery($getUserTeamQuery, array( 1 => array($contactId, 'Integer')));
       $userTeamPcps = array();

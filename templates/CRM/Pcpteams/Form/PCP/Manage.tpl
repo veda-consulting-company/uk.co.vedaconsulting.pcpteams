@@ -101,8 +101,8 @@
           {elseif $pcpinfo.is_teampage}
             <!-- <div class="invite-team-text">Invite people to the team</div> -->
             <div class="team-buttons">
-              <a id="invite-team-btn" class="pcp-button pcp-btn-red crm-pcp-inline-team-edit" href="{$inviteTeamURl}">{ts}Invite Team Members{/ts}</a>
-              <a id="leave-team-btn" class="pcp-button pcp-btn-red" href="javascript:void(0)" onclick="leaveTeam({$pcpinfo.id}, {$userId})">{ts}Leave Team{/ts}</a>
+              <a class="pcp-button pcp-btn-red crm-pcp-inline-team-edit" href="{$inviteTeamURl}">{ts}Invite Team Members{/ts}</a>
+              <a class="pcp-button pcp-btn-red crm-pcp-alert-leave-team" href="javascript:void(0)" data-user-id={$userId} data-teampcp-id={$pcpinfo.id}>{ts}Leave Team{/ts}</a>
             </div>
           {else}
             <div class="no-team-buttons">
@@ -218,9 +218,6 @@
   <div class="clear"></div>
 </div>
 {* FIXME style display none should take care of css, Need to Discuss with DS to make general alert message *}
-<div class="crm-pcp-alert-leave-team" style="display:none;">
-  <p> Are you sure, want to leave from this team ?</p>
-</div>
 <div class="crm-pcp-alert-cancel-pending-request" style="display:none;">
   <p> Are you sure, want to delete this request ?</p>
 </div>
@@ -361,8 +358,8 @@ CRM.$(function($) {
     }).on('crmConfirm:yes', function() {
       var postUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=approveTeamMember'}"{literal};
       var request = $.post(postUrl, {entity_id : $el.data('entityId'), pcp_id : $el.data('pcpId'), team_pcp_id: $el.data('teampcpId')});
-      setPcpMessage('Member Request Approved', 'Member Request Approved');
       request.done(function(data) {
+        setPcpMessage('Member Request Approved', 'Member Request Approved');
         $('div.member-block > div.mem-body').append(data);
         $el.closest('.mem-row').remove();
         if ($(".member-req-block > .mem-body > div").length <= 1) {
@@ -381,8 +378,8 @@ CRM.$(function($) {
     }).on('crmConfirm:yes', function() {
       var postUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=declineTeamMember'}"{literal};
       var request = $.post(postUrl, {entity_id : $el.data('entityId')});
-      setPcpMessage('Member Request Declined', 'Member Request Declined');
       request.done(function(data) {
+        setPcpMessage('Member Request Declined', 'Member Request Declined');
         $el.closest('.mem-row').remove();
         if ($(".member-req-block > .mem-body > div").length <= 1) {
           $(".member-req-block").hide('slow');
@@ -391,8 +388,23 @@ CRM.$(function($) {
     });
   });
 
+  $(".crm-pcp-alert-leave-team").on('click', function(ev) {
+    var $el = $(this);
+    CRM.confirm({
+      title: ts('{/literal}{ts escape="js"}Leave Team{/ts}{literal}'),
+      message: ts('{/literal}{ts escape="js"}Are you sure you want to leave this team?{/ts}{literal}'),
+      options: {{/literal}yes: '{ts escape="js"}Yes{/ts}', no: '{ts escape="js"}No{/ts}'{literal}},
+    }).on('crmConfirm:yes', function() {
+      var postUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=leaveTeam'}";{literal}
+      var request = $.post(postUrl, {user_id : $el.data('userId'), team_pcp_id : $el.data('teampcpId')});
+      request.done(function(data) {
+        setPcpMessage('Left The Team', 'You no longer part of this team, and this page may no longer be visible to you.');
+      });
+    });
+  });
+
   function setPcpMessage(title, text) {
-    var pcpMessage = "<div class='pcp-info pcp-message'><h3>";
+    var pcpMessage = "<div class='pcp-info pcp-message'>";
     if (title) {
       pcpMessage = pcpMessage + "<h3>" + title + "</h3>";
     }
@@ -404,43 +416,6 @@ CRM.$(function($) {
   }
 
 });
-
-function leaveTeam(teampcpId, userId){
-    cj(".crm-pcp-alert-leave-team").show();
-    cj(".crm-pcp-alert-leave-team").dialog({
-        title: "Leave Team",
-        modal: true,
-        resizable: true,
-        bgiframe: true,
-        show: 'drop', 
-        hide: 'drop',        
-        overlay: {
-          opacity: 0.5,
-          background: "black"
-        },
-        buttons: {
-          "Yes": function() {
-             var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=leaveTeam' }";{literal}
-             var redirectUrl = {/literal}"{crmURL p='civicrm/pcp/dashboard' h=0 q='reset=1'}";{literal}
-             cj.ajax({ 
-                url     : dataUrl,
-                type    : 'post',
-                data    : {user_id : userId, team_pcp_id : teampcpId},
-                success : function( data ) {
-                  cj(document).ajaxStop(function() { 
-                    location.href = redirectUrl; 
-                  });
-                }
-             });
-            cj(this).dialog("destroy");
-          },
-          "No" : function() {
-            cj(this).dialog("destroy");
-          }
-        }
-    });
- 
-}
 function deletePendingApproval(entityId){
     cj(".crm-pcp-alert-cancel-pending-request").show();
     cj(".crm-pcp-alert-cancel-pending-request").dialog({
