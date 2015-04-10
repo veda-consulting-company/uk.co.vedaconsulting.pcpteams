@@ -179,6 +179,12 @@
       <is_reserved>1</is_reserved>
       <is_active>1</is_active>
     </OptionGroup> 
+    <OptionGroup>
+      <name>msg_tpl_workflow_PCP</name>
+      <title>Message Template Workflow for PCP</title>
+      <is_reserved>1</is_reserved>
+      <is_active>1</is_active>
+    </OptionGroup>
   </OptionGroups>
   <OptionValues>
     <OptionValue>
@@ -370,6 +376,50 @@
       <is_active>1</is_active>
       <option_group_name>activity_type</option_group_name>
     </OptionValue>
+    <OptionValue>
+      <label>Invitation to join team</label>
+      <name>Invitation to join team</name>
+      <filter>0</filter>
+      <is_default>0</is_default>
+      <weight>5</weight>
+      <is_optgroup>0</is_optgroup>
+      <is_reserved>0</is_reserved>
+      <is_active>1</is_active>
+      <option_group_name>msg_tpl_workflow_PCP</option_group_name>
+    </OptionValue>
+    <OptionValue>
+      <label>New member request to join team</label>
+      <name>New member request to join team</name>
+      <filter>0</filter>
+      <is_default>0</is_default>
+      <weight>5</weight>
+      <is_optgroup>0</is_optgroup>
+      <is_reserved>0</is_reserved>
+      <is_active>1</is_active>
+      <option_group_name>msg_tpl_workflow_PCP</option_group_name>
+    </OptionValue>
+    <OptionValue>
+      <label>Someone has left your team</label>
+      <name>Someone has left your team</name>
+      <filter>0</filter>
+      <is_default>0</is_default>
+      <weight>5</weight>
+      <is_optgroup>0</is_optgroup>
+      <is_reserved>0</is_reserved>
+      <is_active>1</is_active>
+      <option_group_name>msg_tpl_workflow_PCP</option_group_name>
+    </OptionValue>
+    <OptionValue>
+      <label>Request to join team declined</label>
+      <name>Request to join team declined</name>
+      <filter>0</filter>
+      <is_default>0</is_default>
+      <weight>5</weight>
+      <is_optgroup>0</is_optgroup>
+      <is_reserved>0</is_reserved>
+      <is_active>1</is_active>
+      <option_group_name>msg_tpl_workflow_PCP</option_group_name>
+    </OptionValue>         
   </OptionValues>
   <ProfileGroups>
     <ProfileGroup>

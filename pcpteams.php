@@ -72,7 +72,7 @@ function pcpteams_civicrm_install() {
   $message_params['invite_team'] = array(
     'sequential'  => 1,
     'version'     => 3,
-    'msg_title'   => "Invitation to join team",
+    'msg_title'   => CRM_Pcpteams_Constant::C_INVITE_TEAM_MSG_TPL,
     'msg_subject' => (string) '{$inviteeFirstName}  you have been invited to join {$teamName} and support Leukaemia and Lymphoma Research',
     'is_default'  => 1,
     'msg_html'    => $messageHtml,
@@ -84,7 +84,7 @@ function pcpteams_civicrm_install() {
   $message_params['join_team'] = array(
     'sequential'  => 1,
     'version'     => 3,
-    'msg_title'   => "New member request to join team",
+    'msg_title'   => CRM_Pcpteams_Constant::C_JOIN_REQUEST_MSG_TPL,
     'msg_subject' => (string) '{$userFirstName} {$userlastName} has requested to join Team {$teamName} please authorise',
     'is_default'  => 1,
     'msg_html'    => $messageHtml,
@@ -96,7 +96,7 @@ function pcpteams_civicrm_install() {
   $message_params['leave_team'] = array(
     'sequential'  => 1,
     'version'     => 3,
-    'msg_title'   => "Someone has left your team",
+    'msg_title'   => CRM_Pcpteams_Constant::C_LEAVE_TEAM_MSG_TPL,
     'msg_subject' => (string) '{$userFirstName} {$userLastName} has decided to leave Team {$teamName}',
     'is_default'  => 1,
     'msg_html'    => $messageHtml,
@@ -108,12 +108,22 @@ function pcpteams_civicrm_install() {
   $message_params['decline_team'] = array(
     'sequential'  => 1,
     'version'     => 3,
-    'msg_title'   => "Request to join team declined",
+    'msg_title'   => CRM_Pcpteams_Constant::C_JOIN_REQ_DECLINE_TEAM_MSG_TPL,
     'msg_subject' => (string) '{$userFirstName} {$userLastName} your request to join {$teamName} has been turned down',
     'is_default'  => 1,
     'msg_html'    => $messageHtml,
-  );    
+  );
+  
+  $ogId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_OptionGroup', CRM_Pcpteams_Constant::C_OG_MSG_TPL_WORKFLOW, 'id', 'name');
   foreach ($message_params as $key => $message_param) {
+    $opValue = civicrm_api3('OptionValue', 'getsingle', array(
+      'version' => 3, 
+      'option_group_id' => $ogId, 
+      'name' => $message_param['msg_title']
+    ));
+    if ($opValue['id']) {
+      $message_param['workflow_id'] = $opValue['id'];
+    }
     $result = civicrm_api3('MessageTemplate', 'create', $message_param);
   }
 
