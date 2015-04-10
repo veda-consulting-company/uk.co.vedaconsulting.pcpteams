@@ -39,6 +39,8 @@
           C_INVITE_TEAM_MSG_TPL   = 'Invitation to join team',
           C_PERMISSION_MEMBER     = 8,
           C_JOIN_REQ_DECLINE_TEAM_MSG_TPL   = 'Request to join team declined',
+          C_CG_DIGITAL_FUNDRAISING          = 'Digital_Fundraising',
+          C_CF_DIGITAL_FUNDRAISING_PCP_ID   = 'PCP_ID',
           C_DEFAULT_PROFILE_PIC   = 'http://vedaconsulting_llr_v1.llrdev.org.uk/custom_civicrm/extensions/uk.co.vedaconsulting.pcpteams/img/avatar.jpeg';
  }
 ?>

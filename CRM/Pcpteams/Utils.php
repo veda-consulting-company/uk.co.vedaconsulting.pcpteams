@@ -316,6 +316,11 @@ class  CRM_Pcpteams_Utils {
       //create activity for pcp created.
       $ids          = array('target_contact_id' => $pcpContactId);
       $userId       = self::getloggedInUserId();
+      
+      $customDigFund= CRM_Core_BAO_CustomField::getCustomFieldID(CRM_Pcpteams_Constant::C_CF_DIGITAL_FUNDRAISING_PCP_ID, CRM_Pcpteams_Constant::C_CG_DIGITAL_FUNDRAISING);
+      if ($customDigFund) {
+        $ids["custom_{$customDigFund}"] = $pcpResult['id'];
+      }
       if ($userId != $pcpContactId) {
         $ids['source_contact_id'] = $userId;
       }
