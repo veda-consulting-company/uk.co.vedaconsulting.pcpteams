@@ -462,7 +462,7 @@ function deletePendingApproval(entityId){
               cj.ajax({ 
                  url     : dataUrl,
                  type    : 'post',
-                 data    : {entity_id : entityId},
+                 data    : {entity_id : entityId, op : 'pending'},
                  success : function( data ) {
                   cj(document).ajaxStop(function() { 
                     location.href = redirectUrl; 

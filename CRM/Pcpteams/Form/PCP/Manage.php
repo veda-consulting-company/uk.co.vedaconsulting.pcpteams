@@ -185,7 +185,7 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     if (civicrm_error($result)) {
       return NULL;
     }
-    return $result['values'][0];
+    return isset($result['values'][0]) ? $result['values'][0] : CRM_Core_DAO::$_nullArray;
   }
 
   function setPcpStatus($text, $title = '', $type = 'alert') {

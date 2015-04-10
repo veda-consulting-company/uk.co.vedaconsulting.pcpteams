@@ -287,7 +287,7 @@ function pcpteams_civicrm_alterAPIPermissions($entity, $action, &$params, &$perm
       // 'access AJAX API',
     ),
     'getEventList' => array(
-    'access CiviEvent',
+    'access CiviCRM',
     // 'access AJAX API',
     ),
   );
