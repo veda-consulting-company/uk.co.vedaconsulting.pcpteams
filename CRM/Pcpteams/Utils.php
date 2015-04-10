@@ -723,5 +723,33 @@ class  CRM_Pcpteams_Utils {
     }
     return $sent ? TRUE : FALSE;
   }
-
+  
+  static function AdjustIndiviualTarget($teamMembers = array()) {
+    if(empty($teamMembers)) {
+      return NULL;
+    }
+    foreach ($teamMembers['values'] as $teamMember) {
+      if($teamMember['goal_amount'] == 0) {
+         CRM_Core_Error::debug_var('result3', 'Inside if');
+        $params = array(
+          'version'     => 3,
+          'id'          => $teamMember['pcp_id'],
+          'goal_amount' => CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $teamMember['team_pcp_id'], 'goal_amount'),
+        );
+        $result = civicrm_api('pcpteams', 'create', $params);
+      }
+    }
+  }
+  
+  static function checkPcpType($pcpId) {
+    if(empty($pcpId)) {
+      return NULL;
+    }
+    $aContactTypes   = CRM_Contact_BAO_Contact::getContactTypes(CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcpId, 'contact_id'));
+    $isIndividualPcp = in_array('Individual', $aContactTypes) ? TRUE : FALSE;
+    $isTeamPcp       = in_array('Team'      , $aContactTypes) ? TRUE : FALSE;
+    return $isTeamPcp ? 'Team' : 'Indiviual';
+    
+  }
+    
 }

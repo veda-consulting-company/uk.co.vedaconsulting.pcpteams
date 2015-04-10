@@ -121,6 +121,7 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
         'pcp_id'   => $pcpId,
       )
     );
+    CRM_Pcpteams_Utils::AdjustIndiviualTarget($teamMemberInfo);
     $this->assign('teamMemberInfo', isset($teamMemberInfo['values']) ? $teamMemberInfo['values'] : NULL);
     
     // team member request info for admins (edit permission)

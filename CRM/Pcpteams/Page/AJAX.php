@@ -105,7 +105,16 @@ class CRM_Pcpteams_Page_AJAX {
       'id'      => $pcpId,
       $columnfield => trim($editedValue)
     );
-    $result = civicrm_api('pcpteams', 'create', $params);
+    $result   = civicrm_api('pcpteams', 'create', $params);
+    $pcpType  = CRM_Pcpteams_Utils::checkPcpType($pcpId);
+    if (!civicrm_error($result) && $pcpType == CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE) {
+      $teamMemberInfo = civicrm_api( 'pcpteams', 'getTeamMembersInfo', array(
+        'version'  => 3, 
+        'pcp_id'   => $pcpId,
+      )
+      );
+      CRM_Pcpteams_Utils::AdjustIndiviualTarget($teamMemberInfo);
+    }
     echo $editedValue;
     CRM_Utils_System::civiExit();
   }
