@@ -593,7 +593,7 @@ class  CRM_Pcpteams_Utils {
       $relQuery = "
         SELECT cr.id 
         FROM civicrm_relationship cr
-        LEFT JOIN civicrm_value_pcp_relationship_set crcs ON (cr.id = crcs.entity_id) 
+        INNER JOIN civicrm_value_pcp_relationship_set crcs ON (cr.id = crcs.entity_id) 
         WHERE cr.contact_id_a = %1 AND cr.contact_id_b = %2 AND cr.relationship_type_id = %3 AND crcs.pcp_b_a = %4
       ";
       $relTypeId = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', CRM_Pcpteams_Constant::C_TEAM_RELATIONSHIP_TYPE, 'id', 'name_a_b');
