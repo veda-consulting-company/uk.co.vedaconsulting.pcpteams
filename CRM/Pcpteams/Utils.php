@@ -192,7 +192,11 @@ class  CRM_Pcpteams_Utils {
   static function getPcpBACustomFieldId(){
     return CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', CRM_Pcpteams_Constant::C_CF_PCPBA, 'id', 'name');
   }
-     
+  
+  static function getPcpCustomSetId(){
+    return CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomGroup', CRM_Pcpteams_Constant::C_PCP_CUSTOM_GROUP_NAME, 'id', 'name');
+  }
+  
   static function getEventDetailsbyEventId( $id ){
     if(empty($id)){
       return NULL;
@@ -725,4 +729,44 @@ class  CRM_Pcpteams_Utils {
     return $sent ? TRUE : FALSE;
   }
   
+  static function adjustTeamMemberTarget($teamPcpId, $memberPcpId = NULL) {
+    if(empty($teamPcpId)) {
+      return NULL;
+    }
+    $pcpType  = CRM_Pcpteams_Utils::checkPcpType($teamPcpId);
+    $goalAmount = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $teamPcpId, 'goal_amount');
+    if ($pcpType == CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE) {
+      if($memberPcpId) {
+        if(empty(CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $memberPcpId, 'goal_amount'))) {
+          $params = array(
+              'version'     => 3,
+              'id'          => $memberPcpId,
+              'goal_amount' => $goalAmount,
+            );
+          $result = civicrm_api('pcpteams', 'create', $params);
+        }
+      } else {
+        $query = "
+          UPDATE civicrm_pcp AS p1
+          INNER JOIN civicrm_value_pcp_custom_set AS c ON p1.id = c.entity_id
+          SET p1.goal_amount = %1
+          WHERE (p1.goal_amount is NULL OR p1.goal_amount = 0) AND c.team_pcp_id = %2";
+        
+        $queryParams = array(
+          1 => array($goalAmount, 'String'),
+          2 => array($teamPcpId, 'Integer'),
+        );
+        CRM_Core_DAO::executeQuery($query, $queryParams);
+      }
+    }
+  }
+  
+  static function checkPcpType($pcpId) {
+    if(empty($pcpId)) {
+      return NULL;
+    }
+    $aContactTypes   = CRM_Contact_BAO_Contact::getContactTypes(CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcpId, 'contact_id'));
+    return in_array('Team', $aContactTypes) ? 'Team' : 'Indiviual';
+    
+  }
 }

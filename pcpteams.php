@@ -277,8 +277,28 @@ function pcpteams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
       CRM_Pcpteams_Utils::getPcpId($objectRef->event_id, 'event', TRUE, $objectRef->contact_id );
     }
   }
+  
+  if ($objectName == 'PCP' && $op == 'edit') {
+    CRM_Pcpteams_Utils::adjustTeamMemberTarget($objectId);
+  }
 }
 
+function pcpteams_civicrm_custom( $op, $groupID, $entityID, &$params ) {
+  if ( $op != 'create' && $op != 'edit' ) {
+        return;
+    }
+  $pcpCustomGroupId = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();  
+  if($groupID == CRM_Pcpteams_Utils::getPcpCustomSetId()) {
+    foreach ($params as $key => $customField) {
+      if($customField['custom_field_id'] == $pcpCustomGroupId ) {
+        CRM_Pcpteams_Utils::adjustTeamMemberTarget($customField['value'], $customField['entity_id']);
+        break;
+      }
+    }
+  }
+  
+}
+    
 function pcpteams_civicrm_buildForm($formName, &$form) {
   if($formName == 'CRM_Event_Form_Registration_ThankYou') {
     $template              = CRM_Core_Smarty::singleton( );
