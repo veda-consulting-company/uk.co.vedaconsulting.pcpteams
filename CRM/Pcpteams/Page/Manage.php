@@ -152,11 +152,11 @@ class CRM_Pcpteams_Page_Manage extends CRM_Core_Page {
     
     //Pcp layout button and URLs
     //DS FIXME: these urls should be built in tpl
-    $joinTeamURl    = CRM_Utils_System::url('civicrm/pcp/inline/edit'     , "reset=1&id={$pcpId}&pageId={$pcpDetails['page_id']}&op=2&snippet=json");
-    $createTeamURl  = CRM_Utils_System::url('civicrm/pcp/inline/edit'     , "reset=1&id={$pcpId}&pageId={$pcpDetails['page_id']}&op=1&snippet=json");
-    $updateProfPic  = CRM_Utils_System::url('civicrm/pcp/inline/profile'  , "reset=1&id={$pcpId}&pageId={$pcpDetails['page_id']}&snippet=json");
+    $joinTeamURl    = CRM_Utils_System::url('civicrm/pcp/manage/team/edit'     , "reset=1&id={$pcpId}&pageId={$pcpDetails['page_id']}&op=2&snippet=json");
+    $createTeamURl  = CRM_Utils_System::url('civicrm/pcp/manage/team/edit'     , "reset=1&id={$pcpId}&pageId={$pcpDetails['page_id']}&op=1&snippet=json");
+    $updateProfPic  = CRM_Utils_System::url('civicrm/pcp/manage/profile/edit'  , "reset=1&id={$pcpId}&pageId={$pcpDetails['page_id']}&snippet=json");
     if ($pcpDetails['is_teampage']) {
-      $inviteTeamURl= CRM_Utils_System::url('civicrm/pcp/inline/edit'     , "reset=1&id={$pcpId}&pageId={$pcpDetails['page_id']}&op=invite&snippet=json");
+      $inviteTeamURl= CRM_Utils_System::url('civicrm/pcp/manage/team/edit'     , "reset=1&id={$pcpId}&pageId={$pcpDetails['page_id']}&op=invite&snippet=json");
       $this->assign('inviteTeamURl' , $inviteTeamURl);
     }
 

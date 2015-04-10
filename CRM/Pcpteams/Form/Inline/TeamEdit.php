@@ -5,7 +5,7 @@
  *
  * @see http://wiki.civicrm.org/confluence/display/CRMDOC43/QuickForm+Reference
  */
-class CRM_Pcpteams_Form_PCP_InlineEditTeam extends CRM_Core_Form {
+class CRM_Pcpteams_Form_Inline_TeamEdit extends CRM_Core_Form {
 
   function preProcess() {
     parent::preProcess();
