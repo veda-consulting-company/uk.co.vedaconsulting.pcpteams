@@ -728,34 +728,37 @@ class  CRM_Pcpteams_Utils {
     return $sent ? TRUE : FALSE;
   }
   
-  static function AdjustIndiviualTarget($teamPcpId, $goalAmount, $pcpId = NULL) {
+  static function adjustTeamMemberTarget($teamPcpId, $memberPcpId = NULL) {
     if(empty($teamPcpId)) {
       return NULL;
     }
-    // from join team member custom field
-    if ($teamPcpId && $pcpId && CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcpId, 'goal_amount') == 0) {
-          $params = array(
-            'version'     => 3,
-            'id'          => $pcpId,
-            'goal_amount' => $goalAmount,
-          );
-          $result = civicrm_api('pcpteams', 'create', $params);
-    }
     $pcpType  = CRM_Pcpteams_Utils::checkPcpType($teamPcpId);
+    $goalAmount = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $teamPcpId, 'goal_amount');
     if ($pcpType == CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE) {
-      $teamMemberInfo = civicrm_api( 'pcpteams', 'getTeamMembersInfo', array(
-        'version'  => 3, 
-        'pcp_id'   => $teamPcpId,
-      )
-      );
-      foreach ($teamMemberInfo['values'] as $teamMember) {
-        if($teamMember['goal_amount'] == 0) {
+      if($memberPcpId) {
+        if(CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $memberPcpId, 'goal_amount') == 0) {
           $params = array(
-            'version'     => 3,
-            'id'          => $teamMember['pcp_id'],
-            'goal_amount' => $goalAmount,
-          );
+              'version'     => 3,
+              'id'          => $memberPcpId,
+              'goal_amount' => $goalAmount,
+            );
           $result = civicrm_api('pcpteams', 'create', $params);
+        }
+      } else {
+        $teamMemberInfo = civicrm_api( 'pcpteams', 'getTeamMembersInfo', array(
+          'version'  => 3, 
+          'pcp_id'   => $teamPcpId,
+          )
+        );
+        foreach ($teamMemberInfo['values'] as $teamMember) {
+          if($teamMember['goal_amount'] == 0 || empty($teamMember['goal_amount'])) {
+            $params = array(
+              'version'     => 3,
+              'id'          => $teamMember['pcp_id'],
+              'goal_amount' => $goalAmount,
+            );
+            $result = civicrm_api('pcpteams', 'create', $params);
+          }
         }
       }
     }
@@ -766,7 +769,6 @@ class  CRM_Pcpteams_Utils {
       return NULL;
     }
     $aContactTypes   = CRM_Contact_BAO_Contact::getContactTypes(CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcpId, 'contact_id'));
-    $isIndividualPcp = in_array('Individual', $aContactTypes) ? TRUE : FALSE;
     $isTeamPcp       = in_array('Team'      , $aContactTypes) ? TRUE : FALSE;
     return $isTeamPcp ? 'Team' : 'Indiviual';
     
