@@ -93,7 +93,7 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
     //return TRUE;
     $values = $this->controller->exportValues($this->_name); 
     // Find the msg_tpl ID of sample invite template
-    $msgTplId  = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_MessageTemplate', CRM_Pcpteams_Constant::C_INVITE_TEAM_MSG_TPL, 'id', 'msg_title');
+    $msgTplId  = CRM_Pcpteams_Utils::getPCPMsgTplId(CRM_Pcpteams_Constant::C_INVITE_TEAM_MSG_TPL);
     $teampcpId = CRM_Pcpteams_Utils::getPcpIdByContactAndEvent($this->get('component_page_id'), $this->get('teamContactID'));
 
     if( $msgTplId && !empty($values)) {

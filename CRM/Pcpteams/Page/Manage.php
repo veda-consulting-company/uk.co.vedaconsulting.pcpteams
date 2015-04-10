@@ -1,9 +1,13 @@
 <?php
 
-require_once 'CRM/Core/Page.php';
-
-class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
+class CRM_Pcpteams_Page_Manage extends CRM_Core_Page {
   
+  function run() {
+    $this->preProcess();
+    $this->buildView();
+    parent::run();
+  }
+
   function preProcess(){
     CRM_Core_Resources::singleton()
       ->addScriptFile('uk.co.vedaconsulting.pcpteams', 'packages/jquery-circle-progress/dist/circle-progress.js', CRM_Core_Resources::DEFAULT_WEIGHT, 'html-header')
@@ -27,7 +31,7 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
     $this->assign('userId', $this->_userID);
   }
 
-  function buildQuickForm() {
+  function buildView() {
     //get params from URL
     $state = NULL;
     $pcpId = CRM_Utils_Request::retrieve('id', 'Positive', CRM_Core_DAO::$_nullArray, TRUE); 
@@ -109,7 +113,8 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
       )
     );
     $this->assign('donationInfo', $aDonationResult['values']);
-    if (empty($aDonationResult['values'])) {
+    if (empty($aDonationResult['values']) && empty($pcpDetails['team_pcp_id']) && empty($pcpDetails['pending_team_pcp_id'])) {
+      // if no donations, no team or team-requests, show a message
       $statusTitle = "Congratulations, you are now signed up for '{$pcpDetails['page_title']}'";
       $statusText  = ts('We have created this page to help you with your fundraising. Please take a few minutes to complete a couple of details below, you will need to add a fundraising target to give you something to aim for (aim high!) and write a little bit about yourself to encourage people to help you reach that target. If you want to do this event as a team or in memory of a loved one you can set that up below as well.');
       $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
@@ -121,7 +126,6 @@ class CRM_Pcpteams_Form_PCP_Manage extends CRM_Core_Form {
         'pcp_id'   => $pcpId,
       )
     );
-    CRM_Pcpteams_Utils::AdjustIndiviualTarget($teamMemberInfo);
     $this->assign('teamMemberInfo', isset($teamMemberInfo['values']) ? $teamMemberInfo['values'] : NULL);
     
     // team member request info for admins (edit permission)

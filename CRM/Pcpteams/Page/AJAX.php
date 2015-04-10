@@ -57,7 +57,7 @@ class CRM_Pcpteams_Page_AJAX {
       $contactDetails = civicrm_api('Contact', 'get', array('version' => 3, 'sequential' => 1, 'id' => $user_id));
       $teamId         = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $team_pcp_id, 'contact_id');
       $teamName       = CRM_Contact_BAO_Contact::displayName($teamId);
-      $msgTplId       = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_MessageTemplate', CRM_Pcpteams_Constant::C_LEAVE_TEAM_MSG_TPL, 'id', 'msg_title'); 
+      $msgTplId       = CRM_Pcpteams_Utils::getPCPMsgTplId(CRM_Pcpteams_Constant::C_LEAVE_TEAM_MSG_TPL); 
 
       $emailParams =  array(
         'tplParams' => array(
@@ -106,15 +106,6 @@ class CRM_Pcpteams_Page_AJAX {
       $columnfield => trim($editedValue)
     );
     $result   = civicrm_api('pcpteams', 'create', $params);
-    $pcpType  = CRM_Pcpteams_Utils::checkPcpType($pcpId);
-    if (!civicrm_error($result) && $pcpType == CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE) {
-      $teamMemberInfo = civicrm_api( 'pcpteams', 'getTeamMembersInfo', array(
-        'version'  => 3, 
-        'pcp_id'   => $pcpId,
-      )
-      );
-      CRM_Pcpteams_Utils::AdjustIndiviualTarget($teamMemberInfo);
-    }
     echo $editedValue;
     CRM_Utils_System::civiExit();
   }
@@ -227,7 +218,7 @@ class CRM_Pcpteams_Page_AJAX {
       CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_REQ_DECLINED);
       list($userName, $userEmail)  = CRM_Contact_BAO_Contact::getContactDetails($targetId);
       $contactDetails = civicrm_api('Contact', 'get', array('version' => 3, 'sequential' => 1, 'id' => $targetId));
-      $msgTplId       = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_MessageTemplate', CRM_Pcpteams_Constant::C_JOIN_REQ_DECLINE_TEAM_MSG_TPL, 'id', 'msg_title'); 
+      $msgTplId       = CRM_Pcpteams_Utils::getPCPMsgTplId(CRM_Pcpteams_Constant::C_JOIN_REQ_DECLINE_TEAM_MSG_TPL);
 
       $emailParams =  array(
         'tplParams' => array(

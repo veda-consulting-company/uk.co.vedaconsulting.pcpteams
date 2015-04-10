@@ -192,7 +192,11 @@ class  CRM_Pcpteams_Utils {
   static function getPcpBACustomFieldId(){
     return CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', CRM_Pcpteams_Constant::C_CF_PCPBA, 'id', 'name');
   }
-     
+  
+  static function getPcpCustomSetId(){
+    return CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomGroup', CRM_Pcpteams_Constant::C_PCP_CUSTOM_GROUP_NAME, 'id', 'name');
+  }
+  
   static function getEventDetailsbyEventId( $id ){
     if(empty($id)){
       return NULL;
@@ -724,18 +728,35 @@ class  CRM_Pcpteams_Utils {
     return $sent ? TRUE : FALSE;
   }
   
-  static function AdjustIndiviualTarget($teamMembers = array()) {
-    if(empty($teamMembers)) {
+  static function AdjustIndiviualTarget($teamPcpId, $goalAmount, $pcpId = NULL) {
+    if(empty($teamPcpId)) {
       return NULL;
     }
-    foreach ($teamMembers['values'] as $teamMember) {
-      if($teamMember['goal_amount'] == 0) {
-        $params = array(
-          'version'     => 3,
-          'id'          => $teamMember['pcp_id'],
-          'goal_amount' => CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $teamMember['team_pcp_id'], 'goal_amount'),
-        );
-        $result = civicrm_api('pcpteams', 'create', $params);
+    // from join team member custom field
+    if ($teamPcpId && $pcpId && CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcpId, 'goal_amount') == 0) {
+          $params = array(
+            'version'     => 3,
+            'id'          => $pcpId,
+            'goal_amount' => $goalAmount,
+          );
+          $result = civicrm_api('pcpteams', 'create', $params);
+    }
+    $pcpType  = CRM_Pcpteams_Utils::checkPcpType($teamPcpId);
+    if ($pcpType == CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE) {
+      $teamMemberInfo = civicrm_api( 'pcpteams', 'getTeamMembersInfo', array(
+        'version'  => 3, 
+        'pcp_id'   => $teamPcpId,
+      )
+      );
+      foreach ($teamMemberInfo['values'] as $teamMember) {
+        if($teamMember['goal_amount'] == 0) {
+          $params = array(
+            'version'     => 3,
+            'id'          => $teamMember['pcp_id'],
+            'goal_amount' => $goalAmount,
+          );
+          $result = civicrm_api('pcpteams', 'create', $params);
+        }
       }
     }
   }
@@ -751,4 +772,38 @@ class  CRM_Pcpteams_Utils {
     
   }
     
+  static function getPCPMsgTplId($msgTplTitle){
+    if (empty($msgTplTitle)) {
+      return NULL;
+    }
+    //option group workflow for PCP
+    $ogId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_OptionGroup', CRM_Pcpteams_Constant::C_OG_MSG_TPL_WORKFLOW, 'id', 'name');
+    if (!$ogId) {
+      //FIXME : unable to find message template workflow option group
+      return NULL;
+    }
+    
+    $optValue = civicrm_api3('OptionValue', 'getsingle', array(
+      'version'         => 3, 
+      'option_group_id' => $ogId, 
+      'name'            => $msgTplTitle,
+    ));
+    if (!$optValue['id']) {
+      //FIXME : unable to find message template workflow option value
+      return NULL;
+    }
+    
+    $msgTplParams = array(
+      'version'     => 3,
+      'workflow_id' => $optValue['id'],
+      'msg_title'   => $msgTplTitle,
+    );
+    $msgTplValues = civicrm_api3('MessageTemplate', 'getsingle', $msgTplParams);
+    if ($msgTplValues['id']) {
+      return $msgTplValues['id'];
+    }
+    //FIXME: unable to find the correct match msg tpl.
+    return NULL;
+  }
+
 }
