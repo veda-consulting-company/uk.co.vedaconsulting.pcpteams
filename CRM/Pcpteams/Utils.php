@@ -591,15 +591,17 @@ class  CRM_Pcpteams_Utils {
       
       //CASE 3: IF pcp being viewed has been requested to be joined by logged in user (under approval)
       $relQuery = "
-        SELECT id 
-        FROM civicrm_relationship
-        WHERE contact_id_a = %1 AND contact_id_b = %2 AND relationship_type_id = %3
+        SELECT cr.id 
+        FROM civicrm_relationship cr
+        LEFT JOIN civicrm_value_pcp_relationship_set crcs ON (cr.id = crcs.entity_id) 
+        WHERE cr.contact_id_a = %1 AND cr.contact_id_b = %2 AND cr.relationship_type_id = %3 AND crcs.pcp_b_a = %4
       ";
       $relTypeId = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', CRM_Pcpteams_Constant::C_TEAM_RELATIONSHIP_TYPE, 'id', 'name_a_b');
       $relQueryParams = array(
         1 => array( $contactId, 'Integer'),
         2 => array( $pcpOwnerContactId, 'Integer'),
         3 => array( $relTypeId, 'Integer'),
+        4 => array( $pcpId, 'Integer'),
       );
       if (CRM_Core_DAO::singleValueQuery($relQuery, $relQueryParams)) {
         return TRUE;
