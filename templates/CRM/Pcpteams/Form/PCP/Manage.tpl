@@ -219,7 +219,7 @@
 </div>
 {* FIXME style display none should take care of css, Need to Discuss with DS to make general alert message *}
 <div class="crm-pcp-alert-cancel-pending-request" style="display:none;">
-  <p> Are you sure, want to delete this request ?</p>
+  <p> Are you sure you want to withdraw your request to join this team?</p>
 </div>
 
 {literal}
@@ -353,7 +353,7 @@ CRM.$(function($) {
     var $el = $(this);
     CRM.confirm({
       title: ts('{/literal}{ts escape="js"}Approve Request{/ts}{literal}'),
-      message: ts('{/literal}{ts escape="js"}Are you sure you want to approve this request?{/ts}{literal}'),
+      message: ts('{/literal}{ts escape="js"}Approve new team member?{/ts}{literal}'),
       options: {{/literal}yes: '{ts escape="js"}Yes{/ts}', no: '{ts escape="js"}No{/ts}'{literal}},
     }).on('crmConfirm:yes', function() {
       var postUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=approveTeamMember'}"{literal};
@@ -392,7 +392,7 @@ CRM.$(function($) {
     var $el = $(this);
     CRM.confirm({
       title: ts('{/literal}{ts escape="js"}Leave Team{/ts}{literal}'),
-      message: ts('{/literal}{ts escape="js"}Are you sure you want to leave this team?{/ts}{literal}'),
+      message: ts('{/literal}{ts escape="js"}Do you really want to leave the team?{/ts}{literal}'),
       options: {{/literal}yes: '{ts escape="js"}Yes{/ts}', no: '{ts escape="js"}No{/ts}'{literal}},
     }).on('crmConfirm:yes', function() {
       var postUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=leaveTeam'}";{literal}

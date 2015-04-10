@@ -76,6 +76,7 @@ class CRM_Pcpteams_Form_TeamJoin {
         'userFirstName' => $contactDetails['values'][0]['first_name'],
         'userlastName'  => $contactDetails['values'][0]['last_name'],
         'teamName'      => $form->_teamName,
+        'pageURL'       => CRM_Utils_System::url('civicrm/pcp/manage', "reset=1&id={$teampcpId}", TRUE, NULL, FALSE, TRUE),
       ),
       'email' => array(
         $teamAdminName => array(
