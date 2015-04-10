@@ -96,7 +96,7 @@
                 <div class="clear"></div>
               </div>
               <div class="pending-team-buttons">
-                <a id="cancel-pending-btn" class="pcp-button pcp-btn-red" href="javascript:void(0)" onclick="deletePendingApproval({$pendingApprovalInfo.relationship_id});">{ts}Withdraw Request{/ts}</a>
+                <a class="pcp-button pcp-btn-red crm-pcp-alert-cancel-pending-request" href="javascript:void(0)" data-entity-id={$pendingApprovalInfo.relationship_id}>{ts}Withdraw Request{/ts}</a>
               </div>
           {elseif $pcpinfo.is_teampage}
             <!-- <div class="invite-team-text">Invite people to the team</div> -->
@@ -216,10 +216,6 @@
   </div>
 
   <div class="clear"></div>
-</div>
-{* FIXME style display none should take care of css, Need to Discuss with DS to make general alert message *}
-<div class="crm-pcp-alert-cancel-pending-request" style="display:none;">
-  <p> Are you sure you want to withdraw your request to join this team?</p>
 </div>
 
 {literal}
@@ -403,6 +399,22 @@ CRM.$(function($) {
     });
   });
 
+  $(".crm-pcp-alert-cancel-pending-request").on('click', function(ev) {
+    var $el = $(this);
+    CRM.confirm({
+      title: ts('{/literal}{ts escape="js"}Cancel Join Request{/ts}{literal}'),
+      message: ts('{/literal}{ts escape="js"}Are you sure you want to withdraw your request to join this team?{/ts}{literal}'),
+      options: {{/literal}yes: '{ts escape="js"}Yes{/ts}', no: '{ts escape="js"}No{/ts}'{literal}},
+    }).on('crmConfirm:yes', function() {
+      var postUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=declineTeamMember' }"{literal};
+      var request = $.post(postUrl, {entity_id : $el.data('entityId'), op : 'pending'});
+      request.done(function(data) {
+        setPcpMessage('Join Request Cancelled', 'Your join request to the team has been cancelled.');
+        $el.closest('.team-section').remove();
+      });
+    });
+  });
+
   function setPcpMessage(title, text) {
     var pcpMessage = "<div class='pcp-info pcp-message'>";
     if (title) {
@@ -414,43 +426,6 @@ CRM.$(function($) {
     $('.pcp-messages').html('');
     $(pcpMessage).appendTo('.pcp-messages').show('slow');
   }
-
 });
-function deletePendingApproval(entityId){
-    cj(".crm-pcp-alert-cancel-pending-request").show();
-    cj(".crm-pcp-alert-cancel-pending-request").dialog({
-        title: "Decline Request",
-        modal: true,
-        resizable: true,
-        bgiframe: true,
-        show: 'drop', 
-        hide: 'drop',        
-        overlay: {
-          opacity: 0.5,
-          background: "black"
-        },
-        buttons: {
-          "Yes": function() {
-              var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=declineTeamMember' }"{literal};
-              var redirectUrl = window.location.href;
-              redirectUrl = redirectUrl + '&op=pending';
-              cj.ajax({ 
-                 url     : dataUrl,
-                 type    : 'post',
-                 data    : {entity_id : entityId, op : 'pending'},
-                 success : function( data ) {
-                  cj(document).ajaxStop(function() { 
-                    location.href = redirectUrl; 
-                  });
-                 }
-              });
-            cj(this).dialog("destroy");
-          },
-          "No" : function() {
-            cj(this).dialog("destroy");
-          }
-        }
-    });
-}
 </script>
 {/literal}
