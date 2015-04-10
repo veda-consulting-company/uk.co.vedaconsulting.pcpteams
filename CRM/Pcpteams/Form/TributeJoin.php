@@ -31,11 +31,11 @@ class CRM_Pcpteams_Form_TributeJoin extends CRM_Core_Form {
     if ($this->get('page_id')) {
       $result = civicrm_api('Pcpteams', 'get', array('version' => 3, 'sequential' => 1, 'pcp_id' => $this->get('page_id')));
       $tributeCCfId = CRM_Pcpteams_Utils::getPcpTypeContactCustomFieldId();
-      if(isset($result['values'][0]["custom_{$tributeCCfId}"])){
-        $defaults['pcp_tribute_contact'] = $result['values'][0]["custom_{$tributeCCfId}_id"];
+      if(isset($result['values'][0]["tribute_contact_id"])){
+        $defaults['pcp_tribute_contact'] = $result['values'][0]["tribute_contact_id"];
         $defaultValues = array(
-          'id' => $result['values'][0]["custom_{$tributeCCfId}_id"],
-          'label' => CRM_Contact_BAO_Contact::displayName( $result['values'][0]["custom_{$tributeCCfId}_id"] ),
+          'id' => $result['values'][0]["tribute_contact_id"],
+          'label' => CRM_Contact_BAO_Contact::displayName( $result['values'][0]["tribute_contact_id"] ),
         );
         $this->assign('defaultValues', json_encode($defaultValues));
       }
