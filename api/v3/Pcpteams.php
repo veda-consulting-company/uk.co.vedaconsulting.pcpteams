@@ -401,12 +401,13 @@ function civicrm_api3_pcpteams_getMyTeamInfo($params) {
   $dao->contact_id = $params['contact_id']; 
   $result = @_civicrm_api3_dao_to_array($dao);
   _civicrm_api3_pcpteams_custom_get($result);
+  _civicrm_api3_pcpteams_getCustomData($result);
   
   $cfTeamPcpId = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
   $pcpDashboardValues = $teamIds = array();
   foreach ($result as $pcpId => $value) {
-    if(isset($value['custom_'.$cfTeamPcpId])){
-      $teamIds[$pcpId] = $value['custom_'.$cfTeamPcpId];
+    if(isset($value['team_pcp_id'])){
+      $teamIds[$pcpId] = $value['team_pcp_id'];
     } 
   }
   if(!empty($teamIds)){
@@ -1205,7 +1206,7 @@ function civicrm_api3_pcpteams_leaveTeam($params) {
     return civicrm_api3_create_success($result, $params);
   }
   
-  $teamPcpCfId  = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
+  // $teamPcpCfId  = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
   $team_pcp_id  = $params['team_pcp_id']; 
   $user_id      = $params['user_id']; 
   $query = "
