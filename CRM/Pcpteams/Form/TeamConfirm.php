@@ -93,10 +93,9 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
     //return TRUE;
     $values = $this->controller->exportValues($this->_name); 
     // Find the msg_tpl ID of sample invite template
-    $msgTplId  = CRM_Pcpteams_Utils::getPCPMsgTplId(CRM_Pcpteams_Constant::C_INVITE_TEAM_MSG_TPL);
     $teampcpId = CRM_Pcpteams_Utils::getPcpIdByContactAndEvent($this->get('component_page_id'), $this->get('teamContactID'));
 
-    if( $msgTplId && !empty($values)) {
+    if(!empty($values)) {
       
       // Send Invitation emails
       $pcpDetails = civicrm_api('pcpteams', 'get', array('version' => 3, 'sequential' => 1, 'pcp_id' => $this->get('page_id')));
@@ -127,7 +126,7 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
       $teamInviteActivityType = $isTeamAdmin ? CRM_Pcpteams_Constant::C_AT_INVITATION_FROM_ADMIN : CRM_Pcpteams_Constant::C_AT_INVITATION_FROM_MEMBER;
       $activity = CRM_Pcpteams_Utils::createPcpActivity($actParams, $teamInviteActivityType);
       
-      $result = CRM_Pcpteams_Utils::sendInviteEmail($msgTplId, $this->_contactID, $values, $teampcpId, $activity['id']);
+      $result = CRM_Pcpteams_Utils::sendInviteEmail(CRM_Pcpteams_Constant::C_INVITE_TEAM_MSG_TPL, $this->_contactID, $values, $teampcpId, $activity['id']);
       if ($result) {
         if ($_GET['snippet']) {
           // from pcp edit screen

@@ -68,7 +68,6 @@ class CRM_Pcpteams_Form_TeamJoin {
     $teamAdminId    = CRM_Pcpteams_Utils::getTeamAdmin($teampcpId);
     list($teamAdminName, $teamAdminEmail)  = CRM_Contact_BAO_Contact::getContactDetails($teamAdminId);
     $contactDetails = civicrm_api('Contact', 'get', array('version' => 3, 'sequential' => 1, 'id' => $userId));
-    $msgTplId       = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_MessageTemplate', CRM_Pcpteams_Constant::C_JOIN_REQUEST_MSG_TPL, 'id', 'msg_title'); 
 
     $emailParams =  array(
       'tplParams' => array(
@@ -86,7 +85,7 @@ class CRM_Pcpteams_Form_TeamJoin {
           'display_name'  => $teamAdminName,
         )
       ),
-      'messageTemplateID' => $msgTplId,
+      'valueName' => CRM_Pcpteams_Constant::C_JOIN_REQUEST_MSG_TPL,
       // 'email_from' => $fromEmail,
     );
     
