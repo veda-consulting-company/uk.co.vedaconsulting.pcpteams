@@ -101,7 +101,7 @@ function civicrm_api3_pcpteams_get($params) {
     'team_pcp_id' => isset($params['team_pcp_id']) ? $params['team_pcp_id'] : NULL,
   );
   if (!_civicrm_pcpteams_permission_check($permParams, CRM_Core_Permission::VIEW)
-    && !_civicrm_pcpteams_permission_check($permParams, CRM_Pcpteams_Constant::C_PERMISSION_MEMBER)
+    // && !_civicrm_pcpteams_permission_check($permParams, CRM_Pcpteams_Constant::C_PERMISSION_MEMBER)
     ) {
     return civicrm_api3_create_error('insufficient permission to view this record');
   }
@@ -970,7 +970,7 @@ function civicrm_api3_pcpteams_getAllDonations($params) {
     'team_pcp_id' => isset($params['team_pcp_id']) ? $params['team_pcp_id'] : NULL,
   );
   if (!_civicrm_pcpteams_permission_check($permParams, CRM_Core_Permission::VIEW) 
-    && !_civicrm_pcpteams_permission_check($permParams, CRM_Pcpteams_Constant::C_PERMISSION_MEMBER)
+    // && !_civicrm_pcpteams_permission_check($permParams, CRM_Pcpteams_Constant::C_PERMISSION_MEMBER)
     ) {
     return civicrm_api3_create_error('insufficient permission to view this record');
   }
