@@ -7,7 +7,7 @@ require_once 'CRM/Core/Form.php';
  *
  * @see http://wiki.civicrm.org/confluence/display/CRMDOC43/QuickForm+Reference
  */
-class CRM_Pcpteams_Form_PCP_InlineProfilePic extends CRM_Core_Form {
+class CRM_Pcpteams_Form_Inline_ProfileEdit extends CRM_Core_Form {
   function prepProcess(){
     $this->_pcpId             = CRM_Utils_Request::retrieve('id', 'Positive');
     $this->component_page_id  = CRM_Utils_Request::retrieve('pageId', 'Positive');

@@ -1,13 +1,6 @@
 <?xml version="1.0"?>
 <menu>
   <item>
-    <path>civicrm/pcp/page</path>
-    <page_callback>CRM_Pcpteams_Page_PCP</page_callback>
-    <title>Personal Campaign Page</title>
-    <access_callback>1</access_callback>
-    <is_public>true</is_public>
-  </item>
-  <item>
      <path>civicrm/pcp/support</path>
      <title>Personal Campaign Page - Account Information</title>
      <page_callback>CRM_Pcpteams_Controller_PCP</page_callback>
@@ -22,26 +15,20 @@
     <access_arguments>access CiviCRM</access_arguments>
   </item>
   <item>
-    <path>civicrm/pcp/profile</path>
-    <page_callback>CRM_Pcpteams_Form_ProfilePic</page_callback>
-    <title>Profile Pic</title>
-    <access_arguments>access CiviCRM</access_arguments>
-  </item>
-  <item>
     <path>civicrm/pcp/manage</path>
     <page_callback>CRM_Pcpteams_Page_Manage</page_callback>
     <title>Update Personal Campaign Page</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
   <item>
-    <path>civicrm/pcp/inline/edit</path>
-    <page_callback>CRM_Pcpteams_Form_PCP_InlineEditTeam</page_callback>
+    <path>civicrm/pcp/manage/team/edit</path>
+    <page_callback>CRM_Pcpteams_Form_Inline_TeamEdit</page_callback>
     <title>Update Personal Campaign Page</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
   <item>
-    <path>civicrm/pcp/inline/profile</path>
-    <page_callback>CRM_Pcpteams_Form_PCP_InlineProfilePic</page_callback>
+    <path>civicrm/pcp/manage/profile/edit</path>
+    <page_callback>CRM_Pcpteams_Form_Inline_ProfileEdit</page_callback>
     <title>Update Profile Image</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
