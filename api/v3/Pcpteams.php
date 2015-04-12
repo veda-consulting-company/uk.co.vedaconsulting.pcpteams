@@ -1260,3 +1260,25 @@ function _civicrm_pcpteams_permission_check($params, $action = CRM_Core_Permissi
   
   return FALSE;
 }
+
+
+function civicrm_api3_pcpteams_customcreate($params) {
+  $customParams = array(
+    'version' => 3,
+    'entity_id' => $params['entity_id'],
+  );
+  
+  unset($params['entity_id']);
+  unset($params['version']);
+  
+  foreach ($params as $key => $value) {
+    $customFieldId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', $key, 'id', 'column_name');
+    if ($customFieldId) {
+      $customParams["custom_{$customFieldId}"] = $value;
+    }
+  }
+  return civicrm_api3('CustomValue', 'create', $customParams);
+}
+function _civicrm_api3_pcpteams_customcreate_spec(&$params) {
+  $params['entity_id']['api.required'] = 1;
+}

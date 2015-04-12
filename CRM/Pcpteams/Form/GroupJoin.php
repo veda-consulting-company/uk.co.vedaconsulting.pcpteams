@@ -62,13 +62,13 @@ class CRM_Pcpteams_Form_GroupJoin extends CRM_Core_Form {
     $branchId = $values['pcp_branch_contact'];
 
     if ($branchId && $this->get('page_id')) {
-      $branchCfId = CRM_Pcpteams_Utils::getBranchorPartnerCustomFieldId();
+      // $branchCfId = CRM_Pcpteams_Utils::getBranchorPartnerCustomFieldId();
       $params     = array(
         'version'   => 3,
         'entity_id' => $this->get('page_id'),
-        "custom_{$branchCfId}" => $branchId,
+        "org_id" => $branchId,
       );
-      $result = civicrm_api3('CustomValue', 'create', $params);
+      $result = civicrm_api3('pcpteams', 'customcreate', $params);
       if(!civicrm_error($result)){
         $branchName = CRM_Contact_BAO_Contact::displayName($branchId);
         // Group Join: create activity

@@ -62,16 +62,16 @@ class CRM_Pcpteams_Form_TributeJoin extends CRM_Core_Form {
     $tributeId = $values['pcp_tribute_contact'];
     
     if ($tributeId && $this->_tributeReason) {
-      $tributeCfId        = CRM_Pcpteams_Utils::getPcpTypeCustomFieldId();
-      $tributeContactCfId = CRM_Pcpteams_Utils::getPcpTypeContactCustomFieldId();
+      // $tributeCfId        = CRM_Pcpteams_Utils::getPcpTypeCustomFieldId();
+      // $tributeContactCfId = CRM_Pcpteams_Utils::getPcpTypeContactCustomFieldId();
       $selectedReason     = CRM_Core_OptionGroup::getValue(CRM_Pcpteams_Constant::C_PCP_TYPE, $this->_tributeReason, 'name');
       $tributeContatparams= array(
         'version'   => 3,
         'entity_id' => $this->get('page_id'),
-        "custom_{$tributeCfId}" => $selectedReason,
-        "custom_{$tributeContactCfId}" => $tributeId,
+        "tribute" => $selectedReason,
+        "tribute_contact_id" => $tributeId,
       );
-      $result = civicrm_api3('CustomValue', 'create', $tributeContatparams);
+      $result = civicrm_api3('pcpteams', 'customcreate', $tributeContatparams);
       if(!civicrm_error($result)){
         $tributeName = CRM_Contact_BAO_Contact::displayName($tributeId);
         // Tribute Join: create activity
