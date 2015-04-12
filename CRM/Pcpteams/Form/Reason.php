@@ -61,7 +61,7 @@ class CRM_Pcpteams_Form_Reason extends CRM_Core_Form {
     $pcpFound = FALSE;
     while($dao->fetch()) {
       if($dao->contactID == $pcp_type_contact) {
-        CRM_Core_Session::setStatus('PCP Found. Redirecting to dashboard');
+        CRM_Core_Session::setStatus(ts('PCP Found. Redirecting to dashboard'));
         CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/pcp/dashboard', 'reset=1'));
         $pcpFound = TRUE;
         break;
@@ -69,7 +69,7 @@ class CRM_Pcpteams_Form_Reason extends CRM_Core_Form {
     }
     
     if(!$pcpFound) {
-      CRM_Core_Session::setStatus('PCP Not Found. Creating New PCP Record');
+      CRM_Core_Session::setStatus(ts('PCP Not Found. Creating New PCP Record'));
       $PcpID  = $this->_pcpId;
       $insertQuery  = "
         INSERT INTO `civicrm_value_pcp_custom_set` (`id`, `entity_id`, `team_pcp_id`, `pcp_type`, `pcp_type_contact`) VALUES (NULL, $PcpID, NULL, '$pcp_type', $pcp_type_contact)";

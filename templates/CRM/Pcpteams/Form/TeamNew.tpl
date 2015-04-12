@@ -10,7 +10,7 @@
     </div>
   {/foreach}
   {if $snippet neq 'json'}
-  <span class="bold"><a href="{$skipURL}">Skip team setup</a></span>
+  <span class="bold"><a href="{$skipURL}">{ts}Skip team setup{/ts}</a></span>
   {/if}
   <!-- ( FOOTER ) -->
   <div class="crm-submit-buttons">
