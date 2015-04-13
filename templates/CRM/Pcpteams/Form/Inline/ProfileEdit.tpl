@@ -1,7 +1,7 @@
 {* HEADER *}
   {if $defaultImageUrl}
   <div class="avatar">
-    <span> <strong> Current Profile Image </strong> </span>
+    <span> <strong> {ts} Current Profile Image {/ts} </strong> </span>
   </div>
   <div class="avatar">
     <img src="{$defaultImageUrl}">

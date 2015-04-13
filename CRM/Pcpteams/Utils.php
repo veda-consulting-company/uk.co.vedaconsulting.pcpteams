@@ -344,8 +344,9 @@ class  CRM_Pcpteams_Utils {
     }
     $query = 
         "SELECT id FROM `civicrm_contact` 
-         WHERE `contact_type` = 'Organization' AND `contact_sub_type` = 'Team' AND `display_name` LIKE '%{$displayname}'";
-    return CRM_Core_DAO::singleValueQuery($query);
+         WHERE `contact_type` = 'Organization' AND `contact_sub_type` = 'Team' AND `display_name` LIKE %1";
+    $queryParams = array( 1 => array( '%'.$displayname, 'String'));
+    return CRM_Core_DAO::singleValueQuery($query, $queryParams);
   }
   
   static function getActivityTypeId ($activityname) {

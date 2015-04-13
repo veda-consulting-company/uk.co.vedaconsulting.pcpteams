@@ -9,7 +9,7 @@ class CRM_Pcpteams_Page_AJAX {
   static function unsubscribeTeam(){
     $entity_id    = CRM_Utils_Type::escape($_POST['entity_id'], 'Integer');
     $team_pcp_id  = CRM_Utils_Type::escape($_POST['team_pcp_id'], 'Integer');
-    $teamPcpCfId  = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId(); 
+    // $teamPcpCfId  = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId(); 
 
     //check the hasPermission to view details
     if (!CRM_Pcpteams_Utils::hasPermission($entity_id, NULL, CRM_Core_Permission::EDIT)) {
@@ -20,9 +20,9 @@ class CRM_Pcpteams_Page_AJAX {
     $params = array(
       'version'   => 3,
       'entity_id' => $entity_id,
-      "custom_{$teamPcpCfId}" => NULL, 
+      "team_pcp_id" => NULL, 
     );
-    $updatedResult = civicrm_api3('CustomValue', 'create', $params);
+    $updatedResult = civicrm_api3('pcpteams', 'customcreate', $params);
     if (!civicrm_error($updatedResult)) {
       echo 'updated';
     }
@@ -113,7 +113,7 @@ class CRM_Pcpteams_Page_AJAX {
     $entity_id      = CRM_Utils_Type::escape($_POST['entity_id'], 'Integer');
     $pcp_id         = CRM_Utils_Type::escape($_POST['pcp_id'], 'Integer');
     $team_pcp_id    = CRM_Utils_Type::escape($_POST['team_pcp_id'], 'Integer');
-    $teamPcpCfId    = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
+    // $teamPcpCfId    = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
     
     //check the hasPermission to view details
     if (!CRM_Pcpteams_Utils::hasPermission($team_pcp_id, NULL, CRM_Core_Permission::EDIT)) {
@@ -125,9 +125,9 @@ class CRM_Pcpteams_Page_AJAX {
     $params = array(
       'version'   => 3,
       'entity_id' => $pcp_id,
-      "custom_{$teamPcpCfId}" => $team_pcp_id,
+      "team_pcp_id" => $team_pcp_id,
     );
-    $updatedResult = civicrm_api3('CustomValue', 'create', $params);
+    $updatedResult = civicrm_api3('pcpteams', 'customcreate', $params);
     if (!civicrm_error($updatedResult)) {
       $result  = civicrm_api3('Relationship', 'delete', array(
         'sequential' => 1,
@@ -256,13 +256,13 @@ class CRM_Pcpteams_Page_AJAX {
       CRM_Utils_System::civiExit();
     }
         
-    $teamPcpCfId    = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
+    // $teamPcpCfId    = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
     $params = array(
       'version'   => 3,
       'entity_id' => $pcp_id,
-      "custom_{$teamPcpCfId}" => NULL, 
+      "team_pcp_id" => NULL, 
     );
-    $updatedResult = civicrm_api3('CustomValue', 'create', $params);
+    $updatedResult = civicrm_api3('pcpteams', 'customcreate', $params);
     if(!civicrm_error($updatedResult)){
       echo 'removed';
     }else{
@@ -281,13 +281,13 @@ class CRM_Pcpteams_Page_AJAX {
       CRM_Utils_System::civiExit();
     }
   
-    $teamPcpCfId    = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId(); 
+    // $teamPcpCfId    = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId(); 
     $params = array(
       'version'   => 3,
       'entity_id' => $pcp_id,
-      "custom_{$teamPcpCfId}" => NULL, 
+      "team_pcp_id" => NULL, 
     );
-    $updatedResult = civicrm_api3('CustomValue', 'create', $params);
+    $updatedResult = civicrm_api3('pcpteams', 'customcreate', $params);
     if(!civicrm_error($updatedResult)){
       echo 'deactivated';
     }else{

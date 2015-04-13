@@ -33,13 +33,12 @@ class CRM_Pcpteams_Form_BranchorPartner extends CRM_Core_Form {
     $values = $this->exportValues();
     $branchOrPartnerID = $values['pcp_team_contact'];
     
-    $cfId = CRM_Pcpteams_Utils::getBranchorPartnerCustomFieldId();
     $params = array(
       'version' => 3,
       'entity_id' => $form->get('page_id'),
-      "custom_{$cfId}" => $branchOrPartnerID
+      "org_id" => $branchOrPartnerID
     );
-    civicrm_api3('CustomValue', 'create', $params);
+    civicrm_api3('pcpteams', 'customcreate', $params);
   }
 
   /**

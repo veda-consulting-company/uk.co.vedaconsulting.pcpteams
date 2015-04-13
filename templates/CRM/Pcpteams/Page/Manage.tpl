@@ -18,11 +18,10 @@
     <div class="stats">
       <div class="raised-total">
         <span class="amount">{$pcpinfo.amount_raised|crmMoney:$pcpInfo.currency}</span>
-        <div class="raised"><span class="text">Raised so far</span></div>
+        <div class="raised"><span class="text">{ts}Raised so far{/ts}</span></div>
       </div> 
       <div class="target">
-        <span class="text">Of target</span>
-        {* FIXME, Style should to take care of css*}
+        <span class="text">{ts}Of target{/ts}</span>
         <div>
           <div class="amount symbol">{$pcpinfo.currency_symbol}</div>
           <div id="pcp_goal_amount" class="amount {if $is_edit_page}crm-pcp-inline-text-edit{/if}">{$pcpinfo.goal_amount}</div>
@@ -37,8 +36,8 @@
   {if !empty($pcpStatus)}
   {foreach from=$pcpStatus item=pstatus}
     <div class="{$pstatus.type} pcp-message">
-      <h3>{$pstatus.title}</h3>
-      <p>{$pstatus.text}</p>
+      <h3>{ts}{$pstatus.title}{/ts}</h3>
+      <p>{ts}{$pstatus.text}{/ts}</p>
     </div>
   {/foreach}
   {/if}
@@ -66,15 +65,15 @@
             <div class="team-stats">
               <div class="raised-total">
                 <span class="amount">{$teamPcpInfo.amount_raised|crmMoney:$teamPcpInfo.currency}</span>
-                <div class="raised"><span class="text">Raised so far</span></div>
+                <div class="raised"><span class="text">{ts}Raised so far{/ts}</span></div>
               </div>
               <div class="target">
-                <span class="text">Of target</span>
+                <span class="text">{ts}Of target{/ts}</span>
                 <div id="pcp_goal_amount" class="amount">{$teamPcpInfo.goal_amount|crmMoney:$teamPcpInfo.currency}</div>
               </div>
             </div>
           {elseif $pcpinfo.pending_team_pcp_id}
-            <h3>(You have Team Request waiting for approval)</h3>
+            <h3>{ts}(You have Team Request waiting for approval){/ts}</h3>
               <div class="waiting-approval">
                 <div class="avatar">
                   <img width="75" height="75" src="{$pendingApprovalInfo.image_url}">
@@ -86,10 +85,10 @@
                 <div class="team-stats">
                   <div class="raised-total">
                     <span class="amount">{$pendingApprovalInfo.amount_raised|crmMoney:$pendingApprovalInfo.currency}</span>
-                    <div class="raised"><span class="text">Raised so far</span></div>
+                    <div class="raised"><span class="text">{ts}Raised so far{/ts}</span></div>
                   </div>
                   <div class="target">
-                    <span class="text">Of target</span>
+                    <span class="text">{ts}Of target{/ts}</span>
                     <div id="pcp_goal_amount" class="amount">{$pendingApprovalInfo.goal_amount|crmMoney:$pendingApprovalInfo.currency}</div>
                   </div>
                 </div>
@@ -116,7 +115,7 @@
       <div class="givetoname">
         <div class="colheader">
           <div class="btn-donate">
-            <a href="{$pcpinfo.donate_url}"><span id="donate_link_text" {if $is_edit_page}class="crm-pcp-inline-btn-edit"{/if}>Donate</span></a>
+            <a href="{$pcpinfo.donate_url}"><span id="donate_link_text" {if $is_edit_page}class="crm-pcp-inline-btn-edit"{/if}>{ts}Donate{/ts}</span></a>
           </div>
         </div>
         {if !empty($donationInfo)}
@@ -134,7 +133,7 @@
     {if $pcpinfo.is_teampage}
       <div id="member-req-block" class="member-req-block">
         <div class="mem-header">
-          Team Member Requests
+          {ts}Team Member Requests{/ts}
         </div>
         <div class="mem-body">
           {foreach from=$teamMemberRequestInfo item=memberInfo}
@@ -150,7 +149,7 @@
               {$memberInfo.display_name} 
               {if $memberInfo.is_team_admin}
                 <br>
-                <small> ( Team Admin ) </small>
+                <small> {ts}( Team Admin ){/ts} </small>
               {/if}
             </div>
             <div class="mem-body-row progress">
@@ -173,7 +172,7 @@
 
       <div class="member-block">
         <div class="mem-header">
-          Team Members
+          {ts}Team Members{/ts}
         </div>
         <div class="mem-body">
           {foreach from=$teamMemberInfo item=memberInfo}
@@ -189,7 +188,7 @@
               {$memberInfo.display_name} 
               {if $memberInfo.is_team_admin}
                 <br>
-                <small> ( Team Admin ) </small>
+                <small> {ts}( Team Admin ){/ts} </small>
               {/if}
             </div>
             <div class="mem-body-row pcp-progress">
@@ -229,8 +228,8 @@ CRM.$(function($) {
     cancel    : 'Cancel',
     submit    : 'OK',
     submitdata: {pcp_id: {/literal}{$pcpinfo.id}{literal}},
-    tooltip   : 'Click to edit..',
-    indicator : 'Saving..',
+    tooltip   : ts('Click to edit..'),
+    indicator : ts('Saving..'),
     callback  : function( editedValue ){
        var editedId = cj(this).attr('id');
        $(this).html(editedValue);

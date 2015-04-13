@@ -5,7 +5,7 @@
   <h2>{ts}Thast's great! Please enter the {$branchOrPartner} you are doing this with{/ts}</h2>
   <br>
   <div>
-    <p> Start typing the name of the branch you are fundraising for and then select the appropriate name from those provided. if you can't ind the branch you wish to join please contact us on info@llr.org.uk<p>
+    <p> {ts}Start typing the name of the branch you are fundraising for and then select the appropriate name from those provided. if you can't ind the branch you wish to join please contact us on info@llr.org.uk {/ts}<p>
   </div>
   <br>
   {foreach from=$elementNames item=elementName}

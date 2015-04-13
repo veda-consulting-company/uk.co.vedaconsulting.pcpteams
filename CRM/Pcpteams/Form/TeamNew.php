@@ -76,13 +76,12 @@ class CRM_Pcpteams_Form_TeamNew {
     if($teamPcpId) {
       $userId = CRM_Pcpteams_Utils::getloggedInUserId();
       CRM_Pcpteams_Utils::createTeamRelationship($userId, $createTeam['id'], $custom = array(), 'create');
-      $teamPcpCfId = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
         $params = array(
           'version'   => 3,
           'entity_id' => $form->get('page_id'),
-          "custom_{$teamPcpCfId}" =>$teamPcpId,
+          "team_pcp_id" =>$teamPcpId,
         );
-      $result = civicrm_api3('CustomValue', 'create', $params);
+      $result = civicrm_api3('pcpteams', 'customcreate', $params);
       $form->set('teamName', $orgName);
       $form->set('teamContactID', $createTeam['id']);
       $actParams = array(
