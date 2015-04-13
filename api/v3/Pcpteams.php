@@ -261,7 +261,7 @@ function civicrm_api3_pcpteams_getContactList($params) {
     
     //where clause
     if(!empty($where)){
-      $query .= " WHERE (1) {$where}";
+      $query .= " WHERE (1) AND cc.is_deleted = 0 {$where}";
     }
     
     //LIMIT
@@ -422,7 +422,7 @@ function civicrm_api3_pcpteams_getMyTeamInfo($params) {
       , cp.page_id        as page_id
       FROM civicrm_pcp cp 
       INNER JOIN civicrm_event ce ON ce.id = cp.page_id
-      INNER JOIN civicrm_contact cc ON ( cc.id = cp.contact_id )
+      INNER JOIN civicrm_contact cc ON ( cc.id = cp.contact_id AND cc.is_deleted = 0 )
       INNER JOIN civicrm_value_pcp_custom_set cpcs ON ( cpcs.team_pcp_id = cp.id )
       WHERE cp.id IN ( $sTeamIds )
     ";
@@ -532,7 +532,7 @@ function civicrm_api3_pcpteams_getMyPendingTeam($params) {
       , cr.id             as relationship_id 
       FROM civicrm_pcp cp 
       INNER JOIN civicrm_event ce ON ce.id = cp.page_id
-      INNER JOIN civicrm_contact cc ON ( cc.id = cp.contact_id )
+      INNER JOIN civicrm_contact cc ON ( cc.id = cp.contact_id AND cc.is_deleted = 0 )
       INNER JOIN civicrm_relationship cr ON ( cr.contact_id_b = cp.contact_id AND cr.relationship_type_id = %2 )
       WHERE cr.contact_id_a = %1 AND cr.is_active = 0
     ";
@@ -605,7 +605,7 @@ function civicrm_api3_pcpteams_getTeamRequest($params) {
           , cca.name          as country 
           FROM civicrm_pcp cp
           INNER JOIN civicrm_event ce ON ce.id = cp.page_id
-          INNER JOIN civicrm_contact cc ON ( cc.id = cp.contact_id )
+          INNER JOIN civicrm_contact cc ON ( cc.id = cp.contact_id AND cc.is_deleted = 0)
           INNER JOIN civicrm_email cl ON ( cl.contact_id = cp.contact_id )
           INNER JOIN civicrm_address ca ON ( ca.contact_id = cp.contact_id )
           INNER JOIN civicrm_country cca ON ( ca.country_id = cca.id )
@@ -807,7 +807,7 @@ function civicrm_api3_pcpteams_getTeamMembersInfo($params){
         END             as is_team_admin
     FROM civicrm_pcp cp
     LEFT JOIN civicrm_value_pcp_custom_set cpcs ON (cpcs.entity_id = cp.id)
-    LEFT JOIN civicrm_contact cc ON (cc.id = cp.contact_id)
+    LEFT JOIN civicrm_contact cc ON (cc.id = cp.contact_id AND cc.is_deleted = 0)
     LEFT JOIN civicrm_relationship cr ON (cr.contact_id_a = cp.contact_id AND cr.is_active = 1)
     where cp.id IN ( $teamMemberPcpIds ) {$where}
   ";
@@ -987,7 +987,7 @@ function civicrm_api3_pcpteams_getAllDonations($params) {
     , cc.display_name   as display_name
     FROM civicrm_pcp_block cpb
     INNER JOIN civicrm_contribution cct on (cct.contribution_page_id = cpb.target_entity_id )
-    INNER JOIN civicrm_contact cc on (cc.id = cct.contact_id)
+    INNER JOIN civicrm_contact cc on (cc.id = cct.contact_id AND cc.is_deleted = 0)
     WHERE cpb.entity_id = %1 AND cct.id IN ( SELECT contribution_id FROM civicrm_contribution_soft WHERE pcp_id = %2)
     ORDER BY cct.receive_date DESC
     {$limit}
@@ -1035,7 +1035,7 @@ function civicrm_api3_pcpteams_getTopDonations($params) {
     , cc.display_name as display_name
     FROM civicrm_pcp_block cpb
     INNER JOIN civicrm_contribution cct on (cct.contribution_page_id = cpb.target_entity_id )
-    INNER JOIN civicrm_contact cc on (cc.id = cct.contact_id)
+    INNER JOIN civicrm_contact cc on (cc.id = cct.contact_id AND cc.is_deleted = 0)
     WHERE cpb.entity_id = %1 AND cct.id IN ( SELECT contribution_id FROM civicrm_contribution_soft WHERE pcp_id = %2)
     ORDER BY cct.total_amount DESC
     {$limit}
@@ -1160,7 +1160,7 @@ function civicrm_api3_pcpteams_getTeamRequestInfo($params) {
     SELECT crs.pcp_a_b, cc.display_name, cp.page_id, cr.id FROM civicrm_value_pcp_relationship_set crs
     INNER JOIN civicrm_relationship cr ON (cr.id = crs.entity_id)
     INNER JOIN civicrm_pcp cp ON (cp.id = crs.pcp_a_b)
-    INNER JOIN civicrm_contact cc ON (cr.contact_id_a = cc.id)
+    INNER JOIN civicrm_contact cc ON (cr.contact_id_a = cc.id AND cc.is_deleted = 0)
     WHERE crs.pcp_b_a = %1";
   
   $queryParams = array(
