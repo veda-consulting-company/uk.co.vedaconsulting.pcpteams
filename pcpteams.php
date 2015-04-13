@@ -39,7 +39,7 @@ function pcpteams_civicrm_install() {
   //Create Contact Subtype
   $params = array('parent_id' => 3, 'is_active' => 1, 'is_reserved' => 0);
   foreach (array(
-    CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE
+    CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE_TEAM
     , CRM_Pcpteams_Constant::C_CONTACTTYPE_IN_MEM
     , CRM_Pcpteams_Constant::C_CONTACTTYPE_IN_CELEB
     , CRM_Pcpteams_Constant::C_CONTACTTYPE_BRANCH
@@ -72,7 +72,7 @@ function pcpteams_civicrm_install() {
   $message_params['invite_team'] = array(
     'sequential'  => 1,
     'version'     => 3,
-    'msg_title'   => CRM_Pcpteams_Constant::C_INVITE_TEAM_MSG_TPL,
+    'msg_title'   => CRM_Pcpteams_Constant::C_MSG_TPL_INVITE_TEAM,
     'msg_subject' => (string) '{$inviteeFirstName}  you have been invited to join {$teamName} and support Leukaemia and Lymphoma Research',
     'is_default'  => 1,
     'msg_html'    => $messageHtml,
@@ -84,7 +84,7 @@ function pcpteams_civicrm_install() {
   $message_params['join_team'] = array(
     'sequential'  => 1,
     'version'     => 3,
-    'msg_title'   => CRM_Pcpteams_Constant::C_JOIN_REQUEST_MSG_TPL,
+    'msg_title'   => CRM_Pcpteams_Constant::C_MSG_TPL_JOIN_REQUEST,
     'msg_subject' => (string) '{$userFirstName} {$userlastName} has requested to join Team {$teamName} please authorise',
     'is_default'  => 1,
     'msg_html'    => $messageHtml,
@@ -96,7 +96,7 @@ function pcpteams_civicrm_install() {
   $message_params['leave_team'] = array(
     'sequential'  => 1,
     'version'     => 3,
-    'msg_title'   => CRM_Pcpteams_Constant::C_LEAVE_TEAM_MSG_TPL,
+    'msg_title'   => CRM_Pcpteams_Constant::C_MSG_TPL_LEAVE_TEAM,
     'msg_subject' => (string) '{$userFirstName} {$userLastName} has decided to leave Team {$teamName}',
     'is_default'  => 1,
     'msg_html'    => $messageHtml,
@@ -108,7 +108,7 @@ function pcpteams_civicrm_install() {
   $message_params['decline_team'] = array(
     'sequential'  => 1,
     'version'     => 3,
-    'msg_title'   => CRM_Pcpteams_Constant::C_JOIN_REQ_DECLINE_TEAM_MSG_TPL,
+    'msg_title'   => CRM_Pcpteams_Constant::C_MSG_TPL_JOIN_REQ_DECLINE_TEAM,
     'msg_subject' => (string) '{$userFirstName} {$userLastName} your request to join {$teamName} has been turned down',
     'is_default'  => 1,
     'msg_html'    => $messageHtml,
@@ -246,7 +246,7 @@ function pcpteams_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
 // create soft credit for team contact
 function pcpteams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
   if ($objectName == 'ContributionSoft' && $op == 'create' && $objectRef->pcp_id) {
-    $query      = "SELECT pcp.contact_id, cs.tribute_contact_id 
+    $query      = "SELECT pcp.contact_id, cs.tribute_contact_id, cs.org_id 
       FROM civicrm_value_pcp_custom_set cs
       INNER JOIN civicrm_pcp pcp ON cs.team_pcp_id = pcp.id 
       WHERE cs.entity_id = %1";
@@ -264,6 +264,14 @@ function pcpteams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
     if ($dao->tribute_contact_id) {
       $newSoft = clone $objectRef;
       $newSoft->contact_id = $dao->tribute_contact_id;
+      $newSoft->pcp_personal_note = "Created From Hook";
+      unset($newSoft->id);
+      $newSoft->save();
+    }
+    
+    if ($dao->org_id) {
+      $newSoft = clone $objectRef;
+      $newSoft->contact_id = $dao->org_id;
       $newSoft->pcp_personal_note = "Created From Hook";
       unset($newSoft->id);
       $newSoft->save();
