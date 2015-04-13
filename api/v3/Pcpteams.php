@@ -1268,13 +1268,12 @@ function civicrm_api3_pcpteams_customcreate($params) {
     'entity_id' => $params['entity_id'],
   );
   
-  unset($params['entity_id']);
-  unset($params['version']);
-  
   foreach ($params as $key => $value) {
-    $customFieldId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', $key, 'id', 'column_name');
-    if ($customFieldId) {
-      $customParams["custom_{$customFieldId}"] = $value;
+    if ($key != 'entity_id' && $key != 'version') {
+      $customFieldId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', $key, 'id', 'column_name');
+      if ($customFieldId) {
+        $customParams["custom_{$customFieldId}"] = $value;
+      }
     }
   }
   return civicrm_api3('CustomValue', 'create', $customParams);
