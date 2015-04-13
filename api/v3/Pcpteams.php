@@ -1269,7 +1269,7 @@ function civicrm_api3_pcpteams_customcreate($params) {
   );
   
   foreach ($params as $key => $value) {
-    if ($key != 'entity_id' && $key != 'version') {
+    if ($key && !in_array($key, array('entity_id', 'version'))) {
       $customFieldId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', $key, 'id', 'column_name');
       if ($customFieldId) {
         $customParams["custom_{$customFieldId}"] = $value;
