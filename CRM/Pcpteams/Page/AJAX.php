@@ -74,7 +74,7 @@ class CRM_Pcpteams_Page_AJAX {
             'display_name'  => $teamAdminName,
           )
         ),
-        'valueName' => CRM_Pcpteams_Constant::C_LEAVE_TEAM_MSG_TPL,
+        'valueName' => CRM_Pcpteams_Constant::C_MSG_TPL_LEAVE_TEAM,
         // 'email_from' => $fromEmail,
       );
       
@@ -233,7 +233,7 @@ class CRM_Pcpteams_Page_AJAX {
             'display_name'  => $userName,
           )
         ),
-        'valueName' => CRM_Pcpteams_Constant::C_JOIN_REQ_DECLINE_TEAM_MSG_TPL,
+        'valueName' => CRM_Pcpteams_Constant::C_MSG_TPL_JOIN_REQ_DECLINE_TEAM,
         // 'email_from' => $fromEmail,
       );
     

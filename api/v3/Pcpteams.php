@@ -743,7 +743,7 @@ function _civicrm_api3_pcpteams_getTeamMemberPCPIds($params){
     $params['contact_id'] = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $params['pcp_id'], 'contact_id');
     
     $contactSubType = CRM_Contact_BAO_Contact::getContactTypes($params['contact_id']);
-    if (in_array(CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE, $contactSubType)) {
+    if (in_array(CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE_TEAM, $contactSubType)) {
       $teamPcpId = $params['pcp_id'];
       $selectClause = "entity_id as pcp_id";
       $whereClause  = "team_pcp_id IN ( {$teamPcpId} )";

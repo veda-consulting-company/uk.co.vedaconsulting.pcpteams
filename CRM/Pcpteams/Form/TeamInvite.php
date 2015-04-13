@@ -97,7 +97,7 @@ class CRM_Pcpteams_Form_TeamInvite {
           'display_name'  => $teamAdminName,
         )
       ),
-      'valueName'        => CRM_Pcpteams_Constant::C_JOIN_REQUEST_MSG_TPL,
+      'valueName'        => CRM_Pcpteams_Constant::C_MSG_TPL_JOIN_REQUEST,
       // 'email_from' => $fromEmail,
     );
     

@@ -126,7 +126,7 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
       $teamInviteActivityType = $isTeamAdmin ? CRM_Pcpteams_Constant::C_AT_INVITATION_FROM_ADMIN : CRM_Pcpteams_Constant::C_AT_INVITATION_FROM_MEMBER;
       $activity = CRM_Pcpteams_Utils::createPcpActivity($actParams, $teamInviteActivityType);
       
-      $result = CRM_Pcpteams_Utils::sendInviteEmail(CRM_Pcpteams_Constant::C_INVITE_TEAM_MSG_TPL, $this->_contactID, $values, $teampcpId, $activity['id']);
+      $result = CRM_Pcpteams_Utils::sendInviteEmail(CRM_Pcpteams_Constant::C_MSG_TPL_INVITE_TEAM, $this->_contactID, $values, $teampcpId, $activity['id']);
       if ($result) {
         if ($_GET['snippet']) {
           // from pcp edit screen

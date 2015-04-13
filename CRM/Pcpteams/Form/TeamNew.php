@@ -59,7 +59,7 @@ class CRM_Pcpteams_Form_TeamNew {
     $values   = $form->exportValues();
     $orgName  = $values['organization_name'];
     $email    = $values['email-primary'];
-    $cSubType = CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE;
+    $cSubType = CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE_TEAM;
 
     $params   = array(
                 'version'          => '1',
