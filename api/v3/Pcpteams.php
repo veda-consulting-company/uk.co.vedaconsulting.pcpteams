@@ -319,6 +319,7 @@ function civicrm_api3_pcpteams_getPcpDashboardInfo($params) {
     $result[$pcpId]['page_title']    = $pcpResult['values'][0]['page_title'];
     $result[$pcpId]['isTeamExist']   = $value['isTeamExist'] = $pcpResult['values'][0]['is_teampage'];
     $result[$pcpId]['action']        = _getPcpDashboardActionLink($value);
+    $result[$pcpId]['page_url']      = _civicrm_api3_pcpteams_getDigitalPageUrl($pcpId);
   }
 
   return civicrm_api3_create_success($result, $params);
@@ -1284,4 +1285,39 @@ function civicrm_api3_pcpteams_customcreate($params) {
 }
 function _civicrm_api3_pcpteams_customcreate_spec(&$params) {
   $params['entity_id']['api.required'] = 1;
+}
+
+function _civicrm_api3_pcpteams_getDigitalPageUrl($pcpId) {
+  if (empty($pcpId)) {
+    return NULL;
+  }
+  
+  //check custom group exists
+  $cgId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomGroup', CRM_Pcpteams_Constant::C_CG_DIGITAL_FUNDRAISING, 'id', 'name');
+  if (!$cgId) {
+    CRM_Core_DAO::debug_log_message(ts("Custom Group %1 does not", array( 1 => CRM_Pcpteams_Constant::C_CG_DIGITAL_FUNDRAISING)));
+    return NULL;
+  }
+  
+  $tableName    = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomGroup', $cgId, 'table_name');
+  $columnPcpId  = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', CRM_Pcpteams_Constant::C_CF_DIGITAL_FUNDRAISING_PCP_ID, 'column_name', 'name');
+  $columnPageUrl= CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', CRM_Pcpteams_Constant::C_CF_DIGITAL_FUNDRAISING_DFP_URL, 'column_name', 'name');
+  
+  if (!$tableName || !$columnPcpId || !$columnPageUrl) {
+    return NULL;
+  }
+  $ogId  = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_OptionGroup', CRM_Pcpteams_Constant::C_ACTIVITY_TYPE, 'id', 'name');
+  $query = "
+    SELECT cdfp.{$columnPageUrl}
+    FROM {$tableName} cdfp
+    WHERE cdfp.{$columnPcpId} = %1
+  ";
+  
+  $queryParams = array(
+    1 => array($pcpId, 'Integer'),
+  );
+  
+  $pageurl = CRM_Core_DAO::singleValueQuery($query, $queryParams);
+  
+  return $pageurl ? $pageurl : NULL;
 }

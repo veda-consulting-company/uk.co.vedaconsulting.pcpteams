@@ -15,7 +15,13 @@
 
         {foreach from=$pcpInfo item=row}
         <tr class="{cycle values="odd-row,even-row"} {$row.class}">
-              <td class="bold"><a href="{crmURL p='civicrm/pcp/info' q="reset=1&id=`$row.pcpId`" a=1}" title="{ts}Preview your Personal Campaign Page{/ts}">{$row.title}</a></td>
+              <td class="bold">
+                {if $row.page_url}
+                  <a  href="{$row.page_url}" title="{ts}Preview your Personal Campaign Page{/ts}">{$row.title}</a>
+                {else}
+                  {$row.title}
+                {/if}
+              </td>
               <td>{$row.page_title}</td>
               <td align="right">{$row.goal_amount|crmMoney}</td>
               <td align="right">{$row.amount_raised|crmMoney}</td>

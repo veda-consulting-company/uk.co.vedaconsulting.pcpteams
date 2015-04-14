@@ -267,7 +267,7 @@ function pcpteams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
     if ($dao->contact_id) {
       $newSoft = clone $objectRef;
       $newSoft->contact_id = $dao->contact_id;
-      $newSoft->pcp_personal_note = "Created From Hook";
+      // $newSoft->pcp_personal_note = "Created From Hook";
       unset($newSoft->id);
       $newSoft->save();
     }
@@ -275,7 +275,7 @@ function pcpteams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
     if ($dao->tribute_contact_id) {
       $newSoft = clone $objectRef;
       $newSoft->contact_id = $dao->tribute_contact_id;
-      $newSoft->pcp_personal_note = "Created From Hook";
+      // $newSoft->pcp_personal_note = "Created From Hook";
       unset($newSoft->id);
       $newSoft->save();
     }
@@ -283,7 +283,7 @@ function pcpteams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
     if ($dao->org_id) {
       $newSoft = clone $objectRef;
       $newSoft->contact_id = $dao->org_id;
-      $newSoft->pcp_personal_note = "Created From Hook";
+      // $newSoft->pcp_personal_note = "Created From Hook";
       unset($newSoft->id);
       $newSoft->save();
     }
