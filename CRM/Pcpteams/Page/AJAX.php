@@ -187,8 +187,8 @@ class CRM_Pcpteams_Page_AJAX {
   static function declineTeamMember(){
     $entity_id      = CRM_Utils_Type::escape($_POST['entity_id'], 'Integer');
     $op             = CRM_Utils_Type::escape($_POST['op'], 'String');
-    $pcp_id         = CRM_Utils_Type::escape($_POST['pcp_id'], 'String');
-    $team_pcp_id    = CRM_Utils_Type::escape($_POST['team_pcp_id'], 'String');
+    $pcp_id         = CRM_Utils_Type::escape($_POST['pcp_id'], 'Integer');
+    $team_pcp_id    = CRM_Utils_Type::escape($_POST['team_pcp_id'], 'Integer');
     $assigneeId     = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_Relationship', $entity_id, 'contact_id_b');
     $targetId       = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_Relationship', $entity_id, 'contact_id_a');
 
@@ -247,8 +247,8 @@ class CRM_Pcpteams_Page_AJAX {
   static function withdrawJoinRequest(){
     $entity_id      = CRM_Utils_Type::escape($_POST['entity_id'], 'Integer');
     $op             = CRM_Utils_Type::escape($_POST['op'], 'String');
-    $pcp_id         = CRM_Utils_Type::escape($_POST['pcp_id'], 'String');
-    $team_pcp_id    = CRM_Utils_Type::escape($_POST['team_pcp_id'], 'String');
+    $pcp_id         = CRM_Utils_Type::escape($_POST['pcp_id'], 'Integer');
+    $team_pcp_id    = CRM_Utils_Type::escape($_POST['team_pcp_id'], 'Integer');
     $targetId       = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_Relationship', $entity_id, 'contact_id_b');
     $userID         = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_Relationship', $entity_id, 'contact_id_a');
 
