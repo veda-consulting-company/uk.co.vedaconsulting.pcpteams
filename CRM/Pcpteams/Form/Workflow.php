@@ -25,14 +25,12 @@ class CRM_Pcpteams_Form_Workflow extends CRM_Core_Form {
     $this->_pageId    = CRM_Utils_Request::retrieve('pageId', 'Positive', $this);
 
     if (!$session->get('userID')) {
-      $code  = $this->_code;
       $query = "?pageId={$this->_pageId}&component=event";
       if($this->_tpId){
         $query .= "&tpId={$this->_tpId}";
-        $code   = "cpftn";
       }
-      if($code) {
-        $query .= "&code={$code}";
+      if($this->_code) {
+        $query .= "&code={$this->_code}";
       }
       // FIXME: only valid for drupal
       $url  = CRM_Utils_System::url('user', 'destination=civicrm/pcp/support');
