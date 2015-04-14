@@ -146,7 +146,7 @@
               <img width="35" height="35" src="{$memberInfo.image_url}">
             </div>
             <div class="mem-body-row name">
-              {$memberInfo.display_name} 
+              <a href="{crmURL p="civicrm/pcp/manage" q="id=`$memberInfo.pcp_id`"}">{$memberInfo.display_name}</a>  
               {if $memberInfo.is_team_admin}
                 <br>
                 <small> {ts}( Team Admin ){/ts} </small>
