@@ -99,8 +99,16 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
     $values = $this->controller->exportValues($this->_name); 
     // Find the msg_tpl ID of sample invite template
     $teampcpId = CRM_Pcpteams_Utils::getPcpIdByContactAndEvent($this->get('component_page_id'), $this->get('teamContactID'));
-
-    if(!empty($values)) {
+    
+    //FIXME : Find the solution to check is empty array of invitees
+    $isInviteeEmailFound = FALSE;
+    foreach ($values['friend'] as $key => $value) {
+      if ($value['email']) {
+        $isInviteeEmailFound = TRUE;
+      }
+    }
+    
+    if($isInviteeEmailFound) {
       
       // Send Invitation emails
       $pcpDetails = civicrm_api('pcpteams', 'get', array('version' => 3, 'sequential' => 1, 'pcp_id' => $this->get('page_id')));

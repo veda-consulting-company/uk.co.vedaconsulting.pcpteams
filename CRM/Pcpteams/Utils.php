@@ -262,22 +262,15 @@ class  CRM_Pcpteams_Utils {
   }
   
   static function getPcpEventTitle($pcpId){
-    if(empty($pcpId)){
+    if (empty($pcpId) ){
       return null;
     }
-    $pcpResult = civicrm_api('Pcpteams', 
-       'get', 
-       array(
-         'pcp_id'     => $pcpId,
-         'version'    => 3,
-         'sequential' => 1,
-       )
-    );
-    if(!civicrm_error($pcpResult)){
-      $pageID         = $pcpResult['values'][0]['page_id'];
+    $pageID = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcpId, 'page_id');
+    if ($pageID) {
       $eventDetails   = CRM_Pcpteams_Utils::getEventDetailsbyEventId($pageID);
       return $eventDetails['title'];
     }
+    return null;
   }
   
   static function getTeamAdmin($pcpId){
