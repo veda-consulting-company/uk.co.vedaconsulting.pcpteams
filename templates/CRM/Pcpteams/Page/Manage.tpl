@@ -95,7 +95,7 @@
                 <div class="clear"></div>
               </div>
               <div class="pending-team-buttons">
-                <a class="pcp-button pcp-btn-brown crm-pcp-alert-cancel-pending-request" href="javascript:void(0)" data-entity-id={$pendingApprovalInfo.relationship_id}>{ts}Withdraw Request{/ts}</a>
+                <a class="pcp-button pcp-btn-red crm-pcp-alert-cancel-pending-request" href="javascript:void(0)" data-entity-id={$pendingApprovalInfo.relationship_id} data-pcp-id={$pcpinfo.pcp_id} data-teampcp-id={$pcpinfo.pending_team_pcp_id}>{ts}Withdraw Request{/ts}</a>
               </div>
           {elseif $pcpinfo.is_teampage}
             <!-- <div class="invite-team-text">Invite people to the team</div> -->
@@ -372,7 +372,7 @@ CRM.$(function($) {
       options: {{/literal}yes: '{ts escape="js"}Yes{/ts}', no: '{ts escape="js"}No{/ts}'{literal}},
     }).on('crmConfirm:yes', function() {
       var postUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=declineTeamMember'}"{literal};
-      var request = $.post(postUrl, {entity_id : $el.data('entityId')});
+      var request = $.post(postUrl, {entity_id : $el.data('entityId'), pcp_id : $el.data('pcpId'), team_pcp_id: $el.data('teampcpId')});
       request.done(function(data) {
         setPcpMessage('Member Request Declined', 'Member Request Declined');
         $el.closest('.mem-row').remove();
@@ -405,8 +405,8 @@ CRM.$(function($) {
       message: ts('{/literal}{ts escape="js"}Are you sure you want to withdraw your request to join this team?{/ts}{literal}'),
       options: {{/literal}yes: '{ts escape="js"}Yes{/ts}', no: '{ts escape="js"}No{/ts}'{literal}},
     }).on('crmConfirm:yes', function() {
-      var postUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=declineTeamMember' }"{literal};
-      var request = $.post(postUrl, {entity_id : $el.data('entityId'), op : 'pending'});
+      var postUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=withdrawJoinRequest' }"{literal};
+      var request = $.post(postUrl, {entity_id : $el.data('entityId'), pcp_id : $el.data('pcpId'), team_pcp_id: $el.data('teampcpId')});
       request.done(function(data) {
         setPcpMessage('Join Request Cancelled', 'Your join request to the team has been cancelled.');
         $el.closest('.team-section').remove();

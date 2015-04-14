@@ -140,6 +140,8 @@ function pcpteams_civicrm_uninstall() {
   CRM_Core_DAO::executeQuery("
     DROP TABLE IF EXISTS civicrm_value_pcp_custom_set");
   CRM_Core_DAO::executeQuery("
+    DROP TABLE IF EXISTS civicrm_value_pcp_relationship_set");
+  CRM_Core_DAO::executeQuery("
     DELETE opv.* 
     FROM civicrm_option_value opv
     INNER JOIN civicrm_option_group og on opv.option_group_id = og.id
@@ -150,9 +152,9 @@ function pcpteams_civicrm_uninstall() {
     DELETE cf.* 
     FROM civicrm_custom_field cf
     INNER JOIN civicrm_custom_group cg on cf.custom_group_id = cg.id
-    where cg.name = 'PCP_Custom_Set'");
+    where cg.name LIKE '%PCP_%'");
   CRM_Core_DAO::executeQuery("
-    DELETE FROM civicrm_custom_group where name = 'PCP_Custom_Set'");  
+    DELETE FROM civicrm_custom_group where name LIKE '%PCP_%'");
   CRM_Core_DAO::executeQuery("
     DELETE pb.* 
     FROM civicrm_pcp_block pb
@@ -172,7 +174,16 @@ function pcpteams_civicrm_uninstall() {
     DELETE FROM civicrm_uf_group WHERE name = 'PCP_Supporter_Profile'");
   CRM_Core_DAO::executeQuery("
     DELETE msgt.*
-    FROM civicrm_msg_template msgt WHERE msgt.msg_title = 'Sample Team Invite Template'"); 
+    FROM civicrm_msg_template msgt WHERE msgt.msg_title = 'Sample Team Invite Template'");
+  CRM_Core_DAO::executeQuery("
+    DELETE opv.* 
+    FROM civicrm_option_value opv
+    INNER JOIN civicrm_option_group og on opv.option_group_id = og.id
+    where og.name = 'msg_tpl_workflow_PCP'");
+  CRM_Core_DAO::executeQuery("
+    DELETE FROM civicrm_option_group where name = 'msg_tpl_workflow_PCP'");
+  CRM_Core_DAO::executeQuery("
+    DELETE FROM civicrm_relationship_type where like '%PCP Team%'");
   return _pcpteams_civix_civicrm_uninstall();
 }
 
