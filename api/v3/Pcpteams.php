@@ -270,7 +270,6 @@ function civicrm_api3_pcpteams_getContactList($params) {
     
     //LIMIT
     $query .= " LIMIT 0, 15";
-    CRM_Core_Error::debug_var('$query', $query);
     //execute query
     $dao = CRM_Core_DAO::executeQuery($query);
     while($dao->fetch()){
