@@ -56,3 +56,5 @@ FROM civicrm_price_set ps
 where ps.title like '% PCP Project!';
 
 DELETE FROM civicrm_contribution_page where title like 'Help Support PCP Project!';
+
+DELETE FROM civicrm_pcp where title like '%bikeathon 2015%';

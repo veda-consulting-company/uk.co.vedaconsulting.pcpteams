@@ -187,21 +187,18 @@ class CRM_Pcpteams_Page_AJAX {
   static function declineTeamMember(){
     $entity_id      = CRM_Utils_Type::escape($_POST['entity_id'], 'Integer');
     $op             = CRM_Utils_Type::escape($_POST['op'], 'String');
+    $pcp_id         = CRM_Utils_Type::escape($_POST['pcp_id'], 'String');
+    $team_pcp_id    = CRM_Utils_Type::escape($_POST['team_pcp_id'], 'String');
     $assigneeId     = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_Relationship', $entity_id, 'contact_id_b');
     $targetId       = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_Relationship', $entity_id, 'contact_id_a');
 
-    //check Team admin
-    $teamAdmin      = civicrm_api('pcpteams', 'checkTeamAdmin', array(
-      'version' => 3,
-      'user_id' => $targetId,
-      'team_contact_id' => $assigneeId,
-      )
-    );
-    if (!$teamAdmin['is_team_admin'] && $op == 'decline') {
+    //check user can decline this request
+    if (!CRM_Pcpteams_Utils::hasPermission($team_pcp_id)) {
       CRM_Core_Session::setStatus(ts("Sorry! You dont have right permission to decline this member"));
       CRM_Utils_System::civiExit();
     }
-    
+    $teamAdminID        = CRM_Pcpteams_Utils::getTeamAdmin($team_pcp_id);
+
     $getUserPcpQuery    = "SELECT pcp_a_b FROM civicrm_value_pcp_relationship_set WHERE entity_id = {$entity_id}";
     $userPcpId          = CRM_Core_DAO::singleValueQuery($getUserPcpQuery);
     $updatedResult  = civicrm_api3('Relationship', 'delete', array(
@@ -209,11 +206,12 @@ class CRM_Pcpteams_Page_AJAX {
       'id'         => $entity_id,
       ));
     if(!civicrm_error($updatedResult)){
-      //create Activity - Join Team Request Authourised
+      //create Activity - Join Team Request Declined / withdraw
       $actParams = array(
         'assignee_contact_id'=>  $assigneeId,
         'target_contact_id'  =>  $targetId,
       );
+
       CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_REQ_DECLINED);
       list($userName, $userEmail)  = CRM_Contact_BAO_Contact::getContactDetails($targetId);
       $contactDetails = civicrm_api('Contact', 'get', array('version' => 3, 'sequential' => 1, 'id' => $targetId));
@@ -236,8 +234,8 @@ class CRM_Pcpteams_Page_AJAX {
         'valueName' => CRM_Pcpteams_Constant::C_MSG_TPL_JOIN_REQ_DECLINE_TEAM,
         // 'email_from' => $fromEmail,
       );
-    
-      $sendEmail = CRM_Pcpteams_Utils::sendMail($assigneeId, $emailParams);
+
+      $sendEmail = CRM_Pcpteams_Utils::sendMail($teamAdminID, $emailParams);
       //end
       echo 'declined';
     }else{
@@ -245,6 +243,67 @@ class CRM_Pcpteams_Page_AJAX {
     }
     CRM_Utils_System::civiExit();
   } 
+  
+  static function withdrawJoinRequest(){
+    $entity_id      = CRM_Utils_Type::escape($_POST['entity_id'], 'Integer');
+    $op             = CRM_Utils_Type::escape($_POST['op'], 'String');
+    $pcp_id         = CRM_Utils_Type::escape($_POST['pcp_id'], 'String');
+    $team_pcp_id    = CRM_Utils_Type::escape($_POST['team_pcp_id'], 'String');
+    $targetId       = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_Relationship', $entity_id, 'contact_id_b');
+    $userID         = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_Relationship', $entity_id, 'contact_id_a');
+
+    //check user permission
+    if (!CRM_Pcpteams_Utils::hasPermission($pcp_id, $userID)) {
+      CRM_Core_Session::setStatus(ts("Sorry! You dont have right permission to withdraw this request"));
+      CRM_Utils_System::civiExit();
+    }
+    $teamAdminID    = CRM_Pcpteams_Utils::getTeamAdmin($team_pcp_id);
+
+    $getUserPcpQuery= "SELECT pcp_a_b FROM civicrm_value_pcp_relationship_set WHERE entity_id = {$entity_id}";
+    $userPcpId      = CRM_Core_DAO::singleValueQuery($getUserPcpQuery);
+    $updatedResult  = civicrm_api3('Relationship', 'delete', array(
+      'sequential' => 1,
+      'id'         => $entity_id,
+      ));
+    if(!civicrm_error($updatedResult)){
+      //create Activity - Join Team Request withdraw
+      $actParams = array(
+        'assignee_contact_id'=>  $teamAdminID,
+        'target_contact_id'  =>  $targetId,
+      );
+      //FIXME: Make sure the activity type., doesn't have seperate activity type for withdraw at the moment.
+      CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_REQ_DECLINED);
+      list($userName, $userEmail)  = CRM_Contact_BAO_Contact::getContactDetails($userID);
+      $contactDetails = civicrm_api('Contact', 'get', array('version' => 3, 'sequential' => 1, 'id' => $userID));
+
+      $emailParams =  array(
+        'tplParams' => array(
+          'userFirstName' => $contactDetails['values'][0]['first_name'],
+          'userLastName'  => $contactDetails['values'][0]['last_name'],
+          'teamName'      => CRM_Contact_BAO_Contact::displayName($targetId),
+          'pageURL'       => CRM_Utils_System::url('civicrm/pcp/manage', "reset=1&id={$userPcpId}", TRUE, NULL, FALSE, TRUE),
+        ),
+        'email' => array(
+          $userName => array(
+            'first_name'    => $contactDetails['values'][0]['first_name'],
+            'last_name'     => $contactDetails['values'][0]['last_name'],
+            'email-Primary' => $userEmail,
+            'display_name'  => $userName,
+          )
+        ),
+        //FIXME: Make sure the message template., doesn't have seperate message template for withdraw at the moment.
+        'valueName' => CRM_Pcpteams_Constant::C_MSG_TPL_JOIN_REQ_DECLINE_TEAM,
+        // 'email_from' => $fromEmail,
+      );
+    
+      $sendEmail = CRM_Pcpteams_Utils::sendMail($teamAdminID, $emailParams);
+      //end
+      echo 'declined';
+    }else{
+      echo $updatedResult['error_message'];
+    }
+    CRM_Utils_System::civiExit();
+  }
   
   static function removeTeamMember() {
     $pcp_id         = CRM_Utils_Request::retrieve('pcp_id', 'Positive', CRM_Core_DAO::$_nullObject, TRUE);

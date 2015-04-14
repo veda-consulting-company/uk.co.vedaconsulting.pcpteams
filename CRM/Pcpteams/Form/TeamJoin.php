@@ -57,15 +57,17 @@ class CRM_Pcpteams_Form_TeamJoin {
     $form->_teamName  = CRM_Contact_BAO_Contact::displayName($teamId);
     $form->set('teamName', $form->_teamName);
     $form->set('teamContactID', $teamId);
+    
+    $teamAdminId    = CRM_Pcpteams_Utils::getTeamAdmin($teampcpId);
     // Team Join: create activity
     $actParams = array(
-      'target_contact_id' => $teamId
+      'target_contact_id' => $teamId,
+      'assignee_contact_id' => $teamAdminId,
     );    
     CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_REQ_MADE);
     CRM_Core_Session::setStatus(ts('A notification has been sent to the team. Once approved, team should be visible on your page.'), ts('Team Request Sent'));
     
     //send email once the team request has done. 
-    $teamAdminId    = CRM_Pcpteams_Utils::getTeamAdmin($teampcpId);
     list($teamAdminName, $teamAdminEmail)  = CRM_Contact_BAO_Contact::getContactDetails($teamAdminId);
     $contactDetails = civicrm_api('Contact', 'get', array('version' => 3, 'sequential' => 1, 'id' => $userId));
 
