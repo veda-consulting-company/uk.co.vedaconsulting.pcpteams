@@ -254,11 +254,11 @@ function civicrm_api3_pcpteams_getContactList($params) {
      
     if (isset($params['contact_sub_type']) && $params['contact_sub_type'] == 'Team') {
       $query = "
-        SELECT cc.id, cc.display_name, cc.contact_type, c.display_name as admin
+        SELECT cc.id, CONCAT(cc.display_name, ' ( Admin: ', admin.display_name, ' )') as display_name, cc.contact_type
         FROM civicrm_contact cc
         INNER JOIN civicrm_pcp cp ON cp.contact_id = cc.id
         INNER JOIN civicrm_relationship cr ON cc.id = cr.contact_id_b
-        INNER JOIN civicrm_contact c ON c.id = cr.contact_id_a
+        INNER JOIN civicrm_contact admin ON admin.id = cr.contact_id_a
         INNER JOIN civicrm_relationship_type crt ON crt.id = cr.relationship_type_id
       ";
     }
@@ -278,10 +278,6 @@ function civicrm_api3_pcpteams_getContactList($params) {
         'label' =>  $dao->display_name,
         'icon_class' =>  $dao->contact_type,
       );
-      // If contact_sub_type is 'Team', then add team_admin details to contact
-      if(isset($params['contact_sub_type']) && $params['contact_sub_type'] == 'Team') {
-        $result[$dao->id]['label'] .= ' ( Admin: '.$dao->admin.' )';
-      }
     }
 
   return civicrm_api3_create_success($result, $params, 'pcpteams');
