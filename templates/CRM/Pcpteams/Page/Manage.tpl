@@ -100,13 +100,13 @@
           {elseif $pcpinfo.is_teampage}
             <!-- <div class="invite-team-text">Invite people to the team</div> -->
             <div class="team-buttons">
-              <a class="pcp-button pcp-btn-red crm-pcp-inline-team-edit" href="{$inviteTeamURl}">{ts}Invite Team Members{/ts}</a>
-              <a class="pcp-button pcp-btn-red crm-pcp-alert-leave-team" href="javascript:void(0)" data-user-id={$userId} data-teampcp-id={$pcpinfo.id}>{ts}Leave Team{/ts}</a>
+              <a class="pcp-button pcp-btn-brown crm-pcp-inline-team-edit" href="{$inviteTeamURl}">{ts}Invite Team Members{/ts}</a>
+              <a class="pcp-button pcp-btn-brown crm-pcp-alert-leave-team" href="javascript:void(0)" data-user-id={$userId} data-teampcp-id={$pcpinfo.id}>{ts}Leave Team{/ts}</a>
             </div>
           {else}
             <div class="no-team-buttons">
-              <a id="create-team-btn" class="pcp-button pcp-btn-red crm-pcp-inline-team-edit" href="{$createTeamUrl}">{ts}Create a Team{/ts}</a>
-              <a id="join-team-btn" class="pcp-button pcp-btn-red crm-pcp-inline-team-edit" href="{$joinTeamUrl}">{ts}Join a Team{/ts}</a>
+              <a id="create-team-btn" class="pcp-button pcp-btn-brown crm-pcp-inline-team-edit" href="{$createTeamUrl}">{ts}Create a Team{/ts}</a>
+              <a id="join-team-btn" class="pcp-button pcp-btn-brown crm-pcp-inline-team-edit" href="{$joinTeamUrl}">{ts}Join a Team{/ts}</a>
             </div>
           {/if}
           <div class="clear"></div>
@@ -160,7 +160,7 @@
             </div>
             <div class="mem-body-row donate">
               <a class="pcp-button pcp-btn-green crm-pcp-alert-approve-request" href="javascript:void(0)" data-entity-id={$memberInfo.relationship_id} data-pcp-id={$memberInfo.pcp_id} data-teampcp-id={$memberInfo.team_pcp_id}>{ts}Approve{/ts}</a>
-              <a class="pcp-button pcp-btn-red crm-pcp-alert-decline-request" href="javascript:void(0)" data-entity-id={$memberInfo.relationship_id} data-pcp-id={$memberInfo.pcp_id} data-teampcp-id={$memberInfo.team_pcp_id}>{ts}Decline{/ts}</a>
+              <a class="pcp-button pcp-btn-brown crm-pcp-alert-decline-request" href="javascript:void(0)" data-entity-id={$memberInfo.relationship_id} data-pcp-id={$memberInfo.pcp_id} data-teampcp-id={$memberInfo.team_pcp_id}>{ts}Decline{/ts}</a>
             </div>
             <div class="clear"></div>
           </div>
