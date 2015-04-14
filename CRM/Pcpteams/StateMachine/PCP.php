@@ -100,12 +100,11 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
         $controller->set('page_id', $pcpId); // set it anyway
       }
     }
-
     // if team pages need skipping
     // FIXME: we 'll need to keep pcp info laoded ad stored in static cache? 
     // so we not making this check everytime
     if ($controller->get('page_id') && 
-      (empty($workflowTeam) || empty($workflowGroup) || empty($workflowTribute))) 
+      (empty($workflowTeam) || empty($workflowGroup) || empty($workflowTribute) || $teamPcpId)) 
     {
       $result = civicrm_api(
         'Pcpteams', 
@@ -116,7 +115,7 @@ class CRM_Pcpteams_StateMachine_PCP extends CRM_Core_StateMachine {
           'pcp_id'     => $controller->get('page_id')
         )
       );
-      if (empty($workflowTeam)) {
+      if (empty($workflowTeam) || $teamPcpId) {
         // $cfid = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
         if (!empty($result['values'][0]["team_pcp_id"])) {
           $controller->set('workflowTeam', 'skip');

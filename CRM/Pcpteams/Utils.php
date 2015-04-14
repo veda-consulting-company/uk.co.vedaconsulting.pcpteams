@@ -105,7 +105,7 @@ class  CRM_Pcpteams_Utils {
       );
       $bDuplicateFound = CRM_Contact_BAO_Relationship::checkDuplicateRelationship($aParams, $iContactIdA, $iContactIdB);
       if ($bDuplicateFound) {
-        CRM_Core_Session::setStatus(ts('Relationship already exists.'));
+        CRM_Core_Error::debug_log_message(ts('Relationship already exists.'));
         return FALSE;
       } else {
         $aParams['contact_id_a'] = $iContactIdA;
