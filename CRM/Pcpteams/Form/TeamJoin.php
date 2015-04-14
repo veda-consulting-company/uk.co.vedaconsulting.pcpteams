@@ -57,6 +57,7 @@ class CRM_Pcpteams_Form_TeamJoin {
     $form->_teamName  = CRM_Contact_BAO_Contact::displayName($teamId);
     $form->set('teamName', $form->_teamName);
     $form->set('teamContactID', $teamId);
+    $form->set('teamPcpId', $teampcpId);
     
     $teamAdminId    = CRM_Pcpteams_Utils::getTeamAdmin($teampcpId);
     // Team Join: create activity

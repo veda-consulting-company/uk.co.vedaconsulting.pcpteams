@@ -84,6 +84,7 @@ class CRM_Pcpteams_Form_TeamNew {
       $result = civicrm_api3('pcpteams', 'customcreate', $params);
       $form->set('teamName', $orgName);
       $form->set('teamContactID', $createTeam['id']);
+      $form->set('teamPcpId', $teamPcpId);
       $actParams = array(
         'target_contact_id' => $createTeam['id']
       );        

@@ -32,7 +32,11 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
   
   function buildQuickForm() {
     // Details of User
-    $this->_pcpId = CRM_Utils_Request::retrieve('id', 'Positive', CRM_Core_DAO::$_nullArray, TRUE, NULL, 'GET');
+    $this->_invitedTeamPcpID = $this->get('teamPcpId');
+    $snippet      = CRM_Utils_Request::retrieve('snippet', 'String', CRM_Core_DAO::$_nullArray, FALSE, NULL, 'GET');
+    if ($snippet == 'json') {
+      $this->_invitedTeamPcpID = CRM_Utils_Request::retrieve('id', 'Positive', CRM_Core_DAO::$_nullArray, FALSE, NULL, 'GET');
+    }
     $name = &$this->add('text',
       'from_name',
       ts('From'),
@@ -105,7 +109,7 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
         'eventName' => $pcpDetails['values'][0]['page_title'],
         'userName'  => $userName,
         'teamName'  => $this->get('teamName'),
-        'pageURL'   => CRM_Utils_System::url('civicrm/pcp/support', "reset=1&pageId={$this->get('component_page_id')}&component=event&tpId={$this->_pcpId}", TRUE, NULL, FALSE, TRUE),
+        'pageURL'   => CRM_Utils_System::url('civicrm/pcp/support', "reset=1&pageId={$this->get('component_page_id')}&component=event&tpId={$this->_invitedTeamPcpID}", TRUE, NULL, FALSE, TRUE),
       );
       // As team contact id is set in the team join post process, team contact id is not available in this form if you are coming from manage page
       $teamContactId = $this->get('teamContactID');
