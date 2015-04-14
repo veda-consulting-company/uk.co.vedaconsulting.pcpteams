@@ -226,7 +226,7 @@ function civicrm_api3_pcpteams_getContactList($params) {
     if (!empty($params['contact_sub_type'])) {
       $contactSubType = CRM_Utils_Type::escape($params['contact_sub_type'], 'String');
       
-      $where .= " AND contact_sub_type = '{$contactSubType}'";
+      $where .= " AND cc.contact_sub_type = '{$contactSubType}'";
     }
     
     //if get id from params
@@ -239,23 +239,27 @@ function civicrm_api3_pcpteams_getContactList($params) {
     $strSearch = "%$name%";
     if(isset($params['input'])){
       
-      $where .= " AND display_name like '$strSearch'";
+      $where .= " AND cc.display_name like '$strSearch'";
     }
     
     if(isset($params['event_id'])) {
-      $where .= " AND cp.page_id = " . (int) $params['event_id'];
+      $adminRelTypeName = CRM_Utils_Type::escape(CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE, 'String');
+      $where .= " AND crt.name_a_b = '{$adminRelTypeName}' AND cp.page_id = " . (int) $params['event_id'];
     }
     //query
     $query = "
-      Select id, display_name, contact_type
-      FROM civicrm_contact 
+      Select cc.id, cc.display_name, cc.contact_type
+      FROM civicrm_contact cc
     ";
      
     if (isset($params['contact_sub_type']) && $params['contact_sub_type'] == 'Team') {
       $query = "
-        SELECT cc.id, cc.display_name, cc.contact_type
+        SELECT cc.id, CONCAT(cc.display_name, ' ( Admin: ', admin.display_name, ' )') as display_name, cc.contact_type
         FROM civicrm_contact cc
-        INNER JOIN civicrm_pcp cp ON (cp.contact_id = cc.id)
+        INNER JOIN civicrm_pcp cp ON cp.contact_id = cc.id
+        INNER JOIN civicrm_relationship cr ON cc.id = cr.contact_id_b
+        INNER JOIN civicrm_contact admin ON admin.id = cr.contact_id_a
+        INNER JOIN civicrm_relationship_type crt ON crt.id = cr.relationship_type_id
       ";
     }
     
@@ -266,7 +270,6 @@ function civicrm_api3_pcpteams_getContactList($params) {
     
     //LIMIT
     $query .= " LIMIT 0, 15";
-    
     //execute query
     $dao = CRM_Core_DAO::executeQuery($query);
     while($dao->fetch()){
@@ -275,16 +278,6 @@ function civicrm_api3_pcpteams_getContactList($params) {
         'label' =>  $dao->display_name,
         'icon_class' =>  $dao->contact_type,
       );
-      // If contact_sub_type is 'Team', then add team_admin details to contact
-      if(isset($params['contact_sub_type']) && $params['contact_sub_type'] == 'Team') {
-        $teamAdmin        = CRM_Pcpteams_Utils::getTeamAdminByTeamContactId($dao->id);
-        if(empty($teamAdmin)) { 
-          unset($result[$dao->id]);
-        } else {
-          $teamAdminString  = ' ( Admin: '.$teamAdmin.' )';
-          $result[$dao->id]['label'] .= $teamAdminString;
-        }
-      }
     }
 
   return civicrm_api3_create_success($result, $params, 'pcpteams');
