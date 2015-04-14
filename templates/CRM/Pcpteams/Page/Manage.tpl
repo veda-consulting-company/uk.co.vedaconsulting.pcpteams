@@ -159,7 +159,7 @@
               {$memberInfo.amount_raised|crmMoney}
             </div>
             <div class="mem-body-row donate">
-              <a class="pcp-button pcp-btn-green crm-pcp-alert-approve-request" href="javascript:void(0)" data-entity-id={$memberInfo.relationship_id} data-pcp-id={$memberInfo.pcp_id} data-teampcp-id={$memberInfo.team_pcp_id}>{ts}Approve{/ts}</a>
+              <a class="pcp-button pcp-btn-brown crm-pcp-alert-approve-request" href="javascript:void(0)" data-entity-id={$memberInfo.relationship_id} data-pcp-id={$memberInfo.pcp_id} data-teampcp-id={$memberInfo.team_pcp_id}>{ts}Approve{/ts}</a>
               <a class="pcp-button pcp-btn-brown crm-pcp-alert-decline-request" href="javascript:void(0)" data-entity-id={$memberInfo.relationship_id} data-pcp-id={$memberInfo.pcp_id} data-teampcp-id={$memberInfo.team_pcp_id}>{ts}Decline{/ts}</a>
             </div>
             <div class="clear"></div>
