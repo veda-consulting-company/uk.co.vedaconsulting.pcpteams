@@ -56,7 +56,7 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
     $mailLimit = CRM_Pcpteams_Constant::C_INVITE_MAIL_LIMIT;
    
     $this->assign('mailLimit', $mailLimit + 1);
-    for ($i = 1; $i <= $mailLimit; $i++) {
+    for ($i = 1; $i <= 10; $i++) {
       $this->add('text', "friend[$i][first_name]", ts("Friend's First Name"));
       $this->add('text', "friend[$i][last_name]", ts("Friend's Last Name"));
       $this->add('text', "friend[$i][email]", ts("Friend's Email"));

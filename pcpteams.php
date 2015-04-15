@@ -298,24 +298,8 @@ function pcpteams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
   }
   
   if ($objectName == 'PCP' && $op == 'edit') {
-    CRM_Pcpteams_Utils::adjustTeamMemberTarget($objectId);
+    CRM_Pcpteams_Utils::adjustTeamTarget($objectId);
   }
-}
-
-function pcpteams_civicrm_custom( $op, $groupID, $entityID, &$params ) {
-  if ( $op != 'create' && $op != 'edit' ) {
-        return;
-    }
-  $pcpCustomGroupId = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();  
-  if($groupID == CRM_Pcpteams_Utils::getPcpCustomSetId()) {
-    foreach ($params as $key => $customField) {
-      if($customField['custom_field_id'] == $pcpCustomGroupId ) {
-        CRM_Pcpteams_Utils::adjustTeamMemberTarget($customField['value'], $customField['entity_id']);
-        break;
-      }
-    }
-  }
-  
 }
     
 function pcpteams_civicrm_buildForm($formName, &$form) {

@@ -35,7 +35,18 @@
                           <td class="even-row">{$form.friend.$idx.email.html}</td>
                         </tr>
                         {/section}
+                        <table id="additional-contacts-sec" style="display:none">
+                            {section name=mail start=6 loop=11}
+                            {assign var=idx  value=$smarty.section.mail.index}
+                            <tr>
+                              <td class="even-row">{$form.friend.$idx.first_name.html}</td>
+                              <td class="even-row">{$form.friend.$idx.last_name.html}</td>
+                              <td class="even-row">{$form.friend.$idx.email.html}</td>
+                            </tr>
+                            {/section}
+                        </table>
                       </table>
+                        <span id="add-more-contacts-link" title="{ts}click to add more{/ts}"><a class="crm-hover-button action-item add-more-inline" href="javascript:void(0)" onclick="showAdditional();">{ts}Add More{/ts}</a></span>
                   </fieldset>
                   </td>
                 </tr>
@@ -47,4 +58,13 @@
 	{include file="CRM/common/formButtons.tpl" location="bottom"}
 	</div>
 </div>
+        
+{literal}
+   <script type="text/javascript">
+      function showAdditional(){
+          cj('#additional-contacts-sec').show();
+          cj('#add-more-contacts-link').hide();
+      }
+   </script>
+{/literal}
         
