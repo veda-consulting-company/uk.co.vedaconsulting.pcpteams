@@ -774,11 +774,16 @@ class  CRM_Pcpteams_Utils {
       $result = civicrm_api('pcpteams', 'get', array( 'version' => 3, 'pcp_id' => $pcpId,));
       foreach ($result['values'] as $pcp => $value) {
         if(!empty($value['team_pcp_id']) && !empty($value['goal_amount'])) {
-          $query = "UPDATE civicrm_pcp SET goal_amount = %1 WHERE (goal_amount is NULL OR goal_amount = 0)";
-          $queryParams = array(
-            1 => array($value['goal_amount'], 'String'),
-          );
-          CRM_Core_DAO::executeQuery($query, $queryParams);
+          // get team Admin for this team
+          $teamAdmin = CRM_Pcpteams_Utils::getTeamAdmin($value['team_pcp_id']);
+          // make user the team admin updates goal amount
+          if($teamAdmin == $value['contact_id']) {
+            $query = "UPDATE civicrm_pcp SET goal_amount = %1 WHERE (goal_amount is NULL OR goal_amount = 0)";
+            $queryParams = array(
+              1 => array($value['goal_amount'], 'String'),
+            );
+            CRM_Core_DAO::executeQuery($query, $queryParams);
+          }
         }
       }
     }
