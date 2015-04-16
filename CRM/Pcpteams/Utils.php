@@ -771,20 +771,21 @@ class  CRM_Pcpteams_Utils {
     $pcpType  = CRM_Pcpteams_Utils::checkPcpType($pcpId);
     // only for indiviual pcp
     if ($pcpType != CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE_TEAM) {
-      $result = civicrm_api('pcpteams', 'get', array( 'version' => 3, 'pcp_id' => $pcpId,));
-      foreach ($result['values'] as $pcp => $value) {
-        if(!empty($value['team_pcp_id']) && !empty($value['goal_amount'])) {
-          // get team Admin for this team
-          $teamAdmin = CRM_Pcpteams_Utils::getTeamAdmin($value['team_pcp_id']);
-          // make user the team admin updates goal amount
-          if($teamAdmin == $value['contact_id']) {
-            $query = "UPDATE civicrm_pcp SET goal_amount = %1 WHERE (goal_amount is NULL OR goal_amount = 0)";
-            $queryParams = array(
-              1 => array($value['goal_amount'], 'String'),
-            );
-            CRM_Core_DAO::executeQuery($query, $queryParams);
-          }
-        }
+      $selectTeamPcpQuery = "SELECT team_pcp_id FROM civicrm_value_pcp_custom_set WHERE entity_id ={$pcpId}";
+      $teamPcpId = CRM_Core_DAO::singleValueQuery($selectTeamPcpQuery);
+      $isEdit = CRM_Pcpteams_Utils::hasPermission($teamPcpId, NULL, CRM_Core_Permission::EDIT);
+      if($isEdit) {
+        $query = "
+          UPDATE civicrm_pcp p1 
+          INNER JOIN civicrm_value_pcp_custom_set cs ON cs.team_pcp_id = p1.id
+          INNER JOIN civicrm_pcp p2 ON P2.id = cs.entity_id
+          SET p1.goal_amount = p2.goal_amount
+          WHERE cs.entity_id = %1 AND (p1.goal_amount is NULL OR p1.goal_amount = 0) AND (p2.goal_amount IS NOT NULL OR p2.goal_amount <> 0)";
+
+        $queryParams = array(
+          1 => array($pcpId, 'String'),
+        );
+        CRM_Core_DAO::executeQuery($query, $queryParams);
       }
     }
   }
