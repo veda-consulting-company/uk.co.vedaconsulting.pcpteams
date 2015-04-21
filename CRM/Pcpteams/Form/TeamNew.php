@@ -28,7 +28,6 @@ class CRM_Pcpteams_Form_TeamNew {
   static function buildQuickForm(&$form) {
     // add form elements
     $form->add('text', 'organization_name', ts('Team Name'), array(), TRUE);
-    $form->add('text', 'email-primary', ts('Email'), CRM_Core_DAO::getAttribute('CRM_Core_DAO_Email', 'email'));
 
     $form->addButtons(array(
       array(
@@ -46,9 +45,6 @@ class CRM_Pcpteams_Form_TeamNew {
   }
 
   static function formRule($params) {
-    if (!empty($params['email-primary']) && !filter_var($params['email-primary'], FILTER_VALIDATE_EMAIL)) {
-      $errors['email-primary'] = ts('Not Valid Email');
-    }
     if(CRM_Pcpteams_Utils::checkTeamExists($params['organization_name'])) {
       $errors['organization_name'] = ts('Team Already Exists');
     }
@@ -58,7 +54,6 @@ class CRM_Pcpteams_Form_TeamNew {
   static function postProcess(&$form) {
     $values   = $form->exportValues();
     $orgName  = $values['organization_name'];
-    $email    = $values['email-primary'];
     $cSubType = CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE_TEAM;
 
     $params   = array(
@@ -66,7 +61,6 @@ class CRM_Pcpteams_Form_TeamNew {
                 'contact_type'     => 'Organization',
                 'contact_sub_type' => $cSubType,
                 'organization_name'=> $orgName,
-                'api.Email.create' => $email,
                 );
     $createTeam = civicrm_api3('Contact', 'create', $params);
     // Create Dummy Team PCP Page

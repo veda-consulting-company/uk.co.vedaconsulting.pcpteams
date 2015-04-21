@@ -763,4 +763,30 @@ class  CRM_Pcpteams_Utils {
     return in_array('Team', $aContactTypes) ? 'Team' : 'Indiviual';
     
   }
+  
+  static function adjustTeamTarget($pcpId) {
+     if(empty($pcpId)) {
+      return NULL;
+    }
+    $pcpType  = CRM_Pcpteams_Utils::checkPcpType($pcpId);
+    // only for indiviual pcp
+    if ($pcpType != CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE_TEAM) {
+      $selectTeamPcpQuery = "SELECT team_pcp_id FROM civicrm_value_pcp_custom_set WHERE entity_id ={$pcpId}";
+      $teamPcpId = CRM_Core_DAO::singleValueQuery($selectTeamPcpQuery);
+      $isEdit = CRM_Pcpteams_Utils::hasPermission($teamPcpId, NULL, CRM_Core_Permission::EDIT);
+      if($isEdit) {
+        $query = "
+          UPDATE civicrm_pcp p1 
+          INNER JOIN civicrm_value_pcp_custom_set cs ON cs.team_pcp_id = p1.id
+          INNER JOIN civicrm_pcp p2 ON P2.id = cs.entity_id
+          SET p1.goal_amount = p2.goal_amount
+          WHERE cs.entity_id = %1 AND (p1.goal_amount is NULL OR p1.goal_amount = 0) AND (p2.goal_amount IS NOT NULL OR p2.goal_amount <> 0)";
+
+        $queryParams = array(
+          1 => array($pcpId, 'String'),
+        );
+        CRM_Core_DAO::executeQuery($query, $queryParams);
+      }
+    }
+  }
 }

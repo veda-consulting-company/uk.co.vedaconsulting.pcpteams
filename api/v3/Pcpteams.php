@@ -482,7 +482,6 @@ function _getTeamInfoActionLink($entityId, $teamPcpId, $role){
     $manageURL  = CRM_Utils_System::url('civicrm/pcp/manage', "id={$teamPcpId}"); 
     $span = " <span>
       <a href=\"{$manageURL}\" class=\"action-item crm-hover-button\" title='Manage' >Manage</a>
-      <a href='javascript:void(0)' class=\"action-item crm-hover-button\" title='Delete' onclick = 'deleteTeamPcp({$entityId},{$teamPcpId});'>Delete</a>
     </span>";
   }
   
@@ -491,7 +490,7 @@ function _getTeamInfoActionLink($entityId, $teamPcpId, $role){
     <span class='btn-slide crm-hover-button'>more
       <ul class='panel'>
         <li>
-          <a href='javascript:void(0)' class=\"action-item crm-hover-button\" title='Join Team' onclick='unsubscribeTeam({$entityId}, {$teamPcpId});'>Unscbscribe from this Team</a>
+          <a href='javascript:void(0)' class=\"action-item crm-hover-button\" title='Join Team' onclick='unsubscribeTeam({$entityId}, {$teamPcpId});'>Leave Team</a>
         </li>        
       </ul>
     </span>
