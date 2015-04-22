@@ -69,6 +69,10 @@ class CRM_Pcpteams_Form_TeamConfirm extends CRM_Core_Form {
         'name' => ts('Continue'),
         'isDefault' => TRUE,
       ),
+      array(
+        'type' => 'cancel',
+        'name' => ts('Skip'),
+      )
     ));
 
     // export form elements
