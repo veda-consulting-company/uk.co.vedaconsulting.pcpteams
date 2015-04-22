@@ -558,6 +558,7 @@ class  CRM_Pcpteams_Utils {
       return TRUE;
     } // Else if he is the memeber of the pcp , then allow 'view' permission
     else if ($action == CRM_Core_Permission::VIEW) { 
+      // Since PCP get api is opened, as long as pcpId is available then allow view permission
       if ($pcpId) {
         return TRUE;
       }

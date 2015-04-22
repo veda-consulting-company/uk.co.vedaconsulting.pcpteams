@@ -62,7 +62,7 @@ class CRM_PCP_Form_Campaign extends CRM_Core_Form {
 
     CRM_Utils_System::setTitle($title);
     //MV: to get the Custom Data preProcess
-    if(CRM_Core_Permission::check('Administer CiviCRM')){
+    if(CRM_Core_Permission::check('administer CiviCRM')){
     	$this->_cdType = 'PCP';
     	$this->_customValueCount = 1;
     	CRM_Custom_Form_CustomData::preProcess($this, NULL, NULL,  1, $this->_cdType, $this->_pageId, NULL );
@@ -99,7 +99,7 @@ class CRM_PCP_Form_Campaign extends CRM_Core_Form {
     $this->_contriPageId = CRM_Utils_Array::value('page_id', $defaults);
 
     //MV: to set customData default values;
-    if(CRM_Core_Permission::check('Administer CiviCRM')){
+    if(CRM_Core_Permission::check('administer CiviCRM')){
       $customDataDefaults = CRM_Custom_Form_CustomData::setDefaultValues($this);
       $defaults += $customDataDefaults;
     }
@@ -140,7 +140,7 @@ class CRM_PCP_Form_Campaign extends CRM_Core_Form {
     $maxAttachments = 1;
     CRM_Core_BAO_File::buildAttachment($this, 'civicrm_pcp', $this->_pageId, $maxAttachments);
     //MV: added the custom fields in PCP form
-    if(CRM_Core_Permission::check('Administer CiviCRM')){
+    if(CRM_Core_Permission::check('administer CiviCRM')){
       CRM_Custom_Form_CustomData::buildQuickForm($this);
     }
     //end
@@ -256,7 +256,7 @@ class CRM_PCP_Form_Campaign extends CRM_Core_Form {
       $pcp->id
     );
     //MV: update Custom Values 
-    if (!empty($params['hidden_custom']) && CRM_Core_Permission::check('Administer CiviCRM')) {
+    if (!empty($params['hidden_custom']) && CRM_Core_Permission::check('administer CiviCRM')) {
       $customFields = CRM_Core_BAO_CustomField::getFields('PCP');
       $customFields = CRM_Utils_Array::crmArrayMerge($customFields,
         CRM_Core_BAO_CustomField::getFields('PCP')
