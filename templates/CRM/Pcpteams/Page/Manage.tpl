@@ -97,7 +97,7 @@
               <div class="pending-team-buttons">
                 <a class="pcp-button pcp-btn-red crm-pcp-alert-cancel-pending-request" href="javascript:void(0)" data-entity-id={$pendingApprovalInfo.relationship_id} data-pcp-id={$pcpinfo.pcp_id} data-teampcp-id={$pcpinfo.pending_team_pcp_id}>{ts}Withdraw Request{/ts}</a>
               </div>
-          {elseif $pcpinfo.is_teampage}
+          {elseif $pcpinfo.is_teampage && $is_member}
             <!-- <div class="invite-team-text">Invite people to the team</div> -->
             <div class="team-buttons">
               <a class="pcp-button pcp-btn-brown crm-pcp-inline-team-edit" href="{$inviteTeamURl}">{ts}Invite Team Members{/ts}</a>
@@ -106,10 +106,12 @@
               {/if}
             </div>
           {else}
-            <div class="no-team-buttons">
-              <a id="create-team-btn" class="pcp-button pcp-btn-brown crm-pcp-inline-team-edit" href="{$createTeamUrl}">{ts}Create a Team{/ts}</a>
-              <a id="join-team-btn" class="pcp-button pcp-btn-brown crm-pcp-inline-team-edit" href="{$joinTeamUrl}">{ts}Join a Team{/ts}</a>
-            </div>
+              {if !$pcpinfo.is_teampage }
+                <div class="no-team-buttons">
+                  <a id="create-team-btn" class="pcp-button pcp-btn-brown crm-pcp-inline-team-edit" href="{$createTeamUrl}">{ts}Create a Team{/ts}</a>
+                  <a id="join-team-btn" class="pcp-button pcp-btn-brown crm-pcp-inline-team-edit" href="{$joinTeamUrl}">{ts}Join a Team{/ts}</a>
+                </div>
+            {/if}
           {/if}
           <div class="clear"></div>
         </div>
