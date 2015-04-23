@@ -647,25 +647,19 @@ class  CRM_Pcpteams_Utils {
       }
       // check if logged in user ($contactId) is a member of team pcp ($pcpId in this case)
       else if ($pcpId && $contactId) {
-        $getUserPcpIdsQuery = "SELECT id FROM civicrm_pcp where contact_id = {$contactId}";
-        $dao = CRM_Core_DAO::executeQuery($getUserPcpIdsQuery);
-        $userPcpIds = array();
-        while($dao->fetch()) {
-          $userPcpIds[] = $dao->id;
-        }
-        if (!empty($userPcpIds)) {
-          $sUserPcpIds = implode(', ', $userPcpIds);
-          $queryParams = array( 
-            1 => array($pcpId, 'Integer'),
-          );
-          $query = "
-            SELECT id FROM civicrm_value_pcp_custom_set 
-            WHERE entity_id IN ($sUserPcpIds) AND team_pcp_id = %1
-          ";
-          $teamMemberExists = CRM_Core_Dao::singleValueQuery($query, $queryParams);
-          if ($teamMemberExists) {
-            return TRUE;
-          }
+        $query = "
+          SELECT cs.id FROM civicrm_value_pcp_custom_set cs
+          INNER JOIN civicrm_pcp cp ON cp.id = cs.entity_id 
+          INNER JOIN civicrm_contact cc ON cc.id = cp.contact_id
+          WHERE cs.team_pcp_id = %1 AND cc.id = %2
+        ";
+        $queryParams = array( 
+          1 => array($pcpId, 'Integer'),
+          2 => array($contactId, 'Integer'),
+        );
+        $teamMemberExists = CRM_Core_Dao::executeQuery($query, $queryParams);
+        if ($teamMemberExists->fetch()) {
+          return TRUE;
         }
       }
       return FALSE;
