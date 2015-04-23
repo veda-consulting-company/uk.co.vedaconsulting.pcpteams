@@ -1268,8 +1268,12 @@ function civicrm_api3_pcpteams_customcreate($params) {
   foreach ($params as $key => $value) {
     if ($key && !in_array($key, array('entity_id', 'version'))) {
       $customFieldId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', $key, 'id', 'column_name');
-      //Check whether logined user has edit permission to update custom field
-      if (!$customFieldId || !CRM_Pcpteams_Utils::hasPermission($value)) {
+      if (!$customFieldId) {
+        continue;
+      }
+      $pcpTeamCustomFieldId = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();  
+      //Check whether logined user has edit permission on team_pcp_id custom field
+      if (($pcpTeamCustomFieldId == $customFieldId) && !CRM_Pcpteams_Utils::hasPermission($value, NULL, CRM_Core_Permission::EDIT)) { 
         continue;
       }
       $customParams["custom_{$customFieldId}"] = $value;
