@@ -1272,7 +1272,8 @@ function civicrm_api3_pcpteams_customcreate($params) {
       if (!$customFieldId) {
         continue;
       }
-      //Check whether logined user has edit permission on team_pcp_id custom field
+      // we don't want pcp-owners to control / update setting of team_pcp_id.
+      // Lets make sure its the admin who is doing it by checking if logged in user has edit permission on team_pcp_id
       if (($key == 'team_pcp_id') && !CRM_Pcpteams_Utils::hasPermission($value, NULL, CRM_Core_Permission::EDIT)) { 
         continue;
       }

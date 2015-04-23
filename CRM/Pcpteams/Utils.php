@@ -645,8 +645,8 @@ class  CRM_Pcpteams_Utils {
           return TRUE;
         }
       }
-      // Logined user views team page and we are checking whether logined user is member for this team
-      if ($pcpId && $contactId) {
+      // check if logged in user ($contactId) is a member of team pcp ($pcpId in this case)
+      else if ($pcpId && $contactId) {
         $getUserPcpIdsQuery = "SELECT id FROM civicrm_pcp where contact_id = {$contactId}";
         $dao = CRM_Core_DAO::executeQuery($getUserPcpIdsQuery);
         $userPcpIds = array();
@@ -668,9 +668,10 @@ class  CRM_Pcpteams_Utils {
           }
         }
       }
+      return FALSE;
         
     }
-    else if ($action == CRM_Core_Permission::EDIT){
+    else if ($action == CRM_Core_Permission::EDIT) {
         $query = "
           SELECT cr.id FROM civicrm_relationship cr
           INNER JOIN civicrm_relationship_type crt ON (crt.id = cr.relationship_type_id)
