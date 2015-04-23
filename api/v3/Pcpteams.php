@@ -1294,7 +1294,7 @@ function _civicrm_api3_pcpteams_getDigitalPageUrl($pcpId) {
   //check custom group exists
   $cgId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomGroup', CRM_Pcpteams_Constant::C_CG_DIGITAL_FUNDRAISING, 'id', 'name');
   if (!$cgId) {
-    CRM_Core_DAO::debug_log_message(ts("Custom Group %1 does not", array( 1 => CRM_Pcpteams_Constant::C_CG_DIGITAL_FUNDRAISING)));
+    CRM_Core_Error::debug_log_message(ts("Custom Group %1 does not", array( 1 => CRM_Pcpteams_Constant::C_CG_DIGITAL_FUNDRAISING)));
     return NULL;
   }
   
