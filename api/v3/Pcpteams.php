@@ -705,7 +705,7 @@ function civicrm_api3_pcpteams_getTeamMembers($params) {
             if($myContactId == $params['contact_id']) {
               continue;
             }
-            $result[$contactPcpIdsDao->team_pcp_id] = array(
+            $result[$contactPcpIdsDao->entity_id] = array(
               'my_pcp_id'  => $contactPcpIdsDao->entity_id,
               'team_pcp_id'=> $contactPcpIdsDao->team_pcp_id,
               'member_id'  => $myContactId,
