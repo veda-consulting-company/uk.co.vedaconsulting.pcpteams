@@ -558,6 +558,10 @@ class  CRM_Pcpteams_Utils {
       return TRUE;
     } // Else if he is the memeber of the pcp , then allow 'view' permission
     else if ($action == CRM_Core_Permission::VIEW) { 
+      // Since PCP get api is opened, as long as pcpId is available then allow view permission
+      if ($pcpId) {
+        return TRUE;
+      }
 
       //CASE 1: IF logged in user is trying to view team member's pcp page
       //CASE 1A: get all team pcps for logged in user
@@ -641,8 +645,33 @@ class  CRM_Pcpteams_Utils {
           return TRUE;
         }
       }
+      // check if logged in user ($contactId) is a member of team pcp ($pcpId in this case)
+      else if ($pcpId && $contactId) {
+        $getUserPcpIdsQuery = "SELECT id FROM civicrm_pcp where contact_id = {$contactId}";
+        $dao = CRM_Core_DAO::executeQuery($getUserPcpIdsQuery);
+        $userPcpIds = array();
+        while($dao->fetch()) {
+          $userPcpIds[] = $dao->id;
+        }
+        if (!empty($userPcpIds)) {
+          $sUserPcpIds = implode(', ', $userPcpIds);
+          $queryParams = array( 
+            1 => array($pcpId, 'Integer'),
+          );
+          $query = "
+            SELECT id FROM civicrm_value_pcp_custom_set 
+            WHERE entity_id IN ($sUserPcpIds) AND team_pcp_id = %1
+          ";
+          $teamMemberExists = CRM_Core_Dao::singleValueQuery($query, $queryParams);
+          if ($teamMemberExists) {
+            return TRUE;
+          }
+        }
+      }
+      return FALSE;
+        
     }
-    else {
+    else if ($action == CRM_Core_Permission::EDIT) {
         $query = "
           SELECT cr.id FROM civicrm_relationship cr
           INNER JOIN civicrm_relationship_type crt ON (crt.id = cr.relationship_type_id)

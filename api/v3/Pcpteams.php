@@ -708,7 +708,8 @@ function civicrm_api3_pcpteams_getTeamMembers($params) {
             $result[$contactPcpIdsDao->team_pcp_id] = array(
               'my_pcp_id'  => $contactPcpIdsDao->entity_id,
               'team_pcp_id'=> $contactPcpIdsDao->team_pcp_id,
-              'memberName' => CRM_Contact_BAO_Contact::displayName(CRM_Pcpteams_Utils::getcontactIdbyPcpId($contactPcpIdsDao->entity_id)),
+              'member_id'  => $myContactId,
+              'memberName' => CRM_Contact_BAO_Contact::displayName($myContactId),
               'type'       => 'No',
               'teamName'   => CRM_Contact_BAO_Contact::displayName(CRM_Pcpteams_Utils::getcontactIdbyPcpId($contactPcpIdsDao->team_pcp_id)),
               'action'     => _getTeamMemberActionLink(5, $contactPcpIdsDao->entity_id, $contactPcpIdsDao->team_pcp_id),
@@ -1268,9 +1269,15 @@ function civicrm_api3_pcpteams_customcreate($params) {
   foreach ($params as $key => $value) {
     if ($key && !in_array($key, array('entity_id', 'version'))) {
       $customFieldId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', $key, 'id', 'column_name');
-      if ($customFieldId) {
-        $customParams["custom_{$customFieldId}"] = $value;
+      if (!$customFieldId) {
+        continue;
       }
+      // we don't want pcp-owners to control / update setting of team_pcp_id.
+      // Lets make sure its the admin who is doing it by checking if logged in user has edit permission on team_pcp_id
+      if (($key == 'team_pcp_id') && !CRM_Pcpteams_Utils::hasPermission($value, NULL, CRM_Core_Permission::EDIT)) { 
+        continue;
+      }
+      $customParams["custom_{$customFieldId}"] = $value;
     }
   }
   return civicrm_api3('CustomValue', 'create', $customParams);

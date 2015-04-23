@@ -26,8 +26,10 @@ class CRM_Pcpteams_Page_Manage extends CRM_Core_Page {
     }
     //set user can edit or view page.
     $isEdit = CRM_Pcpteams_Utils::hasPermission($pcpId, $this->_userID, CRM_Core_Permission::EDIT);
+    $isMember = CRM_Pcpteams_Utils::hasPermission($pcpId, $this->_userID, CRM_Pcpteams_Constant::C_PERMISSION_MEMBER);
     $this->assign("is_edit_page", $isEdit);
     $this->_isEditPermission = $isEdit;
+    $this->assign("is_member", $isMember);
     $this->assign('userId', $this->_userID);
   }
 
