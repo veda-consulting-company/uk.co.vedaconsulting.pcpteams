@@ -39,6 +39,7 @@
           C_MSG_TPL_INVITE_TEAM   = 'Invitation to join team',
           C_MSG_TPL_JOIN_REQ_DECLINE_TEAM   = 'Request to join team declined',
           C_PERMISSION_MEMBER     = 8,
+          C_PERMISSION_TEAM_ADMIN = 9,
           C_OG_MSG_TPL_WORKFLOW   = 'msg_tpl_workflow_PCP',
           C_CG_DIGITAL_FUNDRAISING          = 'Digital_Fundraising',
           C_CF_DIGITAL_FUNDRAISING_PCP_ID   = 'PCP_ID',
