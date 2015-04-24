@@ -1261,35 +1261,45 @@ function _civicrm_pcpteams_permission_check($params, $action = CRM_Core_Permissi
 
 
 function civicrm_api3_pcpteams_customcreate($params) {
-  $customParams = array(
-    'version' => 3,
-    'entity_id' => $params['entity_id'],
-  );
-  
+  $customParams     = array();
+  $isEditPermission = CRM_Pcpteams_Utils::hasPermission($params['entity_id'], NULL, CRM_Core_Permission::EDIT);
+
   foreach ($params as $key => $value) {
     if ($key && !in_array($key, array('entity_id', 'version'))) {
       $customFieldId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', $key, 'id', 'column_name');
       if (!$customFieldId) {
         continue;
       }
-      $update = FALSE;
-      // we don't want pcp-owners to control / update setting of team_pcp_id.
-      // Lets make sure its the admin who is doing it by checking if logged in user has edit permission on team_pcp_id
-      if (($key == 'team_pcp_id') && $value && CRM_Pcpteams_Utils::hasPermission($value, NULL, CRM_Core_Permission::EDIT)) { 
-        $update = TRUE;
-      } else if (($key == 'team_pcp_id') && !$value && (CRM_Pcpteams_Utils::hasPermission($params['entity_id'], NULL, CRM_Pcpteams_Constant::C_PERMISSION_TEAM_ADMIN) || CRM_Pcpteams_Utils::hasPermission ($params['entity_id'], NULL, CRM_Core_Permission::EDIT))) {
-        $update = TRUE;
-      } else if (($key != 'team_pcp_id') && CRM_Pcpteams_Utils::hasPermission ($params['entity_id'], NULL, CRM_Core_Permission::EDIT)) {
-        $update = TRUE;
+
+      if ($key == 'team_pcp_id') {
+        if ($value) {
+          // we don't want pcp-owners to control / update setting of team_pcp_id.
+          // Lets make sure its the admin who is doing it by checking if logged in user has edit permission on team_pcp_id ($value here)
+          if(!CRM_Pcpteams_Utils::hasPermission($value, NULL, CRM_Core_Permission::EDIT)) { 
+            continue;
+          }
+        } else if (!(CRM_Pcpteams_Utils::hasPermission($params['entity_id'], NULL, CRM_Pcpteams_Constant::C_PERMISSION_TEAM_ADMIN) || $isEditPermission)) {
+          // this is the case when somebody is setting team_pcp_id to NULL 
+          // if the logged in user is (A) admin for pcp ($params['entity_id']) being updated OR (B) owner of pcp being updated,  
+          // we allow it to unset
+          continue;
+        }
+      } else if (!$isEditPermission) {
+        continue;
       }
-      if ($update) {
-        $customParams["custom_{$customFieldId}"] = $value;
-      }
+      $customParams["custom_{$customFieldId}"] = $value;
     }
   }
-  
+  if (empty($customParams)) {
+    return civicrm_api3_create_error('insufficient permission to edit this record');
+  }
+
+  $customParams['version']   = 3;
+  $customParams['entity_id'] = $params['entity_id'];
+
   return civicrm_api3('CustomValue', 'create', $customParams);
 }
+
 function _civicrm_api3_pcpteams_customcreate_spec(&$params) {
   $params['entity_id']['api.required'] = 1;
 }
