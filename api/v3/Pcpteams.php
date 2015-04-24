@@ -282,8 +282,8 @@ function civicrm_api3_pcpteams_getContactList($params) {
 
   return civicrm_api3_create_success($result, $params, 'pcpteams');
 }
-
-function civicrm_api3_pcpteams_getPcpDashboardInfo($params) {
+// Get all pcp related info for the contact id
+function civicrm_api3_pcpteams_getContactPcp($params) {
   $permParams = array(
     'contact_id' => $params['contact_id'],
   );
@@ -306,6 +306,7 @@ function civicrm_api3_pcpteams_getPcpDashboardInfo($params) {
       )
     );
 
+    $result[$pcpId]                  = $pcpResult['values'][0];
     $result[$pcpId]['pcpId']         = $pcpId;
     $result[$pcpId]['goal_amount']   = $pcpResult['values'][0]['goal_amount'];
     $result[$pcpId]['amount_raised'] = $pcpResult['values'][0]['amount_raised'];
@@ -318,7 +319,7 @@ function civicrm_api3_pcpteams_getPcpDashboardInfo($params) {
   return civicrm_api3_create_success($result, $params);
 }
 
-function _civicrm_api3_pcpteams_getPcpDashboardInfo_spec(&$params) {
+function _civicrm_api3_pcpteams_getContactPcp_spec(&$params) {
   $params['contact_id']['api.required'] = 1;
 }
 
@@ -670,7 +671,7 @@ function _civicrm_api3_pcpteams_getCustomData(&$params) {
     }
   }
 }
-    
+// Get team members for logged in user(team admin)  
 function civicrm_api3_pcpteams_getTeamMembers($params) {
   $result= CRM_Core_DAO::$_nullArray;
   
