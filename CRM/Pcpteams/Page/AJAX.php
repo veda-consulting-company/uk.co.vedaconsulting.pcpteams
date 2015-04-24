@@ -9,14 +9,6 @@ class CRM_Pcpteams_Page_AJAX {
   static function unsubscribeTeam(){
     $entity_id    = CRM_Utils_Type::escape($_POST['entity_id'], 'Integer');
     $team_pcp_id  = CRM_Utils_Type::escape($_POST['team_pcp_id'], 'Integer');
-    // $teamPcpCfId  = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId(); 
-
-    //check the hasPermission to view details
-    if (!CRM_Pcpteams_Utils::hasPermission($entity_id, NULL, CRM_Core_Permission::EDIT)) {
-      CRM_Core_Session::setStatus(ts("Sorry! You dont have right permission to Edit this page"));
-      CRM_Utils_System::civiExit();
-    }
-    
     $params = array(
       'version'   => 3,
       'entity_id' => $entity_id,
@@ -113,15 +105,6 @@ class CRM_Pcpteams_Page_AJAX {
     $entity_id      = CRM_Utils_Type::escape($_POST['entity_id'], 'Integer');
     $pcp_id         = CRM_Utils_Type::escape($_POST['pcp_id'], 'Integer');
     $team_pcp_id    = CRM_Utils_Type::escape($_POST['team_pcp_id'], 'Integer');
-    // $teamPcpCfId    = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
-    
-    //check the hasPermission to view details
-    if (!CRM_Pcpteams_Utils::hasPermission($team_pcp_id, NULL, CRM_Core_Permission::EDIT)) {
-      CRM_Core_Session::setStatus(ts("Sorry! You dont have right permission to approve this member"));
-      CRM_Utils_System::civiExit();
-    }
-      
-      
     $params = array(
       'version'   => 3,
       'entity_id' => $pcp_id,
@@ -308,8 +291,6 @@ class CRM_Pcpteams_Page_AJAX {
   static function removeTeamMember() {
     $pcp_id         = CRM_Utils_Request::retrieve('pcp_id', 'Positive', CRM_Core_DAO::$_nullObject, TRUE);
     $team_pcp_id    = CRM_Utils_Request::retrieve('team_pcp_id', 'Positive', CRM_Core_DAO::$_nullObject, TRUE);
-        
-    // $teamPcpCfId    = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
     $params = array(
       'version'   => 3,
       'entity_id' => $pcp_id,
@@ -328,12 +309,6 @@ class CRM_Pcpteams_Page_AJAX {
     $pcp_id         = CRM_Utils_Request::retrieve('pcp_id', 'Positive', CRM_Core_DAO::$_nullObject, TRUE);
     $team_pcp_id    = CRM_Utils_Request::retrieve('team_pcp_id', 'Positive', CRM_Core_DAO::$_nullObject, TRUE);
     
-    //check the hasPermission to view details
-    if (!CRM_Pcpteams_Utils::hasPermission($team_pcp_id, NULL, CRM_Core_Permission::EDIT)) {
-      CRM_Core_Session::setStatus(ts("Sorry! You dont have right permission to de-activate this member"));
-      CRM_Utils_System::civiExit();
-    }
-  
     // $teamPcpCfId    = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId(); 
     $params = array(
       'version'   => 3,
