@@ -102,7 +102,7 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
         'weight' => 40,
       );
       
-      $pcpInfo = civicrm_api( 'pcpteams', 'getPcpDashboardInfo', array(
+      $pcpInfo = civicrm_api( 'pcpteams', 'getContactPcp', array(
           'version'   => 3, 
           'contact_id'=> $this->_contactId,
           'is_active' => 1,
@@ -171,7 +171,7 @@ class CRM_Pcpteams_Page_Dashboard extends CRM_Core_Page {
         'sectionTitle' => ts('In Active Pages'),
         'weight' => 44,
       );
-      $pcpInactiveInfo = civicrm_api( 'pcpteams', 'getPcpDashboardInfo', array(
+      $pcpInactiveInfo = civicrm_api( 'pcpteams', 'getContactPcp', array(
          'version'   => 3, 
          'contact_id'=> $this->_contactId,
          'is_active' => 0,
