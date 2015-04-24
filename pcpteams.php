@@ -257,6 +257,20 @@ function pcpteams_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
 // create soft credit for team contact
 function pcpteams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
   if ($objectName == 'ContributionSoft' && $op == 'create' && $objectRef->pcp_id) {
+    // switch to event's campaign id where the pcp is related to while contribution is created where contribution has contribution page's campaign id
+    $updateQuery = "
+      UPDATE civicrm_contribution cc
+      INNER JOIN civicrm_contribution_soft cs ON cs.contribution_id = cc.id
+      INNER JOIN civicrm_pcp cp ON cp.id = cs.pcp_id
+      INNER JOIN civicrm_event ce ON ce.id = cp.page_id
+      SET cc.campaign_id = ce.campaign_id
+      WHERE cp.page_type = %1 AND cs.id = %2 ";
+    
+    $queryParams = array( 
+      1 => array('event', 'String'),
+      2 => array($objectId, 'Int'),
+    );
+    CRM_Core_DAO::executeQuery($updateQuery, $queryParams);
     $query      = "SELECT pcp.contact_id, cs.tribute_contact_id, cs.org_id 
       FROM civicrm_value_pcp_custom_set cs
       INNER JOIN civicrm_pcp pcp ON cs.team_pcp_id = pcp.id 
