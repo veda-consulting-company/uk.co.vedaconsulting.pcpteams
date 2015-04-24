@@ -282,7 +282,7 @@ function civicrm_api3_pcpteams_getContactList($params) {
 
   return civicrm_api3_create_success($result, $params, 'pcpteams');
 }
-
+// Get all pcp related info for the contact id
 function civicrm_api3_pcpteams_getContactPcp($params) {
   $permParams = array(
     'contact_id' => $params['contact_id'],
