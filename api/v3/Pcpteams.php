@@ -682,43 +682,38 @@ function civicrm_api3_pcpteams_getTeamMembers($params) {
     return civicrm_api3_create_error('insufficient permission to view this record');
   }
   
-  $getUserRelationships = CRM_Contact_BAO_Relationship::getRelationship( $params['contact_id'], CRM_Contact_BAO_Relationship::CURRENT);
-  // Team Admin Relationship
-  $relTypeAdmin   = CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE;
-  $adminRelTypeId = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', $relTypeAdmin, 'id', 'name_a_b');
-  $teamAdminContactIds = array();
-  foreach ($getUserRelationships as $value) {
-    if( $value['relationship_type_id'] == $adminRelTypeId ){
-      $teamAdminContactIds[] = $value['contact_id_b'];
-    }
-  }
-  if(!empty($teamAdminContactIds)) {
-    foreach ($teamAdminContactIds as $teamAdminContact) {
-      $teamPcpResult = _civicrm_api3_pcpteams_getcontactpcp(array('contact_id' => $teamAdminContact));
-      if (!empty($teamPcpResult)) {
-        foreach($teamPcpResult as $value) {
-          $query            = "SELECT team_pcp_id, entity_id FROM civicrm_value_pcp_custom_set where team_pcp_id = {$value['id']}";
-          $contactPcpIdsDao = CRM_Core_DAO::executeQuery($query);
-          while($contactPcpIdsDao->fetch()) {
-            $myContactId = CRM_Pcpteams_Utils::getcontactIdbyPcpId($contactPcpIdsDao->entity_id);
-            // Don't show if it is team admin
-            if($myContactId == $params['contact_id']) {
-              continue;
-            }
-            $result[$contactPcpIdsDao->entity_id] = array(
-              'my_pcp_id'  => $contactPcpIdsDao->entity_id,
-              'team_pcp_id'=> $contactPcpIdsDao->team_pcp_id,
-              'member_id'  => $myContactId,
-              'memberName' => CRM_Contact_BAO_Contact::displayName($myContactId),
-              'type'       => 'No',
-              'teamName'   => CRM_Contact_BAO_Contact::displayName(CRM_Pcpteams_Utils::getcontactIdbyPcpId($contactPcpIdsDao->team_pcp_id)),
-              'action'     => _getTeamMemberActionLink(5, $contactPcpIdsDao->entity_id, $contactPcpIdsDao->team_pcp_id),
-
-            );
-          }
-        }
-      }
-    }
+  $query = "
+    SELECT 
+    mp.id as member_pcp_id,
+    tp.id as team_pcp_id,
+    mc.id as member_contact_id,
+    mc.display_name as member_display_name,
+    tc.display_name as team_display_name
+    FROM civicrm_value_pcp_custom_set cs
+    INNER JOIN civicrm_pcp mp ON mp.id = cs.entity_id
+    INNER JOIN civicrm_contact mc ON mc.id = mp.contact_id
+    INNER JOIN civicrm_pcp tp ON tp.id = cs.team_pcp_id
+    INNER JOIN civicrm_contact tc ON tc.id = tp.contact_id
+    INNER JOIN civicrm_relationship cr ON cr.contact_id_b = tc.id
+    INNER JOIN civicrm_relationship_type crt on crt.id = cr.relationship_type_id
+    WHERE cr.contact_id_a = %1 AND crt.name_a_b = %2 AND mc.id != cr.contact_id_a";
+  
+  $queryParams = array( 
+    1 => array($params['contact_id'], 'Integer'),
+    2 => array(CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE, 'String'),
+  );
+  
+  $dao = CRM_Core_DAO::executeQuery($query, $queryParams);
+  while ($dao->fetch()) {
+    $result[$dao->member_pcp_id] = array(
+      'my_pcp_id'  => $dao->member_pcp_id,
+      'team_pcp_id'=> $dao->team_pcp_id,
+      'member_id'  => $dao->member_contact_id,
+      'memberName' => $dao->member_display_name,
+      'type'       => 'No',
+      'teamName'   => $dao->team_display_name,
+      'action'     => _getTeamMemberActionLink(5, $dao->member_pcp_id, $dao->team_pcp_id),
+    );
   }
   return civicrm_api3_create_success($result, $params);
 }
