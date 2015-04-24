@@ -670,6 +670,30 @@ class  CRM_Pcpteams_Utils {
       return FALSE;
         
     }
+    else if ($action == CRM_Pcpteams_Constant::C_PERMISSION_TEAM_ADMIN) {
+      if ($pcpId && $contactId) {
+        $query = "
+          SELECT cs.id FROM civicrm_value_pcp_custom_set cs
+          INNER JOIN civicrm_pcp mp ON mp.id = cs.entity_id
+          INNER JOIN civicrm_pcp tp ON tp.id = cs.team_pcp_id
+          INNER JOIN civicrm_contact tc ON tc.id = tp.contact_id
+          INNER JOIN civicrm_relationship cr ON cr.contact_id_b = tc.id
+          INNER JOIN civicrm_relationship_type crt on crt.id = cr.relationship_type_id
+          WHERE cs.entity_id = %1 AND cr.contact_id_a = %2 AND crt.name_a_b = %3";
+
+         $queryParams = array( 
+            1 => array($pcpId, 'Integer'),
+            2 => array($contactId, 'Integer'),
+            3 => array(CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE, 'String'),
+          );
+        if(CRM_Core_DAO::singleValueQuery($query, $queryParams)) {
+          return TRUE;
+        }
+        if (CRM_Contact_BAO_Contact_Permission::allow($contactId, CRM_Core_Permission::EDIT)) {
+          return TRUE;
+        }
+      }
+    }
     else if ($action == CRM_Core_Permission::EDIT) {
       // A. if logged in user ($contactId) is owner of pcp ($pcpId) it should have returned true in the beginning.
       // B. at this point we checking if logged in user ($contactId) is admin for team-contact ($pcpOwnerContactId) of pcp ($pcpId)

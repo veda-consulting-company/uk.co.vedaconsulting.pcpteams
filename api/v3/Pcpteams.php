@@ -1272,14 +1272,22 @@ function civicrm_api3_pcpteams_customcreate($params) {
       if (!$customFieldId) {
         continue;
       }
+      $update = FALSE;
       // we don't want pcp-owners to control / update setting of team_pcp_id.
       // Lets make sure its the admin who is doing it by checking if logged in user has edit permission on team_pcp_id
-      if (($key == 'team_pcp_id') && !CRM_Pcpteams_Utils::hasPermission($value, NULL, CRM_Core_Permission::EDIT)) { 
-        continue;
+      if (($key == 'team_pcp_id') && $value && CRM_Pcpteams_Utils::hasPermission($value, NULL, CRM_Core_Permission::EDIT)) { 
+        $update = TRUE;
+      } else if (($key == 'team_pcp_id') && !$value && (CRM_Pcpteams_Utils::hasPermission($params['entity_id'], NULL, CRM_Pcpteams_Constant::C_PERMISSION_TEAM_ADMIN) || CRM_Pcpteams_Utils::hasPermission ($params['entity_id'], NULL, CRM_Core_Permission::EDIT))) {
+        $update = TRUE;
+      } else if (($key != 'team_pcp_id') && CRM_Pcpteams_Utils::hasPermission ($params['entity_id'], NULL, CRM_Core_Permission::EDIT)) {
+        $update = TRUE;
       }
-      $customParams["custom_{$customFieldId}"] = $value;
+      if ($update) {
+        $customParams["custom_{$customFieldId}"] = $value;
+      }
     }
   }
+  
   return civicrm_api3('CustomValue', 'create', $customParams);
 }
 function _civicrm_api3_pcpteams_customcreate_spec(&$params) {
