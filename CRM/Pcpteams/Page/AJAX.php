@@ -308,12 +308,6 @@ class CRM_Pcpteams_Page_AJAX {
   static function removeTeamMember() {
     $pcp_id         = CRM_Utils_Request::retrieve('pcp_id', 'Positive', CRM_Core_DAO::$_nullObject, TRUE);
     $team_pcp_id    = CRM_Utils_Request::retrieve('team_pcp_id', 'Positive', CRM_Core_DAO::$_nullObject, TRUE);
-    
-    //check the hasPermission to view details
-    if (!CRM_Pcpteams_Utils::hasPermission($team_pcp_id, NULL, CRM_Core_Permission::EDIT)) {
-      CRM_Core_Session::setStatus(ts("Sorry! You dont have right permission to remove this member"));
-      CRM_Utils_System::civiExit();
-    }
         
     // $teamPcpCfId    = CRM_Pcpteams_Utils::getTeamPcpCustomFieldId();
     $params = array(
