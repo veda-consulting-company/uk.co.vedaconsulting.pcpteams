@@ -175,16 +175,6 @@ function civicrm_api3_pcpteams_getfields($params) {
 }
  */
 
-function _civicrm_api3_pcpteams_getcontactpcp($params) {
-  $dao = new CRM_PCP_DAO_PCP();
-  $dao->contact_id = $params['contact_id']; // type check done by getfields
-  $result = @_civicrm_api3_dao_to_array($dao);
-  _civicrm_api3_pcpteams_custom_get($result);
-
-  return $result;
-}
-
-
 function _civicrm_api3_pcpteams_custom_get(&$params) {
   foreach ($params as $rid => $rval) {
     _civicrm_api3_custom_data_get($params[$rid], 'PCP', $rid);
