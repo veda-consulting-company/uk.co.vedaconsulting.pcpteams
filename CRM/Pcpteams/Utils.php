@@ -832,7 +832,7 @@ class  CRM_Pcpteams_Utils {
         $query = "
           UPDATE civicrm_pcp p1 
           INNER JOIN civicrm_value_pcp_custom_set cs ON cs.team_pcp_id = p1.id
-          INNER JOIN civicrm_pcp p2 ON P2.id = cs.entity_id
+          INNER JOIN civicrm_pcp p2 ON p2.id = cs.entity_id
           SET p1.goal_amount = p2.goal_amount
           WHERE cs.entity_id = %1 AND (p1.goal_amount is NULL OR p1.goal_amount = 0) AND (p2.goal_amount IS NOT NULL OR p2.goal_amount <> 0)";
 
