@@ -159,6 +159,18 @@
       <contact_sub_type_b>Team</contact_sub_type_b>
       <is_active>1</is_active>
     </RelationshipType>
+    <RelationshipType>
+      <name_a_b>PCP Corporate Partner is</name_a_b>
+      <label_a_b>PCP Corporate Partner is</label_a_b>
+      <name_b_a>PCP Corporate Team of</name_b_a>
+      <label_b_a>PCP Corporate Team of</label_b_a>
+      <description>Team Corporate Relationship</description>
+      <contact_type_a>Organization</contact_type_a>
+      <contact_type_b>Organization</contact_type_b>
+      <contact_sub_type_a>Team</contact_sub_type_a>
+      <contact_sub_type_b>Corporate_Partner</contact_sub_type_b>
+      <is_active>1</is_active>
+    </RelationshipType>
   </RelationshipTypes>
   <OptionGroups>
     <OptionGroup>

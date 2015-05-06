@@ -571,7 +571,7 @@ function civicrm_api3_pcpteams_getTeamRequest($params) {
     FROM
       civicrm_relationship radmin
       INNER JOIN civicrm_relationship_type rat ON rat.id = radmin.relationship_type_id
-      INNER JOIN civicrm_relationship rmem ON radmin.contact_id_b = rmem.contact_id_b
+      INNER JOIN civicrm_relationship rmem ON (radmin.contact_id_b = rmem.contact_id_b AND rmem.is_active = 0)
       INNER JOIN civicrm_relationship_type rmt ON rmt.id = rmem.relationship_type_id
       INNER JOIN civicrm_contact mem ON mem.id = rmem.contact_id_a
       INNER JOIN civicrm_contact team ON team.id = rmem.contact_id_b
@@ -1128,7 +1128,7 @@ function civicrm_api3_pcpteams_getTeamRequestInfo($params) {
   
   $query = " 
     SELECT crs.pcp_a_b, cc.display_name, cp.page_id, cr.id FROM civicrm_value_pcp_relationship_set crs
-    INNER JOIN civicrm_relationship cr ON (cr.id = crs.entity_id)
+    INNER JOIN civicrm_relationship cr ON (cr.id = crs.entity_id AND cr.is_active = 0)
     INNER JOIN civicrm_pcp cp ON (cp.id = crs.pcp_a_b)
     INNER JOIN civicrm_contact cc ON (cr.contact_id_a = cc.id AND cc.is_deleted = 0)
     WHERE crs.pcp_b_a = %1";
@@ -1185,6 +1185,18 @@ function civicrm_api3_pcpteams_leaveTeam($params) {
     Where team_pcp_id = {$team_pcp_id} AND entity_id IN ( SELECT id FROM civicrm_pcp WHERE contact_id = {$user_id} )
   ";
   $dao = CRM_Core_DAO::executeQuery($query);
+  // Delete relatoinship so that it can be joined after leave
+  $deleteQuery = "
+    DELETE cr FROM civicrm_relationship cr
+    INNER JOIN civicrm_value_pcp_relationship_set crs ON crs.entity_id = cr.id
+    INNER JOIN civicrm_pcp cp ON cp.id = crs.pcp_a_b
+    INNER JOIN civicrm_contact cc ON cc.id = cp.contact_id
+    WHERE crs.pcp_b_a = %1 AND cp.contact_id = %2";
+  $deleteQueryParams = array(
+    1 => array($team_pcp_id, 'Int'),
+    2 => array($user_id, 'Int')
+  );
+  CRM_Core_DAO::executeQuery($deleteQuery, $deleteQueryParams);
   $teamPcpTitle = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $team_pcp_id, 'title');
   CRM_Core_Session::setStatus(ts("Unsubscribe from {$teamPcpTitle}"), NULL, 'success');
   return TRUE;

@@ -351,3 +351,20 @@ function pcpteams_civicrm_alterAPIPermissions($entity, $action, &$params, &$perm
     ),
   );
 }
+
+function pcpteams_civicrm_custom( $op, $groupID, $entityID, &$params ) {
+  if ( $op != 'create' && $op != 'edit' ) {
+      return;
+  }
+  $customFields = array();
+  if ($groupID  == CRM_Pcpteams_Utils::getPcpCustomSetId()) {
+    foreach ($params as $key => $value) {
+      $customFields[$value['column_name']] = $value['value'];
+    }
+    $teamContactId = CRM_Pcpteams_Utils::getcontactIdbyPcpId($entityID);
+    if ('Team' == CRM_Pcpteams_Utils::checkPcpType($entityID)) {
+      CRM_Pcpteams_Utils::reCreateRelationship($teamContactId, $customFields['org_id'], CRM_Pcpteams_Constant::C_CORPORATE_REL_TYPE);
+    }
+  }
+  
+}

@@ -82,49 +82,14 @@ class  CRM_Pcpteams_Utils {
    * To check the valid relationship is exists., Create If not Found one.
    */
   static function createTeamRelationship($iContactIdA, $iContactIdB, $custom = array(), $action = 'join' ){
-    if(empty($iContactIdA) || empty($iContactIdB)){
-      $status = empty($iContactIdB) ? 'Team Contact is Missing' : 'Team Member Contact Id is Missing';
-      CRM_Core_Session::setStatus($status);
-      return FALSE;
-    }
-
-    $teamRelTypeName = CRM_Pcpteams_Constant::C_TEAM_RELATIONSHIP_TYPE;
+    $relationshipTypeName = CRM_Pcpteams_Constant::C_TEAM_RELATIONSHIP_TYPE;
+    $is_active = 0;
     if($action == 'create') {
       // When a new team is created, we use admin relationship
-      $teamRelTypeName = CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE;
+      $relationshipTypeName = CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE;
+      $is_active = 1;
     } 
-    $relTypeId = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', $teamRelTypeName, 'id', 'name_a_b');
-
-    if ($relTypeId) {
-      $aParams = array();
-      //check the duplicates
-      $aParams = array(
-        'version'               => '3',
-        'is_active'             => '1',
-        'relationship_type_id'  => $relTypeId.'_a_b',
-      );
-      $bDuplicateFound = CRM_Contact_BAO_Relationship::checkDuplicateRelationship($aParams, $iContactIdA, $iContactIdB);
-      if ($bDuplicateFound) {
-        CRM_Core_Error::debug_log_message(ts('Relationship already exists.'));
-        return FALSE;
-      } else {
-        $aParams['contact_id_a'] = $iContactIdA;
-        $aParams['contact_id_b'] = $iContactIdB;
-        $aParams['relationship_type_id'] = $relTypeId;
-        $aParams['is_active'] = $action == 'create' ? 1 : 0 ;
-        if(!empty($custom)) {
-          $aParams  = array_merge($aParams, $custom);
-        }
-        $createRelationship = civicrm_api3('Relationship', 'create', $aParams);
-        if(!civicrm_error($createRelationship)){
-          $teamName = self::getContactWithHyperlink($iContactIdB);
-          return TRUE;
-        }
-      }
-    } else {
-      CRM_Core_Session::setStatus( t('Failed To create Relationship. Relationship Type (%1) does not exist.', array('%1' => $teamRelTypeName)) );
-    }
-    return FALSE;
+    self::createRelationship($iContactIdA, $iContactIdB, $relationshipTypeName, $custom, $is_active);
   }
   
   static function getcontactIdbyPcpId($id) {
@@ -842,5 +807,56 @@ class  CRM_Pcpteams_Utils {
         CRM_Core_DAO::executeQuery($query, $queryParams);
       }
     }
+  }
+  
+  static function reCreateRelationship($iContactIdA, $iContactIdB, $relationshipTypeName){
+    // Delete any old relationship on changing
+    $query = "
+      DELETE cr FROM civicrm_relationship cr
+      INNER JOIN civicrm_relationship_type crt ON crt.id = cr.relationship_type_id
+      WHERE crt.name_a_b = %1 AND cr.contact_id_a = %2";
+    $queryParams = array (
+      1 => array(CRM_Pcpteams_Constant::C_CORPORATE_REL_TYPE, 'String'),
+      2 => array($iContactIdA, 'Int')
+    );
+    CRM_Core_DAO::executeQuery($query, $queryParams);    
+    // Create New Relationship against Team and Coporate
+    self::createRelationship($iContactIdA, $iContactIdB, $relationshipTypeName);
+  }
+  
+  static function createRelationship($iContactIdA, $iContactIdB, $relationshipTypeName, $custom = array(), $is_active = 1){
+    if(empty($iContactIdA) || empty($iContactIdB)){
+      $status = empty($iContactIdB) ? 'ContactIdB is Missing' : 'ContactIdA is Missing';
+      CRM_Core_Error::debug_var('Input Details', $status);
+      return FALSE;
+    }
+    $relTypeId = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', $relationshipTypeName, 'id', 'name_a_b');
+    if ($relTypeId) {
+      $aParams = array();
+      //check the duplicates
+      $aParams = array(
+        'version'               => '3',
+        'is_active'             => '1',
+        'relationship_type_id'  => $relTypeId.'_a_b',
+      );
+      $bDuplicateFound = CRM_Contact_BAO_Relationship::checkDuplicateRelationship($aParams, $iContactIdA, $iContactIdB);
+      if ($bDuplicateFound) {
+        CRM_Core_Error::debug_log_message(ts('Relationship already exists.'));
+        return TRUE;
+      } else {
+        $aParams['contact_id_a'] = $iContactIdA;
+        $aParams['contact_id_b'] = $iContactIdB;
+        $aParams['relationship_type_id'] = $relTypeId;
+        $aParams['is_active'] = $is_active;
+        if(!empty($custom)) {
+          $aParams  = array_merge($aParams, $custom);
+        }
+        $createRelationship = civicrm_api3('Relationship', 'create', $aParams);
+        if(!civicrm_error($createRelationship)){
+          return TRUE;
+        }
+      }
+    } 
+    return FALSE;
   }
 }

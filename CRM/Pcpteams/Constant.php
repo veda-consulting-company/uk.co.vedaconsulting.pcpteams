@@ -7,6 +7,7 @@
           C_TEAM_ADMIN_REL_TYPE   = 'PCP Team Admin of',        //  Relationship Type - Team Admin
           C_PCP_TYPE              = 'pcp_tribute',              //  OptionGroupName
           C_CF_BRANCH_PARTNER     = 'Branch_or_Partner',        //  Custom Field - Branch or Partner
+          C_CORPORATE_REL_TYPE    = 'PCP Corporate Partner is', //  Relationship Type - Corporate Partner
           C_CF_TEAMPCPID          = 'Team_PCP_ID',              //  Custom Field - Team Pcp Id
           C_CF_PCP_TYPE           = 'Tribute',                  //  Custom Field - Tribute 
           C_CF_PCP_TYPE_CONTACT   = 'Tribute_Contact',          //  Custom Field - Tribute Contact
