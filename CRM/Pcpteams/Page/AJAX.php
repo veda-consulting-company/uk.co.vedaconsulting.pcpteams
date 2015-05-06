@@ -112,9 +112,10 @@ class CRM_Pcpteams_Page_AJAX {
     );
     $updatedResult = civicrm_api3('pcpteams', 'customcreate', $params);
     if (!civicrm_error($updatedResult)) {
-      $result  = civicrm_api3('Relationship', 'delete', array(
+      $result  = civicrm_api3('Relationship', 'create', array(
         'sequential' => 1,
         'id'         => $entity_id,
+        'is_active'  => 1
       ));
       $contactID = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcp_id, 'contact_id');
       //create Activity - Join Team Request Authourised
