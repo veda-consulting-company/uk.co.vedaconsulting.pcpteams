@@ -843,4 +843,50 @@ class  CRM_Pcpteams_Utils {
       }
     }
   }
+  
+  static function createCorporateRelationship($iContactIdA, $iContactIdB){
+    if(empty($iContactIdA) || empty($iContactIdB)){
+      $status = empty($iContactIdB) ? 'Corporate Contact is Missing' : 'Team Contact Id is Missing';
+      CRM_Core_Session::setStatus($status);
+      return FALSE;
+    }
+    $relTypeId   = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', CRM_Pcpteams_Constant::C_CORPORATE_REL_TYPE, 'id', 'name_a_b');
+
+    if ($relTypeId) {
+      $aParams = array();
+      //check the duplicates
+      $aParams = array(
+        'version'               => '3',
+        'is_active'             => '1',
+        'relationship_type_id'  => $relTypeId.'_a_b',
+      );
+      $bDuplicateFound = CRM_Contact_BAO_Relationship::checkDuplicateRelationship($aParams, $iContactIdA, $iContactIdB);
+      if ($bDuplicateFound) {
+        CRM_Core_Error::debug_log_message(ts('Relationship already exists.'));
+        return FALSE;
+      } else {
+          // Delete any old relationship on changing
+          $query = "
+            DELETE cr FROM civicrm_relationship cr
+            INNER JOIN civicrm_relationship_type crt ON crt.id = cr.relationship_type_id
+            WHERE crt.name_a_b = %1 AND cr.contact_id_a = %2";
+          $queryParams = array (
+            1 => array(CRM_Pcpteams_Constant::C_CORPORATE_REL_TYPE, 'String'),
+            2 => array($iContactIdA, 'Int')
+          );
+          CRM_Core_DAO::executeQuery($query, $queryParams);
+          $aParams['contact_id_a'] = $iContactIdA;
+          $aParams['contact_id_b'] = $iContactIdB;
+          $aParams['relationship_type_id'] = $relTypeId;
+          $createRelationship = civicrm_api3('Relationship', 'create', $aParams);
+          CRM_Core_Error::debug_var('Create Relationship', $createRelationship);
+          if(!civicrm_error($createRelationship)){
+            return TRUE;
+          }
+      }
+    } else {
+      CRM_Core_Session::setStatus( t('Failed To create Relationship. Relationship Type (%1) does not exist.', array('%1' => CRM_Pcpteams_Constant::C_CORPORATE_REL_TYPE)));
+    }
+    return FALSE;
+  }
 }
