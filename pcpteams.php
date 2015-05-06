@@ -361,9 +361,9 @@ function pcpteams_civicrm_custom( $op, $groupID, $entityID, &$params ) {
     foreach ($params as $key => $value) {
       $customFields[$value['column_name']] = $value['value'];
     }
-    if (CRM_Utils_Array::value('team_pcp_id', $customFields) && CRM_Utils_Array::value('org_id', $customFields)) {
-      $iContactIdA = CRM_Pcpteams_Utils::getcontactIdbyPcpId($customFields['team_pcp_id']);
-      CRM_Pcpteams_Utils::createCorporateRelationship($iContactIdA, $customFields['org_id']);
+    $teamContactId = CRM_Pcpteams_Utils::getcontactIdbyPcpId($entityID);
+    if ('Team' == CRM_Pcpteams_Utils::checkPcpType($entityID)) {
+      CRM_Pcpteams_Utils::createCorporateRelationship($teamContactId, $customFields['org_id']);
     }
   }
   
