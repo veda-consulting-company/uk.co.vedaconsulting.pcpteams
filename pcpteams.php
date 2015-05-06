@@ -367,7 +367,7 @@ function pcpteams_civicrm_custom( $op, $groupID, $entityID, &$params ) {
       $customParams = array(
         "custom_{$cfpcpab}" => $entityID
       );
-      CRM_Pcpteams_Utils::reCreateRelationship($teamContactId, $customFields['org_id'], CRM_Pcpteams_Constant::C_CORPORATE_REL_TYPE, $customParams, $entityID);
+      CRM_Pcpteams_Utils::reCreateRelationship($teamContactId, $customFields['org_id'], CRM_Pcpteams_Constant::C_CORPORATE_REL_TYPE, $customParams);
     }
   }
   

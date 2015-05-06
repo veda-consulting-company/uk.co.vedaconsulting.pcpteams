@@ -809,13 +809,14 @@ class  CRM_Pcpteams_Utils {
     }
   }
   
-  static function reCreateRelationship($iContactIdA, $iContactIdB, $relationshipTypeName, $custom = array(), $teamPcpId){
+  static function reCreateRelationship($iContactIdA, $iContactIdB, $relationshipTypeName, $custom = array()){
     // Delete any old relationship on changing
     $query = "
       DELETE cr FROM civicrm_relationship cr
       INNER JOIN civicrm_relationship_type crt ON crt.id = cr.relationship_type_id";
     $where = " WHERE crt.name_a_b = %1 AND cr.contact_id_a = %2";
-    if ($teamPcpId) {
+    $cfpcpab = CRM_Pcpteams_Utils::getPcpABCustomFieldId();
+    if (CRM_Utils_Array::value('custom_'.$cfpcpab, $custom)) {
       $query .= " INNER JOIN civicrm_value_pcp_relationship_set crs ON crs.entity_id = cr.id";
       $where .= " AND crs.pcp_a_b = %3";
     }
@@ -823,7 +824,7 @@ class  CRM_Pcpteams_Utils {
     $queryParams = array (
       1 => array(CRM_Pcpteams_Constant::C_CORPORATE_REL_TYPE, 'String'),
       2 => array($iContactIdA, 'Int'),
-      3 => array($teamPcpId, 'Int'),
+      3 => array($custom['custom_'.$cfpcpab], 'Int'),
     );
     CRM_Core_DAO::executeQuery($sql, $queryParams);    
     // Create New Relationship against Team and Coporate
