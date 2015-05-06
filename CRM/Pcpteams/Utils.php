@@ -83,11 +83,13 @@ class  CRM_Pcpteams_Utils {
    */
   static function createTeamRelationship($iContactIdA, $iContactIdB, $custom = array(), $action = 'join' ){
     $relationshipTypeName = CRM_Pcpteams_Constant::C_TEAM_RELATIONSHIP_TYPE;
+    $is_active = 0;
     if($action == 'create') {
       // When a new team is created, we use admin relationship
       $relationshipTypeName = CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE;
+      $is_active = 1;
     } 
-    self::createRelationship($iContactIdA, $iContactIdB, $relationshipTypeName, $custom);
+    self::createRelationship($iContactIdA, $iContactIdB, $relationshipTypeName, $custom, $is_active);
   }
   
   static function getcontactIdbyPcpId($id) {
@@ -807,7 +809,7 @@ class  CRM_Pcpteams_Utils {
     }
   }
   
-  static function reCreateCorporateRelationship($iContactIdA, $iContactIdB, $relationshipTypeName){
+  static function reCreateRelationship($iContactIdA, $iContactIdB, $relationshipTypeName){
     // Delete any old relationship on changing
     $query = "
       DELETE cr FROM civicrm_relationship cr
@@ -819,7 +821,7 @@ class  CRM_Pcpteams_Utils {
     );
     CRM_Core_DAO::executeQuery($query, $queryParams);    
     // Create New Relationship against Team and Coporate
-    self::createRelationship($iContactIdA, $iContactIdB, $relationshipTypeName, $custom = array());
+    self::createRelationship($iContactIdA, $iContactIdB, $relationshipTypeName);
   }
   
   static function createRelationship($iContactIdA, $iContactIdB, $relationshipTypeName, $custom = array(), $is_active = 1){
@@ -828,11 +830,6 @@ class  CRM_Pcpteams_Utils {
       CRM_Core_Error::debug_var('Input Details', $status);
       return FALSE;
     }
-    // If Team Member Relation then we create in active relationship
-    if ($relationshipTypeName == CRM_Pcpteams_Constant::C_TEAM_RELATIONSHIP_TYPE) {
-      $is_active = 0;
-    }
-    
     $relTypeId = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', $relationshipTypeName, 'id', 'name_a_b');
     if ($relTypeId) {
       $aParams = array();

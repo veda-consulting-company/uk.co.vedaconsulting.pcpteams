@@ -363,7 +363,7 @@ function pcpteams_civicrm_custom( $op, $groupID, $entityID, &$params ) {
     }
     $teamContactId = CRM_Pcpteams_Utils::getcontactIdbyPcpId($entityID);
     if ('Team' == CRM_Pcpteams_Utils::checkPcpType($entityID)) {
-      CRM_Pcpteams_Utils::reCreateCorporateRelationship($teamContactId, $customFields['org_id'], CRM_Pcpteams_Constant::C_CORPORATE_REL_TYPE);
+      CRM_Pcpteams_Utils::reCreateRelationship($teamContactId, $customFields['org_id'], CRM_Pcpteams_Constant::C_CORPORATE_REL_TYPE);
     }
   }
   
