@@ -16,7 +16,7 @@ SELECT @pcp_block_id := LAST_INSERT_ID();
 -- attach pcp to event, 2. set status to approved
 UPDATE civicrm_pcp as p 
 INNER JOIN civicrm_pcp_campaign as c on p.id = c.pcp_id
-SET p.pcp_block_id = @pcp_block_id, p.status_id = 2 
+SET p.pcp_block_id = @pcp_block_id, p.status_id = 2, page_id = @event_id1, page_type = 'event' 
 WHERE c.campaign_id = @campaign_id1 AND p.pcp_block_id = 0;
 
 -- update pcp to update page-text from that of drupal
