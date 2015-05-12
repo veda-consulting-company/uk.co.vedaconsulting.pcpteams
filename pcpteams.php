@@ -263,12 +263,13 @@ function pcpteams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
       INNER JOIN civicrm_contribution_soft cs ON cs.contribution_id = cc.id
       INNER JOIN civicrm_pcp cp ON cp.id = cs.pcp_id
       INNER JOIN civicrm_event ce ON ce.id = cp.page_id
-      SET cc.campaign_id = ce.campaign_id
+      SET cc.campaign_id = ce.campaign_id, cc.source = %3
       WHERE cp.page_type = %1 AND cs.id = %2 ";
     
     $queryParams = array( 
       1 => array('event', 'String'),
       2 => array($objectId, 'Int'),
+      3 => array('PCP', 'String'),
     );
     CRM_Core_DAO::executeQuery($updateQuery, $queryParams);
     $query      = "SELECT pcp.contact_id, cs.tribute_contact_id, cs.org_id 
