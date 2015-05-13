@@ -33,7 +33,5 @@ SELECT team.id as team_pcp_id, team.contact_id as team_cid, mem.id as mem_pcp_id
 FROM civicrm_relationship rel 
 INNER JOIN civicrm_pcp mem on mem.contact_id = rel.contact_id_a AND mem.pcp_block_id = @pcp_block_id AND mem.page_id = @event_id AND mem.page_type = 'event'
 INNER JOIN civicrm_pcp team on team.contact_id = rel.contact_id_b AND team.pcp_block_id = @pcp_block_id AND team.page_id = @event_id AND team.page_type = 'event'
-INNER JOIN civicrm_pcp mem on mem.contact_id = rel.contact_id_a
-INNER JOIN civicrm_pcp team on team.contact_id = rel.contact_id_b
 INNER JOIN civicrm_value_fundraising_team_data_130 ft on ft.entity_id = rel.contact_id_b
 WHERE rel.relationship_type_id = @rel_type_id AND ft.event_id_569 = @event_id;
