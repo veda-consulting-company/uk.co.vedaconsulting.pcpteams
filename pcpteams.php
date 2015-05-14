@@ -114,6 +114,17 @@ function pcpteams_civicrm_install() {
     'msg_html'    => $messageHtml,
   );
   
+   //approve join request    
+  $messageHtmlSampleTeamInviteFile  = $extensionDir . '/message_templates/msg_tpl_approve_request_to_team.tpl';
+  $messageHtml      = file_get_contents($messageHtmlSampleTeamInviteFile);
+  $message_params['decline_team'] = array(
+    'sequential'  => 1,
+    'version'     => 3,
+    'msg_title'   => CRM_Pcpteams_Constant::C_MSG_TPL_JOIN_REQ_APPROVE_TEAM,
+    'msg_subject' => (string) '{$userFirstName} {$userLastName} your request to join {$teamName} has been approved',
+    'is_default'  => 1,
+    'msg_html'    => $messageHtml,
+  );
   $ogId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_OptionGroup', CRM_Pcpteams_Constant::C_OG_MSG_TPL_WORKFLOW, 'id', 'name');
   foreach ($message_params as $key => $message_param) {
     $opValue = civicrm_api3('OptionValue', 'getsingle', array(

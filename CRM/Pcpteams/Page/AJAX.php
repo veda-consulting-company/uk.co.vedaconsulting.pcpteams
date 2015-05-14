@@ -125,6 +125,32 @@ class CRM_Pcpteams_Page_AJAX {
       );
       CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_REQ_AUTHORISED);
       //end
+      // Send Email - Join Team Request Authourized
+      $pcpDetails                   = civicrm_api('pcpteams', 'get', array('version' => 3, 'sequential' => 1, 'pcp_id' => $team_pcp_id));
+      $teamAdminID                  = CRM_Pcpteams_Utils::getTeamAdmin($team_pcp_id);
+      list($userName, $userEmail)   = CRM_Contact_BAO_Contact::getContactDetails($contactID);
+      $contactDetails = civicrm_api('Contact', 'get', array('version' => 3, 'sequential' => 1, 'id' => $contactID));
+      $emailParams =  array(
+        'tplParams' => array(
+          'userFirstName' => $contactDetails['values'][0]['first_name'],
+          'userLastName'  => $contactDetails['values'][0]['last_name'],
+          'teamName'      => CRM_Contact_BAO_Contact::displayName($actParams['assignee_contact_id']),
+          'pageURL'       => CRM_Utils_System::url('civicrm/pcp/manage', "reset=1&id={$team_pcp_id}", TRUE, NULL, FALSE, TRUE),
+          'eventName'     => $pcpDetails['values'][0]['page_title'],
+        ),
+        'email' => array(
+          $userName => array(
+            'first_name'    => $contactDetails['values'][0]['first_name'],
+            'last_name'     => $contactDetails['values'][0]['last_name'],
+            'email-Primary' => $userEmail,
+            'display_name'  => $userName,
+          )
+        ),
+        'valueName' => CRM_Pcpteams_Constant::C_MSG_TPL_JOIN_REQ_APPROVE_TEAM,
+        // 'email_from' => $fromEmail,
+      );
+
+      $sendEmail = CRM_Pcpteams_Utils::sendMail($teamAdminID, $emailParams);
       $teamMemberInfo = civicrm_api( 'pcpteams', 'getTeamMembersInfo', array(
           'version'  => 3, 
           'pcp_id'   => $pcp_id,

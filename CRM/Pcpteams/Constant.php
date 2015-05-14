@@ -39,6 +39,7 @@
           C_MSG_TPL_LEAVE_TEAM    = 'Someone has left your team',
           C_MSG_TPL_INVITE_TEAM   = 'Invitation to join team',
           C_MSG_TPL_JOIN_REQ_DECLINE_TEAM   = 'Request to join team declined',
+          C_MSG_TPL_JOIN_REQ_APPROVE_TEAM   = 'Request to join team approved',
           C_PERMISSION_MEMBER     = 8,
           C_PERMISSION_TEAM_ADMIN = 9,
           C_OG_MSG_TPL_WORKFLOW   = 'msg_tpl_workflow_PCP',
