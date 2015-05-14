@@ -15,6 +15,17 @@ class CRM_Pcpteams_Page_AJAX {
       "team_pcp_id" => NULL, 
     );
     $updatedResult = civicrm_api3('pcpteams', 'customcreate', $params);
+     // Delete relatoinship so that it can be joined after leave
+    $deleteQuery = "
+      DELETE cr FROM civicrm_relationship cr
+      INNER JOIN civicrm_value_pcp_relationship_set crs ON crs.entity_id = cr.id
+      INNER JOIN civicrm_pcp cp ON cp.id = crs.pcp_a_b
+      WHERE crs.pcp_b_a = %1 AND crs.pcp_a_b = %2";
+    $deleteQueryParams = array(
+      1 => array($team_pcp_id, 'Int'),
+      2 => array($entity_id, 'Int')
+    );
+    CRM_Core_DAO::executeQuery($deleteQuery, $deleteQueryParams);
     if (!civicrm_error($updatedResult)) {
       echo 'updated';
     }

@@ -615,7 +615,7 @@ function _getTeamRequestActionLink($relationshipId, $pcpId, $teampcpId ){
   $action     = "
     <span>
       <a href='javascript:void(0)' class=\"action-item crm-hover-button\" title='Approve Team Member' onclick='approveTeamMember({$relationshipId},{$pcpId},{$teampcpId});'>Approve</a>
-      <a href='javascript:void(0)' class=\"action-item crm-hover-button\" title='Decline Team Member' onclick='declineTeamMember({$relationshipId});'>Decline</a>
+      <a href='javascript:void(0)' class=\"action-item crm-hover-button\" title='Decline Team Member' onclick='declineTeamMember({$relationshipId}, {$pcpId}, {$teampcpId});'>Decline</a>
     </span>
     ";
   return $action;
