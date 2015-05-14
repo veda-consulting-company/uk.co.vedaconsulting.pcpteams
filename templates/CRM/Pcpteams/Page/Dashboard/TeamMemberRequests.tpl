@@ -55,12 +55,12 @@
            }
         });
     }
-    function declineTeamMember(entityId){
+    function declineTeamMember(entityId, pcpId, teampcpId ){
         var dataUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Pcpteams_Page_AJAX&fnName=declineTeamMember' }"{literal};
         cj.ajax({ 
            url     : dataUrl,
            type    : 'post',
-           data    : {entity_id : entityId},
+           data    : {entity_id : entityId, pcp_id : pcpId, team_pcp_id: teampcpId },
            success : function( data ) {
                cj(document).ajaxStop(function() { location.reload(true); });
            }
