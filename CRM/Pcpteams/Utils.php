@@ -750,7 +750,8 @@ class  CRM_Pcpteams_Utils {
     $goalAmount = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $teamPcpId, 'goal_amount');
     if ($pcpType == CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE_TEAM) {
       if($memberPcpId) {
-        if(empty(CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $memberPcpId, 'goal_amount'))) {
+        $memGoalAmount = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $memberPcpId, 'goal_amount');
+        if(empty($memGoalAmount)) {
           $params = array(
               'version'     => 3,
               'id'          => $memberPcpId,
