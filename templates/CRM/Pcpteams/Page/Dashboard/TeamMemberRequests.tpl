@@ -36,7 +36,7 @@
   {else}
     <div class="messages status no-popup">
       <div class="icon inform-icon"></div>
-      {ts}You do not have any Team or organization related to {/ts}
+      {ts}No new membership requests for your team.{/ts}
     </div>
   {/if}
 

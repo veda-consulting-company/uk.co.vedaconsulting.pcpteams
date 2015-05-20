@@ -352,7 +352,7 @@ function _getPcpDashboardActionLink($params){
     <span class='btn-slide crm-hover-button' style='display: none;'>more
       <ul class='panel'>
         <li>
-          <a href=\"{$joinTeamURl}\" class=\"action-item crm-hover-button\" title='Join Team' >{$updateLabel} Team</a>
+          <a href=\"{$joinTeamURl}\" class=\"action-item crm-hover-button\" title='{$updateLabel} Team' >{$updateLabel} Team</a>
         </li>        
 
         <li>
@@ -481,7 +481,7 @@ function _getTeamInfoActionLink($entityId, $teamPcpId, $role){
     <span class='btn-slide crm-hover-button'>more
       <ul class='panel'>
         <li>
-          <a href='javascript:void(0)' class=\"action-item crm-hover-button\" title='Join Team' onclick='unsubscribeTeam({$entityId}, {$teamPcpId});'>Leave Team</a>
+          <a href='javascript:void(0)' class=\"action-item crm-hover-button\" title='Leave Team' onclick='unsubscribeTeam({$entityId}, {$teamPcpId});'>Leave Team</a>
         </li>        
       </ul>
     </span>

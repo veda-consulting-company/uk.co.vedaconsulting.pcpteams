@@ -3,7 +3,7 @@
         <h2>{ts}Invite others to join you{/ts}</h2><br />
         {else}
         {* workflow eq 1 is team create and 2 is team join *}
-        <h2>{ts}Thanks {if $workflow eq 1} , {$teamTitle} is now setup, {elseif $workflow eq 2} for Joining to {$teamTitle} ,{/if} you can now invite others to join you{/ts}</h2><br />
+        <h2>{ts}Thanks {if $workflow eq 1} , {$teamTitle} is now set up. {elseif $workflow eq 2} for joining {$teamTitle}.{/if} You can now invite others to join you.{/ts}</h2><br />
         {/if}
         <div class="crm-group tell_friend_form-group">
             <table class="form-layout-compressed">
