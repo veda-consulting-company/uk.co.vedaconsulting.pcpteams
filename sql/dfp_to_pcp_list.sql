@@ -30,9 +30,9 @@ GROUP BY p.id ORDER BY Credits desc;
 -- list team pcps and their member pcps including admins
 SELECT @rel_type_id1 := id FROM civicrm_relationship_type where name_a_b = 'PCP Team Admin of';
 SELECT @rel_type_id2 := id FROM civicrm_relationship_type where name_a_b = 'PCP Team Member of';
-SELECT team.id as team_pcp_id, team.contact_id as team_cid, mem.id as mem_pcp_id, mem.contact_id as mem_cid, team.title  
+SELECT team.id as team_pcp_id, team.contact_id as team_cid, mem.id as mem_pcp_id, rel.contact_id_a as mem_cid, team.title  
 FROM civicrm_relationship rel 
-INNER JOIN civicrm_pcp mem on mem.contact_id = rel.contact_id_a AND mem.pcp_block_id = @pcp_block_id AND mem.page_id = @event_id AND mem.page_type = 'event'
 INNER JOIN civicrm_pcp team on team.contact_id = rel.contact_id_b AND team.pcp_block_id = @pcp_block_id AND team.page_id = @event_id AND team.page_type = 'event'
 INNER JOIN civicrm_value_fundraising_team_data_130 ft on ft.entity_id = rel.contact_id_b
+LEFT JOIN civicrm_pcp mem on mem.contact_id = rel.contact_id_a AND mem.pcp_block_id = @pcp_block_id AND mem.page_id = @event_id AND mem.page_type = 'event'
 WHERE rel.relationship_type_id IN (@rel_type_id1, @rel_type_id2) AND ft.event_id_569 = @event_id;
