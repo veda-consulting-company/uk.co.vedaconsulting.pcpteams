@@ -55,15 +55,16 @@ WHERE r1.relationship_type_id = @old_rel_type_id AND team.event_id_569 = @event_
 
 -- insert new pcps for teams
 INSERT INTO civicrm_pcp (contact_id, status_id, title, intro_text, page_id, page_type, pcp_block_id, is_honor_roll, is_active)
-SELECT team.entity_id, 2, CONCAT(cc.display_name, ' PCP'), CONCAT(cc.display_name, ' PCP'), @event_id, 'event', @pcp_block_id, 1, 1
+SELECT team.entity_id, 2, cc.display_name, cc.display_name, @event_id, 'event', @pcp_block_id, 1, 1
 FROM civicrm_value_fundraising_team_data_130 team
 INNER JOIN civicrm_contact cc ON cc.id = team.entity_id
 LEFT JOIN civicrm_pcp p ON p.contact_id = team.entity_id AND p.pcp_block_id = @pcp_block_id AND p.page_id = @event_id AND page_type = 'event'
 WHERE team.event_id_569 = @event_id AND p.id IS NULL;
 
--- update team member pcp(s) with team_pcp_id
 SELECT @rel_type_id1 := id FROM civicrm_relationship_type where name_a_b = 'PCP Team Admin of';
 SELECT @rel_type_id2 := id FROM civicrm_relationship_type where name_a_b = 'PCP Team Member of';
+
+-- update team member pcp(s) with team_pcp_id
 INSERT INTO civicrm_value_pcp_custom_set (entity_id, team_pcp_id)
 SELECT mem.id, team.id
 FROM civicrm_relationship rel
@@ -74,8 +75,6 @@ LEFT JOIN civicrm_value_pcp_custom_set cs ON cs.entity_id = mem.id AND cs.team_p
 WHERE rel.relationship_type_id IN (@rel_type_id1, @rel_type_id2) AND ft.event_id_569 = @event_id AND cs.id IS NULL;
 
 -- fill relationship custom fields so we know the exact pcps the relationship is for
-SELECT @rel_type_id1 := id FROM civicrm_relationship_type where name_a_b = 'PCP Team Admin of';
-SELECT @rel_type_id2 := id FROM civicrm_relationship_type where name_a_b = 'PCP Team Member of';
 INSERT INTO civicrm_value_pcp_relationship_set (entity_id, pcp_a_b, pcp_b_a) 
 SELECT rel.id, mem.id as pcp_a_b, team.id as pcp_b_a
 FROM civicrm_relationship rel
@@ -84,4 +83,24 @@ INNER JOIN civicrm_pcp team on team.contact_id = rel.contact_id_b AND team.pcp_b
 INNER JOIN civicrm_value_fundraising_team_data_130 ft on ft.entity_id = rel.contact_id_b
 LEFT JOIN civicrm_value_pcp_relationship_set rs ON rs.entity_id = rel.id 
 WHERE rel.relationship_type_id IN (@rel_type_id1, @rel_type_id2) AND ft.event_id_569 = @event_id AND rs.id IS NULL;
+
+-- if team members don't have a pcp, update their relationships to in-active
+UPDATE civicrm_relationship rel 
+INNER JOIN civicrm_pcp team on team.contact_id = rel.contact_id_b AND team.pcp_block_id = @pcp_block_id AND team.page_id = @event_id AND team.page_type = 'event'
+INNER JOIN civicrm_value_fundraising_team_data_130 ft on ft.entity_id = rel.contact_id_b
+LEFT JOIN civicrm_pcp mem on mem.contact_id = rel.contact_id_a AND mem.pcp_block_id = @pcp_block_id AND mem.page_id = @event_id AND mem.page_type = 'event'
+SET rel.is_active = 0
+WHERE rel.relationship_type_id IN (@rel_type_id1, @rel_type_id2) AND ft.event_id_569 = @event_id AND mem.id IS NULL;
+
+-- soft credit team pcp(s) based on member pcp(s)
+INSERT INTO civicrm_contribution_soft (contribution_id, contact_id, amount, currency, pcp_id, pcp_display_in_roll, pcp_roll_nickname, pcp_personal_note, soft_credit_type_id) 
+SELECT cs.contribution_id, team.contact_id, cs.amount, cs.currency, mem.id, cs.pcp_display_in_roll, cs.pcp_roll_nickname, cs.pcp_personal_note, cs.soft_credit_type_id
+FROM civicrm_relationship rel 
+INNER JOIN civicrm_pcp mem on mem.contact_id = rel.contact_id_a AND mem.pcp_block_id = @pcp_block_id AND mem.page_id = @event_id AND mem.page_type = 'event'
+INNER JOIN civicrm_pcp team on team.contact_id = rel.contact_id_b AND team.pcp_block_id = @pcp_block_id AND team.page_id = @event_id AND team.page_type = 'event'
+INNER JOIN civicrm_value_fundraising_team_data_130 ft on ft.entity_id = rel.contact_id_b
+INNER JOIN civicrm_contribution_soft cs on cs.pcp_id = mem.id
+LEFT JOIN civicrm_contribution_soft tcs on tcs.pcp_id = mem.id AND tcs.contribution_id = cs.contribution_id AND tcs.contact_id = team.contact_id
+WHERE rel.relationship_type_id IN (@rel_type_id1, @rel_type_id2) AND ft.event_id_569 = @event_id AND tcs.id IS NULL;
+
 -- DS: FIXME need to migrate uploaded pics as well
