@@ -1,8 +1,8 @@
 -- set vars
 SELECT @drupal_db_name   := 'phing_vedaconsulting_llr_v1_drupal7';
 SELECT @event_title      := 'Birmingham Bikeathon 2015';
-SELECT @contrib_page_id  := 10;
-SELECT @pcp_notify_email := 'deepak@vedaconsulting.co.uk';
+SELECT @contrib_page_id  := 20;
+SELECT @pcp_notify_email := 'bvester@beatingbloodcancers.org.uk';
 
 SELECT @event_id := id FROM civicrm_event where title = @event_title  COLLATE utf8_unicode_ci;
 SELECT @campaign_id := campaign_id FROM civicrm_event where title = @event_title  COLLATE utf8_unicode_ci;
