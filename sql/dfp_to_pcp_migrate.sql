@@ -33,12 +33,6 @@ INSERT INTO temp_dfp_pcp_migration
    GROUP BY camp.id 
      HAVING count(*) <= 1;
 
--- update pcp_blk_id in temp table based on event
-   UPDATE temp_dfp_pcp_migration tdfp
-LEFT JOIN civicrm_pcp_block pb ON pb.entity_table = 'civicrm_event' AND pb.entity_id = tdfp.event_id AND pb.target_entity_type = 'contribute' AND pb.target_entity_id = @contrib_page_id AND pb.supporter_profile_id = @supporter_profile_id
-      SET tdfp.pcp_blk_id = pb.id 
-    WHERE tdfp.pcp_blk_id IS NULL;
-
 -- enable pcp (pcp blocks) for event (only if not already enabled)
 INSERT INTO `civicrm_pcp_block` (`entity_table`, `entity_id`, `target_entity_type`, `target_entity_id`, `supporter_profile_id`, `is_approval_needed`, `is_tellfriend_enabled`, `tellfriend_limit`, `link_text`, `is_active`, `notify_email`)
      SELECT 'civicrm_event' as etable, tdfp.event_id as eid, 'contribute' as tet, @contrib_page_id as tei, @supporter_profile_id as spi, 
@@ -47,6 +41,12 @@ INSERT INTO `civicrm_pcp_block` (`entity_table`, `entity_id`, `target_entity_typ
   LEFT JOIN civicrm_pcp_block pb ON pb.entity_table = 'civicrm_event' AND pb.entity_id = tdfp.event_id AND pb.target_entity_type = 'contribute' AND 
             pb.target_entity_id = @contrib_page_id AND pb.supporter_profile_id = @supporter_profile_id
       WHERE pb.id IS NULL;
+
+-- update pcp_blk_id in temp table based on event
+   UPDATE temp_dfp_pcp_migration tdfp
+LEFT JOIN civicrm_pcp_block pb ON pb.entity_table = 'civicrm_event' AND pb.entity_id = tdfp.event_id AND pb.target_entity_type = 'contribute' AND pb.target_entity_id = @contrib_page_id AND pb.supporter_profile_id = @supporter_profile_id
+      SET tdfp.pcp_blk_id = pb.id 
+    WHERE tdfp.pcp_blk_id IS NULL;
 
 -- 1. attach pcp to event, 2. set status to approved, 3. set honor roll
 -- DS: note we not changing old page_id = 10 and page_type = contribute, to page_id = 20
