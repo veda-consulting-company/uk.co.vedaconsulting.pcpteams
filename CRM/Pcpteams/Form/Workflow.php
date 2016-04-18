@@ -33,7 +33,7 @@ class CRM_Pcpteams_Form_Workflow extends CRM_Core_Form {
         $query .= "&code={$this->_code}";
       }
       // FIXME: only valid for drupal
-      $url  = CRM_Utils_System::url('user', 'destination=civicrm/pcp/support');
+      $url  = CRM_Utils_System::url('user/register', 'destination=civicrm/pcp/support');
       $url .= urlencode($query);
       CRM_Utils_System::redirect($url);
     }

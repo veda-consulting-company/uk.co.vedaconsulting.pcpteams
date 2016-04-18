@@ -283,7 +283,7 @@ function civicrm_api3_pcpteams_getContactPcp($params) {
   
   $dao = new CRM_PCP_DAO_PCP();
   $dao->contact_id = $params['contact_id']; 
-  $dao->is_active  = $params['is_active']; 
+  $dao->is_active  = (isset($params['is_active'])) ? $params['is_active'] : NULL; 
   $result = @_civicrm_api3_dao_to_array($dao);
   _civicrm_api3_pcpteams_custom_get($result);
   
@@ -1063,6 +1063,8 @@ function _civicrm_api3_pcpteams_getMoreInfo(&$params) {
       $imageUrl = CRM_Utils_System::url('civicrm/file',"reset=1&id=$fileId&eid={$pcpId}"); 
     }
     $pcpBlockId = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcpId, 'pcp_block_id', 'id');
+    
+    $contributionPageId = 1;
     if ($pcpBlockId) {
       $contributionPageId = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCPBlock', $pcpBlockId, 'target_entity_id', 'id');
     }
@@ -1076,7 +1078,7 @@ function _civicrm_api3_pcpteams_getMoreInfo(&$params) {
      $params[$pcpId]['image_id']         = $fileId;
      $params[$pcpId]['donate_url']       = $donateUrl;
      $params[$pcpId]['is_teampage']      = $isTeamPcp;
-       
+     $params[$pcpId]['contact_name'] = CRM_Contact_BAO_Contact::displayName($pcpValues['contact_id']);
 
     //calculate percentage
     $percentage   = 0;

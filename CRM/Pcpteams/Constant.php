@@ -33,6 +33,7 @@
           C_AT_INVITATION_FROM_MEMBER      = 'PCP Email invitation to Join Team (from Team Member)',
           C_AT_INVITATION_ACCEPTED         = 'PCP Team Invitation Replied and Pending',
           C_AT_LEAVE_TEAM         = 'PCP Member Left Team',
+          C_AT_SOFT_CREDIT         = 'PCP Soft Credit',
           C_CONTACT_SUB_TYPE_TEAM = 'Team',                     //  Contact Sub Type - Team
           C_INVITE_MAIL_LIMIT     = 5,
           C_MSG_TPL_JOIN_REQUEST  = 'New member request to join team',
@@ -40,6 +41,7 @@
           C_MSG_TPL_INVITE_TEAM   = 'Invitation to join team',
           C_MSG_TPL_JOIN_REQ_DECLINE_TEAM   = 'Request to join team declined',
           C_MSG_TPL_JOIN_REQ_APPROVE_TEAM   = 'Request to join team approved',
+          C_MSG_TPL_SOMEONE_DONATED_FOR_YOU = 'Someone donated for you',
           C_PERMISSION_MEMBER     = 8,
           C_PERMISSION_TEAM_ADMIN = 9,
           C_OG_MSG_TPL_WORKFLOW   = 'msg_tpl_workflow_PCP',

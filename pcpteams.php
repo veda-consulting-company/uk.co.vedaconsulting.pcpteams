@@ -290,12 +290,33 @@ function pcpteams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
     $dao = CRM_Core_DAO::executeQuery($query, array(1 => array($objectRef->pcp_id, 'Integer')) );
     $dao->fetch();
     
-    if ($dao->contact_id) {
+    $actParams = array(
+      'target_contact_id' =>  $objectRef->contact_id,
+      'source_record_id'    => $objectRef->contribution_id,
+      'source_contact_id'  => $objectRef->contact_id
+      );
+    $customDigFund= CRM_Core_BAO_CustomField::getCustomFieldID(CRM_Pcpteams_Constant::C_CF_DIGITAL_FUNDRAISING_PCP_ID, CRM_Pcpteams_Constant::C_CG_DIGITAL_FUNDRAISING);
+    if ($customDigFund) {
+      $actParams["custom_{$customDigFund}"] = $objectRef->pcp_id;
+    }
+    CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_SOFT_CREDIT);
+    
+    if ($dao->contact_id) { 
       $newSoft = clone $objectRef;
       $newSoft->contact_id = $dao->contact_id;
       // $newSoft->pcp_personal_note = "Created From Hook";
       unset($newSoft->id);
       $newSoft->save();
+      $actParams = array(
+        'target_contact_id' =>  $dao->contact_id,
+        'source_record_id'    => $objectRef->contribution_id,
+        'source_contact_id'  => $dao->contact_id
+        ); 
+      $customDigFund= CRM_Core_BAO_CustomField::getCustomFieldID(CRM_Pcpteams_Constant::C_CF_DIGITAL_FUNDRAISING_PCP_ID, CRM_Pcpteams_Constant::C_CG_DIGITAL_FUNDRAISING);
+      if ($customDigFund) {
+        $actParams["custom_{$customDigFund}"] = $objectRef->pcp_id;
+      }
+      CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_SOFT_CREDIT);
     }
 
     if ($dao->tribute_contact_id) {
@@ -304,6 +325,16 @@ function pcpteams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
       // $newSoft->pcp_personal_note = "Created From Hook";
       unset($newSoft->id);
       $newSoft->save();
+      $actParams = array(
+        'target_contact_id' =>  $dao->tribute_contact_id,
+        'source_record_id'    => $objectRef->contribution_id,
+        'source_contact_id'  => $dao->tribute_contact_id
+        );    
+      $customDigFund= CRM_Core_BAO_CustomField::getCustomFieldID(CRM_Pcpteams_Constant::C_CF_DIGITAL_FUNDRAISING_PCP_ID, CRM_Pcpteams_Constant::C_CG_DIGITAL_FUNDRAISING);
+      if ($customDigFund) {
+        $actParams["custom_{$customDigFund}"] = $objectRef->pcp_id;
+      }
+      CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_SOFT_CREDIT);
     }
     
     if ($dao->org_id) {
@@ -312,6 +343,98 @@ function pcpteams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
       // $newSoft->pcp_personal_note = "Created From Hook";
       unset($newSoft->id);
       $newSoft->save();
+      $actParams = array(
+        'target_contact_id' =>  $dao->org_id,
+        'source_record_id'    => $objectRef->contribution_id,
+        'source_contact_id'  => $dao->org_id
+      );
+      $customDigFund= CRM_Core_BAO_CustomField::getCustomFieldID(CRM_Pcpteams_Constant::C_CF_DIGITAL_FUNDRAISING_PCP_ID, CRM_Pcpteams_Constant::C_CG_DIGITAL_FUNDRAISING);
+      if ($customDigFund) {
+        $actParams["custom_{$customDigFund}"] = $objectRef->pcp_id;
+      }
+      CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_SOFT_CREDIT);
+    }
+
+    $messageTplID = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_MessageTemplate', CRM_Pcpteams_Constant::C_MSG_TPL_SOMEONE_DONATED_FOR_YOU, 'id', 'msg_title');
+    if ($messageTplID) {
+      $query = "SELECT 
+        pcp.contact_id       as contactID, 
+        contr.total_amount   as donor_total_amount, 
+        donor.id             as donor_id,
+        donor.first_name     as donor_first_name,
+        donor.last_name      as donor_last_name,
+        pcp.id               as pcp_id,
+        pcp.intro_text       as pcp_intro_text,
+        pcp.title            as pcp_title,
+        pcp.goal_amount      as pcp_goal_amount,
+        screditor.id         as screditor_id,
+        screditor.first_name as screditor_first_name,
+        screditor.last_name  as screditor_last_name,
+        eve.id               as event_id,
+        eve.title            as event_title,
+        soft.pcp_personal_note  as personal_note
+        FROM civicrm_contribution_soft soft
+        INNER JOIN civicrm_pcp pcp               ON soft.pcp_id = pcp.id
+        INNER JOIN civicrm_contribution contr    ON soft.contribution_id = contr.id
+        INNER JOIN civicrm_contact donor         ON contr.contact_id = donor.id
+        INNER JOIN civicrm_contact screditor     ON soft.contact_id = screditor.id
+        LEFT JOIN civicrm_event eve              ON (eve.id = pcp.page_id AND pcp.page_type = 'event')
+        WHERE soft.id = %1";
+      $queryParams = array( 
+        1 => array($objectRef->id, 'Int'),
+      );
+      $data = CRM_Core_DAO::executeQuery($query, $queryParams);
+
+      $pcp = $screditor = $donor = $participant = array();
+      if ($data->fetch()) {
+        $remActObj = new CRM_Utils_ReminderActivityViaJob(10000);
+
+        $pcp['title']               = $data->pcp_title;
+        $pcp['intro_text']          = $data->pcp_intro_text;
+        $pcp['target']              = $data->pcp_goal_amount;
+        $screditor['first_name']    = $data->screditor_first_name;
+        $screditor['last_name']     = $data->screditor_last_name;
+        $participant['event_id']    = $data->event_id;
+        $participant['event_title'] = $data->event_title;
+        $donor['total_amount']      = $data->donor_total_amount;
+        $donor['first_name']        = $data->donor_first_name;
+        $donor['last_name']         = $data->donor_last_name;
+        $donor['personal_note']     = $data->personal_note;
+        $pcp['raised']              = $remActObj->getDFPRaisedAmount($data->pcp_id);
+        if ($node = $remActObj->getDFPNode($data->pcp_id)) {
+          $pcp['url'] = CRM_Utils_System::url("node/{$node}", NULL, TRUE);
+        }
+
+        $tplParams = array(
+          'uk_co_vedaconsulting_pcp'         => $pcp,
+          'uk_co_vedaconsulting_screditor'   => $screditor,
+          'uk_co_vedaconsulting_donor'       => $donor,
+          'uk_co_vedaconsulting_participant' => $participant,
+        );
+        $contactSubTypes = CRM_Contact_BAO_Contact::getContactTypes($data->contactID);
+        if (in_array(CRM_Pcpteams_Constant::C_CONTACT_SUB_TYPE_TEAM, $contactSubTypes)) {
+          // if team pcp
+          $teamAdminId = CRM_Pcpteams_Utils::getTeamAdmin($data->pcp_id);
+          list($displayName, $toEmail) = CRM_Contact_BAO_Contact_Location::getEmailDetails($teamAdminId);
+        } else {
+          list($displayName, $toEmail) = CRM_Contact_BAO_Contact_Location::getEmailDetails($data->contactID);
+        }
+
+        $domainValues = CRM_Core_BAO_Domain::getNameAndEmail();
+        $fromName = $domainValues[0];
+        $email    = $domainValues[1];
+
+        $templateParams = array(
+          'messageTemplateID' => $messageTplID,
+          'contactId'         => $data->contactID,
+          'tplParams'         => $tplParams,
+          'from'              => "$fromName <$email>",
+          'toName'            => $displayName,
+          'toEmail'           => $toEmail,
+          'replyTo'           => $email,
+        );
+        list($sent) = CRM_Core_BAO_MessageTemplate::sendTemplate($templateParams);
+      }
     }
   }
 

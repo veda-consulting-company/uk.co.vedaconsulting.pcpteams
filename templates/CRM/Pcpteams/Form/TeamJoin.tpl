@@ -5,7 +5,7 @@
         <span class="bold">{ts}Start typing the name
             of the team you wish to join and then select the correct name. 
             If you can't find the team you are looking for, please contact the team captain. 
-            Alternatively you can <a class='crm-link' href='{crmURL p="civicrm/pcp/support" q="reset=1&pageId=$component_page_id&component=event&code=cpftn&option=1"}'>{ts}create your own team{/ts}</a>. If you need  further assistance, <a href="https://leukaemialymphomaresearch.org.uk/about-us/contact">{ts}contact us{/ts}</a>{/ts}.</span>
+            Alternatively you can <a class='crm-link' href='{crmURL p="civicrm/pcp/support" q="reset=1&pageId=$component_page_id&component=event&code=cpftn&option=1"}'>{ts}create your own team{/ts}</a>. If you need  further assistance, <a href="#webform-client-form-6">{ts}contact us{/ts}</a>{/ts}.</span>
         {/if}
 	{foreach from=$elementNames item=elementName}
 	  <div class="crm-section">

@@ -272,6 +272,7 @@ class  CRM_Pcpteams_Utils {
         'page_id'         => $componentPageId,
         'page_type'       => $component,
         'goal_amount'     => '0.00', //FIXME: Need to make sure the intial sample goal_amount, setting 0.00 now, user can update later on their manage page
+        'is_honor_roll' => 1,
       )
     );
     if(!civicrm_error($pcpResult) && $pcpResult['id']) {
@@ -383,6 +384,10 @@ class  CRM_Pcpteams_Utils {
         $subject = 'PCP member left team';
         $details = "PCP member left team ". $targetName;
         break;
+      case CRM_Pcpteams_Constant::C_AT_SOFT_CREDIT:
+        $subject = 'PCP ';
+        $details = '';
+        break;
       default:
         $subject = $activityname;
         $details = $activityname;
@@ -490,6 +495,7 @@ class  CRM_Pcpteams_Utils {
     $pcpBlock = new CRM_PCP_DAO_PCPBlock();
     $pcpBlock->entity_table = $entity_table;
     $pcpBlock->entity_id    = $eventId;
+    $pcpBlock->is_active = TRUE;
     $pcpBlock->find(TRUE);
     return $pcpBlock->id;
   }

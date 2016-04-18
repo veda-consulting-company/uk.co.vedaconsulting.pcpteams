@@ -3,7 +3,7 @@
 	
 	<!-- ( HEADER ) -->
 	 <br>
-	 <h2>{ts}Thanks for choosing to Support us for {$eventDetails.title}{/ts}</h2>
+	 <h2>{ts}Thanks for choosing to support us at {$eventDetails.title}{/ts}</h2>
 	 <br>
 	 
 	 <div>
