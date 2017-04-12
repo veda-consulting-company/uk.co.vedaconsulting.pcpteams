@@ -193,8 +193,9 @@ function pcpteams_civicrm_uninstall() {
     where og.name = 'msg_tpl_workflow_PCP'");
   CRM_Core_DAO::executeQuery("
     DELETE FROM civicrm_option_group where name = 'msg_tpl_workflow_PCP'");
-  CRM_Core_DAO::executeQuery("
-    DELETE FROM civicrm_relationship_type where like '%PCP Team%'");
+  CRM_Core_DAO::executeQuery("DELETE FROM civicrm_relationship_type where name_a_b like '%PCP Team%'");
+  CRM_Core_DAO::executeQuery("DELETE FROM civicrm_relationship_type where name_a_b like 'Team Member of'");
+  CRM_Core_DAO::executeQuery("DELETE FROM civicrm_relationship_type where name_a_b like 'Team Leader of'");
   return _pcpteams_civix_civicrm_uninstall();
 }
 
