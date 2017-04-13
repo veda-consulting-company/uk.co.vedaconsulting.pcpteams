@@ -177,7 +177,7 @@ function civicrm_api3_pcpteams_getfields($params) {
 
 function _civicrm_api3_pcpteams_custom_get(&$params) {
   foreach ($params as $rid => $rval) {
-    _civicrm_api3_custom_data_get($params[$rid], 'PCP', $rid);
+    _civicrm_api3_custom_data_get($params[$rid], FALSE, 'PCP', $rid);
     // FIXME: we should at some point replace "custom_xy_" with column-names
   }
 }
