@@ -321,7 +321,7 @@ class  CRM_Pcpteams_Utils {
                            ,'name' => $activityname);
     $activityType       = civicrm_api('OptionValue', 'get', $activityParams);
 
-    return $activityType['values'][$activityType['id']]['value'];
+    return !empty($activityType['id']) ? $activityType['values'][$activityType['id']]['value'] : NULL;
   }
   
   static function createPcpActivity( $params, $activityname ){

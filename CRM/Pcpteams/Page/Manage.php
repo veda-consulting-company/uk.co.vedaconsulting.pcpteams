@@ -10,8 +10,10 @@ class CRM_Pcpteams_Page_Manage extends CRM_Core_Page {
 
   function preProcess(){
     CRM_Core_Resources::singleton()
-      ->addScriptFile('uk.co.vedaconsulting.pcpteams', 'packages/jquery-circle-progress/dist/circle-progress.js', CRM_Core_Resources::DEFAULT_WEIGHT, 'html-header')
-      ->addStyleFile('uk.co.vedaconsulting.pcpteams', 'css/manage.css');
+      ->addScriptFile('civicrm', 'packages/jquery/plugins/jquery.jeditable.min.js', CRM_Core_Resources::DEFAULT_WEIGHT, 'html-header')
+      ->addScriptFile('civicrm', 'js/jquery/jquery.crmEditable.js', CRM_Core_Resources::DEFAULT_WEIGHT + 10, 'html-header')
+      ->addScriptFile('uk.co.vedaconsulting.pcpteams', 'packages/jquery-circle-progress/dist/circle-progress.js', CRM_Core_Resources::DEFAULT_WEIGHT + 20, 'html-header')
+      ->addStyleFile('uk.co.vedaconsulting.pcpteams', 'css/manage.css', CRM_Core_Resources::DEFAULT_WEIGHT + 1000, 'html-header');
 
     $session = CRM_Core_Session::singleton();
     $this->_userID = $session->get('userID');

@@ -48,6 +48,6 @@
           C_CG_DIGITAL_FUNDRAISING          = 'Digital_Fundraising',
           C_CF_DIGITAL_FUNDRAISING_PCP_ID   = 'PCP_ID',
           C_CF_DIGITAL_FUNDRAISING_DFP_URL  = 'DFP_URL',
-          C_DEFAULT_PROFILE_PIC   = 'http://vedaconsulting_llr_v1.llrdev.org.uk/custom_civicrm/extensions/uk.co.vedaconsulting.pcpteams/img/avatar.jpeg';
+          C_DEFAULT_PROFILE_PIC   = 'img/avatar.png';
  }
 ?>

@@ -1074,7 +1074,7 @@ function _civicrm_api3_pcpteams_getMoreInfo(&$params) {
     $isTeamPcp       = in_array('Team'      , $aContactTypes) ? TRUE : FALSE;
      $params[$pcpId]['page_title']       = CRM_Core_DAO::getFieldValue('CRM_Event_DAO_Event', $pcpValues['page_id'], 'title');
      $params[$pcpId]['amount_raised']    = civicrm_api3_pcpteams_getAmountRaised(array('pcp_id' => $pcpId, 'version' => 3));
-     $params[$pcpId]['image_url']        = $imageUrl ? $imageUrl : CRM_Pcpteams_Constant::C_DEFAULT_PROFILE_PIC;
+     $params[$pcpId]['image_url']        = $imageUrl ? $imageUrl : CRM_Core_Resources::singleton()->getUrl('uk.co.vedaconsulting.pcpteams', CRM_Pcpteams_Constant::C_DEFAULT_PROFILE_PIC);
      $params[$pcpId]['image_id']         = $fileId;
      $params[$pcpId]['donate_url']       = $donateUrl;
      $params[$pcpId]['is_teampage']      = $isTeamPcp;
@@ -1082,7 +1082,7 @@ function _civicrm_api3_pcpteams_getMoreInfo(&$params) {
 
     //calculate percentage
     $percentage   = 0;
-    if(isset($pcpValues['goal_amount']) && number_format($pcpValues['goal_amount']) != '0'){
+    if (!empty($pcpValues['goal_amount']) && ($pcpValues['goal_amount'] > 0)){
       $percentage = number_format(($params[$pcpId]['amount_raised'] / $params[$pcpId]['goal_amount']) * 100);
     }
     
@@ -1148,7 +1148,7 @@ function civicrm_api3_pcpteams_getTeamRequestInfo($params) {
       'pcp_id'             => $dao->pcp_a_b,
       'amount_raised'      => $memberPcpResult['values'][0]['amount_raised'],
       'donations_count'    => $getAllDonations['count'],
-      'image_url'          => $memberPcpResult['values'][0]['image_url'] ? $memberPcpResult['values'][0]['image_url'] : CRM_Pcpteams_Constant::C_DEFAULT_PROFILE_PIC,
+      'image_url'          => $memberPcpResult['values'][0]['image_url'] ? $memberPcpResult['values'][0]['image_url'] : CRM_Core_Resources::singleton()->getUrl('uk.co.vedaconsulting.pcpteams', CRM_Pcpteams_Constant::C_DEFAULT_PROFILE_PIC),
       'image_id'           => $memberPcpResult['values'][0]['image_id'],
       'team_pcp_id'        => $params['team_pcp_id'],
       'relationship_id'    => $dao->id
