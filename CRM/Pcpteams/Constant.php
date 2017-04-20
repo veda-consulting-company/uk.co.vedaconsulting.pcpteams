@@ -48,6 +48,7 @@
           C_CG_DIGITAL_FUNDRAISING          = 'Digital_Fundraising',
           C_CF_DIGITAL_FUNDRAISING_PCP_ID   = 'PCP_ID',
           C_CF_DIGITAL_FUNDRAISING_DFP_URL  = 'DFP_URL',
-          C_DEFAULT_PROFILE_PIC   = 'img/avatar.png';
+          C_DEFAULT_PROFILE_PIC   = 'img/avatar.png',
+          C_SKIP_TEAM_APPROVAL    = TRUE;
  }
 ?>

@@ -112,10 +112,19 @@ class CRM_Pcpteams_Page_AJAX {
     CRM_Utils_System::civiExit();
   }
     
-  static function approveTeamMember(){
-    $entity_id      = CRM_Utils_Type::escape($_POST['entity_id'], 'Integer');
-    $pcp_id         = CRM_Utils_Type::escape($_POST['pcp_id'], 'Integer');
-    $team_pcp_id    = CRM_Utils_Type::escape($_POST['team_pcp_id'], 'Integer');
+  static function approveTeamMember($entity_id = NULL, $pcp_id = NULL, $team_pcp_id = NULL) {
+    $mode = 'ajax';
+    if ($entity_id && $pcp_id && $team_pcp_id) {
+      $mode = 'fcall';
+    }
+
+    $eid  = CRM_Utils_Array::value('entity_id', $_POST, $entity_id);
+    $pid  = CRM_Utils_Array::value('pcp_id', $_POST, $pcp_id);
+    $tpid = CRM_Utils_Array::value('team_pcp_id', $_POST, $team_pcp_id);
+
+    $entity_id      = CRM_Utils_Type::escape($eid, 'Integer');
+    $pcp_id         = CRM_Utils_Type::escape($pid, 'Integer');
+    $team_pcp_id    = CRM_Utils_Type::escape($tpid, 'Integer');
     $params = array(
       'version'   => 3,
       'entity_id' => $pcp_id,
@@ -170,39 +179,51 @@ class CRM_Pcpteams_Page_AJAX {
       );
       $memberInfo = isset($teamMemberInfo['values'][0]) ? $teamMemberInfo['values'][0] : NULL;
       if(!$memberInfo){
-        echo 'member not found';
-        CRM_Utils_System::civiExit();
+        if ($mode == 'ajax') {
+          echo 'member not found';
+          CRM_Utils_System::civiExit();
+        } else {
+          CRM_Core_Error::debug_log_message(ts("member not found"));
+        }
       }
-      $html = "
-      <div class=\"mem-row\">
-        <div class=\"mem-body-row avatar\">
-          <img width=\"35\" height=\"35\" src=\"{$memberInfo['image_url']}\">
-        </div>
-        <div class=\"mem-body-row name\">
-              {$memberInfo['display_name']}
-        </div> 
-        <div class=\"mem-body-row pcp-progress\">
-        <span>{$memberInfo['donations_count']} Donations</span>
-        <div class=\"pcp-bar\">
-          <div title=\"{$memberInfo['percentage']}%\" style=\"width: {$memberInfo['percentage']}%;\" class=\"pcp-bar-progress\">
-          </div>
-        </div>
-        </div>
-        <div class=\"mem-body-row raised\">
-          {$memberInfo['amount_raised']}
-        </div>
-        <div class=\"mem-body-row donate\">
-          <a href=\"{$memberInfo['donate_url']}\" class=\"btn-donate-small\">Donate</a>
-        </div>
-        <div class=\"clear\"></div>
-      </div> 
-      ";
-      echo $html;
+      if ($mode == 'ajax') {
+        $html = "
+          <div class=\"mem-row\">
+            <div class=\"mem-body-row avatar\">
+              <img width=\"35\" height=\"35\" src=\"{$memberInfo['image_url']}\">
+            </div>
+            <div class=\"mem-body-row name\">
+                  {$memberInfo['display_name']}
+            </div> 
+            <div class=\"mem-body-row pcp-progress\">
+            <span>{$memberInfo['donations_count']} Donations</span>
+            <div class=\"pcp-bar\">
+              <div title=\"{$memberInfo['percentage']}%\" style=\"width: {$memberInfo['percentage']}%;\" class=\"pcp-bar-progress\">
+              </div>
+            </div>
+            </div>
+            <div class=\"mem-body-row raised\">
+              {$memberInfo['amount_raised']}
+            </div>
+            <div class=\"mem-body-row donate\">
+              <a href=\"{$memberInfo['donate_url']}\" class=\"btn-donate-small\">Donate</a>
+            </div>
+            <div class=\"clear\"></div>
+          </div> 
+        ";
+        echo $html;
+      }
     }
-    else{
-      echo $updatedResult['error_message'];
+    else {
+      if ($mode == 'ajax') {
+        echo $updatedResult['error_message'];
+      } else {
+        CRM_Core_Error::debug_log_message($updatedResult['error_message']);
+      }
     }
-    CRM_Utils_System::civiExit();
+    if ($mode == 'ajax') {
+      CRM_Utils_System::civiExit();
+    }
   }  
   
   static function declineTeamMember(){

@@ -84,12 +84,16 @@ class  CRM_Pcpteams_Utils {
   static function createTeamRelationship($iContactIdA, $iContactIdB, $custom = array(), $action = 'join' ){
     $relationshipTypeName = CRM_Pcpteams_Constant::C_TEAM_RELATIONSHIP_TYPE;
     $is_active = 0;
+    if (CRM_Pcpteams_Constant::C_SKIP_TEAM_APPROVAL) {
+      $is_active = 1;
+    }
     if($action == 'create') {
       // When a new team is created, we use admin relationship
       $relationshipTypeName = CRM_Pcpteams_Constant::C_TEAM_ADMIN_REL_TYPE;
       $is_active = 1;
     } 
-    self::createRelationship($iContactIdA, $iContactIdB, $relationshipTypeName, $custom, $is_active);
+    $relId = self::createRelationship($iContactIdA, $iContactIdB, $relationshipTypeName, $custom, $is_active);
+    return array($relId, $is_active);
   }
   
   static function getcontactIdbyPcpId($id) {
@@ -867,7 +871,7 @@ class  CRM_Pcpteams_Utils {
         }
         $createRelationship = civicrm_api3('Relationship', 'create', $aParams);
         if(!civicrm_error($createRelationship)){
-          return TRUE;
+          return $createRelationship['id'];
         }
       }
     } 

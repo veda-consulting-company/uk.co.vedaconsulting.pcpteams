@@ -53,46 +53,54 @@ class CRM_Pcpteams_Form_TeamJoin {
       "custom_{$cfpcpab}" => $form->get('page_id'),
       "custom_{$cfpcpba}" => $teampcpId
     );
-    CRM_Pcpteams_Utils::createTeamRelationship($userId, $teamId, $customParams);
+    list($relId, $isApproved) = CRM_Pcpteams_Utils::createTeamRelationship($userId, $teamId, $customParams);
     $form->_teamName  = CRM_Contact_BAO_Contact::displayName($teamId);
     $form->set('teamName', $form->_teamName);
     $form->set('teamContactID', $teamId);
     $form->set('teamPcpId', $teampcpId);
     
-    $teamAdminId    = CRM_Pcpteams_Utils::getTeamAdmin($teampcpId);
-    // Team Join: create activity
-    $actParams = array(
-      'target_contact_id' => $teamId,
-      'assignee_contact_id' => $teamAdminId,
-    );    
-    CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_REQ_MADE);
-    CRM_Core_Session::setStatus(ts('A notification has been sent to the team. Once approved, team should be visible on your page.'), ts('Team Request Sent'));
-    
-    //send email once the team request has done. 
-    list($teamAdminName, $teamAdminEmail)  = CRM_Contact_BAO_Contact::getContactDetails($teamAdminId);
-    $contactDetails = civicrm_api('Contact', 'get', array('version' => 3, 'sequential' => 1, 'id' => $userId));
+    if ($relId) {
+      $teamAdminId    = CRM_Pcpteams_Utils::getTeamAdmin($teampcpId);
+      // Team Join: create activity
+      $actParams = array(
+        'target_contact_id' => $teamId,
+        'assignee_contact_id' => $teamAdminId,
+      );    
+      CRM_Pcpteams_Utils::createPcpActivity($actParams, CRM_Pcpteams_Constant::C_AT_REQ_MADE);
 
-    $emailParams =  array(
-      'tplParams' => array(
-        'teamAdminName' => $teamAdminName,
-        'userFirstName' => $contactDetails['values'][0]['first_name'],
-        'userlastName'  => $contactDetails['values'][0]['last_name'],
-        'teamName'      => $form->_teamName,
-        'pageURL'       => CRM_Utils_System::url('civicrm/pcp/manage', "reset=1&id={$teampcpId}", TRUE, NULL, FALSE, TRUE),
-      ),
-      'email' => array(
-        $teamAdminName => array(
-          'first_name'    => $teamAdminName,
-          'last_name'     => $teamAdminName,
-          'email-Primary' => $teamAdminEmail,
-          'display_name'  => $teamAdminName,
-        )
-      ),
-      'valueName' => CRM_Pcpteams_Constant::C_MSG_TPL_JOIN_REQUEST,
-      // 'email_from' => $fromEmail,
-    );
-    
-    $sendEmail = CRM_Pcpteams_Utils::sendMail($userId, $emailParams);
+      if (!$isApproved) {
+        //send email once the team request has done. 
+        list($teamAdminName, $teamAdminEmail)  = CRM_Contact_BAO_Contact::getContactDetails($teamAdminId);
+        $contactDetails = civicrm_api('Contact', 'get', array('version' => 3, 'sequential' => 1, 'id' => $userId));
+
+        $emailParams =  array(
+          'tplParams' => array(
+            'teamAdminName' => $teamAdminName,
+            'userFirstName' => $contactDetails['values'][0]['first_name'],
+            'userlastName'  => $contactDetails['values'][0]['last_name'],
+            'teamName'      => $form->_teamName,
+            'pageURL'       => CRM_Utils_System::url('civicrm/pcp/manage', "reset=1&id={$teampcpId}", TRUE, NULL, FALSE, TRUE),
+          ),
+          'email' => array(
+            $teamAdminName => array(
+              'first_name'    => $teamAdminName,
+              'last_name'     => $teamAdminName,
+              'email-Primary' => $teamAdminEmail,
+              'display_name'  => $teamAdminName,
+            )
+          ),
+          'valueName' => CRM_Pcpteams_Constant::C_MSG_TPL_JOIN_REQUEST,
+          // 'email_from' => $fromEmail,
+        );
+
+        $sendEmail = CRM_Pcpteams_Utils::sendMail($userId, $emailParams);
+        CRM_Core_Session::setStatus(ts('A notification has been sent to the team. Once approved, team should be visible on your page.'), ts('Team Request Sent'));
+      } else {
+        CRM_Pcpteams_Page_AJAX::approveTeamMember($relId, $form->get('page_id'), $teampcpId);
+        CRM_Core_Session::setStatus(ts("Done, Team should become visible on your page."), ts("Team Joined"));
+      }
+    } else {
+      CRM_Core_Error::debug_log_message("Couldn't create relationship for {$userId}, {$teamId}, {$customParams}");
+    }
   }
-
 }
