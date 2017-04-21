@@ -258,9 +258,12 @@ function civicrm_api3_pcpteams_getContactList($params) {
       $query .= " WHERE (1) AND cc.is_deleted = 0 {$where}";
     }
     
-    //LIMIT
-    $query .= " LIMIT 0, 15";
+    // if constant is set to anything other than zero, apply limit
+    if (CRM_Pcpteams_Constant::C_TEAM_LIST_LIMIT) {
+      $query .= " LIMIT " . CRM_Pcpteams_Constant::C_TEAM_LIST_LIMIT;
+    }
     //execute query
+    CRM_Core_Error::debug_var('getcontactlist $query', $query);
     $dao = CRM_Core_DAO::executeQuery($query);
     while($dao->fetch()){
       $result[$dao->id] = array(

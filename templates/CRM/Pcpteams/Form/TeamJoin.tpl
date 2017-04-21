@@ -45,7 +45,7 @@
                 return {more: data.more_results, results: data.values || []};
               }
             },
-            minimumInputLength: 1,
+            minimumInputLength: 0,
             formatResult: CRM.utils.formatSelect2Result,
             formatSelection: function(row) {
               return row.label;
