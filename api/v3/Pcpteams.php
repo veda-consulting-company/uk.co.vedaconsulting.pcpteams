@@ -177,7 +177,7 @@ function civicrm_api3_pcpteams_getfields($params) {
 
 function _civicrm_api3_pcpteams_custom_get(&$params) {
   foreach ($params as $rid => $rval) {
-    _civicrm_api3_custom_data_get($params[$rid], 'PCP', $rid);
+    _civicrm_api3_custom_data_get($params[$rid], FALSE, 'PCP', $rid);
     // FIXME: we should at some point replace "custom_xy_" with column-names
   }
 }
@@ -258,9 +258,12 @@ function civicrm_api3_pcpteams_getContactList($params) {
       $query .= " WHERE (1) AND cc.is_deleted = 0 {$where}";
     }
     
-    //LIMIT
-    $query .= " LIMIT 0, 15";
+    // if constant is set to anything other than zero, apply limit
+    if (CRM_Pcpteams_Constant::C_TEAM_LIST_LIMIT) {
+      $query .= " LIMIT " . CRM_Pcpteams_Constant::C_TEAM_LIST_LIMIT;
+    }
     //execute query
+    CRM_Core_Error::debug_var('getcontactlist $query', $query);
     $dao = CRM_Core_DAO::executeQuery($query);
     while($dao->fetch()){
       $result[$dao->id] = array(
@@ -1074,7 +1077,7 @@ function _civicrm_api3_pcpteams_getMoreInfo(&$params) {
     $isTeamPcp       = in_array('Team'      , $aContactTypes) ? TRUE : FALSE;
      $params[$pcpId]['page_title']       = CRM_Core_DAO::getFieldValue('CRM_Event_DAO_Event', $pcpValues['page_id'], 'title');
      $params[$pcpId]['amount_raised']    = civicrm_api3_pcpteams_getAmountRaised(array('pcp_id' => $pcpId, 'version' => 3));
-     $params[$pcpId]['image_url']        = $imageUrl ? $imageUrl : CRM_Pcpteams_Constant::C_DEFAULT_PROFILE_PIC;
+     $params[$pcpId]['image_url']        = $imageUrl ? $imageUrl : CRM_Core_Resources::singleton()->getUrl('uk.co.vedaconsulting.pcpteams', CRM_Pcpteams_Constant::C_DEFAULT_PROFILE_PIC);
      $params[$pcpId]['image_id']         = $fileId;
      $params[$pcpId]['donate_url']       = $donateUrl;
      $params[$pcpId]['is_teampage']      = $isTeamPcp;
@@ -1082,7 +1085,7 @@ function _civicrm_api3_pcpteams_getMoreInfo(&$params) {
 
     //calculate percentage
     $percentage   = 0;
-    if(isset($pcpValues['goal_amount']) && number_format($pcpValues['goal_amount']) != '0'){
+    if (!empty($pcpValues['goal_amount']) && ($pcpValues['goal_amount'] > 0)){
       $percentage = number_format(($params[$pcpId]['amount_raised'] / $params[$pcpId]['goal_amount']) * 100);
     }
     
@@ -1148,7 +1151,7 @@ function civicrm_api3_pcpteams_getTeamRequestInfo($params) {
       'pcp_id'             => $dao->pcp_a_b,
       'amount_raised'      => $memberPcpResult['values'][0]['amount_raised'],
       'donations_count'    => $getAllDonations['count'],
-      'image_url'          => $memberPcpResult['values'][0]['image_url'] ? $memberPcpResult['values'][0]['image_url'] : CRM_Pcpteams_Constant::C_DEFAULT_PROFILE_PIC,
+      'image_url'          => $memberPcpResult['values'][0]['image_url'] ? $memberPcpResult['values'][0]['image_url'] : CRM_Core_Resources::singleton()->getUrl('uk.co.vedaconsulting.pcpteams', CRM_Pcpteams_Constant::C_DEFAULT_PROFILE_PIC),
       'image_id'           => $memberPcpResult['values'][0]['image_id'],
       'team_pcp_id'        => $params['team_pcp_id'],
       'relationship_id'    => $dao->id
@@ -1257,9 +1260,9 @@ function civicrm_api3_pcpteams_customcreate($params) {
         continue;
       }
 
-      if ($key == 'team_pcp_id') {
+      if ($key == 'team_pcp_id' && !CRM_Pcpteams_Constant::C_SKIP_TEAM_APPROVAL) {
         if ($value) {
-          // we don't want pcp-owners to control / update setting of team_pcp_id.
+          // With Approval Mode switched On - we don't want pcp-owners to control / update setting of team_pcp_id.
           // Lets make sure its the admin who is doing it by checking if logged in user has edit permission on team_pcp_id ($value here)
           if(!CRM_Pcpteams_Utils::hasPermission($value, NULL, CRM_Core_Permission::EDIT)) { 
             continue;
@@ -1298,7 +1301,7 @@ function _civicrm_api3_pcpteams_getDigitalPageUrl($pcpId) {
   //check custom group exists
   $cgId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomGroup', CRM_Pcpteams_Constant::C_CG_DIGITAL_FUNDRAISING, 'id', 'name');
   if (!$cgId) {
-    CRM_Core_Error::debug_log_message(ts("Custom Group %1 does not", array( 1 => CRM_Pcpteams_Constant::C_CG_DIGITAL_FUNDRAISING)));
+    CRM_Core_Error::debug_log_message(ts("Custom Group %1 does not exist", array( 1 => CRM_Pcpteams_Constant::C_CG_DIGITAL_FUNDRAISING)));
     return NULL;
   }
   
