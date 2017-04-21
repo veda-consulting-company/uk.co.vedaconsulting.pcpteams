@@ -105,6 +105,12 @@ class CRM_PCP_Form_Campaign extends CRM_Core_Form {
     $this->_contactID = CRM_Utils_Array::value('contact_id', $defaults);
     $this->_contriPageId = CRM_Utils_Array::value('page_id', $defaults);
 
+    //MV: to set customData default values;
+    if(CRM_Core_Permission::check('administer CiviCRM')){
+      $customDataDefaults = CRM_Custom_Form_CustomData::setDefaultValues($this);
+      $defaults += $customDataDefaults;
+    }
+    //END
     return $defaults;
   }
 
@@ -267,12 +273,7 @@ class CRM_PCP_Form_Campaign extends CRM_Core_Form {
 
     //MV: update Custom Values 
     if (!empty($params['hidden_custom']) && CRM_Core_Permission::check('administer CiviCRM')) {
-      $customFields = CRM_Core_BAO_CustomField::getFields('PCP');
-      $customFields = CRM_Utils_Array::crmArrayMerge($customFields,
-        CRM_Core_BAO_CustomField::getFields('PCP')
-      );
       $params['custom'] = CRM_Core_BAO_CustomField::postProcess($params,
-        $customFields,
         $pcpBlock->entity_id,
         'PCP'
       );
@@ -284,7 +285,7 @@ class CRM_PCP_Form_Campaign extends CRM_Core_Form {
       foreach ($params['custom'] as $elementId => $elementValues) {
         $elementValue = array_values($elementValues);
         $customApiParams['custom_'.$elementId] = $elementValue[0]['value'];
-        if($elementValue['id']){
+        if(!empty($elementValue[0]['id'])){
           $customApiParams['id'] = $elementValue[0]['id'];
         }
       }
