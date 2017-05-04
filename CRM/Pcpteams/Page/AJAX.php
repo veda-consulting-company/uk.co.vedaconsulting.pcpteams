@@ -93,8 +93,14 @@ class CRM_Pcpteams_Page_AJAX {
   static function inlineEditorAjax(){
     $eleId       = CRM_Utils_Type::escape($_POST['id'], 'String');
     $pcpId       = CRM_Utils_Type::escape($_POST['pcp_id'], 'Integer');
-    $editedValue = CRM_Utils_Type::escape($_POST['value'], 'String');
     $columnfield = str_replace('pcp_', '', $eleId);
+
+    $htmlFields  = array( 'intro_text', 'page_text', 'title' );
+    if (in_array($columnfield, $htmlFields)) {
+      $editedValue = CRM_Utils_String::purifyHTML($_POST['value']);
+    } else {
+      $editedValue = CRM_Utils_Type::escape($_POST['value'], 'String');
+    }
     
     //check the hasPermission to view details
     if (!CRM_Pcpteams_Utils::hasPermission($pcpId, NULL, CRM_Core_Permission::EDIT)) {
