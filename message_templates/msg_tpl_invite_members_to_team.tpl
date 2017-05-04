@@ -23,7 +23,7 @@
     <p>To help us keep track of you please use <strong>{$inviteeEmail}</strong> when you register.</p>
 
     <p>We hope you take the plunge! </p>
-    <p>Love the LLR fundraising team</p>
+    <p>Love the fundraising team</p>
   
 
 </body>

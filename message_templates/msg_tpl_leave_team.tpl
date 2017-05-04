@@ -18,7 +18,7 @@
 
 <p>Thanks</p>
 
-<p>The LLR Fundraising Team</p>
+<p>The Fundraising Team</p>
 
 </body>
 </html>
