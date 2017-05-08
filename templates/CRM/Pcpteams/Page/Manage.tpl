@@ -257,7 +257,7 @@ CRM.$(function($) {
   editparams['callback'] = function( editedValue ){
     var editedId = cj(this).attr('id');
     $(this).html(editedValue);
-    $(this).css("background", "#e0001a");
+    $(this).css("background", "#007698");
     $(this).css("border", "none");
   }
   $('.crm-pcp-inline-btn-edit').editable(apiUrl, editparams);
@@ -267,7 +267,7 @@ CRM.$(function($) {
     $(this).css("border-radius", "10px");
   });
   $('.crm-pcp-inline-btn-edit').mouseout(function(){
-    $(this).css("background", "#e0001a");
+    $(this).css("background", "#007698");
     $(this).css("border", "none");
   });
 
@@ -338,7 +338,7 @@ CRM.$(function($) {
     thickness: 15,
     lineCap: "round",
     fill: {
-      gradient: ["#FF0000", "#e0001a"]
+      gradient: ["#0098c3", "#007698"]
     },
   }).on('circle-animation-progress', function(event, progress) {
     if ((100 * progress) <= circleVar) {
