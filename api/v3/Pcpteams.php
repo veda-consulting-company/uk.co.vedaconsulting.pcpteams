@@ -258,9 +258,10 @@ function civicrm_api3_pcpteams_getContactList($params) {
       $query .= " WHERE (1) AND cc.is_deleted = 0 {$where}";
     }
     
+    $teamListLimit = CRM_Pcpteams_Utils::getPcpTeamSettings(CRM_Pcpteams_Constant::C_TEAM_LIST_LIMIT);
     // if constant is set to anything other than zero, apply limit
-    if (CRM_Pcpteams_Constant::C_TEAM_LIST_LIMIT) {
-      $query .= " LIMIT " . CRM_Pcpteams_Constant::C_TEAM_LIST_LIMIT;
+    if ($teamListLimit) {
+      $query .= " LIMIT " . $teamListLimit;
     }
     //execute query
     CRM_Core_Error::debug_var('getcontactlist $query', $query);
@@ -1260,7 +1261,8 @@ function civicrm_api3_pcpteams_customcreate($params) {
         continue;
       }
 
-      if ($key == 'team_pcp_id' && !CRM_Pcpteams_Constant::C_SKIP_TEAM_APPROVAL) {
+      $skipTeamApproval = CRM_Pcpteams_Utils::getPcpTeamSettings(CRM_Pcpteams_Constant::C_SKIP_TEAM_APPROVAL);
+      if ($key == 'team_pcp_id' && !$skipTeamApproval) {
         if ($value) {
           // With Approval Mode switched On - we don't want pcp-owners to control / update setting of team_pcp_id.
           // Lets make sure its the admin who is doing it by checking if logged in user has edit permission on team_pcp_id ($value here)
