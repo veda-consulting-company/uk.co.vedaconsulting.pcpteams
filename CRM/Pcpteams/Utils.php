@@ -84,7 +84,8 @@ class  CRM_Pcpteams_Utils {
   static function createTeamRelationship($iContactIdA, $iContactIdB, $custom = array(), $action = 'join' ){
     $relationshipTypeName = CRM_Pcpteams_Constant::C_TEAM_RELATIONSHIP_TYPE;
     $is_active = 0;
-    if (CRM_Pcpteams_Constant::C_SKIP_TEAM_APPROVAL) {
+    $skipTeamApproval = CRM_Pcpteams_Utils::getPcpTeamSettings(CRM_Pcpteams_Constant::C_SKIP_TEAM_APPROVAL);
+    if ($skipTeamApproval) {
       $is_active = 1;
     }
     if($action == 'create') {
@@ -877,4 +878,30 @@ class  CRM_Pcpteams_Utils {
     } 
     return FALSE;
   }
+
+  public static function getPcpTeamSettings($name = NULL) {
+    $settingName = CRM_Pcpteams_Constant::PCPTEAM_SETTING_NAME;
+    $settings    =  CRM_Core_BAO_Setting::getItem(NULL, $settingName, NULL, FALSE);
+    if (!empty($settings)) {
+      $settings = unserialize($settings);
+    }
+
+    if (!empty($name)) {
+      return $settings[$name];
+    }
+
+    return $settings;
+  }
+
+  public static function setPcpTeamSettings($settingValues) {
+
+    if (empty($settingValues)) {
+      return; 
+    }
+
+    $settingName  = CRM_Pcpteams_Constant::PCPTEAM_SETTING_NAME;
+    $settingValue = serialize($settingValues);
+
+    return CRM_Core_BAO_Setting::setItem($settingValue, NULL, $settingName);
+  }  
 }
