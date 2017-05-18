@@ -47,33 +47,33 @@ class CRM_Pcpteams_Page_Manage extends CRM_Core_Page {
     //FIXME: proper status message
     switch ($opBtn) {
       case 'join':
-        $statusTitle = "Team Request Sent";
-        $statusText  = 'A notification has been sent to the team. Once approved, team should be visible on your page.';
+        $statusTitle = ts("Team Request Sent");
+        $statusText  = ts('A notification has been sent to the team. Once approved, team should be visible on your page.');
         $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
         break;
       case 'create':
-        $statusTitle = "New Team Created";
-        $statusText  = "That's Great, You have successfully created the Team";
+        $statusTitle = ts("New Team Created");
+        $statusText  = ts("That's Great, You have successfully created the Team");
         $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
         break;
       case 'invite':
-        $statusTitle = "Invite Team";
-        $statusText  = "Invitation request(s) has been sent.";
+        $statusTitle = ts("Invite Team");
+        $statusText  = ts("Invitation request(s) has been sent.");
         $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
         break;
       case 'approve':
-        $statusTitle = "Team Member Request Approved";
-        $statusText  = "Team member request has been approved.";
+        $statusTitle = ts("Team Member Request Approved");
+        $statusText  = ts("Team member request has been approved.");
         $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
         break;
       case 'decline':
-        $statusTitle = "Team Member Request Declined";
-        $statusText  = "Team member request has been declined.";
-        $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
+        $statusTitle = ts("Team Member Request Declined");
+        $statusText  = ts("Team member request has been declined.");
+        $this->setPcpStts(atus($statusText, $statusTitle, 'pcp-info'));
         break;
       case 'pending':
-        $statusTitle = "Pending Request";
-        $statusText  = "Pending Request has been cancelled.";
+        $statusTitle = ts("Pending Request");
+        $statusText  = ts("Pending Request has been cancelled.");
         $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
         break;        
       default:
@@ -119,7 +119,7 @@ class CRM_Pcpteams_Page_Manage extends CRM_Core_Page {
     $this->assign('donationInfo', $aDonationResult['values']);
     if (empty($aDonationResult['values']) && empty($pcpDetails['team_pcp_id']) && empty($pcpDetails['pending_team_pcp_id'])) {
       // if no donations, no team or team-requests, show a message
-      $statusTitle = "Congratulations, you are now signed up for '{$pcpDetails['page_title']}'";
+      $statusTitle = ts("Congratulations, you are now signed up for '%1'", array(1=>$pcpDetails['page_title']));
       $statusText  = ts('We have created this page to help you with your fundraising. Please take a few minutes to complete a couple of details below, you will need to add a fundraising target to give you something to aim for (aim high!) and write a little bit about yourself to encourage people to help you reach that target. If you want to do this event as a team or in memory of a loved one you can set that up below as well.');
       $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
     }
@@ -141,17 +141,20 @@ class CRM_Pcpteams_Page_Manage extends CRM_Core_Page {
       $this->assign('teamMemberRequestInfo', isset($teamMemberRequestInfo['values']) ? $teamMemberRequestInfo['values'] : NULL);
       $this->assign('teamMemberRequestCount', $teamMemberRequestInfo['count']);
       if (!empty($teamMemberRequestInfo['values']) && $this->_isEditPermission) {
-        $statusTitle = "New member request";
-        $statusText  = 'You have ' . count($teamMemberRequestInfo['values']) . ' new member request(s). Click <a id="showMemberRequests" class="pcp-button pcp-btn-red" href="#member-req-block">here</a> to manage them.';
+        $statusTitle = ts("New member request");
+        $statusText  = ts("You have %1 new member request(s). Click <a id='showMemberRequests' class='pcp-button pcp-btn-red' href='#member-req-block'>here</a> to manage them.", array(1=>count($teamMemberRequestInfo['values'])));
         $this->setPcpStatus($statusText, $statusTitle, 'pcp-info');
       }
     }
 
     //set Page title
-    $pageTitle = "Individual Page : ". $pcpDetails['title'];
+    $pageTitle = ts("Participant Page");
     if (!empty($pcpDetails['is_teampage'])) {
-      $pageTitle = "Team Page : ". $pcpDetails['title'];
-    }    
+      $pageTitle = ts("Team Page");
+    }
+    if (!empty($pcpDetails['title'])) {
+      $pageTitle = ts($pageTitle.": %1", array(1=>$pcpDetails['title']));
+    }
     CRM_Utils_System::setTitle($pageTitle);
     
     //Pcp layout button and URLs
