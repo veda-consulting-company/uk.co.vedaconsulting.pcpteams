@@ -32,4 +32,10 @@
     <title>Update Profile Image</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/pcpteams/setting</path>
+    <page_callback>CRM_Pcpteams_Form_Setting</page_callback>
+    <title>Setting</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>  
 </menu>
