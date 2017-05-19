@@ -102,7 +102,7 @@
 }
 .crm-container .crm-pcp-manage .pcp-body .team-stats .raised-total .amount,
 .crm-container .crm-pcp-manage .pcp-panel .stats .raised-total .amount {
-  color: rgb(224, 0, 26) !important;
+  color: #e0001a !important;
 }
 .crm-container .crm-pcp-manage .pcp-body .team-stats .raised-total .amount {
   font-size: 22px !important;
