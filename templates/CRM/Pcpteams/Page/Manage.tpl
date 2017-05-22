@@ -257,7 +257,7 @@ CRM.$(function($) {
     $(this).css("border-radius", "10px");
   });
   $('.crm-pcp-inline-text-edit').mouseout(function(){
-    $(this).css("background", "#F7F6F6");
+    $(this).css("background", "#007698");
     $(this).css("border", "none");
   });
 
@@ -265,7 +265,7 @@ CRM.$(function($) {
   editparams['callback'] = function( editedValue ){
     var editedId = cj(this).attr('id');
     $(this).html(editedValue);
-    $(this).css("background", "#e0001a");
+    $(this).css("background", "#007698");
     $(this).css("border", "none");
   }
   //#3515 Now we display editable field placholder of each
@@ -352,7 +352,7 @@ CRM.$(function($) {
     thickness: 15,
     lineCap: "round",
     fill: {
-      gradient: ["#FF0000", "#e0001a"]
+      gradient: ["#80BBCC", "#007698"]
     },
   }).on('circle-animation-progress', function(event, progress) {
     if ((100 * progress) <= circleVar) {
