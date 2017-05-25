@@ -18,7 +18,8 @@
     <path>civicrm/pcp/manage</path>
     <page_callback>CRM_Pcpteams_Page_Manage</page_callback>
     <title>Update Personal Campaign Page</title>
-    <access_arguments>access CiviCRM</access_arguments>
+    <access_callback>1</access_callback>
+    <is_public>true</is_public>
   </item>
   <item>
     <path>civicrm/pcp/manage/team/edit</path>
