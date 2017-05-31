@@ -265,7 +265,7 @@ CRM.$(function($) {
   editparams['callback'] = function( editedValue ){
     var editedId = cj(this).attr('id');
     $(this).html(editedValue);
-    $(this).css("background", "#007698");
+    $(this).css("background", "#FFFFFF");
     $(this).css("border", "none");
   }
   //#3515 Now we display editable field placholder of each
