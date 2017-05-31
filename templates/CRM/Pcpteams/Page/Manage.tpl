@@ -281,7 +281,7 @@ CRM.$(function($) {
     $(this).css("border-radius", "10px");
   });
   $('.crm-pcp-inline-btn-edit').mouseout(function(){
-    $(this).css("background", "#e0001a");
+    $(this).css("background", "inherit");
     $(this).css("border", "none");
   });
 
