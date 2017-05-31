@@ -257,7 +257,7 @@ CRM.$(function($) {
     $(this).css("border-radius", "10px");
   });
   $('.crm-pcp-inline-text-edit').mouseout(function(){
-    $(this).css("background", "#FFFFFF");
+    $(this).css("background", "#F7F6F6");
     $(this).css("border", "none");
   });
 
