@@ -4,7 +4,7 @@
     <span> <strong> {ts} Current Profile Image {/ts} </strong> </span>
   </div>
   <div class="avatar">
-    <img src="{$defaultImageUrl}">
+    <img src="{$defaultImageUrl}" width="150" height="150">
   </div>
   <div class="clear"></div>
   <br>
