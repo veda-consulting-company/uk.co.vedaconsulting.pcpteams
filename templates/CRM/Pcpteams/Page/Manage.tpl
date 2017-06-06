@@ -5,7 +5,7 @@
     <!-- profile Image -->
     <div class="avatar-title-block">
         <div class="avatar">
-          <img id="{$pcpinfo.image_id}" {if $is_edit_page} class="crm-pcp-inline-pic-edit" {/if} href="{$updateProfPic}" width="150" height="150" src="{$pcpinfo.image_url}">
+          <img id="{$pcpinfo.image_id}" {if $is_edit_page} class="crm-pcp-inline-pic-edit" {/if} href="{$updateProfPic}" src="{$pcpinfo.image_url}">
         </div>
       <div class="clear"></div>
     </div>
