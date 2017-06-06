@@ -7,11 +7,6 @@ The extension has functionalities like:
 - a pcp dashboard for admin to manage from backend.
 - notifications / activities
 
-Its been a while, and not under active development.
-
-
-
-
 Installation
 -------------
 Download / Clone PCP Teams extension from https://github.com/veda-consulting/uk.co.vedaconsulting.pcpteams into your CiviCRM custom extension directory. 
