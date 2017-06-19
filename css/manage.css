@@ -39,6 +39,11 @@
   margin-top: 20px !important;
   width: 24% !important;
 }
+.crm-container .crm-pcp-manage .pcp-panel .avatar img {
+  max-width:150px;
+  width: auto;
+  height:auto;
+}
 .crm-container .crm-pcp-manage .pcp-panel .title {
   display: inline-block !important;
   float: left !important;
