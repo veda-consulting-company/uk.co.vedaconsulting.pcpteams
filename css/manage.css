@@ -272,3 +272,5 @@
 .crm-container .crm-pcp-manage .waiting-approval {
   margin-bottom: 10px !important;
 }
+
+#pcp_intro_text { height: 8em; }
