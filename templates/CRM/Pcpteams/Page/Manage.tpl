@@ -50,7 +50,7 @@
           {ts}Totalizer{/ts}
         </div>
         <!-- BIO section -->
-        <div id="pcp_intro_text" {if $is_edit_page}class="intro-text crm-pcp-inline-text-edit" data-edit-params='{ldelim}"cid": "{$contactId}", "class_name": "CRM_Contact_Form_Inline_ContactInfo"{rdelim}' {else} class="intro-text" {/if} data-placeholder="Intro Text">{$pcpinfo.intro_text}</div>
+        <div id="pcp_intro_text" {if $is_edit_page}class="intro-text .crm-pcp-inline-text-edit" contenteditable="true" data-edit-params='{ldelim}"cid": "{$contactId}", "class_name": "CRM_Contact_Form_Inline_ContactInfo"{rdelim}' {else} class="intro-text" {/if} data-placeholder="Intro Text">{$pcpinfo.intro_text}</div>
         <div id="pcp_page_text" class="page-text {if $is_edit_page}crm-pcp-inline-text-edit{/if}" data-placeholder="Page Description">{$pcpinfo.page_text}</div>
         <br>
         <!-- BIO section ends -->
@@ -265,7 +265,7 @@ CRM.$(function($) {
   editparams['callback'] = function( editedValue ){
     var editedId = cj(this).attr('id');
     $(this).html(editedValue);
-    $(this).css("background", "#e0001a");
+    $(this).css("background", "#FFFFFF");
     $(this).css("border", "none");
   }
   //#3515 Now we display editable field placholder of each
@@ -281,7 +281,7 @@ CRM.$(function($) {
     $(this).css("border-radius", "10px");
   });
   $('.crm-pcp-inline-btn-edit').mouseout(function(){
-    $(this).css("background", "#e0001a");
+    $(this).css("background", "inherit");
     $(this).css("border", "none");
   });
 
@@ -352,7 +352,7 @@ CRM.$(function($) {
     thickness: 15,
     lineCap: "round",
     fill: {
-      gradient: ["#FF0000", "#e0001a"]
+      gradient: ["#80BBCC", "#007698"]
     },
   }).on('circle-animation-progress', function(event, progress) {
     if ((100 * progress) <= circleVar) {

@@ -107,7 +107,7 @@
 }
 .crm-container .crm-pcp-manage .pcp-body .team-stats .raised-total .amount,
 .crm-container .crm-pcp-manage .pcp-panel .stats .raised-total .amount {
-  color: #e0001a !important;
+  color: #007698 !important;
 }
 .crm-container .crm-pcp-manage .pcp-body .team-stats .raised-total .amount {
   font-size: 22px !important;
@@ -204,8 +204,8 @@
   font-family: "Bliss Pro Heavy", Impact, sans-serif !important;
   text-transform: uppercase !important;
   border-radius: 24px !important;
-  background-color: #e0001a !important;
-  border-bottom: 3px solid #b52e28 !important;
+  background-color: #007698 !important;
+  border-bottom: 3px solid #04485a !important;
   width: 222px !important;
   height: 46px !important;
 }
@@ -237,7 +237,7 @@
 }
 .crm-container .crm-pcp-manage .btn-donate-small,
 .crm-container .crm-pcp-manage .pcp-btn-red {
-  background-color: #e0001a !important;
+  background-color: #007698 !important;
 }
 .crm-container .crm-pcp-manage .pcp-btn-brown {
   background: #70716B url("../img/crm-button-bg.gif") repeat-x top left;
@@ -251,7 +251,7 @@
 .crm-container .crm-pcp-manage .pcp-bar-progress {
   height: 10px !important;
   border-radius: 10px !important;
-  background-color: #e0001a !important;
+  background-color: #007698 !important;
 }
 .crm-container .crm-pcp-manage .pcp-message {
   background-size: 40px 40px !important;
