@@ -465,6 +465,22 @@ function pcpteams_civicrm_buildForm($formName, &$form) {
   }
 }
 
+function pcpteams_civicrm_permission(&$permissions) {
+  $version = CRM_Utils_System::version();
+  if (version_compare($version, '4.6.1') >= 0) {
+    $permissions += array(
+      'edit own pcpteams pages' => array(
+        ts('PCPTeams: edit own pcpteams pages', array('domain' => 'uk.co.vedaconsulting.pcpteams')),
+        ts('Allows users to edit sections of pcpteams pages as long as they are owner or admin for the pcp page', array('domain' => 'uk.co.vedaconsulting.pcpteams')),
+      ),
+    );
+  }
+  else {
+    $permissions += array(
+      'edit own pcpteams pages' => ts('PCPTeams: edit own pcpteams pages', array('domain' => 'uk.co.vedaconsulting.pcpteams')),
+    );
+  }
+}
 
 /**
  * Implementation of hook_civicrm_alterAPIPermissions
@@ -474,16 +490,16 @@ function pcpteams_civicrm_buildForm($formName, &$form) {
 function pcpteams_civicrm_alterAPIPermissions($entity, $action, &$params, &$permissions) {
     $permissions['pcpteams'] = array(
     'create' => array(
-      'access CiviCRM',
+      'edit own pcpteams pages',
     ),
     // managed by query object
     'get' => array(),
     'getContactlist' => array(
-      'access CiviCRM',
+      'edit own pcpteams pages',
       // 'access AJAX API',
     ),
     'getEventList' => array(
-    'access CiviCRM',
+    'edit own pcpteams pages',
     // 'access AJAX API',
     ),
   );
