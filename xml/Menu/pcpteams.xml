@@ -12,7 +12,7 @@
     <path>civicrm/pcp/dashboard</path>
     <page_callback>CRM_Pcpteams_Page_Dashboard</page_callback>
     <title>My Dashboard</title>
-    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>edit own pcpteams pages</access_arguments>
   </item>
   <item>
     <path>civicrm/pcp/manage</path>
@@ -25,18 +25,18 @@
     <path>civicrm/pcp/manage/team/edit</path>
     <page_callback>CRM_Pcpteams_Form_Inline_TeamEdit</page_callback>
     <title>Update Personal Campaign Page</title>
-    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>edit own pcpteams pages</access_arguments>
   </item>
   <item>
     <path>civicrm/pcp/manage/profile/edit</path>
     <page_callback>CRM_Pcpteams_Form_Inline_ProfileEdit</page_callback>
     <title>Update Profile Image</title>
-    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>edit own pcpteams pages</access_arguments>
   </item>
   <item>
     <path>civicrm/pcpteams/setting</path>
     <page_callback>CRM_Pcpteams_Form_Setting</page_callback>
     <title>Setting</title>
-    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>administer CiviCRM</access_arguments>
   </item>  
 </menu>
