@@ -50,7 +50,7 @@
           {ts}Totalizer{/ts}
         </div>
         <!-- BIO section -->
-        <div id="pcp_intro_text" {if $is_edit_page}class="intro-text .crm-pcp-inline-text-edit" contenteditable="true" data-edit-params='{ldelim}"cid": "{$contactId}", "class_name": "CRM_Contact_Form_Inline_ContactInfo"{rdelim}' {else} class="intro-text" {/if} data-placeholder="Intro Text">{$pcpinfo.intro_text}</div>
+        <div id="pcp_intro_text" {if $is_edit_page}class="intro-text crm-pcp-inline-ckedit" contenteditable="true" data-edit-params='{ldelim}"cid": "{$contactId}", "class_name": "CRM_Contact_Form_Inline_ContactInfo"{rdelim}' {else} class="intro-text" {/if} data-placeholder="Intro Text">{$pcpinfo.intro_text}</div>
         <div id="pcp_page_text" class="page-text {if $is_edit_page}crm-pcp-inline-text-edit{/if}" data-placeholder="Page Description">{$pcpinfo.page_text}</div>
         <br>
         <!-- BIO section ends -->
@@ -259,6 +259,14 @@ CRM.$(function($) {
   $('.crm-pcp-inline-text-edit').mouseout(function(){
     $(this).css("background", "#F7F6F6");
     $(this).css("border", "none");
+  });
+
+  // inline ckeditor saves
+  $('.crm-pcp-inline-ckedit').mouseout(function(){
+    var data = CKEDITOR.instances.pcp_intro_text.getData();
+    editparams['submitdata']['id']    = $(this).attr('id');
+    editparams['submitdata']['value'] = data;
+    CRM.$.post(apiUrl, editparams['submitdata'], function(result){}, 'json');
   });
 
   // inline text edit for buttons
