@@ -120,7 +120,7 @@
       <div class="givetoname">
         <div class="colheader">
           <div class="btn-donate">
-            <a href="{$pcpinfo.donate_url}"><span id="donate_link_text" {if $is_edit_page}class="crm-pcp-inline-btn-edit"{/if} data-placeholder="name of he button">{ts}Donate{/ts}</span></a>
+            <a href="{$pcpinfo.donate_url}"><span id="donate_link_text" data-placeholder="name of he button">{ts}Donate{/ts}</span></a>
           </div>
         </div>
         {if !empty($donationInfo)}
