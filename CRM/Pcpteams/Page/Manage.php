@@ -107,15 +107,14 @@ class CRM_Pcpteams_Page_Manage extends CRM_Core_Page {
     $this->assign('rankInfo', $aRankResult['values'][0]);
 
     //Top Donations    
-    $aDonationResult = civicrm_api('pcpteams', 'getAllDonations', array(
-      'version' => 3
-      , 'sequential'  => 1
-      , 'pcp_id'      => $pcpId
-      , 'page_id'     => $pcpDetails['page_id']
-      , 'limit'       => 10
+    $aDonationResult = civicrm_api('pcpteams', 'honorRoll', array(
+      'version'     => 3,
+      'sequential'  => 1,
+      'pcp_id'      => $pcpId,
+      'limit'       => 10
       )
     );
-    $this->assign('donationInfo', $aDonationResult['values']);
+    $this->assign('donationInfo', $aDonationResult);
     if (empty($aDonationResult['values']) && empty($pcpDetails['team_pcp_id']) && empty($pcpDetails['pending_team_pcp_id'])) {
       // if no donations, no team or team-requests, show a message
       $statusTitle = ts("Congratulations, you are now signed up for '%1'", array(1=>$pcpDetails['page_title']));

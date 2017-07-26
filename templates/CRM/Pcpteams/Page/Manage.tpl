@@ -128,7 +128,7 @@
         {/if}
         {foreach from=$donationInfo item=donations}
           <div class="top-donations">
-            {$donations.display_name} has donated <strong> {$donations.total_amount|crmMoney} </strong>
+            {$donations.nickname} has donated <strong>{$donations.total_amount}</strong>
           </div>
         {/foreach}
       </div>

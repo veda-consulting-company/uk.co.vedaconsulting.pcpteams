@@ -984,6 +984,41 @@ function _civicrm_api3_pcpteams_getAllDonations_spec(&$params) {
   $params['pcp_id']['api.required'] = 1;
 }
 
+function civicrm_api3_pcpteams_honorRoll($params) {
+  $query = "
+    SELECT    
+    cc.id, 
+    cs.pcp_roll_nickname, 
+    cs.pcp_personal_note,
+    cc.total_amount, 
+    cc.currency
+    FROM      civicrm_contribution cc
+    LEFT JOIN civicrm_contribution_soft cs ON cc.id = cs.contribution_id
+    WHERE     cs.pcp_id = %1
+    AND       cs.pcp_display_in_roll = 1
+    AND       contribution_status_id = 1
+    AND       is_test = 0
+    ORDER BY  cc.receive_date DESC";
+  if (!empty($params['limit'])) {
+    $query .= " LIMIT {$params['limit']}";
+  }
+  $queryParams = array(
+    1 => array($params['pcp_id'], 'Integer'),
+  );
+  $dao = CRM_Core_DAO::executeQuery($query, $queryParams);
+  $honor = array();
+  while ($dao->fetch()) {
+    $honor[$dao->id]['nickname'] = ucwords($dao->pcp_roll_nickname);
+    $honor[$dao->id]['total_amount'] = CRM_Utils_Money::format($dao->total_amount, $dao->currency);
+    $honor[$dao->id]['personal_note'] = $dao->pcp_personal_note;
+  }
+  return $honor;
+}
+
+function _civicrm_api3_pcpteams_honorRoll_spec(&$params) {
+  $params['pcp_id']['api.required'] = 1;
+}
+
 function civicrm_api3_pcpteams_getTopDonations($params) {
   $result= CRM_Core_DAO::$_nullArray;
   
