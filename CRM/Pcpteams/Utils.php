@@ -222,7 +222,7 @@ class  CRM_Pcpteams_Utils {
     $return['pcp_count']    = $eventDetails['count'];
     if($eventDetails['count'] > 0){
       foreach ($eventDetails['values'] as $pcps) {
-        $pcpAmounts[$pcps['id']] = CRM_PCP_BAO_PCP::thermoMeter($pcps['id']);
+        $pcpAmounts[$pcps['id']] = CRM_Pcpteams_BAO_PCP::thermoMeter($pcps['id']);
       }
     }
     $maxAmoutnRaisedPcp = array_search( max($pcpAmounts) , $pcpAmounts );

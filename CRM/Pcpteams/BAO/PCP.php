@@ -227,22 +227,33 @@ ORDER BY target_entity_type, target_entity_id
   }
 
   /**
-   * function to show the total amount for Personal Campaign Page on thermometer
+   * Show the total amount for Personal Campaign Page on thermometer.
    *
-   * @param array $pcpId  contains the pcp ID
+   * @param array $pcpId
+   *   Contains the pcp ID.
    *
-   * @access public
-   * @static
-   *
-   * @return total amount
+   * @return float
+   *   Total amount
    */
-  static function thermoMeter($pcpId) {
-    $query = "
-SELECT SUM(cc.total_amount) as total
-FROM civicrm_pcp pcp
-LEFT JOIN civicrm_contribution_soft cs ON ( pcp.id = cs.pcp_id )
-LEFT JOIN civicrm_contribution cc ON ( cs.contribution_id = cc.id)
-WHERE pcp.id = %1 AND cc.contribution_status_id =1 AND cc.is_test = 0";
+  public static function thermoMeter($pcpId) {
+    $pcpContactId  = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcpId, 'contact_id');
+    $contactTypes  = CRM_Contact_BAO_Contact::getContactTypes( $pcpContactId );
+    $query         = "
+      SELECT    SUM(cc.total_amount) as total
+      FROM      civicrm_pcp pcp
+      LEFT JOIN civicrm_contribution_soft cs ON ( pcp.id = cs.pcp_id )
+      LEFT JOIN civicrm_contribution cc      ON ( cs.contribution_id = cc.id)
+      LEFT JOIN civicrm_contact sco          ON ( cs.contact_id = sco.id)
+      WHERE     pcp.id = %1 
+      AND       cc.contribution_status_id =1 
+      AND       cc.is_test = 0";
+
+    // do not count team soft credit for team member pages, as it results in
+    // doubling the amount. TODO: there should be a better way to handle
+    // multiple soft credits with right amount splits
+    if (!in_array('Team', $contactTypes)) {
+      $query .= " AND (sco.contact_sub_type NOT LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . 'Team' . CRM_Core_DAO::VALUE_SEPARATOR . "%' OR sco.contact_sub_type IS NULL)";
+    }
 
     $params = array(1 => array($pcpId, 'Integer'));
     return CRM_Core_DAO::singleValueQuery($query, $params);
