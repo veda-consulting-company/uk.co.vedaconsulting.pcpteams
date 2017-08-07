@@ -109,8 +109,7 @@ class CRM_Contribute_BAO_ContributionSoft extends CRM_Contribute_DAO_Contributio
     }
     //Delete PCP against this contribution and create new on submitted PCP information
     elseif (array_key_exists('pcp', $params) && $pcpId) {
-      $deleteParams = array('id' => $pcpId);
-      CRM_Contribute_BAO_ContributionSoft::del($deleteParams);
+      civicrm_api3('ContributionSoft', 'delete', array('id' => $pcpId));
     }
     if (isset($params['soft_credit'])) {
       $softParams = $params['soft_credit'];
@@ -132,8 +131,7 @@ class CRM_Contribute_BAO_ContributionSoft extends CRM_Contribute_DAO_Contributio
       // delete any extra soft-credit while updating back-office contribution
       foreach ((array) $softIDs as $softID) {
         if (!in_array($softID, $params['soft_credit_ids'])) {
-          $deleteParams = array('id' => $softID);
-          CRM_Contribute_BAO_ContributionSoft::del($deleteParams);
+          civicrm_api3('ContributionSoft', 'delete', array('id' => $softID));
         }
       }
     }
@@ -165,18 +163,22 @@ class CRM_Contribute_BAO_ContributionSoft extends CRM_Contribute_DAO_Contributio
     if (!empty($form->_values['honoree_profile_id']) && !empty($params['soft_credit_type_id'])) {
       $honorId = NULL;
 
+      // @todo fix use of deprecated function.
       $contributionSoftParams['soft_credit_type_id'] = CRM_Core_OptionGroup::getValue('soft_credit_type', 'pcp', 'name');
       //check if there is any duplicate contact
-      $profileContactType = CRM_Core_BAO_UFGroup::getContactType($form->_values['honoree_profile_id']);
-      $dedupeParams = CRM_Dedupe_Finder::formatParams($params['honor'], $profileContactType);
-      $dedupeParams['check_permission'] = FALSE;
       // honoree should never be the donor
       $exceptKeys = array(
         'contactID' => 0,
         'onbehalf_contact_id' => 0,
       );
       $except = array_values(array_intersect_key($params, $exceptKeys));
-      $ids = CRM_Dedupe_Finder::dupesByParams($dedupeParams, $profileContactType, 'Unsupervised', $except);
+      $ids = CRM_Contact_BAO_Contact::getDuplicateContacts(
+        $params['honor'],
+        CRM_Core_BAO_UFGroup::getContactType($form->_values['honoree_profile_id']),
+        'Unsupervised',
+        $except,
+        FALSE
+      );
       if (count($ids)) {
         $honorId = CRM_Utils_Array::value(0, $ids);
       }
@@ -240,27 +242,6 @@ class CRM_Contribute_BAO_ContributionSoft extends CRM_Contribute_DAO_Contributio
       return $contributionSoft;
     }
     return NULL;
-  }
-
-  /**
-   * Delete soft credits.
-   *
-   * @param array $params
-   *
-   */
-  public static function del($params) {
-    //delete from contribution soft table
-    $contributionSoft = new CRM_Contribute_DAO_ContributionSoft();
-    $contributionSoft->id = CRM_Utils_Array::value('id', $params);
-    if (!$contributionSoft->find()) {
-      return FALSE;
-    }
-    unset($params['id']);
-    foreach ($params as $column => $value) {
-      $contributionSoft->$column = $value;
-    }
-    $contributionSoft->delete();
-    return TRUE;
   }
 
   /**
