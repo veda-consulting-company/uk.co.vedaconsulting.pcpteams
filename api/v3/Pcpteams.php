@@ -1146,6 +1146,7 @@ function civicrm_api3_pcpteams_getAmountRaised($params) {
     $query = "
       SELECT SUM(cs.amount) as total
       FROM civicrm_contribution_soft cs
+      INNER JOIN civicrm_contribution cc on cs.contribution_id = cc.id AND cc.contribution_status_id IN (1)
       LEFT JOIN civicrm_value_pcp_custom_set cscv ON ( cscv.entity_id = cs.pcp_id )
       WHERE cs.contact_id = ( SELECT contact_id FROM civicrm_pcp WHERE id = %1 ) AND (cscv.team_pcp_id = %1 OR cs.pcp_id = %1)
     ";
