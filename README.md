@@ -1,11 +1,22 @@
 # uk.co.vedaconsulting.pcpteams
 
+Use Cases
+-------------
+- You have a participation fundraising event such as 5k Run for the Cure, Holidays of Giving, etc.
+- People wish to raise money as a team, group or company such as: "Johnson's Joggers" or "St. Marks Hospital"
+- Each team will have a leader that can manage who is on their team 
+- Each team member will have a separate page but have their efforts contribute to the total fundraising of their team
+- Rather than pay high transaction % fees to a SaaS or license fees software company for these features, you wish to provide team fundraising through low-cost open-source CiviCRM without a redundant step to import your data later
+
 The extension has functionalities like:
 - A journey for users to signup for events and then create: their solo fundraising page, team, or join an existing team
-- Team admin being able to administer team page and its members, with optional approval process
+- Team admin being able to administer team page and its members, with optional approval process, or enable auto-approval
 - A redesigned PCP page with widgets, thermometer and inline editing
-- A pcp dashboard for admin to manage from backend
+- A PCP dashboard for admin to manage from backend
 - Notifications and activities
+- Improved appearance of PCP pages
+
+![Fundraising Page](https://raw.githubusercontent.com/Stoob/uk.co.vedaconsulting.pcpteams/5c00b922c525894193fcae2c7561720c506fb0b5/pcp.png "PCP Teams Fundraising Page")
 
 Installation
 -------------
