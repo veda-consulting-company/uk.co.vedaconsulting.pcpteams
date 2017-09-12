@@ -63,9 +63,9 @@ this would take you to registration journey page with two buttons, to make sure 
 
 Note: is is a configurable setting to skip this dialogue in your workflow if you want people to register for the event and create their PCP at the same time.
 
-1. If you want register for this event click button 'No I need to Regsiter', then this would take to registration page for event if you already registered with this event the journey would take you to PCP registration.  Once you registered the Event, you can see link to promote PCP for this event. Click Personal Campaign Page link, would take you to PCP team set up journey page.
+1. If you want register for this event click button 'No I need to Register', then this would take to registration page for event if you already registered with this event the journey would take you to PCP registration.  Once you registered the Event, you can see link to promote PCP for this event. Click Personal Campaign Page link, would take you to PCP team set up journey page.
 
-2. If you already registered, the jouney jump to PCP team set up journey page.  
+2. If you already registered, the journey jump to PCP team set up journey page.  
 
 
 ## PCP Team configuration journey
