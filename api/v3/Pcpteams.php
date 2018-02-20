@@ -1109,8 +1109,10 @@ function _civicrm_api3_pcpteams_getMoreInfo(&$params) {
     if ($pcpBlockId) {
       $contributionPageId = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCPBlock', $pcpBlockId, 'target_entity_id', 'id');
     }
-    $donateUrl  = CRM_Utils_System::url('civicrm/contribute/transact', 'id='.$contributionPageId.'&pcpId='.$pcpId.'&reset=1');
-    
+    // KG
+    // $donateUrl  = CRM_Utils_System::url('civicrm/contribute/transact', 'id='.$contributionPageId.'&pcpId='.$pcpId.'&reset=1');
+    $donateUrl  = CRM_Utils_System::url('civicrm/event/register', 'id='.$contributionPageId.'&pcpId='.$pcpId.'&reset=1');     
+
     $aContactTypes   = CRM_Contact_BAO_Contact::getContactTypes( $pcpValues['contact_id'] );
     $isTeamPcp       = in_array('Team'      , $aContactTypes) ? TRUE : FALSE;
      $params[$pcpId]['page_title']       = CRM_Core_DAO::getFieldValue('CRM_Event_DAO_Event', $pcpValues['page_id'], 'title');
