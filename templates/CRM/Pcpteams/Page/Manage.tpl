@@ -47,7 +47,7 @@
     <div class="totaliser-giveto-block">
       <div class="totaliser">
         <div class="colheader">
-          {ts}Totalizer{/ts}
+          {ts}{$pcpinfo.title}{/ts}
         </div>
         <!-- BIO section -->
         <div id="pcp_intro_text" {if $is_edit_page}class="intro-text crm-pcp-inline-text-edit" data-edit-params='{ldelim}"cid": "{$contactId}", "class_name": "CRM_Contact_Form_Inline_ContactInfo"{rdelim}' {else} class="intro-text" {/if} data-placeholder="Intro Text">{$pcpinfo.intro_text}</div>

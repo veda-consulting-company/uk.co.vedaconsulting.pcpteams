@@ -73,7 +73,7 @@ function pcpteams_civicrm_install() {
     'sequential'  => 1,
     'version'     => 3,
     'msg_title'   => CRM_Pcpteams_Constant::C_MSG_TPL_INVITE_TEAM,
-    'msg_subject' => (string) '{$inviteeFirstName}  you have been invited to join {$teamName} and support Leukaemia and Lymphoma Research',
+    'msg_subject' => (string) '{$inviteeFirstName}  you have been invited to join {$teamName}',
     'is_default'  => 1,
     'msg_html'    => $messageHtml,
   );
