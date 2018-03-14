@@ -15,7 +15,7 @@
     {$inviteeFirstName} 
   </strong></p>
 
-    <p> <strong>{$userName}</strong> has invited you to partake in <strong>{$eventName}</strong> and become a member of team <strong>{$teamName}</strong> and help fight blood cancer with leukaemia and lymphoma research.</p>
+    <p> <strong>{$userName}</strong> has invited you to partake in <strong>{$eventName}</strong> and become a member of team <strong>{$teamName}</strong>.</p>
 
     <p>To sign up simply click the link below to register for the event and start your fundraising. </p>
   

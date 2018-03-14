@@ -128,11 +128,20 @@
   float: left !important;
   width: 68% !important;
 }
+
 .crm-container .crm-pcp-manage .pcp-body .givetoname {
   display: inline !important;
-  float: right !important;
-  width: 30% !important;
+  float:left;
 }
+
+@media only screen and (min-width : 767px) {
+  .crm-container .crm-pcp-manage .pcp-body .givetoname {
+    display: inline !important;
+    float: right !important;
+    width: 30% !important;
+  }
+}
+
 .crm-container .crm-pcp-manage .pcp-body .totaliser-giveto-block,
 .crm-container .crm-pcp-manage .pcp-body .mem-header,
 .crm-container .crm-pcp-manage .pcp-body .colheader {
