@@ -259,8 +259,6 @@ class  CRM_Pcpteams_Utils {
     }
   }
 
-  // FIXME: pcp title should be combination of contact name and event name
-  // similarly the description
   static function createDefaultPcp($pcpContactId, $componentPageId, $component = 'event') {
     if (empty($pcpContactId) || empty($componentPageId)) {
       return FALSE;
@@ -271,12 +269,12 @@ class  CRM_Pcpteams_Utils {
       'create', 
       array(
         'version'         => 3,
-        'title'           => $contactDisplayName.' : '.$eventDetails['title'],
+        'title'           => $contactDisplayName,
         'intro_text'      => "Welcome to ".$contactDisplayName.'\'s PCP',
         'contact_id'      => $pcpContactId,
         'page_id'         => $componentPageId,
         'page_type'       => $component,
-        'goal_amount'     => '0.00', //FIXME: Need to make sure the intial sample goal_amount, setting 0.00 now, user can update later on their manage page
+        'goal_amount'     => '0.00', //FIXME: Need to make sure the initial sample goal_amount, setting 0.00 now, user can update later on their manage page
         'is_honor_roll' => 1,
       )
     );

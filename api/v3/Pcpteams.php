@@ -1101,7 +1101,8 @@ function _civicrm_api3_pcpteams_getMoreInfo(&$params) {
     if($entityFile){
       $fileInfo = reset($entityFile);
       $fileId   = $fileInfo['fileID'];
-      $imageUrl = CRM_Utils_System::url('civicrm/file',"reset=1&id=$fileId&eid={$pcpId}"); 
+      $fileHash = CRM_Core_BAO_File::generateFileHash($pcpId, $fileId);
+      $imageUrl = CRM_Utils_System::url('civicrm/file',"reset=1&id=$fileId&eid={$pcpId}&fcs=$fileHash"); 
     }
     $pcpBlockId = CRM_Core_DAO::getFieldValue('CRM_PCP_DAO_PCP', $pcpId, 'pcp_block_id', 'id');
     
