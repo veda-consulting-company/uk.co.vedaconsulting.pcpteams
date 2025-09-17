@@ -417,7 +417,7 @@ class  CRM_Pcpteams_Utils {
   
   static function overrideLoginUrl(&$form) {
     $template              = CRM_Core_Smarty::singleton( );
-    $beginHookFormElements = $template->get_template_vars();
+    $beginHookFormElements = $template->getTemplateVars();
     $loginURL              = $beginHookFormElements['loginURL'];
     if($loginURL) {
       $code  = $form->_code;
