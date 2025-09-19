@@ -83,7 +83,7 @@
 
         Suspendisse volutpat erat purus, quis tincidunt justo molestie eget. Fusce purus nisi, aliquam nec
       </p>
-      <a href="{crmURL p="civicrm/pcp/reason" q="reset=1" a=1}" title="{ts}In Memory Name{/ts}" class="button">{ts}In Memory Name{/ts}</a>
+      <a href="{crmURL p="civicrm/pcp/reason" q="reset=1" a=1}" title="{ts escape='htmlattribute'}In Memory Name{/ts}" class="button">{ts}In Memory Name{/ts}</a>
       <div style="clear: both;"></div>
     </div>
   </div>
