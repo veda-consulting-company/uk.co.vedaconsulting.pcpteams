@@ -17,7 +17,7 @@
                                 </div>
                             </div>
                             {if $tplParams.event_title}
-                              </div><br /><br /><br />&nbsp;&nbsp;&nbsp;&nbsp;{ts}<h1>{$tplParams.event_title}</h1>{/ts}
+                              </div><br /><br /><br />&nbsp;&nbsp;&nbsp;&nbsp;<h1>{$tplParams.event_title}</h1>
                             {/if}
                         </td>
                     </tr>
