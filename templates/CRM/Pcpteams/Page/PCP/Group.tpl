@@ -18,7 +18,7 @@
                                         <img width="100" height="97" src="{$profilePicUrl}">
                                     </a>
                                 </div>
-                            </div><br /><br /><br />&nbsp;&nbsp;&nbsp;&nbsp;{ts}<h1>{$groupTitle}</h1>{/ts}
+                            </div><br /><br /><br />&nbsp;&nbsp;&nbsp;&nbsp;<h1>{$groupTitle}</h1>
                         </td>
                     </tr>
                 {/if}

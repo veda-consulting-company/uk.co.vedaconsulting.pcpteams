@@ -11,7 +11,7 @@
                         <input type="button" name="profilepic" value="Edit/Upload Pic" id="profilepic" onclick="parent.location='{$profilePicURl}'" /><br />
                     </td>
                     <td>
-                        <br />&nbsp;&nbsp;&nbsp;&nbsp;{ts}<h1>in memory of name</h1>{/ts}
+                        <br />&nbsp;&nbsp;&nbsp;&nbsp;<h1>{ts}in memory of name{/ts}</h1>
                     </td>
                 </tr>
             </table>
