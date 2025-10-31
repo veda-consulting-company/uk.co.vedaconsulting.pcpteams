@@ -1,4 +1,6 @@
-# PCP Teams
+## NOTE: This extension has been moved to https://lab.civicrm.org/extensions/pcpteams
+
+## PCP Teams
 
 ## Use cases
 
