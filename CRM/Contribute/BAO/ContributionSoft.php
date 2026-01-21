@@ -49,7 +49,7 @@ class CRM_Contribute_BAO_ContributionSoft extends CRM_Contribute_DAO_Contributio
    *   soft contribution of object that is added
    */
   public static function add(&$params) {
-    $contributionSoftID = CRM_Utils_Array::value('id', $params);
+    $contributionSoftID = $params['id'] ?? NULL;
     if ($contributionSoftID) {
       CRM_Utils_Hook::pre('edit', 'ContributionSoft', $contributionSoftID, $params);
     }
@@ -87,7 +87,7 @@ class CRM_Contribute_BAO_ContributionSoft extends CRM_Contribute_DAO_Contributio
     $softIDs = self::getSoftCreditIds($contribution->id);
     $pcpId = self::getSoftCreditIds($contribution->id, TRUE);
 
-    if ($pcp = CRM_Utils_Array::value('pcp', $params)) {
+    if ($pcp = $params['pcp'] ?? NULL) {
       $softParams = array();
       $softParams['id'] = $pcpId ? $pcpId : NULL;
       $softParams['contribution_id'] = $contribution->id;
@@ -97,9 +97,9 @@ class CRM_Contribute_BAO_ContributionSoft extends CRM_Contribute_DAO_Contributio
       );
       $softParams['currency'] = $contribution->currency;
       $softParams['amount'] = $contribution->total_amount;
-      $softParams['pcp_display_in_roll'] = CRM_Utils_Array::value('pcp_display_in_roll', $pcp);
-      $softParams['pcp_roll_nickname'] = CRM_Utils_Array::value('pcp_roll_nickname', $pcp);
-      $softParams['pcp_personal_note'] = CRM_Utils_Array::value('pcp_personal_note', $pcp);
+      $softParams['pcp_display_in_roll'] = $pcp['pcp_display_in_roll'] ?? NULL;
+      $softParams['pcp_roll_nickname'] = $pcp['pcp_roll_nickname'] ?? NULL;
+      $softParams['pcp_personal_note'] = $pcp['pcp_personal_note'] ?? NULL;
       $softParams['soft_credit_type_id'] = CRM_Core_OptionGroup::getValue('soft_credit_type', 'pcp', 'name');
       $contributionSoft = self::add($softParams);
       //Send notification to owner for PCP
@@ -156,7 +156,7 @@ class CRM_Contribute_BAO_ContributionSoft extends CRM_Contribute_DAO_Contributio
         'pcp_personal_note',
       );
       foreach ($fields as $f) {
-        $pcp[$f] = CRM_Utils_Array::value($f, $params);
+        $pcp[$f] = $params[$f] ?? NULL;
       }
     }
 
@@ -180,7 +180,7 @@ class CRM_Contribute_BAO_ContributionSoft extends CRM_Contribute_DAO_Contributio
         FALSE
       );
       if (count($ids)) {
-        $honorId = CRM_Utils_Array::value(0, $ids);
+        $honorId = $ids[0] ?? NULL;
       }
 
       $honorId = CRM_Contact_BAO_Contact::createProfileContact(
@@ -411,7 +411,7 @@ class CRM_Contribute_BAO_ContributionSoft extends CRM_Contribute_DAO_Contributio
     // Format the params.
     $params['offset'] = ($params['page'] - 1) * $params['rp'];
     $params['rowCount'] = $params['rp'];
-    $params['sort'] = CRM_Utils_Array::value('sortBy', $params);
+    $params['sort'] = $params['sortBy'] ?? NULL;
     $contactId = $params['cid'];
 
     $filter = NULL;
@@ -574,7 +574,7 @@ class CRM_Contribute_BAO_ContributionSoft extends CRM_Contribute_DAO_Contributio
     switch ($profileContactType) {
       case 'Individual':
         if (array_key_exists('prefix_id', $params)) {
-          $honorName = CRM_Utils_Array::value(CRM_Utils_Array::value('prefix_id', $params),
+          $honorName = $params[CRM_Utils_Array::value('prefix_id'] ?? NULL,
             CRM_Core_PseudoConstant::get('CRM_Contact_DAO_Contact', 'prefix_id')
           );
           unset($profileFields['prefix_id']);
