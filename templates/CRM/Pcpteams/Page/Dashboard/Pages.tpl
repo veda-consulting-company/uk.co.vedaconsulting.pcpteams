@@ -17,7 +17,7 @@
         <tr class="{cycle values="odd-row,even-row"} {$row.class}">
               <td class="bold">
                 {if $row.page_url}
-                  <a  href="{$row.page_url}" title="{ts}Preview your Personal Campaign Page{/ts}">{$row.title}</a>
+                  <a  href="{$row.page_url}" title="{ts escape='htmlattribute'}Preview your Personal Campaign Page{/ts}">{$row.title}</a>
                 {else}
                   {$row.title}
                 {/if}

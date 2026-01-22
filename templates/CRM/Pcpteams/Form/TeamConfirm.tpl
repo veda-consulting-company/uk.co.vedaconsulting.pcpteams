@@ -46,7 +46,7 @@
                             {/section}
                         </table>
                       </table>
-                        <span id="add-more-contacts-link" title="{ts}click to add more{/ts}"><a class="crm-hover-button action-item add-more-inline" href="javascript:void(0)" onclick="showAdditional();">{ts}Add More{/ts}</a></span>
+                        <span id="add-more-contacts-link" title="{ts escape='htmlattribute'}click to add more{/ts}"><a class="crm-hover-button action-item add-more-inline" href="javascript:void(0)" onclick="showAdditional();">{ts}Add More{/ts}</a></span>
                   </fieldset>
                   </td>
                 </tr>
